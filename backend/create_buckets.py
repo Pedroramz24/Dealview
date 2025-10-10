@@ -14,7 +14,7 @@ supabase = create_client(supabase_url, supabase_key)
 try:
     # Create public bucket for property images
     print("Creating 'property-images' bucket...")
-    supabase.storage.create_bucket("property-images", {"public": True})
+    supabase.storage.create_bucket(id="property-images", options={"public": True})
     print("✓ Created 'property-images' bucket (public)")
 except Exception as e:
     print(f"Property images bucket: {e}")
@@ -22,7 +22,7 @@ except Exception as e:
 try:
     # Create private bucket for deal documents
     print("Creating 'deal-documents' bucket...")
-    supabase.storage.create_bucket("deal-documents", {"public": False})
+    supabase.storage.create_bucket(id="deal-documents", options={"public": False})
     print("✓ Created 'deal-documents' bucket (private)")
 except Exception as e:
     print(f"Deal documents bucket: {e}")
