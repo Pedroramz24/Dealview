@@ -333,7 +333,7 @@ button {
   backdrop-filter: blur(var(--glass-blur));
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-family: var(--font-sans);
+  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
 }
 
 .btn-secondary:hover {
