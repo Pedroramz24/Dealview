@@ -119,11 +119,11 @@ const Pipeline = () => {
                                   className="w-full h-24 object-cover rounded-lg mb-2"
                                 />
                               )}
-                              <h4 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">
+                              <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
                                 {deal.property_address}
                               </h4>
-                              <p className="text-xs text-gray-600 mb-2">{deal.asset_type}</p>
-                              <p className="text-sm font-bold text-blue-600">{formatPrice(deal.asking_price)}</p>
+                              <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>{deal.asset_type}</p>
+                              <p className="text-sm font-bold" style={{ color: 'var(--accent)' }}>{formatPrice(deal.asking_price)}</p>
                             </div>
                           )}
                         </Draggable>
