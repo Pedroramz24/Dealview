@@ -381,7 +381,7 @@ th {
   letter-spacing: 0.05em;
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-subtle);
-  font-family: var(--font-sans);
+  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
 }
 
 tbody tr {
