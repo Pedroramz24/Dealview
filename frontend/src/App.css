@@ -413,7 +413,7 @@ td {
   border-radius: 999px;
   font-size: 13px;
   font-weight: 500;
-  font-family: var(--font-sans);
+  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   color: var(--text-primary);
