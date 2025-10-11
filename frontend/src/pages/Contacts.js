@@ -212,10 +212,10 @@ const Contacts = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="glass-surface p-4 mb-6">
         <div className="mb-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
             <Input
               placeholder="Search contacts..."
               value={searchTerm}
@@ -226,17 +226,17 @@ const Contacts = () => {
           </div>
         </div>
         <div>
-          <Label className="mb-2 block">Filter by tags:</Label>
+          <Label className="mb-2 block" style={{ color: 'var(--text-secondary)' }}>Filter by tags:</Label>
           <div className="flex flex-wrap gap-2">
             {allTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => toggleFilterTag(tag)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  selectedTags.includes(tag)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className="px-3 py-1 rounded-full text-sm font-medium transition-colors"
+                style={selectedTags.includes(tag) 
+                  ? { background: 'var(--accent)', color: 'white', border: '1px solid var(--accent)' }
+                  : { background: 'var(--glass-bg)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' }
+                }
                 data-testid={`filter-tag-${tag}`}
               >
                 {tag}
