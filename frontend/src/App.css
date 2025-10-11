@@ -358,6 +358,7 @@ table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  font-family: var(--font-sans);
 }
 
 thead {
@@ -377,6 +378,7 @@ th {
   letter-spacing: 0.05em;
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-sans);
 }
 
 tbody tr {
@@ -396,6 +398,8 @@ tbody tr:hover {
 td {
   padding: var(--space-md);
   color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-weight: 400;
 }
 
 /* Badges / Chips */
