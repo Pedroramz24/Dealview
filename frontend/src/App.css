@@ -1,7 +1,7 @@
 /* Design Tokens */
 :root {
   /* Fonts */
-  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, 'Courier New', monospace;
   
   /* Colors */
