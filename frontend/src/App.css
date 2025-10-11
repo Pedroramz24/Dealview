@@ -280,7 +280,7 @@ input, textarea, select {
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   padding: var(--space-sm) var(--space-md);
-  font-family: var(--font-sans);
+  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
   font-size: 15px;
   font-weight: 400;
   backdrop-filter: blur(var(--glass-blur));
