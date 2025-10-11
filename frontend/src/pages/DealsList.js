@@ -238,39 +238,39 @@ const DealsList = () => {
       </div>
 
       {/* Deals Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="glass-surface overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asset Type</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asking Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stage</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Contact</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th>Property</th>
+              <th>Asset Type</th>
+              <th>Asking Price</th>
+              <th>Stage</th>
+              <th>Last Contact</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody>
             {filteredDeals.map((deal) => (
-              <tr key={deal.id} className="hover:bg-gray-50" data-testid={`deal-row-${deal.id}`}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="font-medium text-gray-900">{deal.property_address}</div>
+              <tr key={deal.id} data-testid={`deal-row-${deal.id}`}>
+                <td>
+                  <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{deal.property_address}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="text-gray-600">{deal.asset_type}</span>
+                <td>
+                  <span style={{ color: 'var(--text-secondary)' }}>{deal.asset_type}</span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="font-medium text-gray-900">{formatPrice(deal.asking_price)}</span>
+                <td>
+                  <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatPrice(deal.asking_price)}</span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                <td>
+                  <span className="badge" style={{ background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
                     {deal.stage}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                <td style={{ color: 'var(--text-secondary)' }}>
                   {formatDate(deal.last_contact)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td>
                   <Button
                     onClick={() => navigate(`/deals/${deal.id}`)}
                     variant="outline"
