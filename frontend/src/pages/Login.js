@@ -35,61 +35,103 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-base)' }}>
+      {/* Ambient gradient */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '800px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
+          pointerEvents: 'none'
+        }} />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        <div className="glass-surface p-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Space Grotesk' }}>Pedro Armando</h1>
-            <p className="text-gray-600">Commercial Real Estate CRM</p>
+            <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Pedro Armando</h1>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Commercial Real Estate CRM</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {!isLogin && (
               <div>
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>Full Name</Label>
                 <Input
                   id="fullName"
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required={!isLogin}
-                  className="mt-1"
+                  className="mt-2"
                   data-testid="register-fullname-input"
+                  style={{
+                    background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)',
+                    backdropFilter: 'blur(16px)'
+                  }}
                 />
               </div>
             )}
 
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="mt-1"
+                className="mt-2"
                 data-testid="login-email-input"
+                style={{
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  backdropFilter: 'blur(16px)'
+                }}
               />
             </div>
 
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="mt-1"
+                className="mt-2"
                 data-testid="login-password-input"
+                style={{
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  backdropFilter: 'blur(16px)'
+                }}
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full"
               disabled={loading}
               data-testid="login-submit-button"
+              style={{
+                background: 'var(--accent)',
+                color: 'white',
+                padding: '12px',
+                borderRadius: '8px',
+                fontWeight: 500,
+                transition: 'all 150ms',
+                border: 'none',
+                marginTop: '24px'
+              }}
             >
               {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
             </Button>
@@ -98,8 +140,15 @@ const Login = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-blue-600 hover:text-blue-700 font-medium"
               data-testid="toggle-auth-mode"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--accent)',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 500
+              }}
             >
               {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
             </button>
