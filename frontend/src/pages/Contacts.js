@@ -249,11 +249,11 @@ const Contacts = () => {
       {/* Contacts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredContacts.map((contact) => (
-          <div key={contact.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow" data-testid={`contact-card-${contact.id}`}>
+          <div key={contact.id} className="contact-card" data-testid={`contact-card-${contact.id}`}>
             <div className="mb-4">
-              <h3 className="text-xl font-bold text-gray-900 mb-1" style={{ fontFamily: 'Space Grotesk' }}>{contact.name}</h3>
+              <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{contact.name}</h3>
               {contact.company && (
-                <p className="text-sm text-gray-600 flex items-center">
+                <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
                   <Building2 className="w-4 h-4 mr-1" />
                   {contact.company}
                 </p>
@@ -262,14 +262,14 @@ const Contacts = () => {
 
             <div className="space-y-2 mb-4">
               {contact.email && (
-                <p className="text-sm text-gray-700 flex items-center">
-                  <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
+                  <Mail className="w-4 h-4 mr-2" style={{ color: 'var(--text-muted)' }} />
                   {contact.email}
                 </p>
               )}
               {contact.phone && (
-                <p className="text-sm text-gray-700 flex items-center">
-                  <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
+                  <Phone className="w-4 h-4 mr-2" style={{ color: 'var(--text-muted)' }} />
                   {contact.phone}
                 </p>
               )}
@@ -278,15 +278,15 @@ const Contacts = () => {
             {contact.tags && contact.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {contact.tags.map((tag) => (
-                  <Badge key={tag} className="bg-blue-100 text-blue-800 text-xs">
+                  <span key={tag} className="badge text-xs" style={{ background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
                     {tag}
-                  </Badge>
+                  </span>
                 ))}
               </div>
             )}
 
             {contact.notes && (
-              <p className="text-sm text-gray-600 line-clamp-2">{contact.notes}</p>
+              <p className="text-sm line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{contact.notes}</p>
             )}
           </div>
         ))}
