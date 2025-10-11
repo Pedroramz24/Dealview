@@ -75,8 +75,8 @@ const Pipeline = () => {
   return (
     <div className="p-8 h-full" data-testid="pipeline-page">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Space Grotesk' }}>Pipeline</h1>
-        <p className="text-gray-600">Drag and drop deals between stages</p>
+        <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Pipeline</h1>
+        <p style={{ color: 'var(--text-secondary)' }}>Drag and drop deals between stages</p>
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
@@ -87,10 +87,10 @@ const Pipeline = () => {
 
             return (
               <div key={stage} className="flex flex-col">
-                <div className="bg-white rounded-lg shadow-lg p-4 mb-3">
-                  <h3 className="font-bold text-gray-900 mb-1" style={{ fontFamily: 'Space Grotesk' }}>{stage}</h3>
-                  <p className="text-sm text-gray-600">{stageDeals.length} deals</p>
-                  <p className="text-sm font-semibold text-blue-600">{formatPrice(stageValue)}</p>
+                <div className="glass-surface p-4 mb-3">
+                  <h3 className="font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{stage}</h3>
+                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{stageDeals.length} deals</p>
+                  <p className="text-sm font-semibold" style={{ color: 'var(--accent)' }}>{formatPrice(stageValue)}</p>
                 </div>
 
                 <Droppable droppableId={stage}>
