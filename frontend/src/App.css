@@ -297,6 +297,11 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Buttons */
+button {
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
 .btn-primary {
   background: var(--accent);
   color: white;
@@ -306,7 +311,7 @@ input:focus, textarea:focus, select:focus {
   border: 1px solid var(--accent);
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
 }
 
 .btn-primary:hover {
@@ -325,6 +330,7 @@ input:focus, textarea:focus, select:focus {
   backdrop-filter: blur(var(--glass-blur));
   cursor: pointer;
   transition: all var(--transition-fast);
+  font-family: var(--font-sans);
 }
 
 .btn-secondary:hover {
