@@ -53,31 +53,38 @@ const MapView = () => {
   }
 
   return (
-    <div className="h-full relative">
-      <div className="absolute top-4 left-4 right-4 z-[1000] flex justify-between items-center">
-        <div className="bg-white rounded-lg shadow-lg px-6 py-3">
-          <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Space Grotesk' }}>Property Map</h2>
-          <p className="text-sm text-gray-600">{deals.length} active deals</p>
+    <div className="h-full relative\" style={{ background: 'var(--bg-base)' }}>
+      {/* Floating glass header */}
+      <div className=\"absolute top-6 left-6 right-6 z-[1000] flex justify-between items-center\">
+        <div className=\"glass-surface px-6 py-4\">
+          <h2 className=\"text-2xl font-bold\" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Property Map</h2>
+          <p className=\"text-sm\" style={{ color: 'var(--text-secondary)' }}>{deals.length} active deals</p>
         </div>
-        <Button
+        <button
           onClick={() => navigate('/deals')}
-          className="bg-blue-600 hover:bg-blue-700 shadow-lg"
-          data-testid="view-all-deals-button"
+          data-testid=\"view-all-deals-button\"
+          className=\"glass-surface px-5 py-3\"
+          style={{
+            color: 'var(--accent)',
+            fontWeight: 500,
+            cursor: 'pointer',
+            transition: 'all 150ms'
+          }}
         >
           View All Deals
-        </Button>
+        </button>
       </div>
 
       <MapContainer
         center={[34.0522, -118.2437]}
         zoom={10}
         style={{ height: '100%', width: '100%' }}
-        data-testid="map-container"
+        data-testid=\"map-container\"
       >
         <TileLayer
-          url="https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
+          url=\"https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}\"
           subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
-          attribution='&copy; <a href="https://maps.google.com">Google Maps</a>'
+          attribution='&copy; <a href=\"https://maps.google.com\">Google Maps</a>'
         />
         
         {deals.map((deal) => (
@@ -89,27 +96,36 @@ const MapView = () => {
             }}
           >
             <Popup>
-              <div className="p-2" style={{ minWidth: '250px' }}>
+              <div style={{ minWidth: '250px', background: 'var(--glass-bg)', color: 'var(--text-primary)' }}>
                 {deal.primary_image_url && (
                   <img
                     src={deal.primary_image_url}
                     alt={deal.property_address}
-                    className="w-full h-32 object-cover rounded-lg mb-2"
+                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px' }}
                   />
                 )}
-                <h3 className="font-bold text-lg mb-1" style={{ fontFamily: 'Space Grotesk' }}>{deal.property_address}</h3>
-                <div className="space-y-1 text-sm">
-                  <p><span className="font-medium">Type:</span> {deal.asset_type}</p>
-                  <p><span className="font-medium">Price:</span> {formatPrice(deal.asking_price)}</p>
-                  <p><span className="font-medium">Stage:</span> <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">{deal.stage}</span></p>
+                <h3 style={{ fontWeight: 600, fontSize: '16px', marginBottom: '8px', color: 'var(--text-primary)' }}>{deal.property_address}</h3>
+                <div style={{ marginBottom: '12px', fontSize: '14px' }}>
+                  <p style={{ marginBottom: '4px', color: 'var(--text-secondary)' }}><span style={{ color: 'var(--text-primary)' }}>Type:</span> {deal.asset_type}</p>
+                  <p style={{ marginBottom: '4px', color: 'var(--text-secondary)' }}><span style={{ color: 'var(--text-primary)' }}>Price:</span> {formatPrice(deal.asking_price)}</p>
+                  <p style={{ color: 'var(--text-secondary)' }}><span style={{ color: 'var(--text-primary)' }}>Stage:</span> <span style={{ padding: '4px 8px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent)', borderRadius: '4px', fontSize: '12px' }}>{deal.stage}</span></p>
                 </div>
-                <Button
+                <button
                   onClick={() => navigate(`/deals/${deal.id}`)}
-                  className="w-full mt-2 bg-blue-600 hover:bg-blue-700"
-                  size="sm"
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    background: 'var(--accent)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
                 >
                   View Details
-                </Button>
+                </button>
               </div>
             </Popup>
           </Marker>
