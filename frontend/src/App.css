@@ -361,7 +361,7 @@ table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  font-family: var(--font-sans);
+  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
 }
 
 thead {
