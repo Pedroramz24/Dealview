@@ -115,10 +115,10 @@ const DealDetails = () => {
             Back to Deals
           </Button>
           <div>
-            <h1 className="text-4xl font-bold text-gray-900" style={{ fontFamily: 'Space Grotesk' }}>
+            <h1 className="text-4xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               {deal.property_address}
             </h1>
-            <p className="text-gray-600 mt-1">{deal.asset_type} • {deal.stage}</p>
+            <p style={{ color: 'var(--text-secondary)' }} className="mt-1">{deal.asset_type} • {deal.stage}</p>
           </div>
         </div>
         <Button onClick={handleShare} className="bg-blue-600 hover:bg-blue-700" data-testid="share-deal-button">
@@ -131,22 +131,22 @@ const DealDetails = () => {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Primary Image */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="glass-surface overflow-hidden">
             {deal.primary_image_url ? (
-              <img src={deal.primary_image_url} alt={deal.property_address} className="w-full h-96 object-cover" />
+              <img src={deal.primary_image_url} alt={deal.property_address} className="w-full h-96 object-cover rounded-t-lg" />
             ) : (
-              <div className="w-full h-96 bg-gray-200 flex items-center justify-center">
+              <div className="w-full h-96 flex items-center justify-center" style={{ background: 'var(--bg-elevated)' }}>
                 <div className="text-center">
-                  <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">No image uploaded</p>
+                  <Home className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
+                  <p style={{ color: 'var(--text-secondary)' }}>No image uploaded</p>
                 </div>
               </div>
             )}
             <div className="p-6">
               <Label htmlFor="image-upload" className="cursor-pointer">
-                <div className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors">
-                  <Upload className="w-5 h-5 mr-2 text-gray-600" />
-                  <span className="text-gray-600">Upload Property Image</span>
+                <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'var(--glass-border)' }}>
+                  <Upload className="w-5 h-5 mr-2" style={{ color: 'var(--text-secondary)' }} />
+                  <span style={{ color: 'var(--text-secondary)' }}>Upload Property Image</span>
                   <input
                     id="image-upload"
                     type="file"
@@ -162,37 +162,37 @@ const DealDetails = () => {
           </div>
 
           {/* Description */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Space Grotesk' }}>Description</h2>
-            <p className="text-gray-700 leading-relaxed">{deal.description || 'No description available.'}</p>
+          <div className="glass-surface p-6">
+            <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Description</h2>
+            <p style={{ color: 'var(--text-secondary)' }} className="leading-relaxed">{deal.description || 'No description available.'}</p>
           </div>
 
           {/* Property Facts */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Space Grotesk' }}>Property Facts</h2>
+          <div className="glass-surface p-6">
+            <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Property Facts</h2>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Building Size</p>
-                <p className="text-lg font-semibold text-gray-900">{deal.building_size ? `${deal.building_size.toLocaleString()} sq ft` : 'N/A'}</p>
+                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Building Size</p>
+                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.building_size ? `${deal.building_size.toLocaleString()} sq ft` : 'N/A'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Lot Size</p>
-                <p className="text-lg font-semibold text-gray-900">{deal.lot_size ? `${deal.lot_size.toLocaleString()} sq ft` : 'N/A'}</p>
+                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Lot Size</p>
+                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.lot_size ? `${deal.lot_size.toLocaleString()} sq ft` : 'N/A'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Lot Acres</p>
-                <p className="text-lg font-semibold text-gray-900">{deal.lot_acres ? `${deal.lot_acres.toLocaleString()} acres` : 'N/A'}</p>
+                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Lot Acres</p>
+                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.lot_acres ? `${deal.lot_acres.toLocaleString()} acres` : 'N/A'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Occupancy</p>
-                <p className="text-lg font-semibold text-gray-900">{deal.occupancy || 'N/A'}</p>
+                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Occupancy</p>
+                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.occupancy || 'N/A'}</p>
               </div>
             </div>
           </div>
 
           {/* Documents */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Space Grotesk' }}>Documents</h2>
+          <div className="glass-surface p-6">
+            <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Documents</h2>
             {deal.documents && deal.documents.length > 0 ? (
               <div className="space-y-2">
                 {deal.documents.map((doc, index) => (
@@ -201,20 +201,21 @@ const DealDetails = () => {
                     href={doc.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center p-3 border rounded-lg transition-colors"
+                    style={{ borderColor: 'var(--glass-border)', background: 'var(--bg-elevated)' }}
                   >
-                    <FileText className="w-5 h-5 text-blue-600 mr-3" />
-                    <span className="text-gray-900">{doc.name}</span>
+                    <FileText className="w-5 h-5 mr-3" style={{ color: 'var(--accent)' }} />
+                    <span style={{ color: 'var(--text-primary)' }}>{doc.name}</span>
                   </a>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 mb-4">No documents uploaded yet.</p>
+              <p style={{ color: 'var(--text-secondary)' }} className="mb-4">No documents uploaded yet.</p>
             )}
             <Label htmlFor="doc-upload" className="cursor-pointer mt-4 block">
-              <div className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors">
-                <Upload className="w-5 h-5 mr-2 text-gray-600" />
-                <span className="text-gray-600">Upload Document (OM, Survey, etc.)</span>
+              <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'var(--glass-border)' }}>
+                <Upload className="w-5 h-5 mr-2" style={{ color: 'var(--text-secondary)' }} />
+                <span style={{ color: 'var(--text-secondary)' }}>Upload Document (OM, Survey, etc.)</span>
                 <input
                   id="doc-upload"
                   type="file"
@@ -232,30 +233,30 @@ const DealDetails = () => {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Financials */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Space Grotesk' }}>Financials</h2>
+          <div className="glass-surface p-6">
+            <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Financials</h2>
             <div className="space-y-4">
-              <div className="pb-4 border-b border-gray-200">
+              <div className="pb-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                 <div className="flex items-center mb-2">
-                  <DollarSign className="w-5 h-5 text-blue-600 mr-2" />
-                  <p className="text-sm text-gray-600">Asking Price</p>
+                  <DollarSign className="w-5 h-5 mr-2" style={{ color: 'var(--accent)' }} />
+                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Asking Price</p>
                 </div>
-                <p className="text-3xl font-bold text-gray-900" data-testid="deal-asking-price">{formatPrice(deal.asking_price)}</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }} data-testid="deal-asking-price">{formatPrice(deal.asking_price)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Price per SF (Building)</p>
-                <p className="text-xl font-semibold text-gray-900">{calculatePricePerSF()}</p>
+                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Price per SF (Building)</p>
+                <p className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>{calculatePricePerSF()}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Price per Acre</p>
-                <p className="text-xl font-semibold text-gray-900">{calculatePricePerAcre()}</p>
+                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Price per Acre</p>
+                <p className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>{calculatePricePerAcre()}</p>
               </div>
             </div>
           </div>
 
           {/* Location Map */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Space Grotesk' }}>Location</h2>
+          <div className="glass-surface p-6">
+            <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Location</h2>
             <div className="h-64 rounded-lg overflow-hidden mb-3">
               <MapContainer
                 center={[deal.latitude, deal.longitude]}
@@ -271,15 +272,15 @@ const DealDetails = () => {
               </MapContainer>
             </div>
             <div className="flex items-start">
-              <MapPin className="w-5 h-5 text-gray-600 mr-2 mt-0.5" />
-              <p className="text-gray-700">{deal.property_address}</p>
+              <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'var(--text-secondary)' }} />
+              <p style={{ color: 'var(--text-secondary)' }}>{deal.property_address}</p>
             </div>
           </div>
 
           {/* Notes */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Space Grotesk' }}>Notes</h2>
-            <p className="text-gray-700 leading-relaxed">{deal.notes || 'No notes added yet.'}</p>
+          <div className="glass-surface p-6">
+            <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Notes</h2>
+            <p style={{ color: 'var(--text-secondary)' }} className="leading-relaxed">{deal.notes || 'No notes added yet.'}</p>
           </div>
         </div>
       </div>

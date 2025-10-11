@@ -50,13 +50,13 @@ const Team = () => {
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
-        return 'bg-red-100 text-red-800';
+        return { background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' };
       case 'agent':
-        return 'bg-blue-100 text-blue-800';
+        return { background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' };
       case 'readonly':
-        return 'bg-gray-100 text-gray-800';
+        return { background: 'var(--glass-bg)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' };
       default:
-        return 'bg-gray-100 text-gray-800';
+        return { background: 'var(--glass-bg)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' };
     }
   };
 
@@ -80,8 +80,8 @@ const Team = () => {
     <div className="p-8" data-testid="team-page">
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Space Grotesk' }}>Team</h1>
-          <p className="text-gray-600">{team.length} team members</p>
+          <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Team</h1>
+          <p style={{ color: 'var(--text-secondary)' }}>{team.length} team members</p>
         </div>
         <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
           <DialogTrigger asChild>
@@ -118,7 +118,7 @@ const Team = () => {
                     <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                   Read Only: View deals, contacts, and dashboard only
                 </p>
               </div>
@@ -132,27 +132,27 @@ const Team = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {team.map((member) => (
-          <div key={member.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow" data-testid={`team-member-${member.id}`}>
+          <div key={member.id} className="team-card" data-testid={`team-member-${member.id}`}>
             <div className="flex items-start justify-between mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' }}>
                 {member.full_name.charAt(0).toUpperCase()}
               </div>
-              <Badge className={getRoleBadgeColor(member.role)}>
+              <span className="badge" style={getRoleBadgeColor(member.role)}>
                 {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
-              </Badge>
+              </span>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-1" style={{ fontFamily: 'Space Grotesk' }}>
+            <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               {member.full_name}
             </h3>
 
-            <div className="flex items-center text-sm text-gray-600 mb-4">
+            <div className="flex items-center text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
               <Mail className="w-4 h-4 mr-2" />
               {member.email}
             </div>
 
-            <div className="pt-4 border-t border-gray-200">
-              <p className="text-xs text-gray-500">Member since {formatDate(member.created_at)}</p>
+            <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Member since {formatDate(member.created_at)}</p>
             </div>
           </div>
         ))}
