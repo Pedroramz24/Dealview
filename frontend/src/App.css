@@ -277,14 +277,16 @@ input, textarea, select {
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   padding: var(--space-sm) var(--space-md);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   font-size: 15px;
+  font-weight: 400;
   backdrop-filter: blur(var(--glass-blur));
   transition: all var(--transition-fast);
 }
 
 input::placeholder, textarea::placeholder {
   color: var(--text-muted);
+  font-weight: 400;
 }
 
 input:focus, textarea:focus, select:focus {
