@@ -118,8 +118,8 @@ const Contacts = () => {
     <div className="p-8" data-testid="contacts-page">
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Space Grotesk' }}>Contacts</h1>
-          <p className="text-gray-600">{filteredContacts.length} contacts found</p>
+          <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Contacts</h1>
+          <p style={{ color: 'var(--text-secondary)' }}>{filteredContacts.length} contacts found</p>
         </div>
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
