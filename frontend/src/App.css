@@ -314,7 +314,7 @@ button {
   border: 1px solid var(--accent);
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-family: var(--font-sans);
+  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
 }
 
 .btn-primary:hover {
