@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import 'geist/font/sans/style.css';
-import 'geist/font/mono/style.css';
+import './geist-fonts.css';
 import "@/index.css";
 import App from "@/App";
 import { Toaster } from 'sonner';
