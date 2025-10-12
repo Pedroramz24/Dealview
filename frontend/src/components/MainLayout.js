@@ -28,20 +28,21 @@ const MainLayout = () => {
         background: 'var(--bg-card)',
         borderRight: '1px solid var(--border-subtle)'
       }}>
-        {/* Brand Slot - Compact Fixed Height */}
+        {/* Brand Slot - Tight Fit */}
         <div style={{ 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '20px 16px',
+          padding: '8px 8px',
           borderBottom: '1px solid var(--border-subtle)'
         }}>
           <img 
             src="/dealview-logo.svg" 
             alt="Dealview"
             style={{ 
-              height: '48px',
-              width: 'auto',
+              height: '70px',
+              width: '95%',
+              maxWidth: '240px',
               objectFit: 'contain',
               flexShrink: 0,
               display: 'block'
