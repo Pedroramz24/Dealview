@@ -56,8 +56,8 @@ const Login = () => {
             <img 
               src="/dealview-logo-white.png" 
               alt="Dealview" 
-              className="mx-auto mb-3"
-              style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
+              className="mx-auto mb-4"
+              style={{ height: '80px', width: 'auto', objectFit: 'contain' }}
             />
             <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Commercial Real Estate CRM</p>
           </div>
