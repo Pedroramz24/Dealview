@@ -32,8 +32,8 @@ const MainLayout = () => {
         <div style={{ 
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'flex-start',
-          padding: '0 12px',
+          justifyContent: 'center',
+          padding: '16px 12px',
           height: '56px',
           borderBottom: '1px solid var(--border-subtle)'
         }}>
@@ -41,11 +41,11 @@ const MainLayout = () => {
             src="/dealview-logo.svg" 
             alt="Dealview"
             style={{ 
-              maxHeight: '24px',
-              height: 'clamp(18px, 2.2vh, 24px)',
+              height: '24px',
               width: 'auto',
               objectFit: 'contain',
-              flexShrink: 0
+              flexShrink: 0,
+              display: 'block'
             }}
           />
         </div>
