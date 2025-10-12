@@ -52,12 +52,15 @@ const Login = () => {
 
       <div className="w-full max-w-md relative z-10">
         <div className="glass-surface p-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 flex flex-col items-center">
             <img 
-              src="/dealview-logo-white.png" 
+              src="/dealview-logo.svg" 
               alt="Dealview" 
-              className="mx-auto mb-4"
-              style={{ height: '240px', width: 'auto', objectFit: 'contain' }}
+              className="mb-4 w-auto object-contain"
+              style={{ 
+                maxHeight: '80px',
+                height: 'clamp(60px, 8vh, 80px)'
+              }}
             />
             <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Commercial Real Estate CRM</p>
           </div>
