@@ -3,18 +3,20 @@
 @tailwind utilities;
 
 * {
-    font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
 }
 
 body {
     margin: 0;
-    font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: #000000 !important;
+    color: #FFFFFF !important;
 }
 
 code, pre, kbd {
-    font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, 'Courier New', monospace !important;
+    font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, monospace !important;
 }
 
 
