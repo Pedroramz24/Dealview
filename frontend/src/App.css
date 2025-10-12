@@ -195,19 +195,21 @@ code, kbd, pre, .mono {
   background: var(--bg-hover);
 }
 
-/* Sidebar Navigation - Vercel Style */
+/* Sidebar Navigation - Compact Vercel Style */
 .sidebar-nav {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 0 12px;
+  height: 56px;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   transition: all var(--transition-fast);
   cursor: pointer;
-  font-family: 'Inter', -apple-system, BlinkMacSystemBox, system-ui, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
   font-weight: 500;
   font-size: 14px;
   text-decoration: none;
+  margin-bottom: 2px;
 }
 
 .sidebar-nav:hover {
