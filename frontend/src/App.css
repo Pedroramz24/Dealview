@@ -264,46 +264,44 @@ input:focus, textarea:focus, select:focus {
   background: var(--bg-card);
 }
 
-/* Buttons */
+/* Buttons - Vercel Style */
 button {
-  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
   font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: white;
-  padding: 10px 20px;
+  background: var(--text-primary);
+  color: var(--bg-base);
+  padding: 8px 16px;
   border-radius: var(--radius-sm);
   font-weight: 500;
-  border: 1px solid var(--accent);
+  border: none;
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px var(--accent-glow);
+  background: var(--text-secondary);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  padding: 10px 20px;
+  border: 1px solid var(--border-subtle);
+  padding: 8px 16px;
   border-radius: var(--radius-sm);
   font-weight: 500;
-  backdrop-filter: blur(var(--glass-blur));
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
 }
 
 .btn-secondary:hover {
   background: var(--bg-hover);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--border-default);
 }
 
 /* Loading Spinner */
