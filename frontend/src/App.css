@@ -204,7 +204,7 @@ code, kbd, pre, .mono {
   color: var(--text-secondary);
   transition: all var(--transition-fast);
   cursor: pointer;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemBox, system-ui, sans-serif !important;
   font-weight: 500;
   font-size: 14px;
   text-decoration: none;
@@ -218,6 +218,19 @@ code, kbd, pre, .mono {
 .sidebar-nav.active {
   background: var(--bg-hover);
   color: var(--text-primary);
+}
+
+/* Logo Responsive Sizing */
+@media (max-width: 768px) {
+  .logo-responsive {
+    height: clamp(16px, 2vh, 22px) !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .logo-responsive {
+    height: clamp(18px, 2.2vh, 26px) !important;
+  }
 }
 
 /* Form Elements - Vercel Style */
