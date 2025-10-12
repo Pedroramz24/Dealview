@@ -33,14 +33,14 @@ const MainLayout = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '12px 8px',
+          padding: '20px 8px 12px 8px',
           borderBottom: '1px solid var(--border-subtle)'
         }}>
           <img 
             src="/dealview-logo.svg" 
             alt="Dealview"
             style={{ 
-              height: '35px',
+              height: '26px',
               width: 'auto',
               maxWidth: '90%',
               objectFit: 'contain',
