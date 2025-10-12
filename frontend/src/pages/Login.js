@@ -56,10 +56,11 @@ const Login = () => {
             <img 
               src="/dealview-logo.svg" 
               alt="Dealview" 
-              className="mb-4 w-auto object-contain"
+              className="mb-6"
               style={{ 
-                maxHeight: '80px',
-                height: 'clamp(60px, 8vh, 80px)'
+                height: '120px',
+                width: 'auto',
+                objectFit: 'contain'
               }}
             />
             <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Commercial Real Estate CRM</p>
