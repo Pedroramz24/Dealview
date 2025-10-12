@@ -56,14 +56,18 @@ const PublicShare = () => {
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-base)' }} data-testid="public-share-page">
       {/* Header */}
-      <div className="glass-surface py-6" style={{ borderRadius: 0 }}>
-        <div className="max-w-7xl mx-auto px-8 flex items-center">
+      <div className="glass-surface py-3 md:py-4" style={{ borderRadius: 0 }}>
+        <div className="max-w-7xl mx-auto px-8 flex items-center gap-4">
           <img 
-            src="/dealview-logo-white.png" 
-            alt="Dealview" 
-            style={{ height: '144px', width: 'auto', objectFit: 'contain' }}
+            src="/dealview-logo.svg" 
+            alt="Dealview"
+            className="w-auto object-contain shrink-0"
+            style={{ 
+              maxHeight: '32px',
+              height: 'clamp(20px, 3vh, 32px)'
+            }}
           />
-          <p style={{ color: 'var(--text-secondary)', marginLeft: '16px' }}>Property Listing</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Property Listing</p>
         </div>
       </div>
 
