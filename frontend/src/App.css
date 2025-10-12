@@ -150,22 +150,20 @@ code, kbd, pre, .mono {
   border: 1px solid var(--glass-border);
 }
 
-/* Cards */
+/* Cards - Vercel Style */
 .deal-card, .contact-card, .team-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(var(--glass-blur));
-  padding: var(--space-md);
+  padding: var(--space-lg);
   transition: all var(--transition-base);
   cursor: pointer;
 }
 
 .deal-card:hover, .contact-card:hover, .team-card:hover {
   background: var(--bg-hover);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
 }
 
 /* Pipeline */
