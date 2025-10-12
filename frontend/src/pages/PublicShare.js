@@ -61,7 +61,7 @@ const PublicShare = () => {
           <img 
             src="/dealview-logo-white.png" 
             alt="Dealview" 
-            style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+            style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
           />
           <p style={{ color: 'var(--text-secondary)', marginLeft: '16px' }}>Property Listing</p>
         </div>
