@@ -29,11 +29,15 @@ const MainLayout = () => {
         borderRight: '1px solid var(--border-subtle)',
         backdropFilter: 'blur(16px)'
       }}>
-        <div className="p-6" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        <div className="flex items-center px-3 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <img 
-            src="/dealview-logo-white.png" 
-            alt="Dealview" 
-            style={{ height: '168px', width: 'auto', objectFit: 'contain' }}
+            src="/dealview-logo.svg" 
+            alt="Dealview"
+            className="h-5 md:h-6 lg:h-7 w-auto object-contain shrink-0"
+            style={{ 
+              maxHeight: '28px',
+              height: 'clamp(18px, 2.2vh, 26px)'
+            }}
           />
         </div>
 
