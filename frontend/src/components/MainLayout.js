@@ -30,8 +30,13 @@ const MainLayout = () => {
         backdropFilter: 'blur(16px)'
       }}>
         <div className="p-6" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Pedro Armando</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{user?.full_name}</p>
+          <img 
+            src="/dealview-logo-white.png" 
+            alt="Dealview" 
+            className="h-8 mb-3"
+            style={{ width: 'auto', objectFit: 'contain' }}
+          />
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{user?.full_name}</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
