@@ -33,10 +33,8 @@ const MainLayout = () => {
           <img 
             src="/dealview-logo-white.png" 
             alt="Dealview" 
-            className="mb-4"
-            style={{ height: '56px', width: 'auto', objectFit: 'contain' }}
+            style={{ height: '168px', width: 'auto', objectFit: 'contain' }}
           />
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{user?.full_name}</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
