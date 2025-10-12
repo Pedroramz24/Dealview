@@ -53,7 +53,12 @@ const Login = () => {
       <div className="w-full max-w-md relative z-10">
         <div className="glass-surface p-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Pedro Armando</h1>
+            <img 
+              src="/dealview-logo-white.png" 
+              alt="Dealview" 
+              className="mx-auto mb-3"
+              style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
+            />
             <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Commercial Real Estate CRM</p>
           </div>
 
