@@ -33,8 +33,8 @@ const MainLayout = () => {
           <img 
             src="/dealview-logo-white.png" 
             alt="Dealview" 
-            className="h-8 mb-3"
-            style={{ width: 'auto', objectFit: 'contain' }}
+            className="mb-4"
+            style={{ height: '56px', width: 'auto', objectFit: 'contain' }}
           />
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{user?.full_name}</p>
         </div>
