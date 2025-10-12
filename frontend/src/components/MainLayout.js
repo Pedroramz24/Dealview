@@ -33,7 +33,7 @@ const MainLayout = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '20px 8px 12px 8px',
+          padding: '24px 8px',
           borderBottom: '1px solid var(--border-subtle)'
         }}>
           <img 
