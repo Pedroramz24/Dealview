@@ -57,9 +57,13 @@ const PublicShare = () => {
     <div className="min-h-screen" style={{ background: 'var(--bg-base)' }} data-testid="public-share-page">
       {/* Header */}
       <div className="glass-surface py-6" style={{ borderRadius: 0 }}>
-        <div className="max-w-7xl mx-auto px-8">
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Pedro Armando CRM</h1>
-          <p style={{ color: 'var(--text-secondary)' }} className="mt-1">Property Listing</p>
+        <div className="max-w-7xl mx-auto px-8 flex items-center">
+          <img 
+            src="/dealview-logo-white.png" 
+            alt="Dealview" 
+            style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+          />
+          <p style={{ color: 'var(--text-secondary)', marginLeft: '16px' }}>Property Listing</p>
         </div>
       </div>
 
