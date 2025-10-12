@@ -25,36 +25,49 @@ const MainLayout = () => {
     <div className="flex h-screen" style={{ background: 'var(--bg-base)' }}>
       {/* Sidebar */}
       <div className="w-64 flex flex-col" style={{
-        background: 'var(--glass-bg)',
-        borderRight: '1px solid var(--border-subtle)',
-        backdropFilter: 'blur(16px)'
+        background: 'var(--bg-card)',
+        borderRight: '1px solid var(--border-subtle)'
       }}>
-        <div className="flex items-center px-6 py-6" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        {/* Brand Slot - Compact Fixed Height */}
+        <div style={{ 
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          padding: '0 12px',
+          height: '56px',
+          borderBottom: '1px solid var(--border-subtle)'
+        }}>
           <img 
             src="/dealview-logo.svg" 
             alt="Dealview"
-            className="w-auto"
             style={{ 
-              height: '72px',
+              maxHeight: '24px',
+              height: 'clamp(18px, 2.2vh, 24px)',
               width: 'auto',
-              objectFit: 'contain'
+              objectFit: 'contain',
+              flexShrink: 0
             }}
           />
         </div>
 
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 px-2 py-2">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               end={item.exact}
               className={({ isActive }) =>
-                `sidebar-nav flex items-center space-x-3 ${isActive ? 'active' : ''}`
+                `sidebar-nav ${isActive ? 'active' : ''}`
               }
-              data-testid={`nav-${item.label.toLowerCase()}`}
+              style={{ 
+                height: '56px',
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '2px'
+              }}
             >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
+              <item.icon className="w-5 h-5 mr-3" />
+              {item.label}
             </NavLink>
           ))}
         </nav>
