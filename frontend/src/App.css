@@ -204,39 +204,18 @@ code, kbd, pre, .mono {
   border-color: rgba(255, 255, 255, 0.16);
 }
 
-/* Stat Cards */
+/* Stat Cards - Vercel Style */
 .stat-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-md);
   transition: all var(--transition-base);
-  position: relative;
-  overflow: hidden;
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  opacity: 0;
-  transition: opacity var(--transition-base);
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(255, 255, 255, 0.16);
-}
-
-.stat-card:hover::before {
-  opacity: 1;
+  border-color: var(--border-default);
+  background: var(--bg-hover);
 }
 
 /* Sidebar Navigation */
