@@ -26,6 +26,10 @@ code, pre, kbd {
 }
 
 /* MapLibre Popup Dark Theme */
+.maplibregl-popup {
+    z-index: 1000 !important;
+}
+
 .maplibregl-popup-content {
     background: #1A1A1A !important;
     color: #FFFFFF !important;
@@ -33,10 +37,35 @@ code, pre, kbd {
     border-radius: 12px !important;
     border: 1px solid rgba(255,255,255,0.15) !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    max-width: none !important;
 }
 
 .maplibregl-popup-tip {
     border-top-color: #1A1A1A !important;
+}
+
+.maplibregl-popup-close-button {
+    display: none !important;
+}
+
+/* Responsive containers */
+@media (max-width: 768px) {
+    .maplibregl-popup-content {
+        width: 90vw !important;
+        max-width: 300px !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .maplibregl-popup-content {
+        width: 320px !important;
+    }
+}
+
+@media (min-width: 1025px) {
+    .maplibregl-popup-content {
+        width: 340px !important;
+    }
 }
 
 /* Premium Glass Design System */
