@@ -106,77 +106,70 @@ const DealDetails = () => {
   if (!deal) return null;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto" data-testid="deal-details-page">
-      {/* Premium Header with Address and Share */}
-      <div className="mb-8">
-        <div className="premium-glass-card" style={{
-          padding: '28px 32px',
-          borderRadius: '16px',
-          border: '1px solid rgba(255,255,255,0.15)',
-          backdropFilter: 'blur(12px)',
-          backgroundColor: 'rgba(255,255,255,0.05)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.4)'
-        }}>
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <Button onClick={() => navigate('/deals')} variant="outline" data-testid="back-to-deals" style={{
-                background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: 'rgba(255,255,255,0.6)',
-                marginBottom: '16px'
-              }}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Deals
-              </Button>
-              <h1 className="text-4xl font-bold" style={{ color: '#FFFFFF', letterSpacing: '-0.02em', marginBottom: '8px' }}>
-                {deal.property_address}
-              </h1>
-              <div className="flex items-center gap-4">
-                <span style={{ 
-                  color: 'rgba(255,255,255,0.6)', 
-                  fontSize: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}>
-                  <MapPin className="w-4 h-4" />
-                  {deal.asset_type}
-                </span>
-                <span style={{
-                  padding: '6px 16px',
-                  background: 'rgba(0, 184, 212, 0.15)',
-                  color: '#00b8d4',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  border: '1px solid rgba(0, 184, 212, 0.3)'
-                }}>
-                  {deal.stage}
-                </span>
-              </div>
-            </div>
-            <Button onClick={handleShare} data-testid="share-deal-button" style={{
-              background: '#00b8d4',
-              color: '#000000',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              border: 'none',
-              fontWeight: '600',
-              fontSize: '14px',
-              boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
+    <div style={{ background: '#000000', minHeight: '100vh' }}>
+      {/* Full-Width Header */}
+      <div style={{
+        background: 'rgba(255,255,255,0.03)',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        padding: '32px 0'
+      }} data-testid="deal-details-page">
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
+          {/* Back Button and Tag Row */}
+          <div className="flex items-center justify-between mb-4">
+            <Button onClick={() => navigate('/deals')} variant="outline" data-testid="back-to-deals" style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: 'rgba(255,255,255,0.6)',
+              padding: '8px 16px',
+              borderRadius: '6px'
             }}>
-              <Share2 className="w-4 h-4 mr-2" />
-              Share Property
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              BACK TO PROPERTIES
             </Button>
+            <span style={{
+              padding: '8px 20px',
+              background: 'rgba(255,255,255,0.05)',
+              color: 'rgba(255,255,255,0.6)',
+              borderRadius: '6px',
+              fontSize: '13px',
+              fontWeight: '500',
+              border: '1px solid rgba(255,255,255,0.1)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              {deal.asset_type}
+            </span>
           </div>
+
+          {/* Subtitle */}
+          <p style={{ 
+            color: 'rgba(255,255,255,0.4)', 
+            fontSize: '13px',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            marginBottom: '12px'
+          }}>
+            COMMERCIAL REAL ESTATE • PROPERTY DETAILS
+          </p>
+
+          {/* Property Address - Full Width */}
+          <h1 style={{ 
+            color: '#FFFFFF', 
+            fontSize: '48px',
+            fontWeight: '700',
+            letterSpacing: '-0.03em',
+            marginBottom: '0'
+          }}>
+            {deal.property_address}
+          </h1>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Main Content Area */}
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Image Gallery */}
+          <div className="lg:col-span-2 space-y-6">
           {/* Primary Image */}
           <div className="glass-surface overflow-hidden">
             {deal.primary_image_url ? (
