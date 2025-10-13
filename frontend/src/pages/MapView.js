@@ -74,8 +74,8 @@ const MapView = () => {
       </div>
 
       <MapContainer
-        center={[34.0522, -118.2437]}
-        zoom={10}
+        center={[29.4241, -98.4936]}
+        zoom={12}
         style={{ height: '100%', width: '100%' }}
         data-testid="map-container"
       >
