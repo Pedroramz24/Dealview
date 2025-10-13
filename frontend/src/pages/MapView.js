@@ -104,7 +104,7 @@ const MapView = () => {
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         style={{ width: '100%', height: '100%' }}
-        mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+        mapStyle={mapStyles[mapStyle]}
         data-testid="map-container"
       >
         <NavigationControl position="top-right" />
