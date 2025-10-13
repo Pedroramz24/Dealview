@@ -32,10 +32,6 @@ const MapView = () => {
           tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
           tileSize: 256,
           attribution: '&copy; Esri'
-        },
-        'carto-labels': {
-          type: 'vector',
-          tiles: ['https://basemaps.cartocdn.com/gl/voyager-gl-style/vector.json']
         }
       },
       layers: [
@@ -48,7 +44,26 @@ const MapView = () => {
         }
       ]
     },
-    street: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+    street: {
+      version: 8,
+      sources: {
+        'carto-dark': {
+          type: 'raster',
+          tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '&copy; OpenStreetMap contributors, &copy; CARTO'
+        }
+      },
+      layers: [
+        {
+          id: 'dark-map',
+          type: 'raster',
+          source: 'carto-dark',
+          minzoom: 0,
+          maxzoom: 22
+        }
+      ]
+    }
   };
 
   useEffect(() => {
