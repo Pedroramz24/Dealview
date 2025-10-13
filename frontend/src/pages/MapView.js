@@ -134,12 +134,46 @@ const MapView = () => {
       <Map
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
+        onClick={handleMapClick}
         style={{ width: '100%', height: '100%' }}
         mapStyle={mapStyles[mapStyle]}
         data-testid="map-container"
+        ref={mapRef}
+        interactiveLayerIds={showParcels ? ['parcels-fill', 'parcels-line'] : []}
       >
         <NavigationControl position="top-right" />
         <ScaleControl />
+
+        {/* Regrid Parcel Layer */}
+        {showParcels && (
+          <Source
+            id="parcels"
+            type="vector"
+            tiles={[`${API}/parcels/tiles/{z}/{x}/{y}`]}
+            minzoom={12}
+            maxzoom={18}
+          >
+            <Layer
+              id="parcels-fill"
+              type="fill"
+              source-layer="parcels"
+              paint={{
+                'fill-color': 'rgba(59, 130, 246, 0.1)',
+                'fill-outline-color': 'rgba(59, 130, 246, 0.8)'
+              }}
+            />
+            <Layer
+              id="parcels-line"
+              type="line"
+              source-layer="parcels"
+              paint={{
+                'line-color': '#3B82F6',
+                'line-width': 1.5,
+                'line-opacity': 0.8
+              }}
+            />
+          </Source>
+        )}
 
         {deals.map((deal) => (
           <Marker
