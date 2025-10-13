@@ -123,7 +123,19 @@ const Pipeline = () => {
                               <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
                                 {deal.property_address}
                               </h4>
-                              <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>{deal.asset_type}</p>
+                              <span style={{ 
+                                padding: '3px 10px',
+                                background: getAssetTypeColor(deal.asset_type).bg,
+                                color: getAssetTypeColor(deal.asset_type).color,
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                fontWeight: '500',
+                                border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
+                                display: 'inline-block',
+                                marginBottom: '8px'
+                              }}>
+                                {deal.asset_type}
+                              </span>
                               <p className="text-sm font-bold" style={{ color: 'var(--accent)' }}>{formatPrice(deal.asking_price)}</p>
                             </div>
                           )}
