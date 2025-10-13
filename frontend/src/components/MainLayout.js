@@ -55,66 +55,72 @@ const MainLayout = () => {
         boxShadow: '4px 0 16px rgba(0,0,0,0.3)'
       }}>
         {/* Brand Slot - Tight Fit */}
-        <div style={{ 
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '24px 8px',
-          borderBottom: '1px solid var(--border-subtle)'
-        }}>
-          <img 
-            src="/dealview-logo.svg" 
-            alt="Dealview"
-            style={{ 
-              height: '26px',
-              width: 'auto',
-              maxWidth: '90%',
-              objectFit: 'contain',
-              flexShrink: 0,
-              display: 'block'
-            }}
-          />
-        </div>
-
-        <nav className="flex-1 px-2 py-2">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.exact}
-              className={({ isActive }) =>
-                `sidebar-nav ${isActive ? 'active' : ''}`
-              }
+        {sidebarOpen && (
+          <div style={{ 
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px 8px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <img 
+              src="/dealview-logo.svg" 
+              alt="Dealview"
               style={{ 
-                height: '56px',
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: '2px'
+                height: '26px',
+                width: 'auto',
+                maxWidth: '90%',
+                objectFit: 'contain',
+                flexShrink: 0,
+                display: 'block'
               }}
-            >
-              <item.icon className="w-5 h-5 mr-3" />
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
+            />
+          </div>
+        )}
 
-        <div className="p-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-          <button
-            onClick={handleLogout}
-            data-testid="logout-button"
-            className="w-full flex items-center justify-start px-4 py-3 rounded-lg"
-            style={{
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--glass-border)',
-              color: 'var(--text-secondary)',
-              transition: 'all 150ms',
-              cursor: 'pointer'
-            }}
-          >
-            <LogOut className="w-5 h-5 mr-3" />
-            Sign Out
-          </button>
-        </div>
+        {sidebarOpen && (
+          <>
+            <nav className="flex-1 px-2 py-2">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={item.exact}
+                  className={({ isActive }) =>
+                    `sidebar-nav ${isActive ? 'active' : ''}`
+                  }
+                  style={{ 
+                    height: '56px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '2px'
+                  }}
+                >
+                  <item.icon className="w-5 h-5 mr-3" />
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+              <button
+                onClick={handleLogout}
+                data-testid="logout-button"
+                className="w-full flex items-center justify-start px-4 py-3 rounded-lg"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: 'rgba(255,255,255,0.6)',
+                  transition: 'all 150ms',
+                  cursor: 'pointer'
+                }}
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                Sign Out
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Main content */}
