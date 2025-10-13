@@ -258,6 +258,10 @@ const MapView = () => {
       <Map
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
+        onDragStart={() => {
+          setSelectedDeal(null);
+          setSelectedParcel(null);
+        }}
         onClick={handleMapClick}
         style={{ width: '100%', height: '100%', willChange: 'transform' }}
         mapStyle={mapStyles[mapStyle]}
