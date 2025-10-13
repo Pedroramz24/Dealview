@@ -412,6 +412,7 @@ const DealDetails = () => {
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 };
