@@ -273,6 +273,8 @@ const MapView = () => {
         dragRotate={false}
         touchZoomRotate={false}
         dragPan={{ inertia: 500 }}
+        maxZoom={19}
+        className={mapStyle === 'street' ? 'custom-dark-map' : ''}
       >
         <NavigationControl position="top-right" />
         <ScaleControl />
