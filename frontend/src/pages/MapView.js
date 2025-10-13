@@ -521,15 +521,17 @@ const MapView = () => {
               padding: '20px',
               background: '#1A1A1A',
               borderRadius: '12px',
-              position: 'relative'
+              position: 'relative',
+              border: '1px solid rgba(255,255,255,0.15)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)'
             }}>
-              {/* Custom close button - top left */}
+              {/* Custom close button - top right */}
               <button
                 onClick={() => setSelectedParcel(null)}
                 style={{
                   position: 'absolute',
-                  top: '12px',
-                  left: '12px',
+                  top: '10px',
+                  right: '10px',
                   width: '28px',
                   height: '28px',
                   borderRadius: '50%',
