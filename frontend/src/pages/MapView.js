@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Map, { Marker, Popup, NavigationControl, ScaleControl } from 'react-map-gl/maplibre';
+import Map, { Marker, Popup, NavigationControl, ScaleControl, Source, Layer } from 'react-map-gl/maplibre';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API } from '../App';
