@@ -26,10 +26,25 @@ const DealsList = () => {
     asset_type: 'Office',
     asking_price: '',
     building_size: '',
-    latitude: 34.0522,
-    longitude: -118.2437,
-    description: '',
+    latitude: 29.4241,
+    longitude: -98.4936,
+    notes: '',
+    stage: 'New',
+    primary_image_url: null,
+    documents: []
   });
+
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  
+  // Auto-calculate price per SF
+  const calculatePricePerSF = () => {
+    if (newDeal.asking_price && newDeal.building_size) {
+      const pricePerSF = parseFloat(newDeal.asking_price) / parseFloat(newDeal.building_size);
+      return pricePerSF.toFixed(2);
+    }
+    return 'N/A';
+  };
 
   useEffect(() => {
     fetchDeals();
