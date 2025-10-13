@@ -6,17 +6,15 @@ import { API } from '../App';
 import { toast } from 'sonner';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Fix Leaflet default marker icon issue
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
-
 const MapView = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDeal, setSelectedDeal] = useState(null);
+  const [viewState, setViewState] = useState({
+    longitude: -98.4936,
+    latitude: 29.4241,
+    zoom: 11.5
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
