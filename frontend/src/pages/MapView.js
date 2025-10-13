@@ -262,21 +262,21 @@ const MapView = () => {
         </button>
       </div>
 
-      <Map
-        {...viewState}
-        onMove={evt => setViewState(evt.viewState)}
-        onClick={handleMapClick}
-        style={{ width: '100%', height: '100%', willChange: 'transform' }}
-        mapStyle={mapStyles[mapStyle]}
-        data-testid="map-container"
-        ref={mapRef}
-        interactiveLayerIds={showParcels ? ['parcels-fill', 'parcels-line'] : []}
-        dragRotate={false}
-        touchZoomRotate={false}
-        dragPan={{ inertia: 500 }}
-        maxZoom={19}
-        className={mapStyle === 'street' ? 'custom-dark-map' : ''}
-      >
+      <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
+        <Map
+          {...viewState}
+          onMove={evt => setViewState(evt.viewState)}
+          onClick={handleMapClick}
+          style={{ width: '100%', height: '100%', willChange: 'transform' }}
+          mapStyle={mapStyles[mapStyle]}
+          data-testid="map-container"
+          ref={mapRef}
+          interactiveLayerIds={showParcels ? ['parcels-fill', 'parcels-line'] : []}
+          dragRotate={false}
+          touchZoomRotate={false}
+          dragPan={{ inertia: 500 }}
+          maxZoom={19}
+        >
         <NavigationControl position="top-right" />
         <ScaleControl />
 
