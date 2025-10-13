@@ -262,27 +262,53 @@ const MapView = () => {
             key={deal.id}
             longitude={deal.longitude}
             latitude={deal.latitude}
-            anchor="bottom"
+            anchor="center"
             onClick={e => {
               e.originalEvent.stopPropagation();
               setSelectedDeal(deal);
             }}
           >
-            <div style={{
-              width: '32px',
-              height: '32px',
-              background: 'var(--accent)',
-              borderRadius: '50% 50% 50% 0',
-              transform: 'rotate(-45deg)',
-              border: '2px solid white',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+            <div className="map-marker" style={{
+              position: 'relative',
+              width: '48px',
+              height: '48px',
               cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
+              transition: 'transform 0.3s ease'
             }}>
-              <div style={{ transform: 'rotate(45deg)', color: 'white', fontSize: '16px', fontWeight: 'bold' }}>
-                $
+              {/* Pulsing outer ring */}
+              <div className="marker-pulse" style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                background: 'rgba(0, 184, 212, 0.3)',
+                animation: 'pulse 2s ease-out infinite'
+              }}></div>
+              {/* Main marker circle */}
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: '#00b8d4',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.3s ease'
+              }}>
+                {/* Center white dot */}
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: '#ffffff'
+                }}></div>
               </div>
             </div>
           </Marker>
