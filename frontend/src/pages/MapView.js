@@ -79,15 +79,21 @@ const MapView = () => {
         style={{ height: '100%', width: '100%' }}
         data-testid="map-container"
       >
-        {/* Esri Hybrid Map with illustreets styling */}
-        <TileLayer
-          url="https://tiles.stadiamaps.com/tiles/stamen_toner_hybrid/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-          maxZoom={20}
-        />
+        {/* Esri Satellite Imagery Base */}
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+          attribution='&copy; Esri'
+          maxZoom={19}
+        />
+        {/* Esri Reference Overlay - Street Names and Labels */}
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
+          attribution='&copy; Esri'
+          maxZoom={19}
+        />
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+          attribution='&copy; Esri'
           maxZoom={19}
         />
         
