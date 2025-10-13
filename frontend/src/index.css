@@ -19,6 +19,23 @@ code, pre, kbd {
     font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, monospace !important;
 }
 
+/* Leaflet Map Container - Dark Background */
+.leaflet-container {
+    background: #0a0a0b !important;
+    color: #f8fafc !important;
+}
+
+/* Leaflet Dark Map Filter */
+.custom-dark-map .leaflet-tile-pane {
+    filter: brightness(0.8) contrast(1.1) saturate(0.9) hue-rotate(200deg) invert(1) !important;
+}
+
+/* Fix inverted Leaflet controls */
+.custom-dark-map .leaflet-control-zoom,
+.custom-dark-map .leaflet-control-attribution {
+    filter: invert(1) hue-rotate(180deg) !important;
+}
+
 /* MapLibre Map Container - Dark Background */
 .maplibregl-map {
     background: #0a0a0b !important;
