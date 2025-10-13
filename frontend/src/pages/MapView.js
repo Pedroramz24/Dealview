@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useState, useEffect, useRef } from 'react';
+import Map, { Marker, Popup, NavigationControl, ScaleControl } from 'react-map-gl';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API } from '../App';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { toast } from 'sonner';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Fix Leaflet default marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
