@@ -235,18 +235,24 @@ const MapView = () => {
         </button>
         <button
           onClick={() => navigate('/deals')}
-            data-testid="view-all-deals-button"
-            className="glass-surface px-5 py-3"
-            style={{
-              color: 'var(--accent)',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'all 150ms'
-            }}
-          >
-            View All Deals
-          </button>
-        </div>
+          data-testid="view-all-deals-button"
+          className="premium-glass-btn"
+          style={{
+            color: '#00b8d4',
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            fontWeight: 500,
+            cursor: 'pointer',
+            fontSize: '14px',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: '1px solid rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(12px)',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+          }}
+        >
+          View All Deals
+        </button>
       </div>
 
       <Map
@@ -258,6 +264,7 @@ const MapView = () => {
         data-testid="map-container"
         ref={mapRef}
         interactiveLayerIds={showParcels ? ['parcels-fill', 'parcels-line'] : []}
+        className={mapStyle === 'street' ? 'custom-dark-map' : ''}
       >
         <NavigationControl position="top-right" />
         <ScaleControl />
