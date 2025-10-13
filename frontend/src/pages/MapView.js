@@ -381,22 +381,26 @@ const MapView = () => {
             onClose={() => setSelectedDeal(null)}
             closeButton={false}
             closeOnClick={false}
-            style={{ maxWidth: '300px' }}
+            offset={[0, -20]}
+            maxWidth="320px"
           >
             <div style={{ 
-              width: '280px', 
-              padding: '20px',
+              width: '300px', 
+              padding: '24px 20px 20px 20px',
               background: '#1A1A1A',
               borderRadius: '12px',
               position: 'relative'
             }}>
-              {/* Custom close button - top left */}
+              {/* Custom close button - top right */}
               <button
-                onClick={() => setSelectedDeal(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedDeal(null);
+                }}
                 style={{
                   position: 'absolute',
                   top: '12px',
-                  left: '12px',
+                  right: '12px',
                   width: '28px',
                   height: '28px',
                   borderRadius: '50%',
@@ -407,7 +411,7 @@ const MapView = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '16px',
+                  fontSize: '18px',
                   fontWeight: 'bold',
                   transition: 'all 0.2s ease',
                   zIndex: 10
