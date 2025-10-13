@@ -24,6 +24,30 @@ const MainLayout = () => {
 
   return (
     <div className="flex h-screen" style={{ background: '#000000' }}>
+      {/* Floating Menu Button - Shows when sidebar is closed */}
+      {!sidebarOpen && (
+        <button
+          onClick={() => setSidebarOpen(true)}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '20px',
+            zIndex: 9999,
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: '8px',
+            padding: '10px',
+            cursor: 'pointer',
+            backdropFilter: 'blur(12px)',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            color: '#FFFFFF'
+          }}
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
       {/* Sidebar */}
       <div className={`flex flex-col transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-0'}`} style={{
         background: 'rgba(255,255,255,0.03)',
@@ -33,28 +57,29 @@ const MainLayout = () => {
         boxShadow: '4px 0 16px rgba(0,0,0,0.3)',
         position: 'relative'
       }}>
-        {/* Sidebar Toggle Button - Inside sidebar */}
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: sidebarOpen ? '16px' : '-50px',
-            zIndex: 10,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: '8px',
-            padding: '8px',
-            cursor: 'pointer',
-            backdropFilter: 'blur(12px)',
-            transition: 'all 0.3s ease',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-            color: '#FFFFFF',
-            opacity: sidebarOpen ? 1 : 0
-          }}
-        >
-          {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-        </button>
+        {/* Close Button - Inside sidebar top right */}
+        {sidebarOpen && (
+          <button
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '16px',
+              zIndex: 10,
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: '8px',
+              padding: '8px',
+              cursor: 'pointer',
+              backdropFilter: 'blur(12px)',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              color: '#FFFFFF'
+            }}
+          >
+            <X size={18} />
+          </button>
+        )}
         {/* Brand Slot - Tight Fit */}
         {sidebarOpen && (
           <div style={{ 
