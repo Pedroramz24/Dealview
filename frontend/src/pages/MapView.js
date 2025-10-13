@@ -74,8 +74,7 @@ const MapView = () => {
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         style={{ width: '100%', height: '100%' }}
-        mapLib={import('maplibre-gl')}
-        mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+        mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
         data-testid="map-container"
       >
         <NavigationControl position="top-right" />
