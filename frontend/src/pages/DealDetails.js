@@ -412,16 +412,6 @@ const DealDetails = () => {
           </div>
         </div>
       </div>
-            </div>
-          </div>
-
-          {/* Notes */}
-          <div className="glass-surface p-6">
-            <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Notes</h2>
-            <p style={{ color: 'var(--text-secondary)' }} className="leading-relaxed">{deal.notes || 'No notes added yet.'}</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
