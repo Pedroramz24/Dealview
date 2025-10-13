@@ -73,6 +73,34 @@ const MapView = () => {
     }).format(price);
   };
 
+  const handleMapClick = async (event) => {
+    if (!showParcels) return;
+    
+    const features = mapRef.current?.queryRenderedFeatures(event.point, {
+      layers: ['parcels-fill', 'parcels-line']
+    });
+
+    if (features && features.length > 0) {
+      const parcel = features[0];
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          `${API}/parcels/search?lat=${event.lngLat.lat}&lon=${event.lngLat.lng}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        if (response.data && response.data.features && response.data.features.length > 0) {
+          setSelectedParcel({
+            ...response.data.features[0],
+            lngLat: event.lngLat
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching parcel details:', error);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full" style={{ background: 'var(--bg-base)' }}>
