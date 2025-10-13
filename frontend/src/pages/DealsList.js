@@ -174,64 +174,153 @@ const DealsList = () => {
               Create Deal
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Create New Deal</DialogTitle>
+              <DialogTitle style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '700' }}>Create New Deal</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCreateDeal} className="space-y-4">
+            <form onSubmit={handleCreateDeal} className="space-y-6">
+              {/* Property Image Upload */}
+              <div style={{ 
+                background: 'rgba(255,255,255,0.03)', 
+                border: '1px solid rgba(255,255,255,0.1)', 
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '12px', display: 'block' }}>Property Image</Label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files[0])}
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: '#FFFFFF'
+                  }}
+                />
+                {imageFile && (
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginTop: '8px' }}>
+                    Selected: {imageFile.name}
+                  </p>
+                )}
+              </div>
+
+              {/* Property Details */}
               <div>
-                <Label>Property Address</Label>
+                <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Property Address *</Label>
                 <Input
                   value={newDeal.property_address}
                   onChange={(e) => setNewDeal({ ...newDeal, property_address: e.target.value })}
                   required
+                  placeholder="123 Main St, San Antonio, TX"
                   data-testid="deal-address-input"
+                  className="premium-glass-input"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <Label>Asset Type</Label>
+                  <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Property Type *</Label>
                   <Select value={newDeal.asset_type} onValueChange={(value) => setNewDeal({ ...newDeal, asset_type: value })}>
-                    <SelectTrigger data-testid="deal-asset-type-select">
+                    <SelectTrigger data-testid="deal-asset-type-select" className="premium-glass-input">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.15)' }}>
                       <SelectItem value="Office">Office</SelectItem>
-                      <SelectItem value="Retail">Retail</SelectItem>
+                      <SelectItem value="Retail Centers">Retail Centers</SelectItem>
                       <SelectItem value="Industrial">Industrial</SelectItem>
                       <SelectItem value="Land">Land</SelectItem>
+                      <SelectItem value="Restaurants">Restaurants</SelectItem>
+                      <SelectItem value="Hotels">Hotels</SelectItem>
+                      <SelectItem value="Medical">Medical</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>Asking Price</Label>
-                  <Input
-                    type="number"
-                    value={newDeal.asking_price}
-                    onChange={(e) => setNewDeal({ ...newDeal, asking_price: e.target.value })}
-                    required
-                    data-testid="deal-price-input"
-                  />
+                  <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Status *</Label>
+                  <Select value={newDeal.stage} onValueChange={(value) => setNewDeal({ ...newDeal, stage: value })}>
+                    <SelectTrigger className="premium-glass-input">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.15)' }}>
+                      <SelectItem value="New">New</SelectItem>
+                      <SelectItem value="Qualified">Qualified</SelectItem>
+                      <SelectItem value="Underwriting">Underwriting</SelectItem>
+                      <SelectItem value="Negotiation">Negotiation</SelectItem>
+                      <SelectItem value="Under Contract">Under Contract</SelectItem>
+                      <SelectItem value="Closed">Closed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-              <div>
-                <Label>Building Size (sq ft)</Label>
-                <Input
-                  type="number"
-                  value={newDeal.building_size}
-                  onChange={(e) => setNewDeal({ ...newDeal, building_size: e.target.value })}
-                />
+
+              {/* Financials Section */}
+              <div style={{ 
+                background: 'rgba(255,255,255,0.03)', 
+                border: '1px solid rgba(255,255,255,0.1)', 
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h3 style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Financials</h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Asking Price *</Label>
+                    <Input
+                      type="number"
+                      value={newDeal.asking_price}
+                      onChange={(e) => setNewDeal({ ...newDeal, asking_price: e.target.value })}
+                      required
+                      placeholder="1000000"
+                      data-testid="deal-price-input"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Building Size (sq ft)</Label>
+                    <Input
+                      type="number"
+                      value={newDeal.building_size}
+                      onChange={(e) => setNewDeal({ ...newDeal, building_size: e.target.value })}
+                      placeholder="5000"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                </div>
+                
+                {/* Auto-calculated Price per SF */}
+                {newDeal.asking_price && newDeal.building_size && (
+                  <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Price per SF: </span>
+                    <span style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600' }}>${calculatePricePerSF()}</span>
+                  </div>
+                )}
               </div>
+
+              {/* Notes Section */}
               <div>
-                <Label>Description</Label>
+                <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Notes</Label>
                 <textarea
-                  className="w-full border rounded-lg p-2 min-h-[100px]"
-                  value={newDeal.description}
-                  onChange={(e) => setNewDeal({ ...newDeal, description: e.target.value })}
+                  className="premium-glass-input w-full min-h-[120px] p-3"
+                  value={newDeal.notes}
+                  onChange={(e) => setNewDeal({ ...newDeal, notes: e.target.value })}
+                  placeholder="Add property notes, observations, or important details..."
+                  style={{ resize: 'vertical' }}
                 />
               </div>
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" data-testid="submit-deal-button">
-                Create Deal
+
+              <Button 
+                type="submit" 
+                disabled={uploadingImage}
+                style={{
+                  width: '100%',
+                  background: '#00b8d4',
+                  color: '#000000',
+                  padding: '14px',
+                  fontWeight: '600',
+                  fontSize: '15px'
+                }}
+                data-testid="submit-deal-button"
+              >
+                {uploadingImage ? 'Uploading Image...' : 'Create Deal'}
               </Button>
             </form>
           </DialogContent>
