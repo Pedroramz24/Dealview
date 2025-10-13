@@ -154,55 +154,87 @@ const MapView = () => {
   }
 
   return (
-    <div className="h-full relative" style={{ background: 'var(--bg-base)' }}>
-      <div className="absolute top-6 left-6 right-6 z-[1000] flex justify-between items-center">
-        <div className="glass-surface px-6 py-4">
-          <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Property Map</h2>
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{deals.length} active deals</p>
+    <div className="h-full relative" style={{ background: '#000000' }}>
+      {/* Map Controls - Top Right */}
+      <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-3">
+        <button
+          onClick={() => setShowParcels(!showParcels)}
+          className="premium-glass-btn"
+          style={{
+            color: showParcels ? '#000000' : '#FFFFFF',
+            backgroundColor: showParcels ? '#00b8d4' : 'transparent',
+            fontWeight: 500,
+            cursor: 'pointer',
+            fontSize: '14px',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: '1px solid rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(12px)',
+            transition: 'all 0.3s ease',
+            boxShadow: showParcels ? '0 4px 12px rgba(0,184,212,0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
+          }}
+        >
+          Parcels
+        </button>
+        <button
+          onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
+          className="premium-glass-btn"
+          style={{
+            color: '#FFFFFF',
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            fontWeight: 500,
+            cursor: 'pointer',
+            fontSize: '14px',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: '1px solid rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(12px)',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+          }}
+        >
+          {mapStyle === 'satellite' ? 'Street' : 'Satellite'}
+        </button>
+      </div>
+
+      {/* Info Panel - Top Left */}
+      <div className="absolute top-6 left-6 z-[1000]">
+        <div className="premium-glass-card" style={{
+          padding: '20px 24px',
+          borderRadius: '12px',
+          border: '1px solid rgba(255,255,255,0.15)',
+          backdropFilter: 'blur(12px)',
+          backgroundColor: 'rgba(255,255,255,0.05)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.4)'
+        }}>
+          <h2 className="text-2xl font-bold" style={{ color: '#FFFFFF', letterSpacing: '-0.02em', marginBottom: '4px' }}>Property Map</h2>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>{deals.length} active deals</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            onClick={() => setShowParcels(!showParcels)}
-            className="glass-surface px-4 py-3"
-            style={{
-              color: showParcels ? 'white' : 'var(--text-primary)',
-              backgroundColor: showParcels ? 'var(--accent)' : 'transparent',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'all 150ms',
-              fontSize: '14px'
-            }}
-          >
-            📐 Parcels
-          </button>
-          <button
-            onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
-            className="glass-surface px-4 py-3"
-            style={{
-              color: 'var(--text-primary)',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'all 150ms',
-              fontSize: '14px'
-            }}
-          >
-            {mapStyle === 'satellite' ? '🗺️ Street' : '🛰️ Satellite'}
-          </button>
-          <button
-            onClick={fetchDeals}
-            className="glass-surface px-4 py-3"
-            style={{
-              color: 'var(--accent)',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'all 150ms',
-              fontSize: '14px'
-            }}
-          >
-            Refresh
-          </button>
-          <button
-            onClick={() => navigate('/deals')}
+      </div>
+
+      {/* Bottom Action Buttons */}
+      <div className="absolute bottom-6 right-6 z-[1000] flex gap-3">
+        <button
+          onClick={fetchDeals}
+          className="premium-glass-btn"
+          style={{
+            color: '#00b8d4',
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            fontWeight: 500,
+            cursor: 'pointer',
+            fontSize: '14px',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: '1px solid rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(12px)',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+          }}
+        >
+          Refresh
+        </button>
+        <button
+          onClick={() => navigate('/deals')}
             data-testid="view-all-deals-button"
             className="glass-surface px-5 py-3"
             style={{
