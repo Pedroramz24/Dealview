@@ -406,8 +406,12 @@ const DealDetails = () => {
               </MapContainer>
             </div>
             <div className="flex items-start">
-              <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'var(--text-secondary)' }} />
-              <p style={{ color: 'var(--text-secondary)' }}>{deal.property_address}</p>
+              <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }} />
+              <p style={{ color: 'rgba(255,255,255,0.6)' }}>{deal.property_address}</p>
+            </div>
+          </div>
+        </div>
+      </div>
             </div>
           </div>
 
