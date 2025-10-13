@@ -440,14 +440,23 @@ const MapView = () => {
                 fontSize: '18px',
                 fontWeight: '600',
                 color: '#FFFFFF',
-                letterSpacing: '-0.02em'
+                letterSpacing: '-0.02em',
+                paddingRight: '30px'
               }}>
                 {selectedDeal.property_address}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                   <span style={{ color: '#B3B3B3' }}>Type:</span>
-                  <span style={{ color: '#FFFFFF', fontWeight: '500' }}>{selectedDeal.asset_type}</span>
+                  <span style={{ 
+                    padding: '4px 12px',
+                    background: getAssetTypeColor(selectedDeal.asset_type).bg,
+                    color: getAssetTypeColor(selectedDeal.asset_type).color,
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    border: `1px solid ${getAssetTypeColor(selectedDeal.asset_type).border}`
+                  }}>{selectedDeal.asset_type}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                   <span style={{ color: '#B3B3B3' }}>Price:</span>
@@ -457,8 +466,8 @@ const MapView = () => {
                   <span style={{ color: '#B3B3B3' }}>Stage:</span>
                   <span style={{
                     padding: '4px 12px',
-                    background: 'rgba(0, 184, 212, 0.15)',
-                    color: '#00b8d4',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#FFFFFF',
                     borderRadius: '6px',
                     fontSize: '13px',
                     fontWeight: '500'
