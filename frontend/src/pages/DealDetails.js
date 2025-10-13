@@ -379,28 +379,19 @@ const DealDetails = () => {
               marginBottom: '16px',
               letterSpacing: '-0.02em'
             }}>Location</h2>
-            <div className="h-64 rounded-lg overflow-hidden mb-3">
+            <div className="h-64 rounded-lg overflow-hidden mb-3 custom-dark-map">
               <MapContainer
                 center={[deal.latitude, deal.longitude]}
                 zoom={15}
                 style={{ height: '100%', width: '100%' }}
                 scrollWheelZoom={false}
               >
-                {/* Esri Satellite with Street Names */}
+                {/* OpenStreetMap with Dark Theme */}
                 <TileLayer
-                  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                  attribution='&copy; Esri'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; OpenStreetMap contributors'
                   maxZoom={19}
-                />
-                <TileLayer
-                  url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
-                  attribution='&copy; Esri'
-                  maxZoom={19}
-                />
-                <TileLayer
-                  url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-                  attribution='&copy; Esri'
-                  maxZoom={19}
+                  className="custom-dark-map"
                 />
                 <Marker position={[deal.latitude, deal.longitude]} />
               </MapContainer>
