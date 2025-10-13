@@ -32,6 +32,7 @@ const MapView = () => {
           type: 'raster',
           tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
           tileSize: 256,
+          maxzoom: 18,
           attribution: '&copy; Esri'
         }
       },
@@ -41,7 +42,7 @@ const MapView = () => {
           type: 'raster',
           source: 'esri-satellite',
           minzoom: 0,
-          maxzoom: 22
+          maxzoom: 18
         }
       ]
     },
