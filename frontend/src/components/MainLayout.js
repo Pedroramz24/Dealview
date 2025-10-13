@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
-import { Map, LayoutDashboard, FileText, Users, Trello, UsersRound, LogOut } from 'lucide-react';
+import { Map, LayoutDashboard, FileText, Users, Trello, UsersRound, LogOut, Menu, X } from 'lucide-react';
 
 const MainLayout = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
@@ -22,11 +23,36 @@ const MainLayout = () => {
   ];
 
   return (
-    <div className="flex h-screen" style={{ background: 'var(--bg-base)' }}>
+    <div className="flex h-screen" style={{ background: '#000000' }}>
+      {/* Sidebar Toggle Button */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        style={{
+          position: 'fixed',
+          top: '20px',
+          left: sidebarOpen ? '240px' : '20px',
+          zIndex: 9999,
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: '8px',
+          padding: '10px',
+          cursor: 'pointer',
+          backdropFilter: 'blur(12px)',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          color: '#FFFFFF'
+        }}
+      >
+        {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
+
       {/* Sidebar */}
-      <div className="w-64 flex flex-col" style={{
-        background: 'var(--bg-card)',
-        borderRight: '1px solid var(--border-subtle)'
+      <div className={`flex flex-col transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-0'}`} style={{
+        background: 'rgba(255,255,255,0.03)',
+        borderRight: '1px solid rgba(255,255,255,0.1)',
+        backdropFilter: 'blur(12px)',
+        overflow: 'hidden',
+        boxShadow: '4px 0 16px rgba(0,0,0,0.3)'
       }}>
         {/* Brand Slot - Tight Fit */}
         <div style={{ 
