@@ -4,6 +4,7 @@ import { API } from '../App';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { getAssetTypeColor } from '../utils/assetTypeColors';
 
 const stages = ['New', 'Qualified', 'Underwriting', 'Negotiation', 'Under Contract', 'Closed'];
 
