@@ -314,13 +314,18 @@ const MapView = () => {
             onClick={e => {
               e.originalEvent.stopPropagation();
               setSelectedDeal(deal);
-              // Auto-center and zoom to the clicked pin
-              setViewState({
-                longitude: deal.longitude,
-                latitude: deal.latitude,
-                zoom: 15,
-                transitionDuration: 1000
-              });
+              
+              // Use map's flyTo for better centering with popup
+              if (mapRef.current) {
+                mapRef.current.flyTo({
+                  center: [deal.longitude, deal.latitude],
+                  zoom: 15,
+                  duration: 1000,
+                  essential: true,
+                  // Offset to account for popup appearing below
+                  offset: [0, 100]
+                });
+              }
             }}
           >
             <div className="map-marker" style={{
