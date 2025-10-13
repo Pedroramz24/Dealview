@@ -9,6 +9,7 @@ import { Plus, Search, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
+import { getAssetTypeColor } from '../utils/assetTypeColors';
 
 const DealsList = () => {
   const [deals, setDeals] = useState([]);
