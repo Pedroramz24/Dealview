@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API } from '../App';
 import { toast } from 'sonner';
+import { getAssetTypeColor } from '../utils/assetTypeColors';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapView = () => {
