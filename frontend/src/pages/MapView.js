@@ -85,19 +85,47 @@ const MapView = () => {
           <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Property Map</h2>
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{deals.length} active deals</p>
         </div>
-        <button
-          onClick={() => navigate('/deals')}
-          data-testid="view-all-deals-button"
-          className="glass-surface px-5 py-3"
-          style={{
-            color: 'var(--accent)',
-            fontWeight: 500,
-            cursor: 'pointer',
-            transition: 'all 150ms'
-          }}
-        >
-          View All Deals
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
+            className="glass-surface px-4 py-3"
+            style={{
+              color: 'var(--text-primary)',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'all 150ms',
+              fontSize: '14px'
+            }}
+          >
+            {mapStyle === 'satellite' ? '🗺️ Street' : '🛰️ Satellite'}
+          </button>
+          <button
+            onClick={fetchDeals}
+            className="glass-surface px-4 py-3"
+            style={{
+              color: 'var(--accent)',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'all 150ms',
+              fontSize: '14px'
+            }}
+          >
+            Refresh
+          </button>
+          <button
+            onClick={() => navigate('/deals')}
+            data-testid="view-all-deals-button"
+            className="glass-surface px-5 py-3"
+            style={{
+              color: 'var(--accent)',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'all 150ms'
+            }}
+          >
+            View All Deals
+          </button>
+        </div>
       </div>
 
       <Map
