@@ -47,18 +47,18 @@ const MapView = () => {
     street: {
       version: 8,
       sources: {
-        'osm-dark': {
+        'carto-dark': {
           type: 'raster',
-          tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', 'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png', 'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', 'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', 'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
           tileSize: 256,
-          attribution: '&copy; OpenStreetMap contributors'
+          attribution: '&copy; OpenStreetMap contributors, &copy; CARTO'
         }
       },
       layers: [
         {
-          id: 'osm-dark-layer',
+          id: 'carto-dark-layer',
           type: 'raster',
-          source: 'osm-dark',
+          source: 'carto-dark',
           minzoom: 0,
           maxzoom: 22
         }
