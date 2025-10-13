@@ -10,12 +10,42 @@ const MapView = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDeal, setSelectedDeal] = useState(null);
+  const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
     latitude: 29.4241,
     zoom: 11.5
   });
   const navigate = useNavigate();
+
+  // Map style configurations
+  const mapStyles = {
+    satellite: {
+      version: 8,
+      sources: {
+        'esri-satellite': {
+          type: 'raster',
+          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+          tileSize: 256,
+          attribution: '&copy; Esri'
+        },
+        'carto-labels': {
+          type: 'vector',
+          tiles: ['https://basemaps.cartocdn.com/gl/voyager-gl-style/vector.json']
+        }
+      },
+      layers: [
+        {
+          id: 'satellite',
+          type: 'raster',
+          source: 'esri-satellite',
+          minzoom: 0,
+          maxzoom: 22
+        }
+      ]
+    },
+    street: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+  };
 
   useEffect(() => {
     fetchDeals();
