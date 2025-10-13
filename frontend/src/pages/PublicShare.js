@@ -180,9 +180,16 @@ const PublicShare = () => {
                   style={{ height: '100%', width: '100%' }}
                   scrollWheelZoom={false}
                 >
+                  {/* Esri Hybrid with illustreets */}
                   <TileLayer
-                    url="https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
-                    subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+                    url="https://tiles.stadiamaps.com/tiles/stamen_toner_hybrid/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; Stadia Maps'
+                    maxZoom={20}
+                  />
+                  <TileLayer
+                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    attribution='&copy; Esri'
+                    maxZoom={19}
                   />
                   <Marker position={[deal.latitude, deal.longitude]} />
                 </MapContainer>
