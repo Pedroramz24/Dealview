@@ -495,15 +495,16 @@ import httpx
 REGRID_API_TOKEN = os.environ.get('REGRID_API_TOKEN')
 REGRID_BASE_URL = "https://app.regrid.com/api/v1"
 
-@api_router.get("/parcels/tiles/{z}/{x}/{y}")
+@api_router.get("/parcels/tiles/{z}/{x}/{y}.geojson")
 async def get_parcel_tiles(z: int, x: int, y: int, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Proxy Regrid parcel tile endpoint"""
+    """Proxy Regrid parcel tile endpoint - Returns GeoJSON tiles"""
     verify_token(credentials.credentials)
     
     if not REGRID_API_TOKEN:
         raise HTTPException(status_code=500, detail="Regrid API token not configured")
     
-    url = f"{REGRID_BASE_URL}/parcels/{z}/{x}/{y}.geojson"
+    # Regrid uses tiles.regrid.com for tile access
+    url = f"https://tiles.regrid.com/api/v1/geojson/{z}/{x}/{y}.geojson"
     headers = {"Authorization": f"Bearer {REGRID_API_TOKEN}"}
     
     async with httpx.AsyncClient() as client:
