@@ -58,7 +58,7 @@ const MapView = () => {
         {
           id: 'osm-dark-layer',
           type: 'raster',
-          source: 'carto-dark',
+          source: 'osm-dark',
           minzoom: 0,
           maxzoom: 22
         }
