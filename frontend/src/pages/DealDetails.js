@@ -112,57 +112,56 @@ const DealDetails = () => {
       <div style={{
         background: 'rgba(255,255,255,0.03)',
         borderBottom: '1px solid rgba(255,255,255,0.1)',
-        padding: '32px 0'
+        padding: '40px 0'
       }} data-testid="deal-details-page">
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
-          {/* Back Button and Tag Row */}
-          <div className="flex items-center justify-between mb-4">
+          {/* Back Button */}
+          <div className="flex items-center justify-start mb-6">
             <Button onClick={() => navigate('/deals')} variant="outline" data-testid="back-to-deals" style={{
               background: 'rgba(255,255,255,0.05)',
               border: '1px solid rgba(255,255,255,0.15)',
               color: 'rgba(255,255,255,0.6)',
               padding: '8px 16px',
-              borderRadius: '6px'
+              borderRadius: '6px',
+              fontSize: '13px',
+              fontWeight: '500',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               BACK TO PROPERTIES
             </Button>
+          </div>
+
+          {/* Property Address - Centered */}
+          <h1 style={{ 
+            color: '#FFFFFF', 
+            fontSize: 'clamp(32px, 5vw, 56px)',
+            fontWeight: '700',
+            letterSpacing: '-0.03em',
+            marginBottom: '20px',
+            textAlign: 'center',
+            lineHeight: '1.2'
+          }}>
+            {deal.property_address}
+          </h1>
+
+          {/* Asset Type Tag - Centered */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <span style={{
-              padding: '8px 20px',
-              background: 'rgba(255,255,255,0.05)',
-              color: 'rgba(255,255,255,0.6)',
-              borderRadius: '6px',
-              fontSize: '13px',
-              fontWeight: '500',
-              border: '1px solid rgba(255,255,255,0.1)',
+              padding: '10px 24px',
+              background: getAssetTypeColor(deal.asset_type).bg,
+              color: getAssetTypeColor(deal.asset_type).color,
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
               textTransform: 'uppercase',
               letterSpacing: '0.5px'
             }}>
               {deal.asset_type}
             </span>
           </div>
-
-          {/* Subtitle */}
-          <p style={{ 
-            color: 'rgba(255,255,255,0.4)', 
-            fontSize: '13px',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-            marginBottom: '12px'
-          }}>
-            COMMERCIAL REAL ESTATE • PROPERTY DETAILS
-          </p>
-
-          {/* Property Address - Full Width */}
-          <h1 style={{ 
-            color: '#FFFFFF', 
-            fontSize: '48px',
-            fontWeight: '700',
-            letterSpacing: '-0.03em',
-            marginBottom: '0'
-          }}>
-            {deal.property_address}
-          </h1>
         </div>
       </div>
 
