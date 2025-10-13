@@ -48,26 +48,25 @@ const MapView = () => {
     street: {
       version: 8,
       sources: {
-        'voyager-dark': {
+        'osm': {
           type: 'raster',
-          tiles: ['https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', 'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', 'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'],
+          tiles: [
+            'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          ],
           tileSize: 256,
-          attribution: '&copy; OpenStreetMap contributors, &copy; CARTO'
+          maxzoom: 19,
+          attribution: '&copy; OpenStreetMap contributors'
         }
       },
       layers: [
         {
-          id: 'voyager-layer',
+          id: 'osm-layer',
           type: 'raster',
-          source: 'voyager-dark',
+          source: 'osm',
           minzoom: 0,
-          maxzoom: 22,
-          paint: {
-            'raster-brightness-min': 0,
-            'raster-brightness-max': 0.5,
-            'raster-contrast': 0.3,
-            'raster-saturation': -0.2
-          }
+          maxzoom: 19
         }
       ]
     }
