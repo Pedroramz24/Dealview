@@ -11,6 +11,7 @@ const MapView = () => {
   const [loading, setLoading] = useState(true);
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [selectedParcel, setSelectedParcel] = useState(null);
+  const [parcels, setParcels] = useState(null);
   const [showParcels, setShowParcels] = useState(true);
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [viewState, setViewState] = useState({
