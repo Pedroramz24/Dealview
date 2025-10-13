@@ -272,31 +272,113 @@ const DealDetails = () => {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Financials */}
-          <div className="glass-surface p-6">
-            <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Financials</h2>
+          {/* Share Button */}
+          <Button onClick={handleShare} data-testid="share-deal-button" style={{
+            background: '#00b8d4',
+            color: '#000000',
+            padding: '14px 24px',
+            borderRadius: '8px',
+            border: 'none',
+            fontWeight: '600',
+            fontSize: '15px',
+            boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
+            cursor: 'pointer',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            transition: 'all 0.3s ease'
+          }}>
+            <Share2 className="w-5 h-5" />
+            Share Property
+          </Button>
+
+          {/* Property Details Card */}
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '12px',
+            padding: '24px'
+          }}>
+            <h2 style={{ 
+              color: '#FFFFFF', 
+              fontSize: '18px',
+              fontWeight: '600',
+              marginBottom: '20px',
+              letterSpacing: '-0.02em'
+            }}>Property Details</h2>
             <div className="space-y-4">
-              <div className="pb-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <div className="flex items-center mb-2">
-                  <DollarSign className="w-5 h-5 mr-2" style={{ color: 'var(--accent)' }} />
-                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Asking Price</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>BUILDING SIZE</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.building_size ? `${deal.building_size.toLocaleString()} SF` : 'N/A'}</p>
                 </div>
-                <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }} data-testid="deal-asking-price">{formatPrice(deal.asking_price)}</p>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>PRICE</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{formatPrice(deal.asking_price)}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>PROPERTY TYPE</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.asset_type}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>STATUS</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.stage}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Financials */}
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '12px',
+            padding: '24px'
+          }}>
+            <h2 style={{ 
+              color: '#FFFFFF', 
+              fontSize: '18px',
+              fontWeight: '600',
+              marginBottom: '20px',
+              letterSpacing: '-0.02em'
+            }}>Financials</h2>
+            <div className="space-y-4">
+              <div className="pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <div className="flex items-center mb-2">
+                  <DollarSign className="w-5 h-5 mr-2" style={{ color: '#00b8d4' }} />
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>Asking Price</p>
+                </div>
+                <p className="text-3xl font-bold" style={{ color: '#FFFFFF' }} data-testid="deal-asking-price">{formatPrice(deal.asking_price)}</p>
               </div>
               <div>
-                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Price per SF (Building)</p>
-                <p className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>{calculatePricePerSF()}</p>
+                <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Price per SF (Building)</p>
+                <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{calculatePricePerSF()}</p>
               </div>
               <div>
-                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Price per Acre</p>
-                <p className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>{calculatePricePerAcre()}</p>
+                <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Price per Acre</p>
+                <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{calculatePricePerAcre()}</p>
               </div>
             </div>
           </div>
 
           {/* Location Map */}
-          <div className="glass-surface p-6">
-            <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Location</h2>
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '12px',
+            padding: '24px'
+          }}>
+            <h2 style={{ 
+              color: '#FFFFFF', 
+              fontSize: '18px',
+              fontWeight: '600',
+              marginBottom: '16px',
+              letterSpacing: '-0.02em'
+            }}>Location</h2>
             <div className="h-64 rounded-lg overflow-hidden mb-3">
               <MapContainer
                 center={[deal.latitude, deal.longitude]}
