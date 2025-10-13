@@ -322,6 +322,65 @@ const MapView = () => {
             </div>
           </Popup>
         )}
+
+        {selectedParcel && (
+          <Popup
+            longitude={selectedParcel.lngLat.lng}
+            latitude={selectedParcel.lngLat.lat}
+            anchor="bottom"
+            onClose={() => setSelectedParcel(null)}
+            closeButton={true}
+            closeOnClick={false}
+            style={{ maxWidth: '300px' }}
+          >
+            <div style={{ width: '280px', padding: '8px' }}>
+              <h3 style={{
+                margin: '0 0 12px 0',
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#000',
+                borderBottom: '2px solid #3B82F6',
+                paddingBottom: '8px'
+              }}>
+                Parcel Information
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {selectedParcel.properties.address && (
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Address</div>
+                    <div style={{ fontSize: '14px', color: '#000', fontWeight: '500' }}>{selectedParcel.properties.address}</div>
+                  </div>
+                )}
+                {selectedParcel.properties.owner && (
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Owner</div>
+                    <div style={{ fontSize: '14px', color: '#000' }}>{selectedParcel.properties.owner}</div>
+                  </div>
+                )}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  {selectedParcel.properties.acres && (
+                    <div>
+                      <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Size</div>
+                      <div style={{ fontSize: '14px', color: '#000', fontWeight: '500' }}>{selectedParcel.properties.acres} acres</div>
+                    </div>
+                  )}
+                  {selectedParcel.properties.zoning && (
+                    <div>
+                      <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Zoning</div>
+                      <div style={{ fontSize: '14px', color: '#000', fontWeight: '500' }}>{selectedParcel.properties.zoning}</div>
+                    </div>
+                  )}
+                </div>
+                {selectedParcel.properties.parcelnumb && (
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Parcel ID</div>
+                    <div style={{ fontSize: '12px', color: '#666', fontFamily: 'monospace' }}>{selectedParcel.properties.parcelnumb}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Popup>
+        )}
       </Map>
     </div>
   );
