@@ -8,6 +8,7 @@ import { Label } from '../components/ui/label';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { ArrowLeft, Upload, FileText, Share2, DollarSign, Home, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
+import { getAssetTypeColor } from '../utils/assetTypeColors';
 import 'leaflet/dist/leaflet.css';
 
 const DealDetails = () => {
