@@ -190,28 +190,24 @@ const MapView = () => {
         {showParcels && (
           <Source
             id="parcels"
-            type="vector"
-            tiles={[`${API}/parcels/tiles/{z}/{x}/{y}`]}
-            minzoom={12}
-            maxzoom={18}
+            type="geojson"
+            data={`${API}/parcels/tiles/${Math.floor(viewState.zoom)}/${Math.floor((viewState.longitude + 180) / 360 * Math.pow(2, Math.floor(viewState.zoom)))}/${Math.floor((1 - Math.log(Math.tan(viewState.latitude * Math.PI / 180) + 1 / Math.cos(viewState.latitude * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, Math.floor(viewState.zoom)))}.geojson`}
           >
             <Layer
               id="parcels-fill"
               type="fill"
-              source-layer="parcels"
               paint={{
-                'fill-color': 'rgba(59, 130, 246, 0.1)',
+                'fill-color': 'rgba(59, 130, 246, 0.15)',
                 'fill-outline-color': 'rgba(59, 130, 246, 0.8)'
               }}
             />
             <Layer
               id="parcels-line"
               type="line"
-              source-layer="parcels"
               paint={{
                 'line-color': '#3B82F6',
-                'line-width': 1.5,
-                'line-opacity': 0.8
+                'line-width': 2,
+                'line-opacity': 0.9
               }}
             />
           </Source>
