@@ -118,6 +118,20 @@ const MapView = () => {
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
+            onClick={() => setShowParcels(!showParcels)}
+            className="glass-surface px-4 py-3"
+            style={{
+              color: showParcels ? 'white' : 'var(--text-primary)',
+              backgroundColor: showParcels ? 'var(--accent)' : 'transparent',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'all 150ms',
+              fontSize: '14px'
+            }}
+          >
+            📐 Parcels
+          </button>
+          <button
             onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
             className="glass-surface px-4 py-3"
             style={{
