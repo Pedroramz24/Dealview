@@ -281,44 +281,61 @@ input:hover, textarea:hover, select:hover {
   border-color: var(--border-glass-hover);
 }
 
-/* Buttons - Vercel Style */
+/* Buttons with Premium Glass Depth */
 button {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+  font-family: var(--font-sans);
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-base);
 }
 
 .btn-primary {
   background: var(--text-primary);
   color: var(--bg-base);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+  transition: all var(--transition-base);
 }
 
 .btn-primary:hover {
   background: var(--text-secondary);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-secondary {
-  background: transparent;
+  background: var(--bg-glass);
   color: var(--text-primary);
-  border: 1px solid var(--border-subtle);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
   font-weight: 500;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-glass);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-base);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-default);
+  background: var(--bg-glass-hover);
+  border-color: var(--border-glass-hover);
+  box-shadow: var(--shadow-glass-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-glass-active);
 }
 
 /* Loading Spinner */
