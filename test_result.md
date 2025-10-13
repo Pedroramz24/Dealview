@@ -256,10 +256,10 @@ frontend:
   - task: "MapView dark glass design"
     implemented: true
     working: true
-    file: "/app/frontend/src/pages/MapView.js"
+    file: "/app/frontend/src/pages/MapView.js, /app/frontend/src/index.css"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
@@ -267,6 +267,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: MapView (home page) has excellent glass design. Map container loads properly. Glass panels with backdrop-filter. Dark sidebar with glass navigation. Blue accent colors. 12 active deals displayed on map."
+      - working: "NA"
+        agent: "main"
+        comment: "Updated map styling with new dark map (CartoDB Dark Matter) as street option. Changed markers to cyan (#00b8d4) concentric circles with white center dot and pulsing animation. Updated popup to dark theme (#1A1A1A background, white headings, light grey text). Added custom close button (×) at top-left of popup. Implemented smooth transitions on markers."
 
 metadata:
   created_by: "main_agent"
