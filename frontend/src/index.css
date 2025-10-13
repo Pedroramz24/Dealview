@@ -19,17 +19,86 @@ code, pre, kbd {
     font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, monospace !important;
 }
 
+/* OpenStreetMap Dark Theme Filter */
+.custom-dark-map .maplibregl-canvas-container canvas {
+    filter: brightness(0.8) contrast(1.1) saturate(0.9) hue-rotate(200deg) invert(1);
+}
+
 /* MapLibre Popup Dark Theme */
 .maplibregl-popup-content {
     background: #1A1A1A !important;
     color: #FFFFFF !important;
     padding: 0 !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
 }
 
 .maplibregl-popup-tip {
     border-top-color: #1A1A1A !important;
+}
+
+/* Premium Glass Design System */
+.premium-glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.premium-glass-card:hover {
+    border-color: rgba(0, 184, 212, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.premium-glass-btn {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.premium-glass-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 184, 212, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 184, 212, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.premium-glass-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.premium-glass-input {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    color: #FFFFFF;
+}
+
+.premium-glass-input:focus {
+    outline: none;
+    border-color: rgba(0, 184, 212, 0.6);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2),
+                0 0 0 3px rgba(0, 184, 212, 0.2),
+                0 4px 12px rgba(0, 184, 212, 0.2);
+}
+
+.premium-glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 /* Pulsing marker animation */
