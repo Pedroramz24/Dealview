@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Apply dark premium glass UI redesign to Pedro Armando CRM. Ensure Geist fonts are properly applied throughout the website to give it the vercel.com look. Use blue (#3B82F6) as the accent color. All pages should have the glass-morphism design with dark background."
+user_problem_statement: "Update map and ping styling: 1) Map toggle between satellite and dark style map, 2) Primary color black, headings white, light grey text, 3) New ping design with cyan (#00b8d4) concentric circles with pulsing animation, 4) Smooth scrolling with fixed and scaling pings, 5) Close button on top-left of ping popup"
 
 backend:
   - task: "Backend API endpoints"
