@@ -88,10 +88,31 @@ const DealsList = () => {
   const handleCreateDeal = async (e) => {
     e.preventDefault();
     try {
+      // First, upload image if provided
+      let imageUrl = null;
+      if (imageFile) {
+        setUploadingImage(true);
+        const formData = new FormData();
+        formData.append('file', imageFile);
+        
+        try {
+          const uploadResponse = await axios.post(`${API}/deals/temp/upload-image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          imageUrl = uploadResponse.data.url;
+        } catch (uploadError) {
+          toast.error('Failed to upload image');
+          setUploadingImage(false);
+          return;
+        }
+        setUploadingImage(false);
+      }
+
       const response = await axios.post(`${API}/deals`, {
         ...newDeal,
         asking_price: parseFloat(newDeal.asking_price),
         building_size: newDeal.building_size ? parseFloat(newDeal.building_size) : null,
+        primary_image_url: imageUrl,
       });
       toast.success('Deal created successfully');
       setShowCreateDialog(false);
@@ -100,10 +121,14 @@ const DealsList = () => {
         asset_type: 'Office',
         asking_price: '',
         building_size: '',
-        latitude: 34.0522,
-        longitude: -118.2437,
-        description: '',
+        latitude: 29.4241,
+        longitude: -98.4936,
+        notes: '',
+        stage: 'New',
+        primary_image_url: null,
+        documents: []
       });
+      setImageFile(null);
       fetchDeals();
     } catch (error) {
       toast.error('Failed to create deal');
