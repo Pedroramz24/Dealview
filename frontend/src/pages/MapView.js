@@ -55,6 +55,34 @@ const MapView = () => {
     fetchDeals();
   }, []);
 
+  useEffect(() => {
+    if (showParcels && viewState.zoom >= 12) {
+      fetchParcels();
+    }
+  }, [viewState.zoom, viewState.latitude, viewState.longitude, showParcels]);
+
+  const fetchParcels = async () => {
+    if (viewState.zoom < 12) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const z = Math.floor(viewState.zoom);
+      const x = Math.floor((viewState.longitude + 180) / 360 * Math.pow(2, z));
+      const y = Math.floor((1 - Math.log(Math.tan(viewState.latitude * Math.PI / 180) + 1 / Math.cos(viewState.latitude * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, z));
+      
+      const response = await axios.get(`${API}/parcels/tiles/${z}/${x}/${y}.geojson`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setParcels(response.data);
+    } catch (error) {
+      console.error('Error fetching parcels:', error);
+      if (error.response?.status === 404) {
+        setParcels({ type: 'FeatureCollection', features: [] });
+      }
+    }
+  };
+
   const fetchDeals = async () => {
     try {
       const response = await axios.get(`${API}/deals`);
