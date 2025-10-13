@@ -320,49 +320,84 @@ const MapView = () => {
             latitude={selectedDeal.latitude}
             anchor="bottom"
             onClose={() => setSelectedDeal(null)}
-            closeButton={true}
+            closeButton={false}
             closeOnClick={false}
-            style={{ maxWidth: '280px' }}
+            style={{ maxWidth: '300px' }}
           >
-            <div style={{ width: '250px', padding: '8px' }}>
+            <div style={{ 
+              width: '280px', 
+              padding: '20px',
+              background: '#1A1A1A',
+              borderRadius: '12px',
+              position: 'relative'
+            }}>
+              {/* Custom close button - top left */}
+              <button
+                onClick={() => setSelectedDeal(null)}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  left: '12px',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  color: '#FFFFFF',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s ease',
+                  zIndex: 10
+                }}
+                onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+                onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+              >
+                ×
+              </button>
+              
               {selectedDeal.primary_image_url && (
                 <img
                   src={selectedDeal.primary_image_url}
                   alt={selectedDeal.property_address}
                   style={{
                     width: '100%',
-                    height: '120px',
+                    height: '140px',
                     objectFit: 'cover',
-                    borderRadius: '6px',
-                    marginBottom: '12px'
+                    borderRadius: '8px',
+                    marginBottom: '16px'
                   }}
                 />
               )}
               <h3 style={{
-                margin: '0 0 8px 0',
-                fontSize: '15px',
+                margin: '0 0 16px 0',
+                fontSize: '18px',
                 fontWeight: '600',
-                color: '#000'
+                color: '#FFFFFF',
+                letterSpacing: '-0.02em'
               }}>
                 {selectedDeal.property_address}
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span style={{ color: '#666' }}>Type:</span>
-                  <span style={{ color: '#000', fontWeight: '500' }}>{selectedDeal.asset_type}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                  <span style={{ color: '#B3B3B3' }}>Type:</span>
+                  <span style={{ color: '#FFFFFF', fontWeight: '500' }}>{selectedDeal.asset_type}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span style={{ color: '#666' }}>Price:</span>
-                  <span style={{ color: '#3B82F6', fontWeight: '600' }}>{formatPrice(selectedDeal.asking_price)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                  <span style={{ color: '#B3B3B3' }}>Price:</span>
+                  <span style={{ color: '#00b8d4', fontWeight: '600' }}>{formatPrice(selectedDeal.asking_price)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span style={{ color: '#666' }}>Stage:</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                  <span style={{ color: '#B3B3B3' }}>Stage:</span>
                   <span style={{
-                    padding: '2px 8px',
-                    background: '#EFF6FF',
-                    color: '#3B82F6',
-                    borderRadius: '4px',
-                    fontSize: '12px',
+                    padding: '4px 12px',
+                    background: 'rgba(0, 184, 212, 0.15)',
+                    color: '#00b8d4',
+                    borderRadius: '6px',
+                    fontSize: '13px',
                     fontWeight: '500'
                   }}>
                     {selectedDeal.stage}
@@ -373,15 +408,18 @@ const MapView = () => {
                 onClick={() => navigate(`/deals/${selectedDeal.id}`)}
                 style={{
                   width: '100%',
-                  padding: '10px',
-                  background: '#3B82F6',
-                  color: 'white',
+                  padding: '12px',
+                  background: '#FFFFFF',
+                  color: '#000000',
                   border: 'none',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontSize: '14px',
-                  fontWeight: '500'
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease'
                 }}
+                onMouseEnter={(e) => e.target.style.background = '#e6e6e6'}
+                onMouseLeave={(e) => e.target.style.background = '#FFFFFF'}
               >
                 View Details
               </button>
