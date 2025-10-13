@@ -258,7 +258,18 @@ const DealsList = () => {
                   <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{deal.property_address}</div>
                 </td>
                 <td>
-                  <span style={{ color: 'var(--text-secondary)' }}>{deal.asset_type}</span>
+                  <span style={{ 
+                    padding: '4px 12px',
+                    background: getAssetTypeColor(deal.asset_type).bg,
+                    color: getAssetTypeColor(deal.asset_type).color,
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
+                    display: 'inline-block'
+                  }}>
+                    {deal.asset_type}
+                  </span>
                 </td>
                 <td>
                   <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatPrice(deal.asking_price)}</span>
