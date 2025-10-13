@@ -216,18 +216,18 @@ const MapView = () => {
         <ScaleControl />
 
         {/* Regrid Parcel Layer */}
-        {showParcels && (
+        {showParcels && parcels && viewState.zoom >= 12 && (
           <Source
             id="parcels"
             type="geojson"
-            data={`${API}/parcels/tiles/${Math.floor(viewState.zoom)}/${Math.floor((viewState.longitude + 180) / 360 * Math.pow(2, Math.floor(viewState.zoom)))}/${Math.floor((1 - Math.log(Math.tan(viewState.latitude * Math.PI / 180) + 1 / Math.cos(viewState.latitude * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, Math.floor(viewState.zoom)))}.geojson`}
+            data={parcels}
           >
             <Layer
               id="parcels-fill"
               type="fill"
               paint={{
                 'fill-color': 'rgba(59, 130, 246, 0.15)',
-                'fill-outline-color': 'rgba(59, 130, 246, 0.8)'
+                'fill-outline-color': '#3B82F6'
               }}
             />
             <Layer
