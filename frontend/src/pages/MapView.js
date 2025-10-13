@@ -70,89 +70,123 @@ const MapView = () => {
         </button>
       </div>
 
-      <MapContainer
-        center={[29.4241, -98.4936]}
-        zoom={12}
-        style={{ height: '100%', width: '100%' }}
+      <Map
+        {...viewState}
+        onMove={evt => setViewState(evt.viewState)}
+        style={{ width: '100%', height: '100%' }}
+        mapLib={import('maplibre-gl')}
+        mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
         data-testid="map-container"
       >
-        {/* Esri Satellite Imagery Base */}
-        <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          attribution='&copy; Esri'
-          maxZoom={19}
-        />
-        {/* Esri Reference Overlay - Street Names and Labels */}
-        <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
-          attribution='&copy; Esri'
-          maxZoom={19}
-        />
-        <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-          attribution='&copy; Esri'
-          maxZoom={19}
-        />
-        
+        <NavigationControl position="top-right" />
+        <ScaleControl />
+
         {deals.map((deal) => (
           <Marker
             key={deal.id}
-            position={[deal.latitude, deal.longitude]}
-            eventHandlers={{
-              click: () => navigate(`/deals/${deal.id}`),
+            longitude={deal.longitude}
+            latitude={deal.latitude}
+            anchor="bottom"
+            onClick={e => {
+              e.originalEvent.stopPropagation();
+              setSelectedDeal(deal);
             }}
           >
-            <Popup>
-              <div style={{ minWidth: '250px', background: 'var(--glass-bg)', color: 'var(--text-primary)' }}>
-                {deal.primary_image_url && (
-                  <img
-                    src={deal.primary_image_url}
-                    alt={deal.property_address}
-                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px' }}
-                  />
-                )}
-                <h3 style={{ fontWeight: 600, fontSize: '16px', marginBottom: '8px', color: 'var(--text-primary)' }}>{deal.property_address}</h3>
-                <div style={{ marginBottom: '12px', fontSize: '14px' }}>
-                  <p style={{ marginBottom: '4px', color: 'var(--text-secondary)' }}>
-                    <span style={{ color: 'var(--text-primary)' }}>Type:</span> {deal.asset_type}
-                  </p>
-                  <p style={{ marginBottom: '4px', color: 'var(--text-secondary)' }}>
-                    <span style={{ color: 'var(--text-primary)' }}>Price:</span> {formatPrice(deal.asking_price)}
-                  </p>
-                  <p style={{ color: 'var(--text-secondary)' }}>
-                    <span style={{ color: 'var(--text-primary)' }}>Stage:</span>{' '}
-                    <span style={{
-                      padding: '4px 8px',
-                      background: 'rgba(59, 130, 246, 0.15)',
-                      color: 'var(--accent)',
-                      borderRadius: '4px',
-                      fontSize: '12px'
-                    }}>
-                      {deal.stage}
-                    </span>
-                  </p>
-                </div>
-                <button
-                  onClick={() => navigate(`/deals/${deal.id}`)}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    background: 'var(--accent)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    fontSize: '14px'
-                  }}
-                >
-                  View Details
-                </button>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              background: 'var(--accent)',
+              borderRadius: '50% 50% 50% 0',
+              transform: 'rotate(-45deg)',
+              border: '2px solid white',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{ transform: 'rotate(45deg)', color: 'white', fontSize: '16px', fontWeight: 'bold' }}>
+                $
               </div>
-            </Popup>
+            </div>
           </Marker>
         ))}
-      </MapContainer>
+
+        {selectedDeal && (
+          <Popup
+            longitude={selectedDeal.longitude}
+            latitude={selectedDeal.latitude}
+            anchor="bottom"
+            onClose={() => setSelectedDeal(null)}
+            closeButton={true}
+            closeOnClick={false}
+            style={{ maxWidth: '280px' }}
+          >
+            <div style={{ width: '250px', padding: '8px' }}>
+              {selectedDeal.primary_image_url && (
+                <img
+                  src={selectedDeal.primary_image_url}
+                  alt={selectedDeal.property_address}
+                  style={{
+                    width: '100%',
+                    height: '120px',
+                    objectFit: 'cover',
+                    borderRadius: '6px',
+                    marginBottom: '12px'
+                  }}
+                />
+              )}
+              <h3 style={{
+                margin: '0 0 8px 0',
+                fontSize: '15px',
+                fontWeight: '600',
+                color: '#000'
+              }}>
+                {selectedDeal.property_address}
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                  <span style={{ color: '#666' }}>Type:</span>
+                  <span style={{ color: '#000', fontWeight: '500' }}>{selectedDeal.asset_type}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                  <span style={{ color: '#666' }}>Price:</span>
+                  <span style={{ color: '#3B82F6', fontWeight: '600' }}>{formatPrice(selectedDeal.asking_price)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                  <span style={{ color: '#666' }}>Stage:</span>
+                  <span style={{
+                    padding: '2px 8px',
+                    background: '#EFF6FF',
+                    color: '#3B82F6',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: '500'
+                  }}>
+                    {selectedDeal.stage}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate(`/deals/${selectedDeal.id}`)}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#3B82F6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500'
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </Popup>
+        )}
+      </Map>
     </div>
   );
 };
