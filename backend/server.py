@@ -488,6 +488,79 @@ async def get_public_deal(deal_id: str):
         "documents": deal_doc.get('documents', [])
     }
 
+
+# Regrid API Proxy Endpoints
+import httpx
+
+REGRID_API_TOKEN = os.environ.get('REGRID_API_TOKEN')
+REGRID_BASE_URL = "https://app.regrid.com/api/v1"
+
+@api_router.get("/parcels/tiles/{z}/{x}/{y}")
+async def get_parcel_tiles(z: int, x: int, y: int, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Proxy Regrid parcel tile endpoint"""
+    verify_token(credentials.credentials)
+    
+    if not REGRID_API_TOKEN:
+        raise HTTPException(status_code=500, detail="Regrid API token not configured")
+    
+    url = f"{REGRID_BASE_URL}/parcels/{z}/{x}/{y}.geojson"
+    headers = {"Authorization": f"Bearer {REGRID_API_TOKEN}"}
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, headers=headers, timeout=10.0)
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPError as e:
+            raise HTTPException(status_code=500, detail=f"Regrid API error: {str(e)}")
+
+@api_router.get("/parcels/search")
+async def search_parcels(
+    lat: float,
+    lon: float,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Search for parcel at specific lat/lon"""
+    verify_token(credentials.credentials)
+    
+    if not REGRID_API_TOKEN:
+        raise HTTPException(status_code=500, detail="Regrid API token not configured")
+    
+    url = f"{REGRID_BASE_URL}/parcels.geojson"
+    headers = {"Authorization": f"Bearer {REGRID_API_TOKEN}"}
+    params = {"lat": lat, "lon": lon, "limit": 1}
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, headers=headers, params=params, timeout=10.0)
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPError as e:
+            raise HTTPException(status_code=500, detail=f"Regrid API error: {str(e)}")
+
+@api_router.get("/parcels/{parcel_id}")
+async def get_parcel_details(
+    parcel_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get detailed parcel information"""
+    verify_token(credentials.credentials)
+    
+    if not REGRID_API_TOKEN:
+        raise HTTPException(status_code=500, detail="Regrid API token not configured")
+    
+    url = f"{REGRID_BASE_URL}/parcels/{parcel_id}.json"
+    headers = {"Authorization": f"Bearer {REGRID_API_TOKEN}"}
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, headers=headers, timeout=10.0)
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPError as e:
+            raise HTTPException(status_code=500, detail=f"Regrid API error: {str(e)}")
+
+
 app.include_router(api_router)
 
 app.add_middleware(
