@@ -321,7 +321,7 @@ const MapView = () => {
               cursor: 'pointer',
               transition: 'transform 0.3s ease'
             }}>
-              {/* Pulsing outer ring */}
+              {/* Pulsing outer ring - brighter when selected */}
               <div className="marker-pulse" style={{
                 position: 'absolute',
                 top: '50%',
@@ -330,10 +330,10 @@ const MapView = () => {
                 width: '48px',
                 height: '48px',
                 borderRadius: '50%',
-                background: 'rgba(0, 184, 212, 0.3)',
+                background: selectedDeal?.id === deal.id ? 'rgba(0, 184, 212, 0.5)' : 'rgba(0, 184, 212, 0.3)',
                 animation: 'pulse 2s ease-out infinite'
               }}></div>
-              {/* Main marker circle */}
+              {/* Main marker circle with border for selected state */}
               <div style={{
                 position: 'absolute',
                 top: '50%',
@@ -346,7 +346,11 @@ const MapView = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                border: selectedDeal?.id === deal.id ? '3px solid #ffffff' : 'none',
+                boxShadow: selectedDeal?.id === deal.id 
+                  ? '0 0 0 4px rgba(0, 184, 212, 0.4), 0 4px 12px rgba(0, 184, 212, 0.6)' 
+                  : '0 2px 8px rgba(0, 0, 0, 0.3)'
               }}>
                 {/* Center white dot */}
                 <div style={{
