@@ -433,52 +433,87 @@ const MapView = () => {
             latitude={selectedParcel.lngLat.lat}
             anchor="bottom"
             onClose={() => setSelectedParcel(null)}
-            closeButton={true}
+            closeButton={false}
             closeOnClick={false}
-            style={{ maxWidth: '300px' }}
+            style={{ maxWidth: '320px' }}
           >
-            <div style={{ width: '280px', padding: '8px' }}>
+            <div style={{ 
+              width: '300px', 
+              padding: '20px',
+              background: '#1A1A1A',
+              borderRadius: '12px',
+              position: 'relative'
+            }}>
+              {/* Custom close button - top left */}
+              <button
+                onClick={() => setSelectedParcel(null)}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  left: '12px',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  color: '#FFFFFF',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s ease',
+                  zIndex: 10
+                }}
+                onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+                onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+              >
+                ×
+              </button>
+
               <h3 style={{
-                margin: '0 0 12px 0',
-                fontSize: '16px',
+                margin: '0 0 16px 0',
+                fontSize: '18px',
                 fontWeight: '600',
-                color: '#000',
-                borderBottom: '2px solid #3B82F6',
-                paddingBottom: '8px'
+                color: '#FFFFFF',
+                borderBottom: '2px solid #00b8d4',
+                paddingBottom: '12px',
+                letterSpacing: '-0.02em'
               }}>
                 Parcel Information
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {selectedParcel.properties.address && (
                   <div>
-                    <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Address</div>
-                    <div style={{ fontSize: '14px', color: '#000', fontWeight: '500' }}>{selectedParcel.properties.address}</div>
+                    <div style={{ fontSize: '11px', color: '#808080', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '500' }}>Address</div>
+                    <div style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>{selectedParcel.properties.address}</div>
                   </div>
                 )}
                 {selectedParcel.properties.owner && (
                   <div>
-                    <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Owner</div>
-                    <div style={{ fontSize: '14px', color: '#000' }}>{selectedParcel.properties.owner}</div>
+                    <div style={{ fontSize: '11px', color: '#808080', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '500' }}>Owner</div>
+                    <div style={{ fontSize: '15px', color: '#B3B3B3' }}>{selectedParcel.properties.owner}</div>
                   </div>
                 )}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   {selectedParcel.properties.acres && (
                     <div>
-                      <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Size</div>
-                      <div style={{ fontSize: '14px', color: '#000', fontWeight: '500' }}>{selectedParcel.properties.acres} acres</div>
+                      <div style={{ fontSize: '11px', color: '#808080', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '500' }}>Size</div>
+                      <div style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>{selectedParcel.properties.acres} acres</div>
                     </div>
                   )}
                   {selectedParcel.properties.zoning && (
                     <div>
-                      <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Zoning</div>
-                      <div style={{ fontSize: '14px', color: '#000', fontWeight: '500' }}>{selectedParcel.properties.zoning}</div>
+                      <div style={{ fontSize: '11px', color: '#808080', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '500' }}>Zoning</div>
+                      <div style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>{selectedParcel.properties.zoning}</div>
                     </div>
                   )}
                 </div>
                 {selectedParcel.properties.parcelnumb && (
                   <div>
-                    <div style={{ fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '2px' }}>Parcel ID</div>
-                    <div style={{ fontSize: '12px', color: '#666', fontFamily: 'monospace' }}>{selectedParcel.properties.parcelnumb}</div>
+                    <div style={{ fontSize: '11px', color: '#808080', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '500' }}>Parcel ID</div>
+                    <div style={{ fontSize: '13px', color: '#B3B3B3', fontFamily: 'monospace' }}>{selectedParcel.properties.parcelnumb}</div>
                   </div>
                 )}
               </div>
