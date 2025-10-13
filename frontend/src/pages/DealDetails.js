@@ -268,9 +268,10 @@ const DealDetails = () => {
               </div>
             </Label>
           </div>
+        </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+        {/* Sidebar */}
+        <div className="space-y-6">
           {/* Share Button */}
           <Button onClick={handleShare} data-testid="share-deal-button" style={{
             background: '#00b8d4',
