@@ -19,9 +19,10 @@ code, pre, kbd {
     font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, monospace !important;
 }
 
-/* OpenStreetMap Dark Theme Filter */
-.custom-dark-map .maplibregl-canvas-container canvas {
-    filter: brightness(0.8) contrast(1.1) saturate(0.9) hue-rotate(200deg) invert(1);
+/* MapLibre Map Performance Optimization */
+.maplibregl-canvas-container canvas {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
 }
 
 /* MapLibre Popup Dark Theme */
