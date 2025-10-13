@@ -29,7 +29,7 @@ sample_users = [
 sample_deals = [
     {
         "id": "deal-1",
-        "property_address": "350 S Grand Ave, Los Angeles, CA 90071",
+        "property_address": "100 W Houston St, San Antonio, TX 78205",
         "asset_type": "Office",
         "description": "Prime downtown office building with modern amenities and stunning city views. Recently renovated with state-of-the-art infrastructure.",
         "asking_price": 25000000,
@@ -39,8 +39,8 @@ sample_deals = [
         "occupancy": "95%",
         "stage": "Qualified",
         "primary_image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
-        "latitude": 34.0522,
-        "longitude": -118.2437,
+        "latitude": 29.4241,
+        "longitude": -98.4936,
         "notes": "High-quality tenant mix. Strong cash flow. Owner looking for quick close.",
         "contacts": [],
         "documents": [],
