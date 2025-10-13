@@ -79,10 +79,16 @@ const MapView = () => {
         style={{ height: '100%', width: '100%' }}
         data-testid="map-container"
       >
+        {/* Esri Hybrid Map with illustreets styling */}
         <TileLayer
-          url="https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
-          subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
-          attribution='&copy; <a href="https://maps.google.com">Google Maps</a>'
+          url="https://tiles.stadiamaps.com/tiles/stamen_toner_hybrid/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+          maxZoom={20}
+        />
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+          maxZoom={19}
         />
         
         {deals.map((deal) => (
