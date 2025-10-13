@@ -107,24 +107,71 @@ const DealDetails = () => {
 
   return (
     <div className="p-8 max-w-7xl mx-auto" data-testid="deal-details-page">
-      {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Button onClick={() => navigate('/deals')} variant="outline" data-testid="back-to-deals">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Deals
-          </Button>
-          <div>
-            <h1 className="text-4xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-              {deal.property_address}
-            </h1>
-            <p style={{ color: 'var(--text-secondary)' }} className="mt-1">{deal.asset_type} • {deal.stage}</p>
+      {/* Premium Header with Address and Share */}
+      <div className="mb-8">
+        <div className="premium-glass-card" style={{
+          padding: '28px 32px',
+          borderRadius: '16px',
+          border: '1px solid rgba(255,255,255,0.15)',
+          backdropFilter: 'blur(12px)',
+          backgroundColor: 'rgba(255,255,255,0.05)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.4)'
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <Button onClick={() => navigate('/deals')} variant="outline" data-testid="back-to-deals" style={{
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.6)',
+                marginBottom: '16px'
+              }}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Deals
+              </Button>
+              <h1 className="text-4xl font-bold" style={{ color: '#FFFFFF', letterSpacing: '-0.02em', marginBottom: '8px' }}>
+                {deal.property_address}
+              </h1>
+              <div className="flex items-center gap-4">
+                <span style={{ 
+                  color: 'rgba(255,255,255,0.6)', 
+                  fontSize: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <MapPin className="w-4 h-4" />
+                  {deal.asset_type}
+                </span>
+                <span style={{
+                  padding: '6px 16px',
+                  background: 'rgba(0, 184, 212, 0.15)',
+                  color: '#00b8d4',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  border: '1px solid rgba(0, 184, 212, 0.3)'
+                }}>
+                  {deal.stage}
+                </span>
+              </div>
+            </div>
+            <Button onClick={handleShare} data-testid="share-deal-button" style={{
+              background: '#00b8d4',
+              color: '#000000',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              fontWeight: '600',
+              fontSize: '14px',
+              boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}>
+              <Share2 className="w-4 h-4 mr-2" />
+              Share Property
+            </Button>
           </div>
         </div>
-        <Button onClick={handleShare} className="bg-blue-600 hover:bg-blue-700" data-testid="share-deal-button">
-          <Share2 className="w-4 h-4 mr-2" />
-          Share
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
