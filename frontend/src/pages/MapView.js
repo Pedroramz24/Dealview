@@ -10,12 +10,15 @@ const MapView = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDeal, setSelectedDeal] = useState(null);
+  const [selectedParcel, setSelectedParcel] = useState(null);
+  const [showParcels, setShowParcels] = useState(true);
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
     latitude: 29.4241,
     zoom: 11.5
   });
+  const mapRef = useRef();
   const navigate = useNavigate();
 
   // Map style configurations
