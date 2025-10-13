@@ -503,8 +503,8 @@ async def get_parcel_tiles(z: int, x: int, y: int, credentials: HTTPAuthorizatio
     if not REGRID_API_TOKEN:
         raise HTTPException(status_code=500, detail="Regrid API token not configured")
     
-    # Regrid uses tiles.regrid.com for tile access
-    url = f"https://tiles.regrid.com/api/v1/geojson/{z}/{x}/{y}.geojson"
+    # Regrid tiles endpoint - use parcels/{z}/{x}/{y}.geojson format
+    url = f"https://tiles.regrid.com/parcels/{z}/{x}/{y}.geojson"
     headers = {"Authorization": f"Bearer {REGRID_API_TOKEN}"}
     
     async with httpx.AsyncClient() as client:
@@ -513,7 +513,7 @@ async def get_parcel_tiles(z: int, x: int, y: int, credentials: HTTPAuthorizatio
             response.raise_for_status()
             return response.json()
         except httpx.HTTPError as e:
-            raise HTTPException(status_code=500, detail=f"Regrid API error: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Regrid tiles error: {str(e)}")
 
 @api_router.get("/parcels/search")
 async def search_parcels(
