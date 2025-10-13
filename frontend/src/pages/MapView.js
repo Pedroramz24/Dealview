@@ -47,19 +47,26 @@ const MapView = () => {
     street: {
       version: 8,
       sources: {
-        'mapbox-dark': {
+        'voyager-dark': {
           type: 'raster',
-          tiles: ['https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'],
-          tileSize: 512
+          tiles: ['https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', 'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', 'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '&copy; OpenStreetMap contributors, &copy; CARTO'
         }
       },
       layers: [
         {
-          id: 'mapbox-dark-layer',
+          id: 'voyager-layer',
           type: 'raster',
-          source: 'mapbox-dark',
+          source: 'voyager-dark',
           minzoom: 0,
-          maxzoom: 22
+          maxzoom: 22,
+          paint: {
+            'raster-brightness-min': 0,
+            'raster-brightness-max': 0.5,
+            'raster-contrast': 0.3,
+            'raster-saturation': -0.2
+          }
         }
       ]
     }
