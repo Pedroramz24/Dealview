@@ -47,16 +47,16 @@ const MapView = () => {
     street: {
       version: 8,
       sources: {
-        'carto-dark': {
+        'osm-dark': {
           type: 'raster',
-          tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
+          tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', 'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png', 'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'],
           tileSize: 256,
-          attribution: '&copy; OpenStreetMap contributors, &copy; CARTO'
+          attribution: '&copy; OpenStreetMap contributors'
         }
       },
       layers: [
         {
-          id: 'dark-map',
+          id: 'osm-dark-layer',
           type: 'raster',
           source: 'carto-dark',
           minzoom: 0,
