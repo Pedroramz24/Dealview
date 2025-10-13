@@ -96,18 +96,22 @@ code, kbd, pre, .mono {
   font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, monospace !important;
 }
 
-/* Card Surface - Vercel Style */
+/* Premium Glass Card Surface with Depth */
 .glass-surface, .card-surface {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-glass);
   transition: all var(--transition-base);
 }
 
 .glass-surface:hover, .card-surface:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-default);
+  background: var(--bg-glass-hover);
+  border-color: var(--border-glass-hover);
+  box-shadow: var(--shadow-glass-hover);
+  transform: translateY(-2px);
 }
 
 /* Leaflet Map - Vercel Style */
