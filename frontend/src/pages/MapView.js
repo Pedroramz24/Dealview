@@ -259,12 +259,14 @@ const MapView = () => {
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onClick={handleMapClick}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', willChange: 'transform' }}
         mapStyle={mapStyles[mapStyle]}
         data-testid="map-container"
         ref={mapRef}
         interactiveLayerIds={showParcels ? ['parcels-fill', 'parcels-line'] : []}
-        className={mapStyle === 'street' ? 'custom-dark-map' : ''}
+        dragRotate={false}
+        touchZoomRotate={false}
+        dragPan={{ inertia: 500 }}
       >
         <NavigationControl position="top-right" />
         <ScaleControl />
