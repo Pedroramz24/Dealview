@@ -604,6 +604,7 @@ const MapView = () => {
           </Popup>
         )}
       </Map>
+      </div>
     </div>
   );
 };
