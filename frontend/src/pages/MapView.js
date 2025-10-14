@@ -256,26 +256,6 @@ const MapView = () => {
           >
             {mapStyle === 'satellite' ? 'Street' : 'Satellite'}
           </button>
-
-          <button
-            onClick={() => setLayerManagerOpen(true)}
-            className="premium-glass-btn"
-            style={{
-              color: layerManagerOpen ? '#000000' : '#FFFFFF',
-              backgroundColor: layerManagerOpen ? '#00b8d4' : 'rgba(255,255,255,0.05)',
-              fontWeight: 500,
-              cursor: 'pointer',
-              fontSize: '14px',
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(12px)',
-              transition: 'all 0.3s ease',
-              boxShadow: layerManagerOpen ? '0 4px 12px rgba(0,184,212,0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
-            }}
-          >
-            Layers
-          </button>
         </div>
 
         {/* Bottom Action Buttons */}
