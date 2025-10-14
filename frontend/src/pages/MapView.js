@@ -28,6 +28,14 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
+  // Expose layer manager toggle to MainLayout
+  useEffect(() => {
+    window.toggleLayerManager = () => setLayerManagerOpen(prev => !prev);
+    return () => {
+      delete window.toggleLayerManager;
+    };
+  }, []);
+  
   // Initialize map layers hook
   const {
     addLayer,
