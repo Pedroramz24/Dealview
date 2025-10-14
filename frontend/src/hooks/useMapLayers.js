@@ -267,7 +267,18 @@ export const useMapLayers = (mapRef) => {
         }
 
         if (!map.getLayer(layerIdOnMap)) {
+          console.log(`[useMapLayers] Adding layer with options:`, JSON.stringify(layerOptions, null, 2));
           map.addLayer(layerOptions);
+          console.log(`[useMapLayers] Layer added successfully`);
+          
+          // Verify the layer was added
+          if (map.getLayer(layerIdOnMap)) {
+            console.log(`[useMapLayers] ✓ Layer ${layerIdOnMap} confirmed in map`);
+          } else {
+            console.error(`[useMapLayers] ✗ Layer ${layerIdOnMap} NOT in map after adding!`);
+          }
+        } else {
+          console.warn(`[useMapLayers] Layer ${layerIdOnMap} already exists in map`);
         }
 
         // Add text labels if layer has labelConfig (for zoning layer)
