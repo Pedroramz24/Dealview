@@ -16,8 +16,8 @@ LAYER_REGISTRY = {
         "style": {
             "type": "fill",
             "paint": {
-                "fill-color": "rgba(0, 184, 212, 0.1)",
-                "fill-outline-color": "rgba(0, 184, 212, 0.5)"
+                "fill-color": "rgba(0, 184, 212, 0.25)",
+                "fill-outline-color": "#00b8d4"
             }
         },
         "clickFields": ["CNTY_NM", "FIPS_ST_CNTY_CD"]
