@@ -269,27 +269,18 @@ export const useMapLayers = (mapRef) => {
         if (!map.getLayer(layerIdOnMap)) {
           console.log(`[useMapLayers] Adding layer with options:`, JSON.stringify(layerOptions, null, 2));
           
-          // Get all existing layers to find the right insertion point
+          // Simply add the layer - it will go on top of all existing layers
+          console.log(`[useMapLayers] Adding layer to map...`);
+          map.addLayer(layerOptions);
+          
+          // Force a re-render by moving the layer to ensure it's visible
           const style = map.getStyle();
           const layers = style.layers;
-          console.log(`[useMapLayers] Existing layers:`, layers.map(l => l.id));
+          console.log(`[useMapLayers] Current layer order:`, layers.map(l => `${l.id}(${l.type})`).join(', '));
           
-          // Find the first symbol layer (labels) - we want to insert BEFORE labels but AFTER everything else
-          let firstSymbolId;
-          for (const layer of layers) {
-            if (layer.type === 'symbol') {
-              firstSymbolId = layer.id;
-              break;
-            }
-          }
-          
-          if (firstSymbolId) {
-            console.log(`[useMapLayers] Inserting layer BEFORE symbol layer: ${firstSymbolId}`);
-            map.addLayer(layerOptions, firstSymbolId);
-          } else {
-            console.log(`[useMapLayers] Adding layer at top (no symbol layers found)`);
-            map.addLayer(layerOptions);
-          }
+          // Move our layer to the very top
+          map.moveLayer(layerIdOnMap);
+          console.log(`[useMapLayers] Moved layer ${layerIdOnMap} to top`);
           
           console.log(`[useMapLayers] Layer added successfully`);
           
