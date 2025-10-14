@@ -315,7 +315,7 @@ const MapView = () => {
         <Map
           {...viewState}
           onMove={evt => setViewState(evt.viewState)}
-          onClick={handleMapClick}
+          onClick={combinedMapClick}
           style={{ width: '100%', height: '100%', willChange: 'transform' }}
           mapStyle={mapStyles[mapStyle]}
           data-testid="map-container"
