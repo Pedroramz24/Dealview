@@ -974,14 +974,17 @@ async def identify_feature(
         # Create a small bounding box around the point
         bbox = f"{lon - tolerance},{lat - tolerance},{lon + tolerance},{lat + tolerance}"
         
+        # Use bounding box approach for more reliable identification
+        bbox = f"{lon - tolerance},{lat - tolerance},{lon + tolerance},{lat + tolerance}"
+        
         params = {
-            "geometry": f"{lon},{lat}",
-            "geometryType": "esriGeometryPoint",
+            "where": "1=1",
+            "geometry": bbox,
+            "geometryType": "esriGeometryEnvelope",
             "spatialRel": "esriSpatialRelIntersects",
             "outFields": ",".join(layer_config.get("clickFields", ["*"])),
             "returnGeometry": "true",
-            "f": "json",
-            "tolerance": int(tolerance * 100000)  # Convert to map units
+            "f": "json"
         }
         
         async with httpx.AsyncClient(timeout=15.0) as client:
