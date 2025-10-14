@@ -81,12 +81,17 @@ const LayerManager = ({ isOpen, onClose }) => {
 
   // Toggle layer visibility
   const toggleLayer = (layerId) => {
+    console.log(`[LayerManager] toggleLayer called for ${layerId}`);
+    console.log(`[LayerManager] layerContext exists:`, !!layerContext);
+    
     const newVisible = !layerStates[layerId]?.visible;
     const newState = {
       ...layerStates[layerId],
       visible: newVisible,
       opacity: layerStates[layerId]?.opacity || 100,
     };
+    
+    console.log(`[LayerManager] newVisible: ${newVisible}, opacity: ${newState.opacity}`);
     
     setLayerStates((prev) => ({
       ...prev,
@@ -95,11 +100,16 @@ const LayerManager = ({ isOpen, onClose }) => {
     
     // Use context handlers if available (MapView), otherwise just update local state
     if (layerContext) {
+      console.log(`[LayerManager] Calling context handler...`);
       if (newVisible) {
+        console.log(`[LayerManager] Calling addLayer(${layerId}, ${newState.opacity})`);
         layerContext.addLayer(layerId, newState.opacity);
       } else {
+        console.log(`[LayerManager] Calling removeLayer(${layerId})`);
         layerContext.removeLayer(layerId);
       }
+    } else {
+      console.warn(`[LayerManager] layerContext is null!`);
     }
   };
 
