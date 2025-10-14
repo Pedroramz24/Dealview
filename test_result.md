@@ -118,20 +118,17 @@ backend:
         comment: "Updated Deal, DealCreate, and DealUpdate models to include all fields from Create New Deal form: Core Information (deal_title, deal_status, pipeline_stage, priority, owner_visibility), Location (market, submarket, display_on_map), Property Facts (year_built, zoning, parking_spaces, key_features), Financials (noi, cap_rate, lease_type, proforma_notes), Contacts (primary_contact, additional_contacts, last_contact_date), Activities (next_action, next_action_date), Media (gallery_images), Dates (target_close_date, external_ids). Kept legacy fields for backwards compatibility. Backend restarted successfully."
 
 frontend:
-  - task: "Geist fonts integration"
+  - task: "DealDetails page - Display all Create New Deal fields"
     implemented: true
-    working: true
-    file: "/app/frontend/public/index.html, /app/frontend/src/index.css"
+    working: "NA"
+    file: "/app/frontend/src/pages/DealDetails.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
-        comment: "Fixed font-family in index.css to use Geist Sans and Geist Mono. Font files are properly loaded in index.html. Updated body and code elements to use Geist fonts."
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: Geist Sans font is properly applied throughout the entire website. Body font-family shows 'Geist Sans', headings use Geist Sans, buttons use Geist Sans. Font files are loaded correctly. document.fonts.check confirms Geist Sans is loaded. This addresses the critical user requirement."
+        comment: "Updated DealDetails page to display additional financial fields in sidebar: NOI, Cap Rate, Lease Type, and Pro Forma Notes. These fields are conditionally displayed only when they have values. Fixed calculatePricePerAcre to work with both lot_acres and lot_size fields. Page structure already includes sections for all other fields from Create New Deal form."
 
   - task: "Dashboard dark glass redesign"
     implemented: true
