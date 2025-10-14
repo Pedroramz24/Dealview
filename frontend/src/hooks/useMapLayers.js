@@ -181,28 +181,6 @@ export const useMapLayers = (mapRef) => {
         setLoadedLayers((prev) => new Set([...prev, layerId]));
         
         console.log(`✓ Added layer: ${layerConfig.name} (${featureCount} features)`);
-
-        // Set up event listener to refresh layer data on map move
-        const refreshLayerData = () => {
-          fetchLayerData(layerId);
-        };
-
-        // Debounce the moveend event to avoid too many requests
-        let moveEndTimeout;
-        const debouncedRefresh = () => {
-          clearTimeout(moveEndTimeout);
-          moveEndTimeout = setTimeout(refreshLayerData, 500);
-        };
-
-        map.on('moveend', debouncedRefresh);
-        
-        // Store cleanup function
-        if (!window.mapLayerCleanup) {
-          window.mapLayerCleanup = {};
-        }
-        window.mapLayerCleanup[layerId] = () => {
-          map.off('moveend', debouncedRefresh);
-        };
         
       } catch (error) {
         console.error(`Error adding layer ${layerId}:`, error.response?.data || error.message);
