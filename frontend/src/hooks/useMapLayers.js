@@ -154,22 +154,37 @@ export const useMapLayers = (mapRef) => {
         if (layerConfig.labelConfig) {
           const labelLayerId = `layer-${layerId}-labels`;
           if (!map.getLayer(labelLayerId)) {
+            const labelConfig = layerConfig.labelConfig;
+            
             map.addLayer({
               id: labelLayerId,
               type: 'symbol',
               source: sourceId,
+              minzoom: labelConfig.minzoom || 14,
+              filter: [
+                'any',
+                // Show all commercial, industrial, office zones
+                ['in', ['get', 'Base'], ['literal', ['C-1', 'C-2', 'C-3', 'C-3R', 'C-3NA', 'C-2NA', 'NC', 'I-1', 'I-2', 'MI-1', 'O-1', 'O-2', 'OCL', 'D', 'MF-18', 'MF-33']]],
+                // For residential, only show at higher zoom levels (17+) - this naturally reduces density
+                ['all',
+                  ['>=', ['zoom'], 17],
+                  ['in', ['get', 'Base'], ['literal', ['R-1', 'R-2', 'R-3', 'R-4', 'R-5', 'R-6', 'RM-4', 'RM-5', 'RM-6']]]
+                ]
+              ],
               layout: {
-                'text-field': layerConfig.labelConfig.textField,
-                'text-size': layerConfig.labelConfig.textSize,
+                'text-field': labelConfig.textField,
+                'text-size': labelConfig.textSize,
                 'text-allow-overlap': false,
                 'text-ignore-placement': false,
                 'text-optional': true,
-                'symbol-placement': 'point'
+                'symbol-placement': 'point',
+                'symbol-spacing': 250,
+                'text-padding': 2
               },
               paint: {
-                'text-color': layerConfig.labelConfig.textColor,
-                'text-halo-color': layerConfig.labelConfig.textHaloColor,
-                'text-halo-width': layerConfig.labelConfig.textHaloWidth,
+                'text-color': labelConfig.textColor,
+                'text-halo-color': labelConfig.textHaloColor,
+                'text-halo-width': labelConfig.textHaloWidth,
                 'text-opacity': opacity / 100
               }
             });
