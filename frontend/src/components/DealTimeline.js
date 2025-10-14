@@ -151,7 +151,6 @@ const DealTimeline = ({ deal }) => {
         borderRadius: '12px',
         padding: '32px 40px',
         marginBottom: '24px',
-        overflow: 'hidden',
       }}
     >
       <h3
@@ -170,8 +169,18 @@ const DealTimeline = ({ deal }) => {
         Transaction Timeline
       </h3>
 
-      {/* Timeline Container with proper spacing */}
-      <div style={{ position: 'relative', height: '200px', paddingLeft: '20px', paddingRight: '20px' }}>
+      {/* Scrollable container for timeline */}
+      <div
+        style={{
+          overflowX: 'auto',
+          overflowY: 'visible',
+          paddingBottom: '10px',
+          position: 'relative',
+        }}
+        className="timeline-scroll-container"
+      >
+        {/* Timeline Container - min-width ensures horizontal scroll on small screens */}
+        <div style={{ position: 'relative', height: '200px', minWidth: '900px', paddingLeft: '20px', paddingRight: '20px' }}>
         {/* Background track - centered vertically */}
         <div
           style={{
