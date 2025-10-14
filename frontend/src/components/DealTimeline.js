@@ -409,9 +409,9 @@ const DealTimeline = ({ deal }) => {
                     >
                       <User
                         className="w-3 h-3"
-                        style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px' }}
+                        style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px', flexShrink: 0 }}
                       />
-                      <p style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.8)' }}>
+                      <p style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.3' }}>
                         {milestone.responsible}
                       </p>
                     </div>
