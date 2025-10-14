@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
 import { Map, LayoutDashboard, FileText, Users, Trello, UsersRound, LogOut, Menu, X, Layers } from 'lucide-react';
+import LayerManager from './LayerManager';
 
 const MainLayout = () => {
   const { user, logout } = useContext(AuthContext);
