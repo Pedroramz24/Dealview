@@ -89,7 +89,7 @@ class Deal(BaseModel):
     lot_acres: Optional[float] = None  # acres (alias for lot_size)
     year_built: Optional[int] = None
     zoning: Optional[str] = None
-    occupancy: Optional[float] = None
+    occupancy: Optional[str] = None  # Can be string like "95%" or float
     parking_spaces: Optional[int] = None
     key_features: Optional[str] = None
     
