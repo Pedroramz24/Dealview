@@ -780,6 +780,250 @@ async def get_parcel_details(
             raise HTTPException(status_code=500, detail=f"Regrid API error: {str(e)}")
 
 
+
+# ========== Layer Management System ==========
+
+# Simple in-memory cache with LRU eviction
+class LayerCache:
+    def __init__(self, max_size=MAX_CACHE_SIZE):
+        self.cache = OrderedDict()
+        self.max_size = max_size
+        self.timestamps = {}
+    
+    def get(self, key: str):
+        if key not in self.cache:
+            return None
+        
+        # Check if expired
+        if key in self.timestamps:
+            if datetime.now(timezone.utc) > self.timestamps[key]:
+                del self.cache[key]
+                del self.timestamps[key]
+                return None
+        
+        # Move to end (most recently used)
+        self.cache.move_to_end(key)
+        return self.cache[key]
+    
+    def set(self, key: str, value: Any, ttl: int = CACHE_TTL):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        self.timestamps[key] = datetime.now(timezone.utc) + timedelta(seconds=ttl)
+        
+        # Evict oldest if over max size
+        while len(self.cache) > self.max_size:
+            oldest_key = next(iter(self.cache))
+            del self.cache[oldest_key]
+            if oldest_key in self.timestamps:
+                del self.timestamps[oldest_key]
+
+# Simple rate limiter
+class RateLimiter:
+    def __init__(self):
+        self.requests = {}
+    
+    def check_rate_limit(self, client_id: str) -> bool:
+        now = datetime.now(timezone.utc)
+        
+        if client_id not in self.requests:
+            self.requests[client_id] = []
+        
+        # Remove old requests outside the window
+        self.requests[client_id] = [
+            req_time for req_time in self.requests[client_id]
+            if now - req_time < timedelta(seconds=RATE_LIMIT_WINDOW)
+        ]
+        
+        # Check if under limit
+        if len(self.requests[client_id]) >= RATE_LIMIT_REQUESTS:
+            return False
+        
+        # Add current request
+        self.requests[client_id].append(now)
+        return True
+
+# Initialize cache and rate limiter
+layer_cache = LayerCache()
+rate_limiter = RateLimiter()
+
+@api_router.get("/layers/registry")
+async def get_layer_registry(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get the complete layer registry with metadata"""
+    # Verify token
+    try:
+        verify_token(credentials.credentials)
+    except HTTPException:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    # Return registry without internal fields
+    registry = {}
+    for layer_id, layer_config in LAYER_REGISTRY.items():
+        registry[layer_id] = {
+            "id": layer_config["id"],
+            "name": layer_config["name"],
+            "description": layer_config["description"],
+            "category": layer_config["category"],
+            "style": layer_config["style"],
+            "clickFields": layer_config.get("clickFields", [])
+        }
+    
+    return {"layers": registry}
+
+@api_router.get("/layers/{layer_id}/query")
+async def query_layer(
+    layer_id: str,
+    bbox: Optional[str] = None,
+    where: Optional[str] = None,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Query a layer from its source with caching and rate limiting
+    
+    Args:
+        layer_id: Layer identifier from registry
+        bbox: Bounding box as "minx,miny,maxx,maxy"
+        where: SQL where clause for filtering
+    """
+    # Verify token
+    try:
+        token_data = verify_token(credentials.credentials)
+        user_id = token_data.get("sub")
+    except HTTPException:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    # Rate limiting
+    if not rate_limiter.check_rate_limit(user_id):
+        raise HTTPException(
+            status_code=429,
+            detail=f"Rate limit exceeded. Maximum {RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW} seconds."
+        )
+    
+    # Check if layer exists
+    if layer_id not in LAYER_REGISTRY:
+        raise HTTPException(status_code=404, detail=f"Layer '{layer_id}' not found")
+    
+    layer_config = LAYER_REGISTRY[layer_id]
+    
+    # Create cache key
+    cache_key = f"{layer_id}:{bbox}:{where}"
+    
+    # Check cache
+    cached_data = layer_cache.get(cache_key)
+    if cached_data:
+        logger.info(f"Cache hit for layer {layer_id}")
+        return cached_data
+    
+    # Fetch from source
+    try:
+        source_url = layer_config["source"]["url"]
+        
+        # Build query parameters for ArcGIS REST API
+        params = {
+            "where": where or "1=1",
+            "outFields": "*",
+            "returnGeometry": "true",
+            "f": "geojson",
+        }
+        
+        if bbox:
+            # Parse bbox
+            try:
+                minx, miny, maxx, maxy = map(float, bbox.split(','))
+                params["geometry"] = f"{minx},{miny},{maxx},{maxy}"
+                params["geometryType"] = "esriGeometryEnvelope"
+                params["spatialRel"] = "esriSpatialRelIntersects"
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Invalid bbox format. Use 'minx,miny,maxx,maxy'")
+        
+        # Make request to ArcGIS endpoint
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(f"{source_url}/query", params=params)
+            response.raise_for_status()
+            data = response.json()
+        
+        # Cache the result
+        layer_cache.set(cache_key, data)
+        
+        logger.info(f"Fetched and cached layer {layer_id}")
+        return data
+        
+    except httpx.HTTPError as e:
+        logger.error(f"Error fetching layer {layer_id}: {str(e)}")
+        raise HTTPException(status_code=502, detail=f"Error fetching data from source: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error for layer {layer_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+
+@api_router.get("/layers/{layer_id}/identify")
+async def identify_feature(
+    layer_id: str,
+    lat: float,
+    lon: float,
+    tolerance: float = 0.001,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Identify features at a specific point
+    
+    Args:
+        layer_id: Layer identifier
+        lat: Latitude
+        lon: Longitude
+        tolerance: Search tolerance in degrees (default 0.001 ~= 100m)
+    """
+    # Verify token
+    try:
+        verify_token(credentials.credentials)
+    except HTTPException:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    # Check if layer exists
+    if layer_id not in LAYER_REGISTRY:
+        raise HTTPException(status_code=404, detail=f"Layer '{layer_id}' not found")
+    
+    layer_config = LAYER_REGISTRY[layer_id]
+    
+    try:
+        source_url = layer_config["source"]["url"]
+        
+        # Build identify query
+        # Create a small bounding box around the point
+        bbox = f"{lon - tolerance},{lat - tolerance},{lon + tolerance},{lat + tolerance}"
+        
+        params = {
+            "geometry": f"{lon},{lat}",
+            "geometryType": "esriGeometryPoint",
+            "spatialRel": "esriSpatialRelIntersects",
+            "outFields": ",".join(layer_config.get("clickFields", ["*"])),
+            "returnGeometry": "true",
+            "f": "json",
+            "tolerance": int(tolerance * 100000)  # Convert to map units
+        }
+        
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            response = await client.get(f"{source_url}/query", params=params)
+            response.raise_for_status()
+            data = response.json()
+        
+        # Return only the features
+        features = data.get("features", [])
+        
+        return {
+            "layer_id": layer_id,
+            "layer_name": layer_config["name"],
+            "features": features,
+            "count": len(features)
+        }
+        
+    except httpx.HTTPError as e:
+        logger.error(f"Error identifying features for layer {layer_id}: {str(e)}")
+        raise HTTPException(status_code=502, detail=f"Error identifying features: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error for layer identify {layer_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+
+
 app.include_router(api_router)
 
 app.add_middleware(
