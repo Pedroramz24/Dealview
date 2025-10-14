@@ -383,6 +383,11 @@ export const useMapLayers = (mapRef) => {
       if (map.getLayer(labelLayerId)) {
         map.setPaintProperty(labelLayerId, 'text-opacity', opacity / 100);
       }
+
+      // Update stored configuration for restoration
+      if (layerConfigsRef.current[layerId]) {
+        layerConfigsRef.current[layerId].opacity = opacity;
+      }
     },
     [mapRef, loadedLayers, layerRegistry]
   );
