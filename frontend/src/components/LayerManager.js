@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, X, ChevronDown, ChevronRight, Layers, RefreshCw, MinusCircle } from 'lucide-react';
+import axios from 'axios';
+import { API } from '../App';
 
-const LayerManager = ({ isOpen, onClose }) => {
+const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({
     administrative: true,
@@ -10,52 +12,53 @@ const LayerManager = ({ isOpen, onClose }) => {
     infrastructure: true,
     transportation: true,
   });
+  const [layerRegistry, setLayerRegistry] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Layer definitions with metadata
-  const layerDefinitions = {
-    administrative: {
-      label: 'Administrative',
-      layers: [
-        { id: 'counties', label: 'Counties', description: 'County boundaries' },
-        { id: 'city_limits', label: 'City Limits', description: 'Municipal boundaries' },
-        { id: 'census_tracts', label: 'Census Tracts', description: 'US Census tract boundaries' },
-      ],
-    },
-    environmental: {
-      label: 'Environmental',
-      layers: [
-        { id: 'fema_floodplain', label: 'FEMA Floodplain', description: '100-year and 500-year flood zones' },
-        { id: 'wetlands', label: 'Wetlands', description: 'Protected wetland areas' },
-        { id: 'watersheds', label: 'Watersheds', description: 'Watershed boundaries' },
-      ],
-    },
-    planning: {
-      label: 'Planning & Zoning',
-      layers: [
-        { id: 'sa_zoning', label: 'San Antonio Zoning', description: 'Current zoning designations' },
-        { id: 'future_land_use', label: 'Future Land Use', description: 'Comprehensive plan designations' },
-        { id: 'subdivisions', label: 'Subdivisions', description: 'Recorded subdivision plats' },
-        { id: 'preliminary_plats', label: 'Preliminary Plats', description: 'Proposed development plats' },
-        { id: 'sector_plan', label: 'Sector Plan Use', description: 'Sector-specific planning zones' },
-      ],
-    },
-    infrastructure: {
-      label: 'Infrastructure',
-      layers: [
-        { id: 'saws_water', label: 'SAWS Water/Sewer', description: 'Water and sewer service areas' },
-        { id: 'gas_lines', label: 'Gas Lines', description: 'Natural gas infrastructure' },
-        { id: 'electric_grid', label: 'Electric Grid', description: 'Power transmission lines' },
-        { id: 'fiber_network', label: 'Fiber Network', description: 'Fiber optic infrastructure' },
-      ],
-    },
-    transportation: {
-      label: 'Transportation',
-      layers: [
-        { id: 'txdot_projects', label: 'TxDOT Projects', description: 'Planned highway improvements' },
-        { id: 'transit_routes', label: 'Transit Routes', description: 'VIA bus and rail lines' },
-        { id: 'bike_lanes', label: 'Bike Lanes', description: 'Existing and planned bike infrastructure' },
-      ],
-    },
+  // Fetch layer registry from backend
+  useEffect(() => {
+    const fetchRegistry = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API}/layers/registry`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        // Group layers by category
+        const grouped = {};
+        Object.entries(response.data.layers).forEach(([layerId, layer]) => {
+          const category = layer.category;
+          if (!grouped[category]) {
+            grouped[category] = {
+              label: getCategoryLabel(category),
+              layers: [],
+            };
+          }
+          grouped[category].layers.push(layer);
+        });
+        
+        setLayerRegistry(grouped);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching layer registry:', error);
+        setLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      fetchRegistry();
+    }
+  }, [isOpen]);
+
+  const getCategoryLabel = (category) => {
+    const labels = {
+      administrative: 'Administrative',
+      environmental: 'Environmental',
+      planning: 'Planning & Zoning',
+      infrastructure: 'Infrastructure',
+      transportation: 'Transportation',
+    };
+    return labels[category] || category;
   };
 
   // Initialize layer states from localStorage or defaults
@@ -64,14 +67,7 @@ const LayerManager = ({ isOpen, onClose }) => {
     if (saved) {
       return JSON.parse(saved);
     }
-    // Default: all layers off
-    const initial = {};
-    Object.keys(layerDefinitions).forEach((category) => {
-      layerDefinitions[category].layers.forEach((layer) => {
-        initial[layer.id] = { visible: false, opacity: 100 };
-      });
-    });
-    return initial;
+    return {};
   });
 
   // Persist layer states to localStorage
