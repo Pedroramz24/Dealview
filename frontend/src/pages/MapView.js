@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { MapLayerProvider } from '../contexts/MapLayerContext';
 import { useMapLayers } from '../hooks/useMapLayers';
+import LayerManager from '../components/LayerManager';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapView = () => {
