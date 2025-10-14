@@ -170,7 +170,8 @@ const DealTimeline = ({ deal }) => {
         Transaction Timeline
       </h3>
 
-      <div style={{ position: 'relative', paddingTop: '80px', paddingBottom: '80px' }}>
+      {/* Timeline Container with proper spacing */}
+      <div style={{ position: 'relative', height: '200px', paddingLeft: '20px', paddingRight: '20px' }}>
         {/* Background track */}
         <div
           style={{
