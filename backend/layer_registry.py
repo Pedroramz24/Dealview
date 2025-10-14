@@ -64,7 +64,7 @@ LAYER_REGISTRY = {
             }
         },
         "clickFields": ["FLD_ZONE", "ZONE_SUBTY", "STATIC_BFE"],
-        "defaultVisible": false
+        "defaultVisible": False
     },
     
     # Planning & Zoning
