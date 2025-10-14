@@ -950,7 +950,7 @@ async def identify_feature(
     lat: float,
     lon: float,
     tolerance: float = 0.001,
-    credentials: HTTPAuthorizationCredentials = Depends(security)
+    current_user: User = Depends(get_current_user)
 ):
     """
     Identify features at a specific point
@@ -961,12 +961,6 @@ async def identify_feature(
         lon: Longitude
         tolerance: Search tolerance in degrees (default 0.001 ~= 100m)
     """
-    # Verify token
-    try:
-        verify_token(credentials.credentials)
-    except HTTPException:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    
     # Check if layer exists
     if layer_id not in LAYER_REGISTRY:
         raise HTTPException(status_code=404, detail=f"Layer '{layer_id}' not found")
