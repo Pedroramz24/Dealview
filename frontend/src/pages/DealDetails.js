@@ -177,107 +177,248 @@ const DealDetails = () => {
       {/* Main Content Area */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Image Gallery */}
+          {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
-          {/* Primary Image */}
-          <div className="glass-surface overflow-hidden">
-            {deal.primary_image_url ? (
-              <img src={deal.primary_image_url} alt={deal.property_address} className="w-full h-96 object-cover rounded-t-lg" />
-            ) : (
-              <div className="w-full h-96 flex items-center justify-center" style={{ background: 'var(--bg-elevated)' }}>
-                <div className="text-center">
-                  <Home className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
-                  <p style={{ color: 'var(--text-secondary)' }}>No image uploaded</p>
+            {/* Primary Image */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
+              {deal.primary_image_url ? (
+                <img src={deal.primary_image_url} alt={deal.property_address} className="w-full h-96 object-cover" />
+              ) : (
+                <div className="w-full h-96 flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <div className="text-center">
+                    <Home className="w-16 h-16 mx-auto mb-4" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                    <p style={{ color: 'rgba(255,255,255,0.6)' }}>No image uploaded</p>
+                  </div>
+                </div>
+              )}
+              <div className="p-6">
+                <Label htmlFor="image-upload" className="cursor-pointer">
+                  <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
+                    <Upload className="w-5 h-5 mr-2" style={{ color: 'rgba(255,255,255,0.6)' }} />
+                    <span style={{ color: 'rgba(255,255,255,0.6)' }}>Upload Property Image</span>
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={uploading}
+                    />
+                  </div>
+                </Label>
+              </div>
+            </div>
+
+            {/* Core Information */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Core Information</h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Deal Title</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.deal_title || deal.property_address}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Status</p>
+                  <span style={{
+                    padding: '6px 16px',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#FFFFFF',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    display: 'inline-block'
+                  }}>{deal.stage || deal.deal_status}</span>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Priority</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.priority || 'Medium'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Visibility</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.owner_visibility || 'Team'}</p>
                 </div>
               </div>
-            )}
-            <div className="p-6">
-              <Label htmlFor="image-upload" className="cursor-pointer">
-                <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'var(--glass-border)' }}>
-                  <Upload className="w-5 h-5 mr-2" style={{ color: 'var(--text-secondary)' }} />
-                  <span style={{ color: 'var(--text-secondary)' }}>Upload Property Image</span>
+            </div>
+
+            {/* Property Facts */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Property Facts</h3>
+              <div className="grid grid-cols-3 gap-6">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Building Size</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.building_size ? `${deal.building_size.toLocaleString()} SF` : 'N/A'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Lot Size</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.lot_size ? `${deal.lot_size} acres` : 'N/A'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Year Built</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.year_built || 'N/A'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Zoning</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.zoning || 'N/A'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Occupancy</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.occupancy ? `${deal.occupancy}%` : 'N/A'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Parking</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.parking_spaces ? `${deal.parking_spaces} spaces` : 'N/A'}</p>
+                </div>
+              </div>
+              {deal.key_features && (
+                <div className="mt-6">
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '8px' }}>Key Features</p>
+                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{deal.key_features}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Location & Market */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location & Market</h3>
+              <div className="grid grid-cols-2 gap-6 mb-4">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Market</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.market || 'San Antonio'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Submarket</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.submarket || 'N/A'}</p>
+                </div>
+              </div>
+              
+              {/* Map */}
+              <div className="h-64 rounded-lg overflow-hidden custom-dark-map">
+                <MapContainer
+                  center={[deal.latitude, deal.longitude]}
+                  zoom={15}
+                  style={{ height: '100%', width: '100%' }}
+                  scrollWheelZoom={false}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; OpenStreetMap contributors'
+                    maxZoom={19}
+                  />
+                  <Marker position={[deal.latitude, deal.longitude]} />
+                </MapContainer>
+              </div>
+              <div className="flex items-start mt-3">
+                <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }} />
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>{deal.property_address}</p>
+              </div>
+            </div>
+
+            {/* Contacts & Activities */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <Users className="inline w-4 h-4 mr-2" />
+                Contacts & Activities
+              </h3>
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Primary Contact</p>
+                  <p style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>{deal.primary_contact || 'Not assigned'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Last Contact</p>
+                  <p style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {deal.last_contact_date ? new Date(deal.last_contact_date).toLocaleDateString() : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action</p>
+                  <p style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>{deal.next_action || 'None scheduled'}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action Date</p>
+                  <p style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {deal.next_action_date ? new Date(deal.next_action_date).toLocaleDateString() : 'N/A'}
+                  </p>
+                </div>
+              </div>
+              
+              {deal.notes && (
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '8px' }}>Internal Notes</p>
+                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{deal.notes}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Dates & IDs */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <Calendar className="inline w-4 h-4 mr-2" />
+                Important Dates & IDs
+              </h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Created Date</p>
+                  <p style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {deal.created_at ? new Date(deal.created_at).toLocaleDateString() : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Target Close</p>
+                  <p style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {deal.target_close_date ? new Date(deal.target_close_date).toLocaleDateString() : 'Not set'}
+                  </p>
+                </div>
+                {deal.external_ids && (
+                  <div className="col-span-2">
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>External IDs</p>
+                    <p style={{ fontSize: '15px', color: '#FFFFFF', fontWeight: '500' }}>{deal.external_ids}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Documents */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <FileCheck className="inline w-4 h-4 mr-2" />
+                Documents & Media
+              </h3>
+              {deal.documents && deal.documents.length > 0 ? (
+                <div className="space-y-2 mb-4">
+                  {deal.documents.map((doc, index) => (
+                    <a
+                      key={index}
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center p-3 rounded-lg transition-colors"
+                      style={{ border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)' }}
+                    >
+                      <FileText className="w-5 h-5 mr-3" style={{ color: '#00b8d4' }} />
+                      <span style={{ color: '#FFFFFF' }}>{doc.name}</span>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>No documents uploaded yet.</p>
+              )}
+              <Label htmlFor="doc-upload" className="cursor-pointer">
+                <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
+                  <Upload className="w-5 h-5 mr-2" style={{ color: 'rgba(255,255,255,0.6)' }} />
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Upload Document (OM, Survey, etc.)</span>
                   <input
-                    id="image-upload"
+                    id="doc-upload"
                     type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleDocumentUpload}
                     className="hidden"
                     disabled={uploading}
-                    data-testid="upload-image-input"
                   />
                 </div>
               </Label>
             </div>
           </div>
-
-          {/* Description */}
-          <div className="glass-surface p-6">
-            <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Description</h2>
-            <p style={{ color: 'var(--text-secondary)' }} className="leading-relaxed">{deal.description || 'No description available.'}</p>
-          </div>
-
-          {/* Property Facts */}
-          <div className="glass-surface p-6">
-            <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Property Facts</h2>
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Building Size</p>
-                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.building_size ? `${deal.building_size.toLocaleString()} sq ft` : 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Lot Size</p>
-                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.lot_size ? `${deal.lot_size.toLocaleString()} sq ft` : 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Lot Acres</p>
-                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.lot_acres ? `${deal.lot_acres.toLocaleString()} acres` : 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Occupancy</p>
-                <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.occupancy || 'N/A'}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Documents */}
-          <div className="glass-surface p-6">
-            <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Documents</h2>
-            {deal.documents && deal.documents.length > 0 ? (
-              <div className="space-y-2">
-                {deal.documents.map((doc, index) => (
-                  <a
-                    key={index}
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center p-3 border rounded-lg transition-colors"
-                    style={{ borderColor: 'var(--glass-border)', background: 'var(--bg-elevated)' }}
-                  >
-                    <FileText className="w-5 h-5 mr-3" style={{ color: 'var(--accent)' }} />
-                    <span style={{ color: 'var(--text-primary)' }}>{doc.name}</span>
-                  </a>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: 'var(--text-secondary)' }} className="mb-4">No documents uploaded yet.</p>
-            )}
-            <Label htmlFor="doc-upload" className="cursor-pointer mt-4 block">
-              <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'var(--glass-border)' }}>
-                <Upload className="w-5 h-5 mr-2" style={{ color: 'var(--text-secondary)' }} />
-                <span style={{ color: 'var(--text-secondary)' }}>Upload Document (OM, Survey, etc.)</span>
-                <input
-                  id="doc-upload"
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={handleDocumentUpload}
-                  className="hidden"
-                  disabled={uploading}
-                  data-testid="upload-document-input"
-                />
-              </div>
-            </Label>
-          </div>
-        </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
