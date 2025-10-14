@@ -203,12 +203,6 @@ export const useMapLayers = (mapRef) => {
       const labelLayerId = `layer-${layerId}-labels`;
       const sourceId = `layer-source-${layerId}`;
 
-      // Clean up event listeners
-      if (window.mapLayerCleanup && window.mapLayerCleanup[layerId]) {
-        window.mapLayerCleanup[layerId]();
-        delete window.mapLayerCleanup[layerId];
-      }
-
       // Remove label layer if it exists
       if (map.getLayer(labelLayerId)) {
         map.removeLayer(labelLayerId);
