@@ -247,6 +247,10 @@ const DealTimeline = ({ deal }) => {
           // Alternate labels above and below the timeline
           const isAbove = index % 2 === 0;
           
+          // Determine if milestone is near edges (for tooltip positioning)
+          const isNearLeftEdge = milestone.position < 25;
+          const isNearRightEdge = milestone.position > 75;
+          
           return (
             <div
               key={milestone.id}
@@ -257,9 +261,22 @@ const DealTimeline = ({ deal }) => {
                 transform: 'translateX(-50%)',
                 zIndex: 5,
               }}
-              onMouseEnter={() => setHoveredMilestone(milestone.id)}
-              onMouseLeave={() => setHoveredMilestone(null)}
             >
+              {/* Larger hover area for better interaction */}
+              <div
+                onMouseEnter={() => setHoveredMilestone(milestone.id)}
+                onMouseLeave={() => setHoveredMilestone(null)}
+                style={{
+                  position: 'absolute',
+                  top: isAbove ? '-60px' : '-10px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '120px',
+                  height: '120px',
+                  cursor: 'pointer',
+                  zIndex: 2,
+                }}
+              >
               {/* Milestone dot */}
               <div
                 style={{
