@@ -848,14 +848,8 @@ layer_cache = LayerCache()
 rate_limiter = RateLimiter()
 
 @api_router.get("/layers/registry")
-async def get_layer_registry(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def get_layer_registry(current_user: User = Depends(get_current_user)):
     """Get the complete layer registry with metadata"""
-    # Verify token
-    try:
-        verify_token(credentials.credentials)
-    except HTTPException:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    
     # Return registry without internal fields
     registry = {}
     for layer_id, layer_config in LAYER_REGISTRY.items():
