@@ -554,7 +554,7 @@ const LayerRow = ({ layer, state, onToggle, onOpacityChange }) => {
               marginBottom: '4px',
             }}
           >
-            {layer.label}
+            {layer.name}
           </div>
           <div
             style={{
