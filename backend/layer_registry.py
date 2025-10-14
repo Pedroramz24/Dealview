@@ -203,7 +203,8 @@ LAYER_REGISTRY = {
                 "line-width": 3
             }
         },
-        "clickFields": ["PROJECT_NAME", "STATUS", "EST_COST"]
+        "clickFields": ["PROJECT_NAME", "STATUS", "EST_COST"],
+        "defaultVisible": false
     }
 }
 
