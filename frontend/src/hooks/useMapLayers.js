@@ -172,11 +172,33 @@ export const useMapLayers = (mapRef) => {
    */
   const addLayer = useCallback(
     async (layerId, opacity = 100) => {
-      if (!mapRef.current || !layerRegistry || loadedLayers.has(layerId)) return;
+      console.log(`[useMapLayers] addLayer called: ${layerId}, opacity: ${opacity}`);
+      console.log(`[useMapLayers] mapRef.current:`, !!mapRef.current);
+      console.log(`[useMapLayers] layerRegistry:`, !!layerRegistry);
+      console.log(`[useMapLayers] already loaded:`, loadedLayers.has(layerId));
+      
+      if (!mapRef.current) {
+        console.error(`[useMapLayers] mapRef.current is null!`);
+        return;
+      }
+      
+      if (!layerRegistry) {
+        console.error(`[useMapLayers] layerRegistry is null!`);
+        return;
+      }
+      
+      if (loadedLayers.has(layerId)) {
+        console.warn(`[useMapLayers] Layer ${layerId} already loaded`);
+        return;
+      }
 
       const layerConfig = layerRegistry[layerId];
-      if (!layerConfig) return;
+      if (!layerConfig) {
+        console.error(`[useMapLayers] No config found for ${layerId}`);
+        return;
+      }
 
+      console.log(`[useMapLayers] Starting to load layer: ${layerConfig.name}`);
       setLoading(true);
 
       try {
