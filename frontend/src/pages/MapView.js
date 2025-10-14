@@ -557,6 +557,126 @@ const MapView = () => {
           </Popup>
         )}
 
+
+        {/* GIS Layer Identify Tooltip */}
+        {identifyTooltip && (
+          <Popup
+            longitude={identifyTooltip.position[0]}
+            latitude={identifyTooltip.position[1]}
+            anchor="bottom"
+            onClose={() => setIdentifyTooltip(null)}
+            closeButton={false}
+            closeOnClick={false}
+            offset={[0, -10]}
+            maxWidth="350px"
+          >
+            <div style={{
+              background: 'rgba(10, 10, 10, 0.95)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(0, 184, 212, 0.4)',
+              borderRadius: '8px',
+              padding: '16px',
+              minWidth: '280px',
+              maxWidth: '350px',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 184, 212, 0.3)',
+            }}>
+              {/* Close button */}
+              <button
+                onClick={() => setIdentifyTooltip(null)}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  color: '#FFFFFF',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '18px',
+                  transition: 'all 150ms ease',
+                }}
+                onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+                onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+              >
+                ×
+              </button>
+
+              {/* Layer name header */}
+              <div style={{
+                marginBottom: '12px',
+                paddingBottom: '12px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              }}>
+                <h3 style={{
+                  color: '#00b8d4',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  margin: 0,
+                }}>
+                  {identifyTooltip.layerName}
+                </h3>
+                <p style={{
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  fontSize: '11px',
+                  margin: '4px 0 0 0',
+                }}>
+                  {identifyTooltip.features.length} feature{identifyTooltip.features.length !== 1 ? 's' : ''} found
+                </p>
+              </div>
+
+              {/* Feature attributes */}
+              {identifyTooltip.features.slice(0, 1).map((feature, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '12px' : 0 }}>
+                  {feature.attributes && Object.entries(feature.attributes).slice(0, 6).map(([key, value]) => (
+                    <div key={key} style={{
+                      marginBottom: '8px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: '12px',
+                    }}>
+                      <span style={{
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        fontSize: '11px',
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                      }}>
+                        {key.replace(/_/g, ' ')}
+                      </span>
+                      <span style={{
+                        color: '#FFFFFF',
+                        fontSize: '12px',
+                        textAlign: 'right',
+                      }}>
+                        {value !== null && value !== undefined ? value.toString() : 'N/A'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+              {identifyTooltip.features.length > 1 && (
+                <div style={{
+                  marginTop: '12px',
+                  paddingTop: '12px',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  fontSize: '11px',
+                  textAlign: 'center',
+                }}>
+                  + {identifyTooltip.features.length - 1} more feature{identifyTooltip.features.length - 1 !== 1 ? 's' : ''}
+                </div>
+              )}
+            </div>
+          </Popup>
+        )}
+
+
         {selectedParcel && (
           <Popup
             longitude={selectedParcel.lngLat.lng}
