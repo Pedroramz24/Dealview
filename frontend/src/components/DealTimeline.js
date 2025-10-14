@@ -172,14 +172,14 @@ const DealTimeline = ({ deal }) => {
 
       {/* Timeline Container with proper spacing */}
       <div style={{ position: 'relative', height: '200px', paddingLeft: '20px', paddingRight: '20px' }}>
-        {/* Background track */}
+        {/* Background track - centered vertically */}
         <div
           style={{
             position: 'absolute',
-            top: '80px',
-            left: '0',
-            right: '0',
-            height: '4px',
+            top: '100px',
+            left: '20px',
+            right: '20px',
+            height: '3px',
             background: 'rgba(255,255,255,0.1)',
             borderRadius: '2px',
           }}
