@@ -43,9 +43,11 @@ export const useMapLayers = (mapRef) => {
         const token = localStorage.getItem('token');
         const map = mapRef.current.getMap();
 
-        // Get current map bounds with some padding
+        // Get current map bounds with 20% padding to avoid clipping
         const bounds = map.getBounds();
-        const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.2;
+        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.2;
+        const bbox = `${bounds.getWest() - lngPadding},${bounds.getSouth() - latPadding},${bounds.getEast() + lngPadding},${bounds.getNorth() + latPadding}`;
 
         // Fetch layer data
         const response = await axios.get(`${API}/layers/${layerId}/query`, {
