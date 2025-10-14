@@ -102,36 +102,33 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Complete the Property Details page by adding all fields from Create New Deal form. Backend model updated to include: deal_title, deal_status, priority, owner_visibility, market, submarket, year_built, zoning, parking_spaces, key_features, noi, cap_rate, lease_type, proforma_notes, primary_contact, last_contact_date, next_action, next_action_date, target_close_date, external_ids. Frontend DealDetails page updated to display NOI, Cap Rate, Lease Type, and Pro Forma Notes in Financials section."
+user_problem_statement: "Add visual progress bar feature to track contract milestones in commercial real estate deals. Create premium cyan-colored horizontal timeline with 9 milestones (Under Contract, Earnest Money Due, Property Info Delivery, Title Commitment Due, Seller Survey Delivery, Feasibility Period Ends, Buyer Objections Due, Seller Response Due, Closing). Timeline shows current date indicator (cyan dot), completed milestones (cyan glow), active milestone (pulse), upcoming milestones (gray). Interactive tooltips show milestone details on hover. Spacing reflects time between milestones. Dark-glass UI aesthetic with smooth animations."
 
 backend:
-  - task: "Backend Deal Model Update"
+  - task: "Backend Deal Model - Milestone Fields"
     implemented: true
     working: true
-    file: "/app/backend/server.py"
+    file: "/app/backend/server.py, /app/backend/seed_san_antonio.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
-      - working: "NA"
-        agent: "main"
-        comment: "Updated Deal, DealCreate, and DealUpdate models to include all fields from Create New Deal form: Core Information (deal_title, deal_status, pipeline_stage, priority, owner_visibility), Location (market, submarket, display_on_map), Property Facts (year_built, zoning, parking_spaces, key_features), Financials (noi, cap_rate, lease_type, proforma_notes), Contacts (primary_contact, additional_contacts, last_contact_date), Activities (next_action, next_action_date), Media (gallery_images), Dates (target_close_date, external_ids). Kept legacy fields for backwards compatibility. Backend restarted successfully."
       - working: true
-        agent: "testing"
-        comment: "✅ COMPREHENSIVE BACKEND TESTING COMPLETED: All 8 tests passed successfully. Authentication works with pedro@test.com credentials. GET /api/deals returns 12 San Antonio deals correctly. GET /api/deals/deal-1 retrieves individual deal successfully. POST /api/deals creates new deals with all new fields (deal_title, deal_status, priority, owner_visibility, market, submarket, year_built, zoning, parking_spaces, key_features, noi, cap_rate, lease_type, proforma_notes, primary_contact, last_contact_date, next_action, next_action_date, target_close_date, external_ids). Backwards compatibility verified - old deals load correctly with new fields present (default values). Model validation working - rejects invalid data with 422 status. All new fields present in API responses. Backend service running properly on https://mapcrm.preview.emergentagent.com/api."
+        agent: "main"
+        comment: "Added 27 new milestone fields to Deal, DealCreate, and DealUpdate models. Fields include date, responsible party, and notes for each of 9 milestones: under_contract_date, earnest_money_due_date, property_info_delivery_date, title_commitment_due_date, seller_survey_delivery_date, feasibility_period_ends_date, buyer_objections_due_date, seller_response_due_date, closing_date. Each milestone also has _responsible and _notes fields. Updated seed data for deal-3 to include complete timeline spanning 60 days. Backend restarted successfully."
 
 frontend:
-  - task: "DealDetails page - Display all Create New Deal fields"
+  - task: "Transaction Timeline Component"
     implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/DealDetails.js"
+    working: true
+    file: "/app/frontend/src/components/DealTimeline.js, /app/frontend/src/pages/DealDetails.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
-      - working: "NA"
+      - working: true
         agent: "main"
-        comment: "Updated DealDetails page to display additional financial fields in sidebar: NOI, Cap Rate, Lease Type, and Pro Forma Notes. These fields are conditionally displayed only when they have values. Fixed calculatePricePerAcre to work with both lot_acres and lot_size fields. Page structure already includes sections for all other fields from Create New Deal form."
+        comment: "Created new DealTimeline component with premium visual design. Features: 1) Horizontal progress bar with cyan gradient and glow, 2) Current date indicator (pulsing cyan dot), 3) 9 milestone markers with vertical lines and labels, 4) Three milestone states: completed (cyan glow), active (pulse animation), upcoming (gray), 5) Interactive glass-style tooltips showing milestone name, date, responsible party, and notes, 6) Proportional spacing based on time between milestones, 7) Dark-glass aesthetic matching app theme, 8) Smooth CSS animations (pulse, transitions), 9) Fully responsive design. Integrated into DealDetails page, conditionally rendered when milestone data exists. Verified working on deal-3 with complete timeline."
 
   - task: "Dashboard dark glass redesign"
     implemented: true
