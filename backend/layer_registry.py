@@ -80,35 +80,73 @@ LAYER_REGISTRY = {
             "paint": {
                 "fill-color": [
                     "match",
-                    ["get", "ZONING_CODE"],
-                    # Residential zones - Green shades
-                    "R-1", "#4CAF50",
-                    "R-2", "#66BB6A",
+                    ["get", "Base"],
+                    # Low Density Residential - Light Green/Yellow shades
+                    "R-1", "#C8E6C9",
+                    "R-2", "#A5D6A7", 
                     "R-3", "#81C784",
-                    "R-4", "#A5D6A7",
-                    "R-5", "#C8E6C9",
-                    "R-6", "#E8F5E9",
-                    # Commercial zones - Blue shades
-                    "C-1", "#2196F3",
-                    "C-2", "#42A5F5",
-                    "C-3", "#64B5F6",
-                    "C-3R", "#90CAF9",
-                    # Industrial zones - Orange shades
-                    "I-1", "#FF9800",
-                    "I-2", "#FFB74D",
-                    # Mixed Use - Purple shades
-                    "MXD", "#9C27B0",
-                    # Office - Teal shades
-                    "O-1", "#009688",
-                    "O-2", "#26A69A",
-                    # Default yellow for unmapped zones
-                    "#FFC107"
+                    "RE", "#DCEDC8",
+                    "R-20", "#F0F4C3",
+                    # Medium Density Residential - Green shades  
+                    "R-4", "#66BB6A",
+                    "R-5", "#4CAF50",
+                    "R-6", "#388E3C",
+                    # High Density Residential/Multi-Family - Darker Green
+                    "RM-4", "#2E7D32",
+                    "RM-5", "#1B5E20",
+                    "RM-6", "#33691E",
+                    # Multi-Family - Orange shades (to match TerraVault)
+                    "MF-18", "#FFB74D",
+                    "MF-33", "#FF9800",
+                    # Commercial - Red/Coral shades (to match TerraVault)
+                    "C-1", "#FF7043",
+                    "C-2", "#F4511E",
+                    "C-2NA", "#E64A19",
+                    "C-3", "#D84315",
+                    "C-3R", "#BF360C",
+                    "C-3NA", "#DD2C00",
+                    "NC", "#FF6F00",
+                    # Office/Commercial Light - Teal shades
+                    "OCL", "#4DB6AC",
+                    "O-1", "#26A69A",
+                    "O-2", "#00897B",
+                    # Industrial - Purple shades (to match TerraVault)
+                    "I-1", "#AB47BC",
+                    "I-2", "#8E24AA",
+                    "MI-1", "#7B1FA2",
+                    # Downtown - Blue
+                    "D", "#1E88E5",
+                    # Special/Other - Yellow/Gray shades
+                    "UZROW", "#FDD835",
+                    "FR", "#9E9E9E",
+                    # Default for unmapped zones
+                    "#BDBDBD"
                 ],
-                "fill-opacity": 0.5,
-                "fill-outline-color": "#FFFFFF"
+                "fill-opacity": 0.65,
+                "fill-outline-color": [
+                    "match",
+                    ["get", "Base"],
+                    # White outlines for most zones
+                    "R-1", "#FFFFFF",
+                    "R-2", "#FFFFFF",
+                    "R-3", "#FFFFFF",
+                    "R-4", "#FFFFFF",
+                    "R-5", "#FFFFFF",
+                    "R-6", "#FFFFFF",
+                    "C-1", "#FFFFFF",
+                    "C-2", "#FFFFFF",
+                    "C-3", "#FFFFFF",
+                    "I-1", "#FFFFFF",
+                    "I-2", "#FFFFFF",
+                    "MF-33", "#FFFFFF",
+                    "MF-18", "#FFFFFF",
+                    "OCL", "#FFFFFF",
+                    # Default
+                    "#999999"
+                ]
             }
         },
-        "clickFields": ["ZONING_CODE", "ZONING_NAME", "DESCRIPTION"]
+        "clickFields": ["Base", "BaseDescription", "Zoning", "ZoningDetail"]
     },
     
     # Infrastructure
