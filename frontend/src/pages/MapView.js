@@ -226,6 +226,15 @@ const MapView = () => {
     );
   }
 
+      {/* Layer Manager */}
+      <LayerManager
+        isOpen={layerManagerOpen}
+        onClose={() => setLayerManagerOpen(false)}
+        onLayerToggle={handleLayerToggle}
+        onLayerOpacityChange={handleLayerOpacityChange}
+      />
+
+
   return (
     <div className="h-full relative" style={{ background: '#000000' }}>
       {/* Map Controls - Top Right */}
