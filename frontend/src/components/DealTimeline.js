@@ -159,7 +159,7 @@ const DealTimeline = ({ deal }) => {
           color: '#00b8d4',
           fontSize: '14px',
           fontWeight: '600',
-          marginBottom: '32px',
+          marginBottom: '48px',
           textTransform: 'uppercase',
           letterSpacing: '1px',
           display: 'flex',
