@@ -93,9 +93,13 @@ const LayerManager = ({ isOpen, onClose }) => {
       [layerId]: newState,
     }));
     
-    // Notify parent component
-    if (onLayerToggle) {
-      onLayerToggle(layerId, newVisible, newState.opacity);
+    // Use context handlers if available (MapView), otherwise just update local state
+    if (layerContext) {
+      if (newVisible) {
+        layerContext.addLayer(layerId, newState.opacity);
+      } else {
+        layerContext.removeLayer(layerId);
+      }
     }
   };
 
@@ -109,9 +113,9 @@ const LayerManager = ({ isOpen, onClose }) => {
       },
     }));
     
-    // Notify parent component
-    if (onLayerOpacityChange) {
-      onLayerOpacityChange(layerId, opacity);
+    // Use context handlers if available (MapView)
+    if (layerContext) {
+      layerContext.updateLayerOpacity(layerId, opacity);
     }
   };
 
