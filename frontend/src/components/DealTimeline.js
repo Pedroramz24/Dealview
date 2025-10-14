@@ -149,8 +149,9 @@ const DealTimeline = ({ deal }) => {
         background: 'rgba(255,255,255,0.03)',
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: '12px',
-        padding: '32px 24px',
+        padding: '32px 40px',
         marginBottom: '24px',
+        overflow: 'hidden',
       }}
     >
       <h3
