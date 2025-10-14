@@ -186,18 +186,60 @@ class DealCreate(BaseModel):
     stage: str = "New"
 
 class DealUpdate(BaseModel):
+    # Core Information
+    deal_title: Optional[str] = None
     property_address: Optional[str] = None
     asset_type: Optional[str] = None
+    deal_status: Optional[str] = None
+    pipeline_stage: Optional[str] = None
+    priority: Optional[str] = None
+    owner_visibility: Optional[str] = None
     description: Optional[str] = None
-    asking_price: Optional[float] = None
+    
+    # Location & Map
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    display_on_map: Optional[bool] = None
+    market: Optional[str] = None
+    submarket: Optional[str] = None
+    
+    # Property Facts
     building_size: Optional[float] = None
     lot_size: Optional[float] = None
     lot_acres: Optional[float] = None
-    occupancy: Optional[str] = None
-    stage: Optional[str] = None
+    year_built: Optional[int] = None
+    zoning: Optional[str] = None
+    occupancy: Optional[float] = None
+    parking_spaces: Optional[int] = None
+    key_features: Optional[str] = None
+    
+    # Financials
+    asking_price: Optional[float] = None
+    noi: Optional[float] = None
+    cap_rate: Optional[float] = None
+    lease_type: Optional[str] = None
+    proforma_notes: Optional[str] = None
+    
+    # Contacts & Roles
+    primary_contact: Optional[str] = None
+    additional_contacts: Optional[List[Dict[str, str]]] = None
+    last_contact_date: Optional[str] = None
+    
+    # Activities & Notes
+    next_action: Optional[str] = None
+    next_action_date: Optional[str] = None
     notes: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
+    
+    # Media & Documents
+    primary_image_url: Optional[str] = None
+    gallery_images: Optional[List[str]] = None
+    
+    # Dates & IDs
+    target_close_date: Optional[str] = None
+    external_ids: Optional[str] = None
+    
+    # Legacy
+    stage: Optional[str] = None
 
 class Contact(BaseModel):
     model_config = ConfigDict(extra="ignore")
