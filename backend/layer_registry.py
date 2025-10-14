@@ -41,7 +41,8 @@ LAYER_REGISTRY = {
                 "line-opacity": 0.9
             }
         },
-        "clickFields": ["CITY_NM", "CITY_CODE"]
+        "clickFields": ["CITY_NM", "CITY_CODE"],
+        "defaultVisible": false
     },
     
     # Environmental
