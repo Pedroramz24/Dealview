@@ -347,6 +347,9 @@ export const useMapLayers = (mapRef) => {
         delete updated[layerId];
         return updated;
       });
+
+      // Clean up stored layer configuration
+      delete layerConfigsRef.current[layerId];
     },
     [mapRef, loadedLayers]
   );
