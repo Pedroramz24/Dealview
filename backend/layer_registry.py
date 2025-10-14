@@ -42,7 +42,7 @@ LAYER_REGISTRY = {
             }
         },
         "clickFields": ["CITY_NM", "CITY_CODE"],
-        "defaultVisible": false
+        "defaultVisible": False
     },
     
     # Environmental
