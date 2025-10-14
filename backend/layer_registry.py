@@ -63,7 +63,8 @@ LAYER_REGISTRY = {
                 "fill-outline-color": "rgba(64, 158, 255, 0.7)"
             }
         },
-        "clickFields": ["FLD_ZONE", "ZONE_SUBTY", "STATIC_BFE"]
+        "clickFields": ["FLD_ZONE", "ZONE_SUBTY", "STATIC_BFE"],
+        "defaultVisible": false
     },
     
     # Planning & Zoning
