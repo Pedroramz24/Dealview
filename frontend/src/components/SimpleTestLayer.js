@@ -6,10 +6,22 @@ import { useEffect } from 'react';
  */
 const SimpleTestLayer = ({ mapRef }) => {
   useEffect(() => {
-    if (!mapRef.current) return;
+    console.log('[TEST] SimpleTestLayer mounted');
+    console.log('[TEST] mapRef:', mapRef);
+    console.log('[TEST] mapRef.current:', mapRef.current);
+    
+    if (!mapRef.current) {
+      console.log('[TEST] mapRef.current is null, waiting...');
+      return;
+    }
 
     const map = mapRef.current.getMap();
-    if (!map) return;
+    console.log('[TEST] map instance:', map);
+    
+    if (!map) {
+      console.log('[TEST] map is null');
+      return;
+    }
 
     // Wait for map to load
     const addTestLayer = () => {
