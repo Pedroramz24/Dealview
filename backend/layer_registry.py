@@ -181,7 +181,8 @@ LAYER_REGISTRY = {
                 "fill-outline-color": "rgba(33, 150, 243, 0.6)"
             }
         },
-        "clickFields": ["SERVICE_TYPE", "PROVIDER"]
+        "clickFields": ["SERVICE_TYPE", "PROVIDER"],
+        "defaultVisible": false
     },
     
     # Transportation
