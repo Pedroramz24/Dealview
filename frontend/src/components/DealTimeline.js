@@ -329,105 +329,107 @@ const DealTimeline = ({ deal }) => {
                 }}
               />
 
-            {/* Tooltip */}
-            {hoveredMilestone === milestone.id && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-120px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'rgba(10, 10, 10, 0.95)',
-                  backdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(0, 184, 212, 0.3)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  minWidth: '200px',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 184, 212, 0.2)',
-                  zIndex: 100,
-                  pointerEvents: 'none',
-                }}
-              >
-                {/* Tooltip arrow */}
+              {/* Tooltip */}
+              {hoveredMilestone === milestone.id && (
                 <div
                   style={{
                     position: 'absolute',
-                    bottom: '-6px',
+                    [isAbove ? 'bottom' : 'top']: isAbove ? '120px' : '120px',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    width: '0',
-                    height: '0',
-                    borderLeft: '6px solid transparent',
-                    borderRight: '6px solid transparent',
-                    borderTop: '6px solid rgba(0, 184, 212, 0.3)',
+                    background: 'rgba(10, 10, 10, 0.95)',
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    minWidth: '200px',
+                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 184, 212, 0.2)',
+                    zIndex: 100,
+                    pointerEvents: 'none',
                   }}
-                />
-
-                <div style={{ marginBottom: '8px' }}>
-                  <p
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      color: '#FFFFFF',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    {milestone.label}
-                  </p>
-                  <p style={{ fontSize: '11px', color: '#00b8d4' }}>
-                    {formatDate(milestone.date)}
-                  </p>
-                </div>
-
-                {milestone.responsible && (
+                >
+                  {/* Tooltip arrow */}
                   <div
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '6px',
-                      paddingTop: '8px',
-                      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                      position: 'absolute',
+                      [isAbove ? 'top' : 'bottom']: isAbove ? '-6px' : '-6px',
+                      left: '50%',
+                      transform: 'translateX(-50%) rotate(180deg)',
+                      width: '0',
+                      height: '0',
+                      borderLeft: '6px solid transparent',
+                      borderRight: '6px solid transparent',
+                      borderTop: '6px solid rgba(0, 184, 212, 0.3)',
+                      ...(isAbove ? {} : { transform: 'translateX(-50%)' }),
                     }}
-                  >
-                    <User
-                      className="w-3 h-3"
-                      style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px' }}
-                    />
-                    <p style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.8)' }}>
-                      {milestone.responsible}
-                    </p>
-                  </div>
-                )}
+                  />
 
-                {milestone.notes && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      marginTop: '6px',
-                      paddingTop: '6px',
-                      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-                    }}
-                  >
-                    <FileText
-                      className="w-3 h-3"
-                      style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px', marginTop: '2px' }}
-                    />
+                  <div style={{ marginBottom: '8px' }}>
                     <p
                       style={{
-                        fontSize: '11px',
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        lineHeight: '1.4',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: '#FFFFFF',
+                        marginBottom: '4px',
                       }}
                     >
-                      {milestone.notes}
+                      {milestone.label}
+                    </p>
+                    <p style={{ fontSize: '11px', color: '#00b8d4' }}>
+                      {formatDate(milestone.date)}
                     </p>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
+
+                  {milestone.responsible && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: '6px',
+                        paddingTop: '8px',
+                        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                      }}
+                    >
+                      <User
+                        className="w-3 h-3"
+                        style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px' }}
+                      />
+                      <p style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.8)' }}>
+                        {milestone.responsible}
+                      </p>
+                    </div>
+                  )}
+
+                  {milestone.notes && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        marginTop: '6px',
+                        paddingTop: '6px',
+                        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                      }}
+                    >
+                      <FileText
+                        className="w-3 h-3"
+                        style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px', marginTop: '2px' }}
+                      />
+                      <p
+                        style={{
+                          fontSize: '11px',
+                          color: 'rgba(255, 255, 255, 0.7)',
+                          lineHeight: '1.4',
+                        }}
+                      >
+                        {milestone.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Add keyframes for pulse animation */}
