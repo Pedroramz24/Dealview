@@ -254,92 +254,29 @@ const DealTimeline = ({ deal }) => {
           return (
             <div
               key={milestone.id}
+              onMouseEnter={() => setHoveredMilestone(milestone.id)}
+              onMouseLeave={() => setHoveredMilestone(null)}
               style={{
                 position: 'absolute',
-                top: '100px',
+                top: isAbove ? '10px' : '145px',
                 left: `calc(${milestone.position}% + 20px)`,
                 transform: 'translateX(-50%)',
+                width: '120px',
+                height: '90px',
+                cursor: 'pointer',
                 zIndex: 5,
               }}
             >
-              {/* Larger hover area for better interaction */}
-              <div
-                onMouseEnter={() => setHoveredMilestone(milestone.id)}
-                onMouseLeave={() => setHoveredMilestone(null)}
-                style={{
-                  position: 'absolute',
-                  top: isAbove ? '-60px' : '-10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '120px',
-                  height: '120px',
-                  cursor: 'pointer',
-                  zIndex: 2,
-                }}
-              >
-              {/* Milestone dot */}
-              <div
-                style={{
-                  width: '14px',
-                  height: '14px',
-                  borderRadius: '50%',
-                  background:
-                    milestone.status === 'completed'
-                      ? '#00b8d4'
-                      : milestone.status === 'active'
-                      ? '#00b8d4'
-                      : 'rgba(255, 255, 255, 0.15)',
-                  border:
-                    milestone.status === 'completed'
-                      ? '3px solid #00b8d4'
-                      : milestone.status === 'active'
-                      ? '3px solid #00b8d4'
-                      : '3px solid rgba(255, 255, 255, 0.3)',
-                  position: 'absolute',
-                  top: '-7px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  boxShadow:
-                    milestone.status === 'completed'
-                      ? '0 0 10px rgba(0, 184, 212, 0.6)'
-                      : milestone.status === 'active'
-                      ? '0 0 14px rgba(0, 184, 212, 0.8)'
-                      : 'none',
-                  transition: 'all 0.3s ease',
-                  animation: milestone.status === 'active' ? 'pulse 2s ease-in-out infinite' : 'none',
-                  zIndex: 3,
-                }}
-              />
-
-              {/* Vertical connector line */}
-              <div
-                style={{
-                  width: '2px',
-                  height: '45px',
-                  background:
-                    milestone.status === 'completed'
-                      ? 'rgba(0, 184, 212, 0.5)'
-                      : milestone.status === 'active'
-                      ? 'rgba(0, 184, 212, 0.6)'
-                      : 'rgba(255, 255, 255, 0.25)',
-                  position: 'absolute',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  [isAbove ? 'bottom' : 'top']: '0px',
-                  transition: 'all 0.3s ease',
-                  zIndex: 1,
-                }}
-              />
-
               {/* Milestone label container */}
               <div
                 style={{
                   position: 'absolute',
+                  [isAbove ? 'top' : 'bottom']: '0',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  [isAbove ? 'bottom' : 'top']: '50px',
                   textAlign: 'center',
                   width: '110px',
+                  pointerEvents: 'none',
                 }}
               >
                 <p
@@ -371,12 +308,66 @@ const DealTimeline = ({ deal }) => {
                 </p>
               </div>
 
+              {/* Vertical connector line */}
+              <div
+                style={{
+                  width: '2px',
+                  height: '45px',
+                  background:
+                    milestone.status === 'completed'
+                      ? 'rgba(0, 184, 212, 0.5)'
+                      : milestone.status === 'active'
+                      ? 'rgba(0, 184, 212, 0.6)'
+                      : 'rgba(255, 255, 255, 0.25)',
+                  position: 'absolute',
+                  [isAbove ? 'bottom' : 'top']: '0',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  transition: 'all 0.3s ease',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* Milestone dot - positioned on the timeline */}
+              <div
+                style={{
+                  width: '14px',
+                  height: '14px',
+                  borderRadius: '50%',
+                  background:
+                    milestone.status === 'completed'
+                      ? '#00b8d4'
+                      : milestone.status === 'active'
+                      ? '#00b8d4'
+                      : 'rgba(255, 255, 255, 0.15)',
+                  border:
+                    milestone.status === 'completed'
+                      ? '3px solid #00b8d4'
+                      : milestone.status === 'active'
+                      ? '3px solid #00b8d4'
+                      : '3px solid rgba(255, 255, 255, 0.3)',
+                  position: 'absolute',
+                  [isAbove ? 'bottom' : 'top']: isAbove ? '-52px' : '-52px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  boxShadow:
+                    milestone.status === 'completed'
+                      ? '0 0 10px rgba(0, 184, 212, 0.6)'
+                      : milestone.status === 'active'
+                      ? '0 0 14px rgba(0, 184, 212, 0.8)'
+                      : 'none',
+                  transition: 'all 0.3s ease',
+                  animation: milestone.status === 'active' ? 'pulse 2s ease-in-out infinite' : 'none',
+                  pointerEvents: 'none',
+                }}
+              />
+
               {/* Tooltip - smart positioning to avoid overflow */}
               {hoveredMilestone === milestone.id && (
                 <div
                   style={{
                     position: 'absolute',
-                    [isAbove ? 'bottom' : 'top']: isAbove ? '135px' : '135px',
+                    [isAbove ? 'top' : 'bottom']: isAbove ? '-140px' : '-140px',
                     // Adjust left position for edge milestones
                     left: isNearLeftEdge ? '0' : isNearRightEdge ? 'auto' : '50%',
                     right: isNearRightEdge ? '0' : 'auto',
@@ -396,10 +387,10 @@ const DealTimeline = ({ deal }) => {
                   <div
                     style={{
                       position: 'absolute',
-                      [isAbove ? 'top' : 'bottom']: isAbove ? '-6px' : '-6px',
+                      [isAbove ? 'bottom' : 'top']: isAbove ? '-6px' : '-6px',
                       left: isNearLeftEdge ? '20px' : isNearRightEdge ? 'auto' : '50%',
                       right: isNearRightEdge ? '20px' : 'auto',
-                      transform: `${isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)'} ${isAbove ? '' : 'rotate(180deg)'}`,
+                      transform: `${isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)'} ${isAbove ? 'rotate(180deg)' : ''}`,
                       width: '0',
                       height: '0',
                       borderLeft: '6px solid transparent',
@@ -472,7 +463,6 @@ const DealTimeline = ({ deal }) => {
                   )}
                 </div>
               )}
-              </div>
             </div>
           );
         })}
