@@ -77,8 +77,34 @@ LAYER_REGISTRY = {
         "style": {
             "type": "fill",
             "paint": {
-                "fill-color": "rgba(255, 193, 7, 0.2)",
-                "fill-outline-color": "rgba(255, 193, 7, 0.6)"
+                "fill-color": [
+                    "match",
+                    ["get", "ZONING_CODE"],
+                    # Residential zones - Green shades
+                    "R-1", "#4CAF50",
+                    "R-2", "#66BB6A",
+                    "R-3", "#81C784",
+                    "R-4", "#A5D6A7",
+                    "R-5", "#C8E6C9",
+                    "R-6", "#E8F5E9",
+                    # Commercial zones - Blue shades
+                    "C-1", "#2196F3",
+                    "C-2", "#42A5F5",
+                    "C-3", "#64B5F6",
+                    "C-3R", "#90CAF9",
+                    # Industrial zones - Orange shades
+                    "I-1", "#FF9800",
+                    "I-2", "#FFB74D",
+                    # Mixed Use - Purple shades
+                    "MXD", "#9C27B0",
+                    # Office - Teal shades
+                    "O-1", "#009688",
+                    "O-2", "#26A69A",
+                    # Default yellow for unmapped zones
+                    "#FFC107"
+                ],
+                "fill-opacity": 0.5,
+                "fill-outline-color": "#FFFFFF"
             }
         },
         "clickFields": ["ZONING_CODE", "ZONING_NAME", "DESCRIPTION"]
