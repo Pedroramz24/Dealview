@@ -371,13 +371,12 @@ const DealTimeline = ({ deal }) => {
                       position: 'absolute',
                       [isAbove ? 'top' : 'bottom']: isAbove ? '-6px' : '-6px',
                       left: '50%',
-                      transform: 'translateX(-50%) rotate(180deg)',
+                      transform: `translateX(-50%) ${isAbove ? '' : 'rotate(180deg)'}`,
                       width: '0',
                       height: '0',
                       borderLeft: '6px solid transparent',
                       borderRight: '6px solid transparent',
-                      borderTop: '6px solid rgba(0, 184, 212, 0.3)',
-                      ...(isAbove ? {} : { transform: 'translateX(-50%)' }),
+                      borderTop: '6px solid rgba(0, 184, 212, 0.4)',
                     }}
                   />
 
