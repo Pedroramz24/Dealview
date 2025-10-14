@@ -204,7 +204,7 @@ LAYER_REGISTRY = {
             }
         },
         "clickFields": ["PROJECT_NAME", "STATUS", "EST_COST"],
-        "defaultVisible": false
+        "defaultVisible": False
     }
 }
 
