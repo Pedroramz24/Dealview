@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { API } from '../App';
 
@@ -10,6 +10,10 @@ export const useMapLayers = (mapRef) => {
   const [loadedLayers, setLoadedLayers] = useState(new Set());
   const [layerData, setLayerData] = useState({});
   const [loading, setLoading] = useState(false);
+  
+  // Track layer configurations for restoration after style changes
+  const layerConfigsRef = useRef({});
+  const isRestoringRef = useRef(false);
 
   // Fetch layer registry on mount
   useEffect(() => {
@@ -28,6 +32,140 @@ export const useMapLayers = (mapRef) => {
 
     fetchRegistry();
   }, []);
+
+  // Listen for map style changes and restore layers
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    const map = mapRef.current.getMap();
+    if (!map) return;
+
+    const handleStyleData = () => {
+      // Don't restore if we're already in the middle of restoring
+      if (isRestoringRef.current) return;
+      
+      // Check if we have loaded layers that need to be restored
+      if (loadedLayers.size > 0 && Object.keys(layerConfigsRef.current).length > 0) {
+        console.log('🔄 Map style changed, restoring layers...');
+        isRestoringRef.current = true;
+        
+        // Restore all layers after a short delay to ensure style is fully loaded
+        setTimeout(() => {
+          restoreAllLayers();
+          isRestoringRef.current = false;
+        }, 100);
+      }
+    };
+
+    map.on('styledata', handleStyleData);
+
+    return () => {
+      map.off('styledata', handleStyleData);
+    };
+  }, [mapRef, loadedLayers]);
+
+  /**
+   * Restore all previously loaded layers (called after style change)
+   */
+  const restoreAllLayers = useCallback(() => {
+    if (!mapRef.current || !layerRegistry) return;
+
+    const map = mapRef.current.getMap();
+    if (!map || !map.isStyleLoaded()) return;
+
+    console.log(`Restoring ${loadedLayers.size} layers...`);
+
+    loadedLayers.forEach(layerId => {
+      const config = layerConfigsRef.current[layerId];
+      if (!config) return;
+
+      const { data, opacity, layerConfig } = config;
+      const sourceId = `layer-source-${layerId}`;
+      const layerIdOnMap = `layer-${layerId}`;
+      const labelLayerId = `layer-${layerId}-labels`;
+
+      try {
+        // Re-add source
+        if (!map.getSource(sourceId)) {
+          map.addSource(sourceId, {
+            type: 'geojson',
+            data: data,
+          });
+        }
+
+        // Re-add main layer
+        if (!map.getLayer(layerIdOnMap)) {
+          const style = layerConfig.style;
+          const layerOptions = {
+            id: layerIdOnMap,
+            type: style.type,
+            source: sourceId,
+            paint: {
+              ...style.paint,
+            },
+          };
+
+          // Apply opacity
+          if (style.type === 'fill') {
+            layerOptions.paint['fill-opacity'] = opacity / 100;
+          } else if (style.type === 'line') {
+            layerOptions.paint['line-opacity'] = opacity / 100;
+          } else if (style.type === 'circle') {
+            layerOptions.paint['circle-opacity'] = opacity / 100;
+          }
+
+          map.addLayer(layerOptions);
+        }
+
+        // Re-add labels if configured
+        if (layerConfig.labelConfig && !map.getLayer(labelLayerId)) {
+          const labelConfig = layerConfig.labelConfig;
+          
+          map.addLayer({
+            id: labelLayerId,
+            type: 'symbol',
+            source: sourceId,
+            layout: {
+              'text-field': labelConfig.textField,
+              'text-size': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                10, 8,
+                14, 10,
+                16, 11,
+                18, 12,
+                20, 14
+              ],
+              'text-allow-overlap': true,
+              'text-ignore-placement': true,
+              'symbol-placement': 'point',
+              'text-anchor': 'center',
+              'text-justify': 'center'
+            },
+            paint: {
+              'text-color': labelConfig.textColor,
+              'text-halo-color': labelConfig.textHaloColor,
+              'text-halo-width': labelConfig.textHaloWidth,
+              'text-halo-blur': 0.5,
+              'text-opacity': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                10, 0,
+                13, 0.7,
+                15, 1
+              ]
+            }
+          });
+        }
+
+        console.log(`✓ Restored layer: ${layerConfig.name}`);
+      } catch (error) {
+        console.error(`Error restoring layer ${layerId}:`, error);
+      }
+    });
+  }, [mapRef, layerRegistry, loadedLayers]);
 
   /**
    * Add a layer to the map
