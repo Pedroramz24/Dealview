@@ -160,7 +160,7 @@ LAYER_REGISTRY = {
             "minArea": 5000
         },
         "clickFields": ["Base", "BaseDescription", "Zoning", "ZoningDetail"],
-        "defaultVisible": false
+        "defaultVisible": False
     },
     
     # Infrastructure
