@@ -15,13 +15,17 @@ export const useMapLayers = (mapRef) => {
   useEffect(() => {
     const fetchRegistry = async () => {
       try {
+        console.log(`[useMapLayers] Fetching layer registry from ${API}/layers/registry`);
         const token = localStorage.getItem('token');
         const response = await axios.get(`${API}/layers/registry`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log(`[useMapLayers] Layer registry response:`, response.data);
         setLayerRegistry(response.data.layers);
+        console.log(`[useMapLayers] Layer registry set with ${Object.keys(response.data.layers).length} layers`);
       } catch (error) {
-        console.error('Error fetching layer registry:', error);
+        console.error('[useMapLayers] Error fetching layer registry:', error);
+        console.error('[useMapLayers] Error details:', error.response?.data || error.message);
       }
     };
 
