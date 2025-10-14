@@ -189,13 +189,13 @@ const DealTimeline = ({ deal }) => {
         <div
           style={{
             position: 'absolute',
-            top: '80px',
-            left: '0',
-            height: '4px',
-            width: `${timelineMetrics.currentProgress}%`,
+            top: '100px',
+            left: '20px',
+            height: '3px',
+            width: `calc(${timelineMetrics.currentProgress}% - 20px)`,
             background: 'linear-gradient(90deg, #00b8d4, #00d4ff)',
             borderRadius: '2px',
-            boxShadow: '0 0 12px rgba(0, 184, 212, 0.5)',
+            boxShadow: '0 0 10px rgba(0, 184, 212, 0.5)',
             transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         />
