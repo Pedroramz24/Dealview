@@ -20,7 +20,8 @@ LAYER_REGISTRY = {
                 "fill-outline-color": "#00b8d4"
             }
         },
-        "clickFields": ["CNTY_NM", "FIPS_ST_CNTY_CD"]
+        "clickFields": ["CNTY_NM", "FIPS_ST_CNTY_CD"],
+        "defaultVisible": false
     },
     "city_limits": {
         "id": "city_limits",
