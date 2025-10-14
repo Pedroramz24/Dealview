@@ -330,6 +330,21 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE TESTING COMPLETED: Map toggle functionality works perfectly (satellite ↔ dark street view). 12 markers present with correct cyan (#00b8d4) concentric circles, white center dots, and pulsing animation. Markers clearly visible on both map styles. Custom close button (×) positioned at top-left and functional. Popup styling: white headings (#FFFFFF), light grey labels (#B3B3B3), cyan price values (#00b8d4), white 'View Details' button. Map interactions smooth. Minor: Popup background CSS override issue (shows transparent instead of #1A1A1A) and marker hover scale effect not detected, but core functionality works perfectly. All primary requirements met."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE MAP SYSTEM VERIFIED: Map loads perfectly with satellite view by default, 14 cyan deal markers visible with correct styling. Layer Manager opens successfully showing all 6 categories (Administrative, Environmental, Planning & Zoning, Infrastructure, Transportation) with proper layer listings. Map style toggle (Street/Satellite) functions correctly. Zoom in/out works smoothly. Dark glass design maintained throughout. All core map functionality working as expected."
+
+  - task: "Layer System - Zoning Layer Toggle"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/LayerManager.js, /app/frontend/src/hooks/useMapLayers.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: San Antonio Zoning layer toggle switch is not functional. When clicking the toggle switch in the Layer Manager, the layer does not activate or become visible on the map. The toggle UI appears to work (switch moves) but no actual layer data is loaded or displayed. This prevents testing of layer visibility across zoom levels, map style changes, and layer persistence. Root cause investigation needed for layer activation mechanism."
 
 metadata:
   created_by: "main_agent"
