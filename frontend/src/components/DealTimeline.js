@@ -169,12 +169,12 @@ const DealTimeline = ({ deal }) => {
         Transaction Timeline
       </h3>
 
-      <div style={{ position: 'relative', paddingTop: '20px', paddingBottom: '60px' }}>
+      <div style={{ position: 'relative', paddingTop: '80px', paddingBottom: '80px' }}>
         {/* Background track */}
         <div
           style={{
             position: 'absolute',
-            top: '20px',
+            top: '80px',
             left: '0',
             right: '0',
             height: '4px',
@@ -187,7 +187,7 @@ const DealTimeline = ({ deal }) => {
         <div
           style={{
             position: 'absolute',
-            top: '20px',
+            top: '80px',
             left: '0',
             height: '4px',
             width: `${timelineMetrics.currentProgress}%`,
@@ -203,7 +203,7 @@ const DealTimeline = ({ deal }) => {
           <div
             style={{
               position: 'absolute',
-              top: '12px',
+              top: '72px',
               left: `${timelineMetrics.currentProgress}%`,
               transform: 'translateX(-50%)',
               width: '20px',
