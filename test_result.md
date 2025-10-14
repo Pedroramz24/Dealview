@@ -339,8 +339,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Transaction Timeline Component"
-  stuck_tasks: []
+    - "Layer Management API - FEMA Floodplain Query"
+    - "Layer Management API - Counties Identify"
+  stuck_tasks:
+    - "Layer Management API - FEMA Floodplain Query"
+    - "Layer Management API - Counties Identify"
   test_all: false
   test_priority: "high_first"
 
