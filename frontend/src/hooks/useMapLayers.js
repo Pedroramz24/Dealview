@@ -291,6 +291,13 @@ export const useMapLayers = (mapRef) => {
         setLayerData((prev) => ({ ...prev, [layerId]: geojsonData }));
         setLoadedLayers((prev) => new Set([...prev, layerId]));
         
+        // Store layer configuration for restoration after style changes
+        layerConfigsRef.current[layerId] = {
+          data: geojsonData,
+          opacity: opacity,
+          layerConfig: layerConfig
+        };
+        
         console.log(`✓ Added layer: ${layerConfig.name} (${featureCount} features)`);
         
       } catch (error) {
