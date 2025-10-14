@@ -131,6 +131,42 @@ const MainLayout = () => {
                   {item.label}
                 </NavLink>
               ))}
+
+              {/* Layer Manager Toggle Button */}
+              <button
+                onClick={() => setLayerManagerOpen(!layerManagerOpen)}
+                style={{
+                  width: '100%',
+                  height: '56px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 16px',
+                  marginTop: '16px',
+                  background: layerManagerOpen ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255,255,255,0.05)',
+                  border: `1px solid ${layerManagerOpen ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255,255,255,0.1)'}`,
+                  borderRadius: '8px',
+                  color: layerManagerOpen ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 150ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  if (!layerManagerOpen) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!layerManagerOpen) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                  }
+                }}
+              >
+                <Layers className="w-5 h-5 mr-3" />
+                Layer Manager
+              </button>
             </nav>
 
             <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
