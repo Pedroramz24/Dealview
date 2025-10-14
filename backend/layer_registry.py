@@ -36,7 +36,8 @@ LAYER_REGISTRY = {
             "type": "line",
             "paint": {
                 "line-color": "#00b8d4",
-                "line-width": 2
+                "line-width": 3,
+                "line-opacity": 0.9
             }
         },
         "clickFields": ["CITY_NM", "CITY_CODE"]
