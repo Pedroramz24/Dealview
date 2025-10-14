@@ -65,24 +65,68 @@ class Token(BaseModel):
 class Deal(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    
+    # Core Information
+    deal_title: Optional[str] = None
     property_address: str
-    asset_type: str  # Retail, Industrial, Office, Land
+    asset_type: str  # Retail, Industrial, Office, Land, Restaurants, Hotels, Medical
+    deal_status: str = "New"
+    pipeline_stage: str = "New"
+    priority: str = "Medium"  # High, Medium, Low
+    owner_visibility: str = "Team"  # Private, Team
     description: str = ""
-    asking_price: float
-    building_size: Optional[float] = None  # sq ft
-    lot_size: Optional[float] = None  # sq ft
-    lot_acres: Optional[float] = None  # acres
-    occupancy: Optional[str] = None
-    stage: str = "New"  # New, Qualified, Underwriting, Negotiation, Under Contract, Closed
-    primary_image_url: Optional[str] = None
+    
+    # Location & Map
     latitude: float
     longitude: float
+    display_on_map: bool = True
+    market: Optional[str] = None
+    submarket: Optional[str] = None
+    
+    # Property Facts
+    building_size: Optional[float] = None  # sq ft
+    lot_size: Optional[float] = None  # acres
+    lot_acres: Optional[float] = None  # acres (alias for lot_size)
+    year_built: Optional[int] = None
+    zoning: Optional[str] = None
+    occupancy: Optional[float] = None
+    parking_spaces: Optional[int] = None
+    key_features: Optional[str] = None
+    
+    # Financials
+    asking_price: float
+    noi: Optional[float] = None  # Net Operating Income
+    cap_rate: Optional[float] = None
+    lease_type: Optional[str] = None  # NNN, Gross, Modified Gross
+    proforma_notes: Optional[str] = None
+    
+    # Contacts & Roles
+    primary_contact: Optional[str] = None
+    additional_contacts: List[Dict[str, str]] = []
+    last_contact_date: Optional[str] = None
+    
+    # Activities & Notes
+    next_action: Optional[str] = None
+    next_action_date: Optional[str] = None
     notes: str = ""
-    contacts: List[Dict[str, str]] = []  # [{"contact_id": "...", "role": "seller"}]
+    
+    # Media & Documents
+    primary_image_url: Optional[str] = None
+    gallery_images: List[str] = []
     documents: List[Dict[str, str]] = []  # [{"name": "...", "url": "..."}]
+    
+    # Dates & IDs
+    target_close_date: Optional[str] = None
+    external_ids: Optional[str] = None
+    
+    # Legacy/Deprecated (keeping for backwards compatibility)
+    stage: str = "New"  # Use deal_status instead
+    contacts: List[Dict[str, str]] = []  # Use additional_contacts instead
+    last_contact: Optional[datetime] = None  # Use last_contact_date instead
+    
+    # System fields
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    last_contact: Optional[datetime] = None
     created_by: str = ""
 
 class DealCreate(BaseModel):
