@@ -19,6 +19,25 @@ code, pre, kbd {
     font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, monospace !important;
 }
 
+/* File input styling */
+input[type="file"] {
+    color: #FFFFFF !important;
+}
+
+input[type="file"]::file-selector-button {
+    background: rgba(255,255,255,0.1);
+    color: #FFFFFF;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 12px;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: rgba(255,255,255,0.15);
+}
+
 /* Leaflet Map Container - Dark Background */
 .leaflet-container {
     background: #0a0a0b !important;
