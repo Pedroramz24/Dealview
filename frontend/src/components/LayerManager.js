@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, X, ChevronDown, ChevronRight, Layers, RefreshCw, MinusCircle } from 'lucide-react';
 import axios from 'axios';
 import { API } from '../App';
+import { useMapLayerContext } from '../contexts/MapLayerContext';
 
-const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) => {
+const LayerManager = ({ isOpen, onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({
     administrative: true,
@@ -14,6 +15,9 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
   });
   const [layerRegistry, setLayerRegistry] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // Get map layer handlers from context if available (MapView only)
+  const layerContext = useMapLayerContext();
 
   // Fetch layer registry from backend
   useEffect(() => {
