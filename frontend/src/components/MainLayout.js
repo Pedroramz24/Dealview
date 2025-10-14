@@ -26,6 +26,9 @@ const MainLayout = () => {
 
   return (
     <div className="flex h-screen" style={{ background: '#000000' }}>
+      {/* Layer Manager Panel */}
+      <LayerManager isOpen={layerManagerOpen} onClose={() => setLayerManagerOpen(false)} />
+
       {/* Floating Menu Button - Shows when sidebar is closed */}
       {!sidebarOpen && (
         <button
