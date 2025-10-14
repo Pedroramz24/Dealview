@@ -23,11 +23,15 @@ const MainLayout = () => {
     { path: '/team', label: 'Team', icon: UsersRound },
   ];
 
+  const handleLayerManagerToggle = () => {
+    // Only works on the Map page
+    if (location.pathname === '/' && window.toggleLayerManager) {
+      window.toggleLayerManager();
+    }
+  };
+
   return (
     <div className="flex h-screen" style={{ background: '#000000' }}>
-      {/* Layer Manager Panel */}
-      <LayerManager isOpen={layerManagerOpen} onClose={() => setLayerManagerOpen(false)} />
-
       {/* Floating Menu Button - Shows when sidebar is closed */}
       {!sidebarOpen && (
         <button
