@@ -1,12 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
-import { Map, LayoutDashboard, FileText, Users, Trello, UsersRound, LogOut, Menu, X } from 'lucide-react';
+import { Map, LayoutDashboard, FileText, Users, Trello, UsersRound, LogOut, Menu, X, Layers } from 'lucide-react';
+import LayerManager from './LayerManager';
 
 const MainLayout = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [layerManagerOpen, setLayerManagerOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -24,6 +26,9 @@ const MainLayout = () => {
 
   return (
     <div className="flex h-screen" style={{ background: '#000000' }}>
+      {/* Layer Manager Panel */}
+      <LayerManager isOpen={layerManagerOpen} onClose={() => setLayerManagerOpen(false)} />
+
       {/* Floating Menu Button - Shows when sidebar is closed */}
       {!sidebarOpen && (
         <button
