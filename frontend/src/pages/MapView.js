@@ -215,7 +215,7 @@ const MapView = () => {
   }
 
   return (
-    <MapLayerProvider>
+    <MapLayerProvider mapRef={mapRef}>
       <div className="h-full relative" style={{ background: '#000000' }}>
         {/* Layer Manager */}
         <LayerManager
