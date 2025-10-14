@@ -77,13 +77,22 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
 
   // Toggle layer visibility
   const toggleLayer = (layerId) => {
+    const newVisible = !layerStates[layerId]?.visible;
+    const newState = {
+      ...layerStates[layerId],
+      visible: newVisible,
+      opacity: layerStates[layerId]?.opacity || 100,
+    };
+    
     setLayerStates((prev) => ({
       ...prev,
-      [layerId]: {
-        ...prev[layerId],
-        visible: !prev[layerId]?.visible,
-      },
+      [layerId]: newState,
     }));
+    
+    // Notify parent component
+    if (onLayerToggle) {
+      onLayerToggle(layerId, newVisible, newState.opacity);
+    }
   };
 
   // Update layer opacity
@@ -95,6 +104,11 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
         opacity: opacity,
       },
     }));
+    
+    // Notify parent component
+    if (onLayerOpacityChange) {
+      onLayerOpacityChange(layerId, opacity);
+    }
   };
 
   // Toggle category expansion
