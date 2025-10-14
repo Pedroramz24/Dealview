@@ -354,9 +354,11 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Layer System - Zoning Layer Toggle"
     - "Layer Management API - FEMA Floodplain Query"
     - "Layer Management API - Counties Identify"
   stuck_tasks:
+    - "Layer System - Zoning Layer Toggle"
     - "Layer Management API - FEMA Floodplain Query"
     - "Layer Management API - Counties Identify"
   test_all: false
