@@ -235,108 +235,160 @@ const DealsList = () => {
               Create Deal
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '700' }}>Create New Deal</DialogTitle>
+              <DialogTitle style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>Create New Deal</DialogTitle>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>Fill in the property details to create a new deal</p>
             </DialogHeader>
-            <form onSubmit={handleCreateDeal} className="space-y-6">
-              {/* Property Image Upload */}
-              <div style={{ 
-                background: 'rgba(255,255,255,0.03)', 
-                border: '1px solid rgba(255,255,255,0.1)', 
-                borderRadius: '12px',
-                padding: '20px'
-              }}>
-                <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '12px', display: 'block' }}>Property Image</Label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setImageFile(e.target.files[0])}
-                  style={{
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.15)',
-                    color: '#FFFFFF'
-                  }}
-                />
-                {imageFile && (
-                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginTop: '8px' }}>
-                    Selected: {imageFile.name}
-                  </p>
-                )}
-              </div>
-
-              {/* Property Details */}
-              <div>
-                <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Property Address *</Label>
-                <Input
-                  value={newDeal.property_address}
-                  onChange={(e) => setNewDeal({ ...newDeal, property_address: e.target.value })}
-                  required
-                  placeholder="123 Main St, San Antonio, TX"
-                  data-testid="deal-address-input"
-                  className="premium-glass-input"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Property Type *</Label>
-                  <Select value={newDeal.asset_type} onValueChange={(value) => setNewDeal({ ...newDeal, asset_type: value })}>
-                    <SelectTrigger data-testid="deal-asset-type-select" className="premium-glass-input">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.15)' }}>
-                      <SelectItem value="Office">Office</SelectItem>
-                      <SelectItem value="Retail Centers">Retail Centers</SelectItem>
-                      <SelectItem value="Industrial">Industrial</SelectItem>
-                      <SelectItem value="Land">Land</SelectItem>
-                      <SelectItem value="Restaurants">Restaurants</SelectItem>
-                      <SelectItem value="Hotels">Hotels</SelectItem>
-                      <SelectItem value="Medical">Medical</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Status *</Label>
-                  <Select value={newDeal.stage} onValueChange={(value) => setNewDeal({ ...newDeal, stage: value })}>
-                    <SelectTrigger className="premium-glass-input">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.15)' }}>
-                      <SelectItem value="New">New</SelectItem>
-                      <SelectItem value="Qualified">Qualified</SelectItem>
-                      <SelectItem value="Underwriting">Underwriting</SelectItem>
-                      <SelectItem value="Negotiation">Negotiation</SelectItem>
-                      <SelectItem value="Under Contract">Under Contract</SelectItem>
-                      <SelectItem value="Closed">Closed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Financials Section */}
-              <div style={{ 
-                background: 'rgba(255,255,255,0.03)', 
-                border: '1px solid rgba(255,255,255,0.1)', 
-                borderRadius: '12px',
-                padding: '20px'
-              }}>
-                <h3 style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Financials</h3>
-                <div className="grid grid-cols-2 gap-6">
+            
+            <form onSubmit={handleCreateDeal} className="space-y-8">
+              {/* CORE SECTION */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Core Information</h3>
+                
+                <div className="space-y-4">
                   <div>
-                    <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Asking Price *</Label>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Deal Title *</Label>
                     <Input
-                      type="number"
-                      value={newDeal.asking_price}
-                      onChange={(e) => setNewDeal({ ...newDeal, asking_price: e.target.value })}
+                      value={newDeal.deal_title}
+                      onChange={(e) => setNewDeal({ ...newDeal, deal_title: e.target.value })}
                       required
-                      placeholder="1000000"
-                      data-testid="deal-price-input"
+                      placeholder="e.g., 5619 Evers Rd – Retail Center"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Property Address *</Label>
+                    <Input
+                      value={newDeal.property_address}
+                      onChange={(e) => setNewDeal({ ...newDeal, property_address: e.target.value })}
+                      required
+                      placeholder="123 Main St, San Antonio, TX 78201"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Asset Type *</Label>
+                      <Select value={newDeal.asset_type} onValueChange={(value) => setNewDeal({ ...newDeal, asset_type: value })}>
+                        <SelectTrigger className="premium-glass-input">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Office">Office</SelectItem>
+                          <SelectItem value="Retail Centers">Retail Centers</SelectItem>
+                          <SelectItem value="Industrial">Industrial</SelectItem>
+                          <SelectItem value="Land">Land</SelectItem>
+                          <SelectItem value="Restaurants">Restaurants</SelectItem>
+                          <SelectItem value="Hotels">Hotels</SelectItem>
+                          <SelectItem value="Medical">Medical</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Deal Status *</Label>
+                      <Select value={newDeal.deal_status} onValueChange={(value) => setNewDeal({ ...newDeal, deal_status: value, pipeline_stage: value })}>
+                        <SelectTrigger className="premium-glass-input">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="New">New</SelectItem>
+                          <SelectItem value="Qualified">Qualified</SelectItem>
+                          <SelectItem value="Underwriting">Underwriting</SelectItem>
+                          <SelectItem value="Negotiation">Negotiation</SelectItem>
+                          <SelectItem value="Under Contract">Under Contract</SelectItem>
+                          <SelectItem value="Closed">Closed</SelectItem>
+                          <SelectItem value="Lost">Lost</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Priority</Label>
+                      <Select value={newDeal.priority} onValueChange={(value) => setNewDeal({ ...newDeal, priority: value })}>
+                        <SelectTrigger className="premium-glass-input">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="High">High</SelectItem>
+                          <SelectItem value="Medium">Medium</SelectItem>
+                          <SelectItem value="Low">Low</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Owner Visibility</Label>
+                    <Select value={newDeal.owner_visibility} onValueChange={(value) => setNewDeal({ ...newDeal, owner_visibility: value })}>
+                      <SelectTrigger className="premium-glass-input">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Private">Private</SelectItem>
+                        <SelectItem value="Team">Team</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* LOCATION & MAP */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Location & Map</h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Market</Label>
+                    <Input
+                      value={newDeal.market}
+                      onChange={(e) => setNewDeal({ ...newDeal, market: e.target.value })}
+                      placeholder="e.g., San Antonio"
                       className="premium-glass-input"
                     />
                   </div>
                   <div>
-                    <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Building Size (sq ft)</Label>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Submarket</Label>
+                    <Input
+                      value={newDeal.submarket}
+                      onChange={(e) => setNewDeal({ ...newDeal, submarket: e.target.value })}
+                      placeholder="e.g., NW"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Latitude</Label>
+                    <Input
+                      type="number"
+                      step="any"
+                      value={newDeal.latitude}
+                      onChange={(e) => setNewDeal({ ...newDeal, latitude: e.target.value })}
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Longitude</Label>
+                    <Input
+                      type="number"
+                      step="any"
+                      value={newDeal.longitude}
+                      onChange={(e) => setNewDeal({ ...newDeal, longitude: e.target.value })}
+                      className="premium-glass-input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* PROPERTY FACTS */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Property Facts</h3>
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Building Size (SF)</Label>
                     <Input
                       type="number"
                       value={newDeal.building_size}
@@ -345,27 +397,264 @@ const DealsList = () => {
                       className="premium-glass-input"
                     />
                   </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Lot Size (acres)</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={newDeal.lot_size}
+                      onChange={(e) => setNewDeal({ ...newDeal, lot_size: e.target.value })}
+                      placeholder="1.5"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Year Built</Label>
+                    <Input
+                      type="number"
+                      value={newDeal.year_built}
+                      onChange={(e) => setNewDeal({ ...newDeal, year_built: e.target.value })}
+                      placeholder="2020"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Zoning</Label>
+                    <Input
+                      value={newDeal.zoning}
+                      onChange={(e) => setNewDeal({ ...newDeal, zoning: e.target.value })}
+                      placeholder="C-2"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Occupancy (%)</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={newDeal.occupancy}
+                      onChange={(e) => setNewDeal({ ...newDeal, occupancy: e.target.value })}
+                      placeholder="95"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Parking Spaces</Label>
+                    <Input
+                      type="number"
+                      value={newDeal.parking_spaces}
+                      onChange={(e) => setNewDeal({ ...newDeal, parking_spaces: e.target.value })}
+                      placeholder="50"
+                      className="premium-glass-input"
+                    />
+                  </div>
                 </div>
                 
-                {/* Auto-calculated Price per SF */}
-                {newDeal.asking_price && newDeal.building_size && (
-                  <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
-                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Price per SF: </span>
-                    <span style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600' }}>${calculatePricePerSF()}</span>
+                <div className="mt-4">
+                  <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Key Features</Label>
+                  <Input
+                    value={newDeal.key_features}
+                    onChange={(e) => setNewDeal({ ...newDeal, key_features: e.target.value })}
+                    placeholder="Corner lot, highway visibility, new HVAC"
+                    className="premium-glass-input"
+                  />
+                </div>
+              </div>
+
+              {/* FINANCIALS */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Financials</h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Asking Price *</Label>
+                    <Input
+                      type="number"
+                      value={newDeal.asking_price}
+                      onChange={(e) => setNewDeal({ ...newDeal, asking_price: e.target.value })}
+                      required
+                      placeholder="1000000"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>NOI</Label>
+                    <Input
+                      type="number"
+                      value={newDeal.noi}
+                      onChange={(e) => setNewDeal({ ...newDeal, noi: e.target.value })}
+                      placeholder="75000"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Cap Rate (%)</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={newDeal.cap_rate}
+                      onChange={(e) => setNewDeal({ ...newDeal, cap_rate: e.target.value })}
+                      placeholder="7.5"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Lease Type</Label>
+                    <Select value={newDeal.lease_type} onValueChange={(value) => setNewDeal({ ...newDeal, lease_type: value })}>
+                      <SelectTrigger className="premium-glass-input">
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NNN">NNN</SelectItem>
+                        <SelectItem value="Gross">Gross</SelectItem>
+                        <SelectItem value="Modified Gross">Modified Gross</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="mt-4">
+                  <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Pro Forma Notes</Label>
+                  <textarea
+                    className="premium-glass-input w-full min-h-[80px] p-3"
+                    value={newDeal.proforma_notes}
+                    onChange={(e) => setNewDeal({ ...newDeal, proforma_notes: e.target.value })}
+                    placeholder="Add financial assumptions or pro forma details..."
+                  />
+                </div>
+                
+                {/* Auto-Calculations Display */}
+                {(calculatePricePerSFBuilding() || calculatePricePerSFLand() || calculatePricePerAcre() || calculateCapRate()) && (
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    {calculatePricePerSFBuilding() && (
+                      <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price/SF (Building)</span>
+                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>${calculatePricePerSFBuilding()}</span>
+                      </div>
+                    )}
+                    {calculatePricePerAcre() && (
+                      <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price/Acre</span>
+                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>${calculatePricePerAcre()}</span>
+                      </div>
+                    )}
+                    {calculateCapRate() && (
+                      <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Auto Cap Rate</span>
+                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>{calculateCapRate()}%</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
-              {/* Notes Section */}
-              <div>
-                <Label style={{ color: '#FFFFFF', fontWeight: '600', marginBottom: '8px', display: 'block' }}>Notes</Label>
-                <textarea
-                  className="premium-glass-input w-full min-h-[120px] p-3"
-                  value={newDeal.notes}
-                  onChange={(e) => setNewDeal({ ...newDeal, notes: e.target.value })}
-                  placeholder="Add property notes, observations, or important details..."
-                  style={{ resize: 'vertical' }}
-                />
+              {/* CONTACTS & ROLES */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Contacts & Roles</h3>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Primary Contact</Label>
+                    <Input
+                      value={newDeal.primary_contact}
+                      onChange={(e) => setNewDeal({ ...newDeal, primary_contact: e.target.value })}
+                      placeholder="John Doe - Seller/Owner/Broker"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Last Contact Date</Label>
+                    <Input
+                      type="date"
+                      value={newDeal.last_contact_date}
+                      onChange={(e) => setNewDeal({ ...newDeal, last_contact_date: e.target.value })}
+                      className="premium-glass-input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* ACTIVITIES & NOTES */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Activities & Notes</h3>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Next Action</Label>
+                    <Input
+                      value={newDeal.next_action}
+                      onChange={(e) => setNewDeal({ ...newDeal, next_action: e.target.value })}
+                      placeholder="e.g., Schedule tour, Send OM"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Next Action Date</Label>
+                    <Input
+                      type="date"
+                      value={newDeal.next_action_date}
+                      onChange={(e) => setNewDeal({ ...newDeal, next_action_date: e.target.value })}
+                      className="premium-glass-input"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Internal Notes</Label>
+                  <textarea
+                    className="premium-glass-input w-full min-h-[120px] p-3"
+                    value={newDeal.notes}
+                    onChange={(e) => setNewDeal({ ...newDeal, notes: e.target.value })}
+                    placeholder="Add detailed notes, observations, or important information about this deal..."
+                  />
+                </div>
+              </div>
+
+              {/* MEDIA & DOCS */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Media & Documents</h3>
+                
+                <div>
+                  <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '12px', display: 'block' }}>Primary Image</Label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setImageFile(e.target.files[0])}
+                    className="premium-glass-input"
+                  />
+                  {imageFile && (
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginTop: '8px' }}>
+                      Selected: {imageFile.name}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* DATES & IDS */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dates & IDs</h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Target Close Date</Label>
+                    <Input
+                      type="date"
+                      value={newDeal.target_close_date}
+                      onChange={(e) => setNewDeal({ ...newDeal, target_close_date: e.target.value })}
+                      className="premium-glass-input"
+                    />
+                  </div>
+                  <div>
+                    <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>External IDs</Label>
+                    <Input
+                      value={newDeal.external_ids}
+                      onChange={(e) => setNewDeal({ ...newDeal, external_ids: e.target.value })}
+                      placeholder="MLS#, LoopNet ID, CoStar ID"
+                      className="premium-glass-input"
+                    />
+                  </div>
+                </div>
               </div>
 
               <Button 
@@ -375,11 +664,13 @@ const DealsList = () => {
                   width: '100%',
                   background: '#00b8d4',
                   color: '#000000',
-                  padding: '14px',
+                  padding: '16px',
                   fontWeight: '600',
-                  fontSize: '15px'
+                  fontSize: '16px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: uploadingImage ? 'not-allowed' : 'pointer'
                 }}
-                data-testid="submit-deal-button"
               >
                 {uploadingImage ? 'Uploading Image...' : 'Create Deal'}
               </Button>
