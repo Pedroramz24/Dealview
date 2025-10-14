@@ -43,10 +43,10 @@ export const useMapLayers = (mapRef) => {
         const token = localStorage.getItem('token');
         const map = mapRef.current.getMap();
 
-        // Get current map bounds with 20% padding to avoid clipping
+        // Get current map bounds with 50% padding to keep data loaded when panning
         const bounds = map.getBounds();
-        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.2;
-        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.2;
+        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.5;
+        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.5;
         const bbox = `${bounds.getWest() - lngPadding},${bounds.getSouth() - latPadding},${bounds.getEast() + lngPadding},${bounds.getNorth() + latPadding}`;
 
         // Fetch layer data
@@ -98,10 +98,10 @@ export const useMapLayers = (mapRef) => {
           });
         }
 
-        // Get current map bounds with 20% padding to avoid clipping
+        // Get current map bounds with 50% padding to keep data loaded when panning
         const bounds = map.getBounds();
-        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.2;
-        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.2;
+        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.5;
+        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.5;
         const bbox = `${bounds.getWest() - lngPadding},${bounds.getSouth() - latPadding},${bounds.getEast() + lngPadding},${bounds.getNorth() + latPadding}`;
 
         // Fetch layer data
