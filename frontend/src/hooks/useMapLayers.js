@@ -98,9 +98,11 @@ export const useMapLayers = (mapRef) => {
           });
         }
 
-        // Get current map bounds
+        // Get current map bounds with 20% padding to avoid clipping
         const bounds = map.getBounds();
-        const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.2;
+        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.2;
+        const bbox = `${bounds.getWest() - lngPadding},${bounds.getSouth() - latPadding},${bounds.getEast() + lngPadding},${bounds.getNorth() + latPadding}`;
 
         // Fetch layer data
         const response = await axios.get(`${API}/layers/${layerId}/query`, {
@@ -146,6 +148,32 @@ export const useMapLayers = (mapRef) => {
 
         if (!map.getLayer(layerIdOnMap)) {
           map.addLayer(layerOptions);
+        }
+
+        // Add text labels if layer has labelConfig (for zoning layer)
+        if (layerConfig.labelConfig) {
+          const labelLayerId = `layer-${layerId}-labels`;
+          if (!map.getLayer(labelLayerId)) {
+            map.addLayer({
+              id: labelLayerId,
+              type: 'symbol',
+              source: sourceId,
+              layout: {
+                'text-field': layerConfig.labelConfig.textField,
+                'text-size': layerConfig.labelConfig.textSize,
+                'text-allow-overlap': false,
+                'text-ignore-placement': false,
+                'text-optional': true,
+                'symbol-placement': 'point'
+              },
+              paint: {
+                'text-color': layerConfig.labelConfig.textColor,
+                'text-halo-color': layerConfig.labelConfig.textHaloColor,
+                'text-halo-width': layerConfig.labelConfig.textHaloWidth,
+                'text-opacity': opacity / 100
+              }
+            });
+          }
         }
 
         // Store layer data and mark as loaded
