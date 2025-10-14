@@ -102,20 +102,20 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Update map and ping styling: 1) Map toggle between satellite and dark style map, 2) Primary color black, headings white, light grey text, 3) New ping design with cyan (#00b8d4) concentric circles with pulsing animation, 4) Smooth scrolling with fixed and scaling pings, 5) Close button on top-left of ping popup"
+user_problem_statement: "Complete the Property Details page by adding all fields from Create New Deal form. Backend model updated to include: deal_title, deal_status, priority, owner_visibility, market, submarket, year_built, zoning, parking_spaces, key_features, noi, cap_rate, lease_type, proforma_notes, primary_contact, last_contact_date, next_action, next_action_date, target_close_date, external_ids. Frontend DealDetails page updated to display NOI, Cap Rate, Lease Type, and Pro Forma Notes in Financials section."
 
 backend:
-  - task: "Backend API endpoints"
+  - task: "Backend Deal Model Update"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-      - working: true
+      - working: "NA"
         agent: "main"
-        comment: "Backend was already implemented and working. No changes made."
+        comment: "Updated Deal, DealCreate, and DealUpdate models to include all fields from Create New Deal form: Core Information (deal_title, deal_status, pipeline_stage, priority, owner_visibility), Location (market, submarket, display_on_map), Property Facts (year_built, zoning, parking_spaces, key_features), Financials (noi, cap_rate, lease_type, proforma_notes), Contacts (primary_contact, additional_contacts, last_contact_date), Activities (next_action, next_action_date), Media (gallery_images), Dates (target_close_date, external_ids). Kept legacy fields for backwards compatibility. Backend restarted successfully."
 
 frontend:
   - task: "Geist fonts integration"
