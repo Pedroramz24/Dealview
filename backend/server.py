@@ -119,6 +119,34 @@ class Deal(BaseModel):
     target_close_date: Optional[str] = None
     external_ids: Optional[str] = None
     
+    # Transaction Timeline / Milestones (for Under Contract deals)
+    milestones: Optional[Dict[str, Any]] = None  # Structured milestone data
+    under_contract_date: Optional[str] = None
+    earnest_money_due_date: Optional[str] = None
+    earnest_money_responsible: Optional[str] = None
+    earnest_money_notes: Optional[str] = None
+    property_info_delivery_date: Optional[str] = None
+    property_info_responsible: Optional[str] = None
+    property_info_notes: Optional[str] = None
+    title_commitment_due_date: Optional[str] = None
+    title_commitment_responsible: Optional[str] = None
+    title_commitment_notes: Optional[str] = None
+    seller_survey_delivery_date: Optional[str] = None
+    seller_survey_responsible: Optional[str] = None
+    seller_survey_notes: Optional[str] = None
+    feasibility_period_ends_date: Optional[str] = None
+    feasibility_period_responsible: Optional[str] = None
+    feasibility_period_notes: Optional[str] = None
+    buyer_objections_due_date: Optional[str] = None
+    buyer_objections_responsible: Optional[str] = None
+    buyer_objections_notes: Optional[str] = None
+    seller_response_due_date: Optional[str] = None
+    seller_response_responsible: Optional[str] = None
+    seller_response_notes: Optional[str] = None
+    closing_date: Optional[str] = None
+    closing_responsible: Optional[str] = None
+    closing_notes: Optional[str] = None
+    
     # Legacy/Deprecated (keeping for backwards compatibility)
     stage: str = "New"  # Use deal_status instead
     contacts: List[Dict[str, str]] = []  # Use additional_contacts instead
