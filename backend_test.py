@@ -719,7 +719,7 @@ class BackendTester:
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
-        print("BACKEND API TESTING - Deal Model Updates")
+        print("BACKEND API TESTING - Layer Management APIs")
         print("=" * 60)
         print(f"Testing against: {self.base_url}")
         print(f"Test credentials: {TEST_CREDENTIALS['email']}")
@@ -731,6 +731,34 @@ class BackendTester:
             return False
         
         print()
+        
+        # Layer Management API Tests
+        print("LAYER MANAGEMENT API TESTS")
+        print("-" * 40)
+        
+        # Test 1: Layer Registry
+        self.test_layer_registry()
+        print()
+        
+        # Test 2: Counties Query
+        self.test_counties_query()
+        print()
+        
+        # Test 3: FEMA Floodplain Query
+        self.test_fema_floodplain_query()
+        print()
+        
+        # Test 4: San Antonio Zoning Query
+        self.test_sa_zoning_query()
+        print()
+        
+        # Test 5: Counties Identify
+        self.test_counties_identify()
+        print()
+        
+        # Deal API Tests (Legacy)
+        print("DEAL API TESTS (Legacy)")
+        print("-" * 40)
         
         # Step 2: Test GET all deals
         deals = self.test_get_all_deals()
