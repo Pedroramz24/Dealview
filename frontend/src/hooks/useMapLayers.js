@@ -203,18 +203,24 @@ export const useMapLayers = (mapRef) => {
 
       try {
         const token = localStorage.getItem('token');
+        console.log(`[useMapLayers] Token exists:`, !!token);
+        
         const map = mapRef.current.getMap();
+        console.log(`[useMapLayers] Got map instance:`, !!map);
 
         // Wait for map to be loaded
         if (!map.isStyleLoaded()) {
+          console.log(`[useMapLayers] Waiting for map style to load...`);
           await new Promise((resolve) => {
             map.once('styledata', resolve);
           });
+          console.log(`[useMapLayers] Map style loaded`);
         }
 
         // Load a large fixed area (entire San Antonio MSA) to avoid disappearing on pan
         // This ensures layers stay visible regardless of zoom or pan
         const bbox = '-98.9,29.0,-98.0,29.8'; // San Antonio metro area
+        console.log(`[useMapLayers] Fetching data with bbox: ${bbox}`);
 
         // Fetch layer data
         const response = await axios.get(`${API}/layers/${layerId}/query`, {
@@ -222,8 +228,10 @@ export const useMapLayers = (mapRef) => {
           params: { bbox },
         });
 
+        console.log(`[useMapLayers] API response received`);
         const geojsonData = response.data;
         const featureCount = geojsonData?.features?.length || 0;
+        console.log(`[useMapLayers] Feature count: ${featureCount}`);
 
         // Add source to map
         const sourceId = `layer-source-${layerId}`;
