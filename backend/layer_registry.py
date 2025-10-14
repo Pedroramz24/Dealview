@@ -50,7 +50,7 @@ LAYER_REGISTRY = {
         "category": "environmental",
         "source": {
             "type": "arcgis",
-            "url": "https://hazards.fema.gov/gis/nfhl/rest/services/public/NFHL/MapServer/28",
+            "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28",
             "method": "query"
         },
         "style": {
