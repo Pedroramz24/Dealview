@@ -283,10 +283,12 @@ export const useMapLayers = (mapRef) => {
 
         // Add text labels if layer has labelConfig (for zoning layer)
         if (layerConfig.labelConfig) {
+          console.log(`[useMapLayers] Adding label layer...`);
           const labelLayerId = `layer-${layerId}-labels`;
           if (!map.getLayer(labelLayerId)) {
             const labelConfig = layerConfig.labelConfig;
             
+            console.log(`[useMapLayers] Label config:`, labelConfig);
             map.addLayer({
               id: labelLayerId,
               type: 'symbol',
