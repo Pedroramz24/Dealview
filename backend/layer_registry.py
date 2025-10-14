@@ -82,69 +82,66 @@ LAYER_REGISTRY = {
             "type": "fill",
             "paint": {
                 "fill-color": [
-                    "case",
-                    # Use Zoning field if Base is null
-                    ["==", ["get", "Base"], None],
-                    [
-                        "match",
-                        ["get", "Zoning"],
-                        # Drainage/Streets - White
-                        "DR", "#FFFFFF",
-                        "UZROW", "#FFFFFF",
-                        # Parks/Open Space
-                        "NP-8", "#A8D5BA",
-                        # Mobile Home
-                        "MH", "#FFD54F",
-                        # Default
-                        "#E0E0E0"
-                    ],
-                    # Otherwise use Base field
-                    [
-                        "match",
-                        ["get", "Base"],
-                        # Low Density Residential - Light Green/Yellow shades
-                        "R-1", "#C8E6C9",
-                        "R-2", "#A5D6A7", 
-                        "R-3", "#81C784",
-                        "RE", "#DCEDC8",
-                        "R-20", "#F0F4C3",
-                        # Medium Density Residential - Green shades  
-                        "R-4", "#66BB6A",
-                        "R-5", "#4CAF50",
-                        "R-6", "#388E3C",
-                        # High Density Residential/Multi-Family - Darker Green
-                        "RM-4", "#2E7D32",
-                        "RM-5", "#1B5E20",
-                        "RM-6", "#33691E",
-                        # Multi-Family - Orange shades
-                        "MF-18", "#FFB74D",
-                        "MF-33", "#FF9800",
-                        # Commercial - Red/Coral shades
-                        "C-1", "#FF7043",
-                        "C-2", "#F4511E",
-                        "C-2NA", "#E64A19",
-                        "C-3", "#D84315",
-                        "C-3R", "#BF360C",
-                        "C-3NA", "#DD2C00",
-                        "NC", "#FF6F00",
-                        # Office/Commercial Light - Teal shades
-                        "OCL", "#4DB6AC",
-                        "O-1", "#26A69A",
-                        "O-2", "#00897B",
-                        # Industrial - Purple shades
-                        "I-1", "#AB47BC",
-                        "I-2", "#8E24AA",
-                        "MI-1", "#7B1FA2",
-                        # Downtown - Blue
-                        "D", "#1E88E5",
-                        # Land/Special
-                        "L", "#FFEB3B",
-                        # Streets/ROW - White
-                        "UZROW", "#FFFFFF",
-                        "FR", "#9E9E9E",
-                        # Default
-                        "#E0E0E0"
-                    ]
+                    "match",
+                    ["coalesce", ["get", "Base"], ["get", "Zoning"], ""],
+                    # Low Density Residential - Light Green/Yellow shades
+                    "R-1", "#C8E6C9",
+                    "R-2", "#A5D6A7", 
+                    "R-3", "#81C784",
+                    "RE", "#DCEDC8",
+                    "R-20", "#F0F4C3",
+                    # Medium Density Residential - Green shades  
+                    "R-4", "#66BB6A",
+                    "R-5", "#4CAF50",
+                    "R-6", "#388E3C",
+                    # High Density Residential/Multi-Family - Darker Green
+                    "RM-4", "#2E7D32",
+                    "RM-5", "#1B5E20",
+                    "RM-6", "#33691E",
+                    # Multi-Family - Orange shades
+                    "MF-18", "#FFB74D",
+                    "MF-33", "#FF9800",
+                    "MH", "#FFD54F",
+                    # Commercial - Red/Coral shades
+                    "C-1", "#FF7043",
+                    "C-2", "#F4511E",
+                    "C-2NA", "#E64A19",
+                    "C-3", "#D84315",
+                    "C-3R", "#BF360C",
+                    "C-3NA", "#DD2C00",
+                    "NC", "#FF6F00",
+                    # Office/Commercial Light - Teal shades
+                    "OCL", "#4DB6AC",
+                    "O-1", "#26A69A",
+                    "O-2", "#00897B",
+                    # Industrial - Purple shades
+                    "I-1", "#AB47BC",
+                    "I-2", "#8E24AA",
+                    "MI-1", "#7B1FA2",
+                    "IDZ", "#9C27B0",
+                    "IDZ-1", "#BA68C8",
+                    # Downtown - Blue
+                    "D", "#1E88E5",
+                    # Parks/Open Space - Light Green
+                    "NP-8", "#A8D5BA",
+                    "NP-10", "#81C784",
+                    "NP-15", "#66BB6A",
+                    # Form-Based Zones - Pink/Magenta
+                    "FBZ T4-2", "#EC407A",
+                    "FBZ T6-1", "#F06292",
+                    "FBZ T6-2", "#F48FB1",
+                    # Mixed Use/Planned Community - Purple
+                    "MPCD", "#AB47BC",
+                    # Airport - Gray
+                    "AE-2", "#78909C",
+                    # Land/Special
+                    "L", "#FFEB3B",
+                    # Streets/ROW - White
+                    "UZROW", "#FFFFFF",
+                    "DR", "#FFFFFF",
+                    "FR", "#9E9E9E",
+                    # Default for empty/unmapped
+                    "#E0E0E0"
                 ],
                 "fill-opacity": 0.5,
                 "fill-outline-color": "#FFFFFF"
@@ -155,9 +152,7 @@ LAYER_REGISTRY = {
             "textSize": 10,
             "textColor": "#FFFFFF",
             "textHaloColor": "#000000",
-            "textHaloWidth": 1.5,
-            "minzoom": 15,
-            "minArea": 5000
+            "textHaloWidth": 1.5
         },
         "clickFields": ["Base", "BaseDescription", "Zoning", "ZoningDetail"],
         "defaultVisible": False
