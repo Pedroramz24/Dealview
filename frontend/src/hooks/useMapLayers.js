@@ -30,52 +30,6 @@ export const useMapLayers = (mapRef) => {
   }, []);
 
   /**
-   * Fetch and update layer data for current viewport
-   */
-  const fetchLayerData = useCallback(
-    async (layerId) => {
-      if (!mapRef.current || !layerRegistry) return;
-
-      const layerConfig = layerRegistry[layerId];
-      if (!layerConfig) return;
-
-      try {
-        const token = localStorage.getItem('token');
-        const map = mapRef.current.getMap();
-
-        // Get current map bounds with 50% padding to keep data loaded when panning
-        const bounds = map.getBounds();
-        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.5;
-        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.5;
-        const bbox = `${bounds.getWest() - lngPadding},${bounds.getSouth() - latPadding},${bounds.getEast() + lngPadding},${bounds.getNorth() + latPadding}`;
-
-        // Fetch layer data
-        const response = await axios.get(`${API}/layers/${layerId}/query`, {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { bbox },
-        });
-
-        const geojsonData = response.data;
-        const featureCount = geojsonData?.features?.length || 0;
-
-        // Update source data
-        const sourceId = `layer-source-${layerId}`;
-        const source = map.getSource(sourceId);
-        if (source) {
-          source.setData(geojsonData);
-          console.log(`✓ Updated layer: ${layerConfig.name} (${featureCount} features)`);
-        }
-
-        // Store layer data
-        setLayerData((prev) => ({ ...prev, [layerId]: geojsonData }));
-      } catch (error) {
-        console.error(`Error fetching layer data for ${layerId}:`, error.response?.data || error.message);
-      }
-    },
-    [mapRef, layerRegistry]
-  );
-
-  /**
    * Add a layer to the map
    */
   const addLayer = useCallback(
