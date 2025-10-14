@@ -512,6 +512,30 @@ const DealDetails = () => {
                 <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Price per Acre</p>
                 <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{calculatePricePerAcre()}</p>
               </div>
+              {deal.noi && (
+                <div className="pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                  <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>NOI</p>
+                  <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{formatPrice(deal.noi)}</p>
+                </div>
+              )}
+              {deal.cap_rate && (
+                <div>
+                  <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Cap Rate</p>
+                  <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{deal.cap_rate}%</p>
+                </div>
+              )}
+              {deal.lease_type && (
+                <div>
+                  <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Lease Type</p>
+                  <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{deal.lease_type}</p>
+                </div>
+              )}
+              {deal.proforma_notes && (
+                <div className="pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                  <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>Pro Forma Notes</p>
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{deal.proforma_notes}</p>
+                </div>
+              )}
             </div>
           </div>
 
