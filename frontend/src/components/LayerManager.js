@@ -392,7 +392,18 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
           }}
           className="custom-scrollbar"
         >
-          {Object.keys(filteredCategories).length === 0 ? (
+          {loading ? (
+            <div
+              style={{
+                padding: '40px 24px',
+                textAlign: 'center',
+                color: 'rgba(255, 255, 255, 0.6)',
+                fontSize: '13px',
+              }}
+            >
+              Loading layers...
+            </div>
+          ) : !filteredCategories || Object.keys(filteredCategories).length === 0 ? (
             <div
               style={{
                 padding: '40px 24px',
@@ -401,7 +412,7 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
                 fontSize: '13px',
               }}
             >
-              No layers found matching "{searchQuery}"
+              {searchQuery ? `No layers found matching "${searchQuery}"` : 'No layers available'}
             </div>
           ) : (
             Object.keys(filteredCategories).map((categoryId) => {
