@@ -1,74 +1,75 @@
 <analysis>
-The AI engineer's trajectory involved an iterative development process for a map-first commercial real estate CRM. Initial work focused on core CRM features and a dark AI startup UI redesign. A major recurring theme was the map implementation, transitioning from Leaflet/OSM to MapLibre GL, then various tile sources (Carto, Esri, Mapbox), before settling on a heavily filtered OpenStreetMap to achieve a specific dark, colored-street aesthetic. Significant effort was dedicated to debugging login issues, refining UI elements for a premium glass-morphism look, implementing smooth map interactions (auto-center/zoom, non-glitching popups), and standardizing asset type color-coding across the application. The most recent work concentrated on building a comprehensive Create New Deal form and replicating all its fields, along with map styling, onto the Property Details page, which caused extensive JSX errors requiring multiple fixes.
+The AI engineer developed a map-first commercial real estate CRM, focusing on a dark, glass-morphism UI. Initial efforts involved migrating the map from Leaflet to MapLibre GL, debugging login, and refining UI aesthetics. Significant work centered on the Create New Deal and Property Details pages, particularly syncing their fields and fixing numerous JSX errors during DealDetails restructuring. The Transaction Timeline feature was implemented to track deal milestones, undergoing multiple UI refinements due to text overlaps and alignment issues, eventually achieving a functional, responsive design with alternating labels and horizontal scrolling. Subsequently, a Layer Manager panel was built for GIS data integration. This involved establishing a backend layer registry and proxy for public ArcGIS data, followed by frontend integration into the MapView. A design reversion moved the Layer Manager back into the main sidebar using a React Context for inter-component communication. The most recent work involved debugging backend authentication for layer APIs and confirming frontend Layer Manager functionality, though actual map rendering of GIS layers remains to be fully verified.
 </analysis>
 
 <product_requirements>
-The overarching goal is to build Pedro Armando CRM, a map-first, scalable commercial real estate CRM. Key features include a Map Tab, Deals List, Deal Details, Contacts, Pipeline (Kanban), Dashboard, Team functionality, and client-facing Share Link. The UI requires a premium dark AI startup aesthetic with , , rounded-xl corners, and subtle motion, which evolved to a Vercel.com look with pure black/white and Inter font. Map functionality moved from Leaflet/OSM to MapLibre GL with vector tiles, a satellite view toggle, and demo data for San Antonio. Specific requests included removing Made with Emergent tags, integrating Land.id-style parcel info (paused), and applying new map/ping styling: primary black, white headings, light grey text, specific button colors, smooth map interactions, and a close button on popups. Later, the user requested an OpenStreetMap dark variation with colored streets/highways, a header with address and share button on the DealDetails page, a toggle for the left-hand side menu, and consistent asset type color coordination (Retail: Cyan, Land: Green, Industrial: Orange, Restaurants: Red, Hotels: Purple, Medical: Blue) across the app. Finally, a new Create New Deal page was requested with detailed fields (image, building size, price, type, status, financials, notes, documents, auto-calculated price/SF), and these same fields were to be integrated into the Property Details page, with its map matching the application's main map styling.
+The goal is to build Pedro Armando CRM, a map-first commercial real estate CRM with features like Map, Deals List, Deal Details, Contacts, Pipeline, Dashboard, Team, and Public Share Link. The UI demands a premium dark AI startup aesthetic (Base bg: #0B0C0E, Surface glass: rgba(255,255,255,0.06), rounded-xl, subtle motion), evolving to a Vercel.com look with pure black/white and Inter font. Map functionality moved to MapLibre GL with vector tiles, satellite toggle, San Antonio demo data, and specific dark OpenStreetMap styling (primary black, white headings, light grey text, colored streets/highways via CSS filter, smooth interactions, auto-center/zoom, close button on popups). Asset types (Retail: Cyan, Land: Green, Industrial: Orange, Restaurants: Red, Hotels: Purple, Medical: Blue) require consistent color coordination. A Create New Deal form was implemented with comprehensive fields (image, size, price, type, status, financials, notes, documents, auto-calculated price/SF), which must be replicated on the Property Details page, including its map matching the main map styling. A Transaction Timeline progress bar was requested for deal milestones, with a cyan, dark-glass aesthetic, alternating labels, tooltips, responsive design, and horizontal scrolling. A Layer Manager panel was also requested, sliding from the left sidebar, with a dark-glass UI, search, Select None/Reset to Default actions, collapsible categories, and layer toggles with inline opacity control, initially UI-only, then integrated with live public GIS data (ArcGIS endpoints from CoSA, Bexar, TxDOT, TNRIS, FEMA) via a backend proxy with caching and rate limiting, including identify-on-click.
 </product_requirements>
 
 <key_technical_concepts>
-- **Backend**: FastAPI, MongoDB, JWT Authentication, Supabase (image storage), bcrypt (password hashing).
-- **Frontend**: React, MapLibre GL (for vector maps), Leaflet (for DealDetails map), Tailwind CSS, Shadcn UI Components, Inter Fonts, CSS filters (for map styling).
-- **Data Handling**: UUIDs for MongoDB IDs, ISO format for datetime objects.
+- **Backend**: FastAPI, MongoDB (using UUIDs, ISO datetime), JWT Authentication, Supabase (image storage), bcrypt,  (for proxy).
+- **Frontend**: React, MapLibre GL, Leaflet (initially for DealDetails, later changed), Tailwind CSS, Shadcn UI, Inter Fonts, CSS filters () for map styling, React Context (for MapLayerProvider).
 </key_technical_concepts>
 
 <code_architecture>
 
 **Key Files and Changes:**
-- : Modified  logic after debugging password verification and user seeding.
-- : Used to create initial test user () and data.
-- : Continued modifications for Inter font imports.
-- : Extensively updated to include global Vercel-like black/white theme, premium glass design, MapLibre popup dark theme,  CSS filter for OpenStreetMap, and responsive container classes.
-- : Updated for global color variables and responsive logo styling.
-- : Modified to implement the sidebar toggle logic and positioning, including a floating button to open the sidebar.
-- : Debugged during the login issue.
-- : This file saw the most significant changes.
-    -   Refactored from Leaflet to MapLibre GL.
-    -   Implemented satellite/street toggle, various tile sources (Esri, Carto, Mapbox, OpenStreetMap).
-    -   Integrated  filter with  for the dark OSM theme.
-    -   Added auto-center/zoom on pin click with offset for popup.
-    -   Updated ping styling, including smooth scaling and a close button on popups.
-    -   Removed emoji from map controls and restyled them as glass buttons.
-    -   Fixed popup glitching on drag by closing it on .
-    -   Configured max zoom levels for satellite and street views.
-    -   Incorporated  for dynamic pin colors.
-- : Heavily refactored.
-    -   Added a header section with property address and a share button.
-    -   Integrated Leaflet map with  styling.
-    -   Underwent multiple rounds of JSX syntax error fixes and structural corrections due to complex layout changes and field additions.
-    -   The page is being restructured to display all fields from the Create New Deal page.
 - :
-    -   The Create New Deal modal form was implemented and iteratively expanded to include all requested fields (image, type, status, financials, notes, documents, auto-calcs).
-    -   Styling updates for input fields and dropdowns within the modal.
-    -   Integrated  for displaying colored asset type badges in the deals table.
-- : Integrated  for displaying colored asset type badges in Kanban cards.
-- , : Shadcn UI components modified for dark theme styling to match the application's aesthetic.
-- : New utility file created to centralize asset type to color mapping.
-
+    - **Importance:** Main FastAPI application defining models, CRUD operations, authentication, and API endpoints.
+    - **Changes:** Modified , ,  models to include new fields for Create New Deal and Transaction Timeline features (e.g., , , , , financial fields, milestone dates). Added new API routes for layer proxy and layer registry (, ). Fixed authentication in layer endpoints to use  instead of an undefined .
+- :
+    - **Importance:** Script to populate initial database with San Antonio demo data.
+    - **Changes:** Updated  to include sample milestone dates for testing the  component.
+- :
+    - **Importance:** New file created to define GIS layers, their metadata, URLs, and category for the Layer Manager.
+    - **Changes:** Contains  dictionary with definitions for CoSA, Bexar County, TxDOT, TNRIS, and FEMA layers.
+- :
+    - **Importance:** Global CSS for theme, fonts, and specific UI elements.
+    - **Changes:** Includes Vercel-like black/white theme, glass design, MapLibre popup dark theme,  CSS filter for OpenStreetMap, and responsive container classes.
+- :
+    - **Importance:** Defines the main application layout, including the sidebar.
+    - **Changes:** Modified to implement sidebar toggle logic. Integrated the  component and its toggle button, later refactored to use  for communication with .
+- :
+    - **Importance:** The core map view component, central to the map-first CRM.
+    - **Changes:** Integrated  hook, handles layer toggling, opacity, and identify-on-click functionality. Added rendering for  (temporarily, then moved back to ). Removed the Property Map 12 active deals info box. Wrapped its content in  to expose map instance and layer handlers via context.
+- :
+    - **Importance:** Detailed view for a single deal.
+    - **Changes:** Heavily refactored to display all fields from the Create New Deal form. Added a header with address and share button. Integrated  component for transaction milestones. Underwent multiple rounds of JSX syntax error fixes and structural corrections.
+- :
+    - **Importance:** Table view of deals, includes the Create New Deal modal.
+    - **Changes:** Create New Deal modal form expanded with image, type, status, financials, notes, documents, and auto-calcs. Styling updates for input fields and dropdowns. Integrated  for asset type badges.
+- :
+    - **Importance:** New component for visualizing contract milestones.
+    - **Changes:** Implemented as a premium cyan-colored horizontal progress bar. Features include a current date indicator, milestone markers with dates, alternating labels, glass-style tooltips on hover, and horizontal scrolling for responsiveness. Iteratively refined for alignment, text overflow, tooltip positioning, and overall uniformity.
+- :
+    - **Importance:** New component for managing map data layers.
+    - **Changes:** Implemented as a sliding panel with a dark-glass aesthetic. Features a search bar, Select None / Reset to Default actions, collapsible categories, and layer rows with toggles and inline opacity control. Fetches layer definitions from the backend registry and uses  for map interaction.
+- :
+    - **Importance:** New React Context to provide  and layer management functions to children components (specifically  from ).
+    - **Changes:** Created to facilitate communication between  and  after  was moved back to .
+- :
+    - **Importance:** New React hook to encapsulate the logic for managing map layers, including fetching registry, handling state, and applying layers to the MapLibre GL instance.
+    - **Changes:** Created to centralize map layer management logic.
+- :
+    - **Importance:** Utility for mapping asset types to colors.
+    - **Changes:** Centralizes color definitions for consistent use across the app.
 </code_architecture>
 
 <pending_tasks>
 - Fully implement Regrid parcel data display (currently paused).
 - Complete the Create New Deal form's auto-calculation functions.
-- Fully restructure the Property Details page to display all fields from the Create New Deal page.
-- Ensure the map in the Property Details page is fully functional with the correct styling and ping interactions.
+- Ensure the map in the Property Details page () is fully functional with the correct styling and ping interactions (currently uses Leaflet with  styling but needs full MapLibre GL integration consistency).
+- Verify and ensure actual rendering of GIS layers on the map in MapView.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was tasked with several significant updates:
-1.  **Map Centering**: User reported that clicking a pin did not perfectly center the map.
-2.  **Popup Spacing**: User reported extra padding on the right side of map popups.
-3.  **Sidebar Toggle Position**: User requested repositioning the menu toggle button.
-4.  **Asset Type Color Coordination**: User requested applying the specified color coordination for asset types across the entire application, specifically mentioning the Deals page.
-5.  **Map Zoom Issue**: User reported Map data not available when zooming too far.
-6.  **Street Map Style**: User reiterated the desire for a specific dark OpenStreetMap style with colored streets using a provided CSS filter, stating the previous implementation was incorrect.
-7.  **Create New Deal Page**: User requested a new page (initially implemented as a modal) for creating deals with a comprehensive list of fields, including property image, building size, price, type, status, financials, asking price, auto-calculated price/SF, notes, and documents.
-8.  **Property Details Page**: User requested that all fields from the Create New Deal page also be present on the Property Details page, and that the map in the location section of this page match the styling of the main map.
+Immediately before this summary request, the AI engineer was tasked with integrating live public GIS data into the Layer Manager and map (Phase 2). This involved creating a backend  and proxy endpoints (, ) in  to fetch data from various ArcGIS sources (CoSA, Bexar County, TxDOT, TNRIS, FEMA). On the frontend, a  hook was created, and the  component was updated to fetch from this registry and allow toggling layers.  was modified to use this hook and support  functionality for GIS features.
 
-The AI engineer has been working on integrating all the requested fields into the Property Details page (). This has proven challenging, leading to multiple JSX syntax errors and structural issues in the component. The last action was to attempt a complete restructure of the  page to incorporate all fields in a well-organized manner, after which the frontend server was restarted.
+A significant architectural refactoring occurred when the user requested reverting the Layer Manager's UI design: it was moved back into  from . To maintain communication for map interactions, a new  was introduced, with  providing the context (including  and layer handlers) and  consuming it.
+
+The most recent activity involved debugging the backend. An  for  was encountered when testing the layer APIs. This was resolved by replacing  with  in the  layer endpoints. After backend testing () passed, a comprehensive screenshot of the map was taken. The Layer Manager UI correctly loaded all 6 layers from the backend registry, with toggles and opacity controls functional. However, the engineer noted that the layers might not be visibly rendering on the map yet, indicating that the next step is to verify map rendering and check for frontend console errors.
 </current_work>
 
 <optional_next_step>
-Debug and fix any remaining JSX syntax errors in  after the latest restructuring attempt.
+Verify and debug why the GIS layers are not visibly rendering on the map, checking browser console logs for errors.
 </optional_next_step>
-
