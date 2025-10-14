@@ -34,51 +34,27 @@ export const useMapLayers = (mapRef) => {
    */
   const addLayer = useCallback(
     async (layerId, opacity = 100) => {
-      console.log(`[useMapLayers] addLayer called for ${layerId}, opacity: ${opacity}`);
-      
-      if (!mapRef.current) {
-        console.log(`[useMapLayers] mapRef.current is null`);
-        return;
-      }
-      
-      if (!layerRegistry) {
-        console.log(`[useMapLayers] layerRegistry is null`);
-        return;
-      }
-      
-      if (loadedLayers.has(layerId)) {
-        console.log(`[useMapLayers] Layer ${layerId} already loaded`);
-        return;
-      }
+      if (!mapRef.current || !layerRegistry || loadedLayers.has(layerId)) return;
 
       const layerConfig = layerRegistry[layerId];
-      if (!layerConfig) {
-        console.log(`[useMapLayers] Layer config not found for ${layerId}`);
-        return;
-      }
+      if (!layerConfig) return;
 
       setLoading(true);
 
       try {
         const token = localStorage.getItem('token');
         const map = mapRef.current.getMap();
-        
-        console.log(`[useMapLayers] Got map instance:`, map);
 
         // Wait for map to be loaded
         if (!map.isStyleLoaded()) {
-          console.log(`[useMapLayers] Map style not loaded yet, waiting...`);
           await new Promise((resolve) => {
             map.once('styledata', resolve);
           });
-          console.log(`[useMapLayers] Map style loaded`);
         }
 
         // Get current map bounds
         const bounds = map.getBounds();
         const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
-        
-        console.log(`[useMapLayers] Fetching layer data with bbox:`, bbox);
 
         // Fetch layer data
         const response = await axios.get(`${API}/layers/${layerId}/query`, {
@@ -87,8 +63,7 @@ export const useMapLayers = (mapRef) => {
         });
 
         const geojsonData = response.data;
-        console.log(`[useMapLayers] Received GeoJSON data:`, geojsonData);
-        console.log(`[useMapLayers] Feature count:`, geojsonData?.features?.length || 0);
+        const featureCount = geojsonData?.features?.length || 0;
 
         // Add source to map
         const sourceId = `layer-source-${layerId}`;
@@ -97,9 +72,7 @@ export const useMapLayers = (mapRef) => {
             type: 'geojson',
             data: geojsonData,
           });
-          console.log(`[useMapLayers] Added source: ${sourceId}`);
         } else {
-          console.log(`[useMapLayers] Source ${sourceId} already exists, updating data`);
           map.getSource(sourceId).setData(geojsonData);
         }
 
@@ -127,19 +100,15 @@ export const useMapLayers = (mapRef) => {
 
         if (!map.getLayer(layerIdOnMap)) {
           map.addLayer(layerOptions);
-          console.log(`[useMapLayers] Added layer: ${layerIdOnMap}`, layerOptions);
-        } else {
-          console.log(`[useMapLayers] Layer ${layerIdOnMap} already exists`);
         }
 
         // Store layer data and mark as loaded
         setLayerData((prev) => ({ ...prev, [layerId]: geojsonData }));
         setLoadedLayers((prev) => new Set([...prev, layerId]));
         
-        console.log(`[useMapLayers] Successfully added layer ${layerId}`);
+        console.log(`✓ Added layer: ${layerConfig.name} (${featureCount} features)`);
       } catch (error) {
-        console.error(`[useMapLayers] Error adding layer ${layerId}:`, error);
-        console.error(`[useMapLayers] Error details:`, error.response?.data || error.message);
+        console.error(`Error adding layer ${layerId}:`, error.response?.data || error.message);
       } finally {
         setLoading(false);
       }
