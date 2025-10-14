@@ -98,11 +98,9 @@ export const useMapLayers = (mapRef) => {
           });
         }
 
-        // Get current map bounds with 50% padding to keep data loaded when panning
-        const bounds = map.getBounds();
-        const latPadding = (bounds.getNorth() - bounds.getSouth()) * 0.5;
-        const lngPadding = (bounds.getEast() - bounds.getWest()) * 0.5;
-        const bbox = `${bounds.getWest() - lngPadding},${bounds.getSouth() - latPadding},${bounds.getEast() + lngPadding},${bounds.getNorth() + latPadding}`;
+        // Load a large fixed area (entire San Antonio MSA) to avoid disappearing on pan
+        // This ensures layers stay visible regardless of zoom or pan
+        const bbox = '-98.9,29.0,-98.0,29.8'; // San Antonio metro area
 
         // Fetch layer data
         const response = await axios.get(`${API}/layers/${layerId}/query`, {
@@ -124,7 +122,7 @@ export const useMapLayers = (mapRef) => {
           map.getSource(sourceId).setData(geojsonData);
         }
 
-        // Add layer to map based on style type
+        // Add layer to map based on style type (NO zoom restrictions)
         const layerIdOnMap = `layer-${layerId}`;
         const style = layerConfig.style;
 
@@ -160,31 +158,38 @@ export const useMapLayers = (mapRef) => {
               id: labelLayerId,
               type: 'symbol',
               source: sourceId,
-              minzoom: 15,
+              // NO minzoom restriction - visible at all zoom levels
               layout: {
                 'text-field': labelConfig.textField,
                 'text-size': [
                   'interpolate',
                   ['linear'],
                   ['zoom'],
-                  15, 9,
-                  18, 11,
-                  20, 13
+                  10, 8,   // Smaller at far zoom
+                  14, 10,
+                  16, 11,
+                  18, 12,
+                  20, 14
                 ],
-                'text-allow-overlap': false,
-                'text-ignore-placement': false,
-                'text-optional': true,
+                'text-allow-overlap': true, // Force labels to show
+                'text-ignore-placement': true, // Ignore collision detection
                 'symbol-placement': 'point',
-                'symbol-avoid-edges': true,
-                'text-padding': 10,
-                'text-max-angle': 45
+                'text-anchor': 'center',
+                'text-justify': 'center'
               },
               paint: {
                 'text-color': labelConfig.textColor,
                 'text-halo-color': labelConfig.textHaloColor,
                 'text-halo-width': labelConfig.textHaloWidth,
                 'text-halo-blur': 0.5,
-                'text-opacity': opacity / 100
+                'text-opacity': [
+                  'interpolate',
+                  ['linear'],
+                  ['zoom'],
+                  10, 0,     // Hidden when really zoomed out
+                  13, 0.7,   // Start showing
+                  15, 1      // Fully visible
+                ]
               }
             });
           }
@@ -202,7 +207,7 @@ export const useMapLayers = (mapRef) => {
         setLoading(false);
       }
     },
-    [mapRef, layerRegistry, loadedLayers, fetchLayerData]
+    [mapRef, layerRegistry, loadedLayers]
   );
 
   /**
