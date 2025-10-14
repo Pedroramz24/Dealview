@@ -243,8 +243,8 @@ const DealTimeline = ({ deal }) => {
               key={milestone.id}
               style={{
                 position: 'absolute',
-                top: '80px',
-                left: `${milestone.position}%`,
+                top: '100px',
+                left: `calc(${milestone.position}% + 20px)`,
                 transform: 'translateX(-50%)',
                 zIndex: 5,
               }}
