@@ -340,6 +340,381 @@ class BackendTester:
                 
         except Exception as e:
             self.log_result("Model Validation", False, f"Request error: {str(e)}")
+
+    def test_layer_registry(self):
+        """Test GET /api/layers/registry - Should return all 6 layers grouped by category"""
+        try:
+            response = requests.get(
+                f"{self.base_url}/layers/registry",
+                headers=self.headers,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                layers = data.get("layers", {})
+                
+                # Expected layers from layer_registry.py
+                expected_layers = [
+                    "counties", "city_limits", "fema_floodplain", 
+                    "sa_zoning", "saws_water", "txdot_projects"
+                ]
+                
+                # Check if all 6 layers are present
+                found_layers = list(layers.keys())
+                missing_layers = [layer for layer in expected_layers if layer not in found_layers]
+                
+                if len(found_layers) == 6 and not missing_layers:
+                    # Verify each layer has required fields
+                    layer_validation_errors = []
+                    for layer_id, layer_config in layers.items():
+                        required_fields = ["id", "name", "description", "category", "style", "clickFields"]
+                        missing_fields = [field for field in required_fields if field not in layer_config]
+                        if missing_fields:
+                            layer_validation_errors.append(f"{layer_id}: missing {missing_fields}")
+                    
+                    if layer_validation_errors:
+                        self.log_result(
+                            "Layer Registry", 
+                            False, 
+                            f"Found all 6 layers but some missing required fields",
+                            f"Validation errors: {layer_validation_errors}"
+                        )
+                    else:
+                        # Group by category for verification
+                        categories = {}
+                        for layer_id, layer_config in layers.items():
+                            category = layer_config.get("category", "unknown")
+                            if category not in categories:
+                                categories[category] = []
+                            categories[category].append(layer_id)
+                        
+                        self.log_result(
+                            "Layer Registry", 
+                            True, 
+                            f"Successfully retrieved all 6 layers with complete metadata",
+                            f"Categories: {dict(categories)}"
+                        )
+                else:
+                    self.log_result(
+                        "Layer Registry", 
+                        False, 
+                        f"Expected 6 layers, found {len(found_layers)}",
+                        f"Missing: {missing_layers}, Found: {found_layers}"
+                    )
+            else:
+                self.log_result(
+                    "Layer Registry", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text
+                )
+                
+        except Exception as e:
+            self.log_result("Layer Registry", False, f"Request error: {str(e)}")
+
+    def test_counties_query(self):
+        """Test GET /api/layers/counties/query with San Antonio bounding box"""
+        # San Antonio area bounding box: -98.7,-29.2,-98.3,29.6
+        bbox = "-98.7,29.2,-98.3,29.6"
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/layers/counties/query",
+                params={"bbox": bbox},
+                headers=self.headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify GeoJSON format
+                if "type" in data and data["type"] == "FeatureCollection":
+                    features = data.get("features", [])
+                    
+                    if len(features) > 0:
+                        # Check first feature for proper structure
+                        first_feature = features[0]
+                        has_geometry = "geometry" in first_feature and first_feature["geometry"] is not None
+                        has_properties = "properties" in first_feature and first_feature["properties"] is not None
+                        
+                        if has_geometry and has_properties:
+                            # Look for Bexar County (San Antonio is in Bexar County)
+                            bexar_county = None
+                            for feature in features:
+                                county_name = feature.get("properties", {}).get("CNTY_NM", "")
+                                if "bexar" in county_name.lower():
+                                    bexar_county = feature
+                                    break
+                            
+                            if bexar_county:
+                                self.log_result(
+                                    "Counties Query", 
+                                    True, 
+                                    f"Successfully queried counties layer - found {len(features)} counties including Bexar County",
+                                    f"Bexar County properties: {list(bexar_county.get('properties', {}).keys())}"
+                                )
+                            else:
+                                self.log_result(
+                                    "Counties Query", 
+                                    True, 
+                                    f"Successfully queried counties layer - found {len(features)} counties",
+                                    f"Counties found: {[f.get('properties', {}).get('CNTY_NM', 'Unknown') for f in features[:3]]}"
+                                )
+                        else:
+                            self.log_result(
+                                "Counties Query", 
+                                False, 
+                                "Features missing geometry or properties",
+                                f"First feature structure: {list(first_feature.keys())}"
+                            )
+                    else:
+                        self.log_result(
+                            "Counties Query", 
+                            False, 
+                            "No features returned for San Antonio area",
+                            f"Response structure: {list(data.keys())}"
+                        )
+                else:
+                    self.log_result(
+                        "Counties Query", 
+                        False, 
+                        "Response is not valid GeoJSON FeatureCollection",
+                        f"Response type: {data.get('type', 'missing')}"
+                    )
+            else:
+                self.log_result(
+                    "Counties Query", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                
+        except Exception as e:
+            self.log_result("Counties Query", False, f"Request error: {str(e)}")
+
+    def test_fema_floodplain_query(self):
+        """Test GET /api/layers/fema_floodplain/query"""
+        # Use San Antonio area bounding box
+        bbox = "-98.7,29.2,-98.3,29.6"
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/layers/fema_floodplain/query",
+                params={"bbox": bbox},
+                headers=self.headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify GeoJSON format
+                if "type" in data and data["type"] == "FeatureCollection":
+                    features = data.get("features", [])
+                    
+                    # FEMA floodplain data might not exist in all areas, so we check for valid response structure
+                    if len(features) > 0:
+                        first_feature = features[0]
+                        has_geometry = "geometry" in first_feature and first_feature["geometry"] is not None
+                        has_properties = "properties" in first_feature and first_feature["properties"] is not None
+                        
+                        if has_geometry and has_properties:
+                            # Check for flood zone information
+                            flood_zones = []
+                            for feature in features[:5]:  # Check first 5 features
+                                zone = feature.get("properties", {}).get("FLD_ZONE", "")
+                                if zone and zone not in flood_zones:
+                                    flood_zones.append(zone)
+                            
+                            self.log_result(
+                                "FEMA Floodplain Query", 
+                                True, 
+                                f"Successfully queried FEMA floodplain - found {len(features)} flood zones",
+                                f"Flood zones found: {flood_zones[:3]}"
+                            )
+                        else:
+                            self.log_result(
+                                "FEMA Floodplain Query", 
+                                False, 
+                                "Features missing geometry or properties",
+                                f"First feature structure: {list(first_feature.keys())}"
+                            )
+                    else:
+                        # No floodplain data in this area is actually a valid response
+                        self.log_result(
+                            "FEMA Floodplain Query", 
+                            True, 
+                            "Successfully queried FEMA floodplain - no flood zones in this area",
+                            "Valid GeoJSON response with empty features array"
+                        )
+                else:
+                    self.log_result(
+                        "FEMA Floodplain Query", 
+                        False, 
+                        "Response is not valid GeoJSON FeatureCollection",
+                        f"Response type: {data.get('type', 'missing')}"
+                    )
+            else:
+                self.log_result(
+                    "FEMA Floodplain Query", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                
+        except Exception as e:
+            self.log_result("FEMA Floodplain Query", False, f"Request error: {str(e)}")
+
+    def test_sa_zoning_query(self):
+        """Test GET /api/layers/sa_zoning/query"""
+        # Use San Antonio area bounding box
+        bbox = "-98.7,29.2,-98.3,29.6"
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/layers/sa_zoning/query",
+                params={"bbox": bbox},
+                headers=self.headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify GeoJSON format
+                if "type" in data and data["type"] == "FeatureCollection":
+                    features = data.get("features", [])
+                    
+                    if len(features) > 0:
+                        first_feature = features[0]
+                        has_geometry = "geometry" in first_feature and first_feature["geometry"] is not None
+                        has_properties = "properties" in first_feature and first_feature["properties"] is not None
+                        
+                        if has_geometry and has_properties:
+                            # Check for zoning information
+                            zoning_codes = []
+                            for feature in features[:5]:  # Check first 5 features
+                                code = feature.get("properties", {}).get("ZONING_CODE", "")
+                                if code and code not in zoning_codes:
+                                    zoning_codes.append(code)
+                            
+                            self.log_result(
+                                "SA Zoning Query", 
+                                True, 
+                                f"Successfully queried San Antonio zoning - found {len(features)} zoning areas",
+                                f"Zoning codes found: {zoning_codes[:3]}"
+                            )
+                        else:
+                            self.log_result(
+                                "SA Zoning Query", 
+                                False, 
+                                "Features missing geometry or properties",
+                                f"First feature structure: {list(first_feature.keys())}"
+                            )
+                    else:
+                        self.log_result(
+                            "SA Zoning Query", 
+                            False, 
+                            "No zoning features returned for San Antonio area",
+                            f"Response structure: {list(data.keys())}"
+                        )
+                else:
+                    self.log_result(
+                        "SA Zoning Query", 
+                        False, 
+                        "Response is not valid GeoJSON FeatureCollection",
+                        f"Response type: {data.get('type', 'missing')}"
+                    )
+            else:
+                self.log_result(
+                    "SA Zoning Query", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                
+        except Exception as e:
+            self.log_result("SA Zoning Query", False, f"Request error: {str(e)}")
+
+    def test_counties_identify(self):
+        """Test GET /api/layers/counties/identify at a point (lat: 29.4241, lon: -98.4936)"""
+        # San Antonio coordinates
+        lat = 29.4241
+        lon = -98.4936
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/layers/counties/identify",
+                params={"lat": lat, "lon": lon},
+                headers=self.headers,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify identify response structure
+                required_fields = ["layer_id", "layer_name", "features", "count"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    layer_id = data.get("layer_id")
+                    layer_name = data.get("layer_name")
+                    features = data.get("features", [])
+                    count = data.get("count", 0)
+                    
+                    if layer_id == "counties" and count > 0:
+                        # Should identify Bexar County for San Antonio coordinates
+                        first_feature = features[0]
+                        if "attributes" in first_feature:
+                            county_name = first_feature["attributes"].get("CNTY_NM", "")
+                            if "bexar" in county_name.lower():
+                                self.log_result(
+                                    "Counties Identify", 
+                                    True, 
+                                    f"Successfully identified Bexar County at San Antonio coordinates",
+                                    f"County: {county_name}, Features: {count}"
+                                )
+                            else:
+                                self.log_result(
+                                    "Counties Identify", 
+                                    True, 
+                                    f"Successfully identified county at coordinates",
+                                    f"County: {county_name}, Features: {count}"
+                                )
+                        else:
+                            self.log_result(
+                                "Counties Identify", 
+                                True, 
+                                f"Successfully identified {count} features at coordinates",
+                                f"Layer: {layer_name}"
+                            )
+                    else:
+                        self.log_result(
+                            "Counties Identify", 
+                            False, 
+                            f"No features identified at San Antonio coordinates",
+                            f"Layer: {layer_name}, Count: {count}"
+                        )
+                else:
+                    self.log_result(
+                        "Counties Identify", 
+                        False, 
+                        f"Response missing required fields: {missing_fields}",
+                        f"Response structure: {list(data.keys())}"
+                    )
+            else:
+                self.log_result(
+                    "Counties Identify", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                
+        except Exception as e:
+            self.log_result("Counties Identify", False, f"Request error: {str(e)}")
     
     def run_all_tests(self):
         """Run all backend tests"""
