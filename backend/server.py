@@ -130,18 +130,60 @@ class Deal(BaseModel):
     created_by: str = ""
 
 class DealCreate(BaseModel):
+    # Core Information
+    deal_title: Optional[str] = None
     property_address: str
     asset_type: str
+    deal_status: str = "New"
+    pipeline_stage: str = "New"
+    priority: str = "Medium"
+    owner_visibility: str = "Team"
     description: str = ""
-    asking_price: float
+    
+    # Location & Map
+    latitude: float
+    longitude: float
+    display_on_map: bool = True
+    market: Optional[str] = None
+    submarket: Optional[str] = None
+    
+    # Property Facts
     building_size: Optional[float] = None
     lot_size: Optional[float] = None
     lot_acres: Optional[float] = None
-    occupancy: Optional[str] = None
-    stage: str = "New"
-    latitude: float
-    longitude: float
+    year_built: Optional[int] = None
+    zoning: Optional[str] = None
+    occupancy: Optional[float] = None
+    parking_spaces: Optional[int] = None
+    key_features: Optional[str] = None
+    
+    # Financials
+    asking_price: float
+    noi: Optional[float] = None
+    cap_rate: Optional[float] = None
+    lease_type: Optional[str] = None
+    proforma_notes: Optional[str] = None
+    
+    # Contacts & Roles
+    primary_contact: Optional[str] = None
+    additional_contacts: List[Dict[str, str]] = []
+    last_contact_date: Optional[str] = None
+    
+    # Activities & Notes
+    next_action: Optional[str] = None
+    next_action_date: Optional[str] = None
     notes: str = ""
+    
+    # Media & Documents
+    primary_image_url: Optional[str] = None
+    gallery_images: List[str] = []
+    
+    # Dates & IDs
+    target_close_date: Optional[str] = None
+    external_ids: Optional[str] = None
+    
+    # Legacy (for backwards compatibility)
+    stage: str = "New"
 
 class DealUpdate(BaseModel):
     property_address: Optional[str] = None
