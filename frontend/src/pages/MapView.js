@@ -204,21 +204,6 @@ const MapView = () => {
         </button>
       </div>
 
-      {/* Info Panel - Top Left */}
-      <div className="absolute top-6 left-6 z-[1000]">
-        <div className="premium-glass-card" style={{
-          padding: '20px 24px',
-          borderRadius: '12px',
-          border: '1px solid rgba(255,255,255,0.15)',
-          backdropFilter: 'blur(12px)',
-          backgroundColor: 'rgba(255,255,255,0.05)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.4)'
-        }}>
-          <h2 className="text-2xl font-bold" style={{ color: '#FFFFFF', letterSpacing: '-0.02em', marginBottom: '4px' }}>Property Map</h2>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>{deals.length} active deals</p>
-        </div>
-      </div>
-
       {/* Bottom Action Buttons */}
       <div className="absolute bottom-6 right-6 z-[1000] flex gap-3">
         <button
