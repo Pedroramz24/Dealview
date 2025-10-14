@@ -270,18 +270,25 @@ export const useMapLayers = (mapRef) => {
 
       const map = mapRef.current.getMap();
       const layerIdOnMap = `layer-${layerId}`;
+      const labelLayerId = `layer-${layerId}-labels`;
       const layerConfig = layerRegistry?.[layerId];
 
       if (!layerConfig || !map.getLayer(layerIdOnMap)) return;
 
       const style = layerConfig.style;
 
+      // Update main layer opacity
       if (style.type === 'fill') {
         map.setPaintProperty(layerIdOnMap, 'fill-opacity', opacity / 100);
       } else if (style.type === 'line') {
         map.setPaintProperty(layerIdOnMap, 'line-opacity', opacity / 100);
       } else if (style.type === 'circle') {
         map.setPaintProperty(layerIdOnMap, 'circle-opacity', opacity / 100);
+      }
+
+      // Update label opacity if labels exist
+      if (map.getLayer(labelLayerId)) {
+        map.setPaintProperty(labelLayerId, 'text-opacity', opacity / 100);
       }
     },
     [mapRef, loadedLayers, layerRegistry]
