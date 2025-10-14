@@ -194,6 +194,12 @@ export const useMapLayers = (mapRef) => {
       const layerIdOnMap = `layer-${layerId}`;
       const sourceId = `layer-source-${layerId}`;
 
+      // Clean up event listeners
+      if (window.mapLayerCleanup && window.mapLayerCleanup[layerId]) {
+        window.mapLayerCleanup[layerId]();
+        delete window.mapLayerCleanup[layerId];
+      }
+
       if (map.getLayer(layerIdOnMap)) {
         map.removeLayer(layerIdOnMap);
       }
