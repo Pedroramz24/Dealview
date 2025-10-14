@@ -216,12 +216,6 @@ const MapView = () => {
   return (
     <MapLayerProvider mapRef={mapRef}>
       <div className="h-full relative" style={{ background: '#000000' }}>
-        {/* Layer Manager */}
-        <LayerManager
-          isOpen={layerManagerOpen}
-          onClose={() => setLayerManagerOpen(false)}
-        />
-
         {/* Map Controls - Top Right */}
         <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-3">
           <button
