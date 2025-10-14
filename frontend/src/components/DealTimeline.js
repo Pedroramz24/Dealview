@@ -371,33 +371,35 @@ const DealTimeline = ({ deal }) => {
                 </p>
               </div>
 
-              {/* Tooltip */}
+              {/* Tooltip - smart positioning to avoid overflow */}
               {hoveredMilestone === milestone.id && (
                 <div
                   style={{
                     position: 'absolute',
                     [isAbove ? 'bottom' : 'top']: isAbove ? '135px' : '135px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
+                    // Adjust left position for edge milestones
+                    left: isNearLeftEdge ? '0' : isNearRightEdge ? 'auto' : '50%',
+                    right: isNearRightEdge ? '0' : 'auto',
+                    transform: isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)',
                     background: 'rgba(10, 10, 10, 0.98)',
                     backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(0, 184, 212, 0.4)',
                     borderRadius: '8px',
                     padding: '12px 14px',
-                    minWidth: '220px',
-                    maxWidth: '220px',
+                    width: '220px',
                     boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 184, 212, 0.3)',
-                    zIndex: 100,
+                    zIndex: 1000,
                     pointerEvents: 'none',
                   }}
                 >
-                  {/* Tooltip arrow */}
+                  {/* Tooltip arrow - adjusted for edge positioning */}
                   <div
                     style={{
                       position: 'absolute',
                       [isAbove ? 'top' : 'bottom']: isAbove ? '-6px' : '-6px',
-                      left: '50%',
-                      transform: `translateX(-50%) ${isAbove ? '' : 'rotate(180deg)'}`,
+                      left: isNearLeftEdge ? '20px' : isNearRightEdge ? 'auto' : '50%',
+                      right: isNearRightEdge ? '20px' : 'auto',
+                      transform: `${isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)'} ${isAbove ? '' : 'rotate(180deg)'}`,
                       width: '0',
                       height: '0',
                       borderLeft: '6px solid transparent',
@@ -470,6 +472,7 @@ const DealTimeline = ({ deal }) => {
                   )}
                 </div>
               )}
+              </div>
             </div>
           );
         })}
