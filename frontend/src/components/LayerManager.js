@@ -124,6 +124,10 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
     const newStates = {};
     Object.keys(layerStates).forEach((layerId) => {
       newStates[layerId] = { ...layerStates[layerId], visible: false };
+      // Notify parent to turn off layers
+      if (onLayerToggle) {
+        onLayerToggle(layerId, false, layerStates[layerId]?.opacity || 100);
+      }
     });
     setLayerStates(newStates);
   };
@@ -131,26 +135,32 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
   // Reset to Default action
   const resetToDefault = () => {
     const initial = {};
-    Object.keys(layerDefinitions).forEach((category) => {
-      layerDefinitions[category].layers.forEach((layer) => {
-        initial[layer.id] = { visible: false, opacity: 100 };
+    if (layerRegistry) {
+      Object.keys(layerRegistry).forEach((category) => {
+        layerRegistry[category].layers.forEach((layer) => {
+          initial[layer.id] = { visible: false, opacity: 100 };
+          // Notify parent to turn off layers
+          if (onLayerToggle) {
+            onLayerToggle(layer.id, false, 100);
+          }
+        });
       });
-    });
+    }
     setLayerStates(initial);
   };
 
   // Filter layers based on search query
   const filteredCategories = useMemo(() => {
-    if (!searchQuery.trim()) return layerDefinitions;
+    if (!layerRegistry || !searchQuery.trim()) return layerRegistry;
 
     const query = searchQuery.toLowerCase();
     const filtered = {};
 
-    Object.keys(layerDefinitions).forEach((categoryId) => {
-      const category = layerDefinitions[categoryId];
+    Object.keys(layerRegistry).forEach((categoryId) => {
+      const category = layerRegistry[categoryId];
       const matchingLayers = category.layers.filter(
         (layer) =>
-          layer.label.toLowerCase().includes(query) ||
+          layer.name.toLowerCase().includes(query) ||
           layer.description.toLowerCase().includes(query)
       );
 
@@ -163,7 +173,7 @@ const LayerManager = ({ isOpen, onClose, onLayerToggle, onLayerOpacityChange }) 
     });
 
     return filtered;
-  }, [searchQuery]);
+  }, [searchQuery, layerRegistry]);
 
   return (
     <>
