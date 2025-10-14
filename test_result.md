@@ -273,22 +273,18 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 0
-  run_ui: true
+  version: "1.1"
+  test_sequence: 1
+  run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Backend Deal Model Update"
+    - "DealDetails page - Display all Create New Deal fields"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
-    message: "Completed dark glass UI redesign for all pages. Fixed font integration in index.css to properly apply Geist fonts. All pages now use the glass-surface styling with blue accent (#3B82F6). Ready for frontend automated testing to verify the visual design and font application across all pages. Test credentials: email: pedro@test.com, password: password123"
-  - agent: "testing"
-    message: "✅ COMPREHENSIVE TESTING COMPLETED SUCCESSFULLY! All primary objectives achieved: 1) Geist fonts properly applied throughout entire website (critical requirement met), 2) Dark glass-morphism design verified on all pages, 3) Blue accent (#3B82F6) used consistently, 4) Perfect Vercel.com aesthetic achieved. All pages tested: Login, MapView, Dashboard, DealsList, Pipeline, Contacts, Team. Login functionality works. All glass surfaces have backdrop-filter blur. No critical issues found. UI redesign is complete and working perfectly."
-  - agent: "main"
-    message: "Updated MapView with new styling: 1) Added dark map style (CartoDB Dark Matter) as street toggle option, 2) Changed markers to cyan (#00b8d4) concentric circles with white center dot and pulsing animation, 3) Updated popups to dark theme (#1A1A1A) with white headings and light grey text, 4) Added custom close button (×) at top-left of popup, 5) Implemented smooth marker transitions. Map now toggles between Satellite and Dark street views. All styling matches requirements from provided images. Ready for testing."
-  - agent: "testing"
-    message: "✅ MAPVIEW TESTING COMPLETED SUCCESSFULLY! All core requirements verified: 1) Map toggle works perfectly (satellite ↔ dark street view using CartoDB Dark Matter), 2) 12 markers with correct cyan (#00b8d4) concentric circles, white center dots, and pulsing animation, 3) Markers clearly visible on both map styles, 4) Custom close button (×) functional and positioned correctly, 5) Popup content styled correctly (white headings, light grey labels, cyan prices, white button), 6) Map interactions smooth. Minor styling issues noted but core functionality perfect. Implementation meets all primary requirements."
+    message: "Updated backend Deal model to include all fields from Create New Deal form (deal_title, deal_status, priority, owner_visibility, market, submarket, year_built, zoning, parking_spaces, key_features, noi, cap_rate, lease_type, proforma_notes, primary_contact, last_contact_date, next_action, next_action_date, target_close_date, external_ids, gallery_images). Updated DealDetails page to display NOI, Cap Rate, Lease Type, and Pro Forma Notes in Financials sidebar section. Backend restarted successfully. Ready for testing. Test credentials: email: pedro@test.com, password: password123"
