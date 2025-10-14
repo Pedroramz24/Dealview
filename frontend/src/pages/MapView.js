@@ -5,6 +5,7 @@ import axios from 'axios';
 import { API } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
+import { useMapLayers } from '../hooks/useMapLayers';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapView = () => {
@@ -15,6 +16,7 @@ const MapView = () => {
   const [parcels, setParcels] = useState(null);
   const [showParcels, setShowParcels] = useState(true);
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
+  const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
     latitude: 29.4241,
@@ -22,6 +24,15 @@ const MapView = () => {
   });
   const mapRef = useRef();
   const navigate = useNavigate();
+  
+  // Initialize map layers hook
+  const {
+    addLayer,
+    removeLayer,
+    updateLayerOpacity,
+    identifyFeatures,
+    loadedLayers,
+  } = useMapLayers(mapRef);
 
   // Map style configurations
   const mapStyles = {
