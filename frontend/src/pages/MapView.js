@@ -167,19 +167,6 @@ const MapView = () => {
   };
 
 
-  // Layer management handlers
-  const handleLayerToggle = (layerId, visible, opacity) => {
-    if (visible) {
-      addLayer(layerId, opacity);
-    } else {
-      removeLayer(layerId);
-    }
-  };
-
-  const handleLayerOpacityChange = (layerId, opacity) => {
-    updateLayerOpacity(layerId, opacity);
-  };
-
   // Handle clicks on GIS layers for identify
   const handleGISLayerClick = async (event) => {
     // Check if any loaded layers have features at this point
