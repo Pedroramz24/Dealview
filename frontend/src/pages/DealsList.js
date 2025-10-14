@@ -77,13 +77,34 @@ const DealsList = () => {
   const [imageFile, setImageFile] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   
-  // Auto-calculate price per SF
-  const calculatePricePerSF = () => {
+  // Auto-calculate functions
+  const calculatePricePerSFBuilding = () => {
     if (newDeal.asking_price && newDeal.building_size) {
-      const pricePerSF = parseFloat(newDeal.asking_price) / parseFloat(newDeal.building_size);
-      return pricePerSF.toFixed(2);
+      return (parseFloat(newDeal.asking_price) / parseFloat(newDeal.building_size)).toFixed(2);
     }
-    return 'N/A';
+    return null;
+  };
+  
+  const calculatePricePerSFLand = () => {
+    if (newDeal.asking_price && newDeal.lot_size) {
+      const sqft = parseFloat(newDeal.lot_size) * 43560;
+      return (parseFloat(newDeal.asking_price) / sqft).toFixed(2);
+    }
+    return null;
+  };
+  
+  const calculatePricePerAcre = () => {
+    if (newDeal.asking_price && newDeal.lot_size) {
+      return (parseFloat(newDeal.asking_price) / parseFloat(newDeal.lot_size)).toFixed(2);
+    }
+    return null;
+  };
+  
+  const calculateCapRate = () => {
+    if (newDeal.noi && newDeal.asking_price) {
+      return ((parseFloat(newDeal.noi) / parseFloat(newDeal.asking_price)) * 100).toFixed(2);
+    }
+    return null;
   };
 
   useEffect(() => {
