@@ -869,7 +869,7 @@ async def query_layer(
     layer_id: str,
     bbox: Optional[str] = None,
     where: Optional[str] = None,
-    credentials: HTTPAuthorizationCredentials = Depends(security)
+    current_user: User = Depends(get_current_user)
 ):
     """
     Query a layer from its source with caching and rate limiting
@@ -879,12 +879,7 @@ async def query_layer(
         bbox: Bounding box as "minx,miny,maxx,maxy"
         where: SQL where clause for filtering
     """
-    # Verify token
-    try:
-        token_data = verify_token(credentials.credentials)
-        user_id = token_data.get("sub")
-    except HTTPException:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    user_id = current_user.email
     
     # Rate limiting
     if not rate_limiter.check_rate_limit(user_id):
