@@ -21,7 +21,7 @@ LAYER_REGISTRY = {
             }
         },
         "clickFields": ["CNTY_NM", "FIPS_ST_CNTY_CD"],
-        "defaultVisible": false
+        "defaultVisible": False
     },
     "city_limits": {
         "id": "city_limits",
