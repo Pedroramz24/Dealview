@@ -259,34 +259,6 @@ const MapView = () => {
         </button>
 
         <button
-          onClick={() => setLayerManagerOpen(!layerManagerOpen)}
-          className="premium-glass-btn"
-          style={{
-            color: layerManagerOpen ? '#000000' : '#FFFFFF',
-            backgroundColor: layerManagerOpen ? '#00b8d4' : 'transparent',
-            fontWeight: 500,
-            cursor: 'pointer',
-            fontSize: '14px',
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: '1px solid rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(12px)',
-            transition: 'all 0.3s ease',
-            boxShadow: layerManagerOpen ? '0 4px 12px rgba(0,184,212,0.3)' : '0 2px 8px rgba(0,0,0,0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            <polyline points="2 17 12 22 22 17"></polyline>
-            <polyline points="2 12 12 17 22 12"></polyline>
-          </svg>
-          Layers
-        </button>
-
-        <button
           onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
           className="premium-glass-btn"
           style={{
