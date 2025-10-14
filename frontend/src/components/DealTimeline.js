@@ -350,16 +350,17 @@ const DealTimeline = ({ deal }) => {
                 <div
                   style={{
                     position: 'absolute',
-                    [isAbove ? 'bottom' : 'top']: isAbove ? '120px' : '120px',
+                    [isAbove ? 'bottom' : 'top']: isAbove ? '135px' : '135px',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    background: 'rgba(10, 10, 10, 0.95)',
+                    background: 'rgba(10, 10, 10, 0.98)',
                     backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    border: '1px solid rgba(0, 184, 212, 0.4)',
                     borderRadius: '8px',
-                    padding: '12px 16px',
-                    minWidth: '200px',
-                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 184, 212, 0.2)',
+                    padding: '12px 14px',
+                    minWidth: '220px',
+                    maxWidth: '220px',
+                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 184, 212, 0.3)',
                     zIndex: 100,
                     pointerEvents: 'none',
                   }}
