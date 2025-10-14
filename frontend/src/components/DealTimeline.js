@@ -251,16 +251,69 @@ const DealTimeline = ({ deal }) => {
               onMouseEnter={() => setHoveredMilestone(milestone.id)}
               onMouseLeave={() => setHoveredMilestone(null)}
             >
-              {/* Milestone label - positioned above or below */}
+              {/* Milestone dot */}
+              <div
+                style={{
+                  width: '14px',
+                  height: '14px',
+                  borderRadius: '50%',
+                  background:
+                    milestone.status === 'completed'
+                      ? '#00b8d4'
+                      : milestone.status === 'active'
+                      ? '#00b8d4'
+                      : 'rgba(255, 255, 255, 0.15)',
+                  border:
+                    milestone.status === 'completed'
+                      ? '3px solid #00b8d4'
+                      : milestone.status === 'active'
+                      ? '3px solid #00b8d4'
+                      : '3px solid rgba(255, 255, 255, 0.3)',
+                  position: 'absolute',
+                  top: '-7px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  boxShadow:
+                    milestone.status === 'completed'
+                      ? '0 0 10px rgba(0, 184, 212, 0.6)'
+                      : milestone.status === 'active'
+                      ? '0 0 14px rgba(0, 184, 212, 0.8)'
+                      : 'none',
+                  transition: 'all 0.3s ease',
+                  animation: milestone.status === 'active' ? 'pulse 2s ease-in-out infinite' : 'none',
+                  zIndex: 3,
+                }}
+              />
+
+              {/* Vertical connector line */}
+              <div
+                style={{
+                  width: '2px',
+                  height: '45px',
+                  background:
+                    milestone.status === 'completed'
+                      ? 'rgba(0, 184, 212, 0.5)'
+                      : milestone.status === 'active'
+                      ? 'rgba(0, 184, 212, 0.6)'
+                      : 'rgba(255, 255, 255, 0.25)',
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  [isAbove ? 'bottom' : 'top']: '0px',
+                  transition: 'all 0.3s ease',
+                  zIndex: 1,
+                }}
+              />
+
+              {/* Milestone label container */}
               <div
                 style={{
                   position: 'absolute',
-                  textAlign: 'center',
-                  minWidth: '140px',
-                  maxWidth: '140px',
-                  transform: 'translateX(-50%)',
                   left: '50%',
-                  [isAbove ? 'bottom' : 'top']: isAbove ? '52px' : '52px',
+                  transform: 'translateX(-50%)',
+                  [isAbove ? 'bottom' : 'top']: '50px',
+                  textAlign: 'center',
+                  width: '110px',
                 }}
               >
                 <p
@@ -273,6 +326,8 @@ const DealTimeline = ({ deal }) => {
                         : 'rgba(255, 255, 255, 0.5)',
                     marginBottom: '4px',
                     lineHeight: '1.3',
+                    wordWrap: 'break-word',
+                    hyphens: 'auto',
                   }}
                 >
                   {milestone.label}
@@ -289,60 +344,6 @@ const DealTimeline = ({ deal }) => {
                   {formatDate(milestone.date)}
                 </p>
               </div>
-
-              {/* Vertical marker line - extends up or down based on position */}
-              <div
-                style={{
-                  width: '2px',
-                  height: isAbove ? '60px' : '60px',
-                  background:
-                    milestone.status === 'completed'
-                      ? isAbove 
-                        ? 'linear-gradient(0deg, #00b8d4, rgba(0, 184, 212, 0.3))'
-                        : 'linear-gradient(180deg, #00b8d4, rgba(0, 184, 212, 0.3))'
-                      : milestone.status === 'active'
-                      ? '#00b8d4'
-                      : 'rgba(255, 255, 255, 0.3)',
-                  margin: '0 auto',
-                  transition: 'all 0.3s ease',
-                  position: 'absolute',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  [isAbove ? 'bottom' : 'top']: '-6px',
-                }}
-              />
-
-              {/* Milestone dot */}
-              <div
-                style={{
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  background:
-                    milestone.status === 'completed'
-                      ? '#00b8d4'
-                      : milestone.status === 'active'
-                      ? '#00b8d4'
-                      : 'rgba(255, 255, 255, 0.15)',
-                  border:
-                    milestone.status === 'completed'
-                      ? '2px solid #00b8d4'
-                      : milestone.status === 'active'
-                      ? '2px solid #00b8d4'
-                      : '2px solid rgba(255, 255, 255, 0.3)',
-                  margin: '0 auto',
-                  position: 'relative',
-                  top: '-6px',
-                  boxShadow:
-                    milestone.status === 'completed'
-                      ? '0 0 12px rgba(0, 184, 212, 0.6)'
-                      : milestone.status === 'active'
-                      ? '0 0 16px rgba(0, 184, 212, 0.8)'
-                      : 'none',
-                  transition: 'all 0.3s ease',
-                  animation: milestone.status === 'active' ? 'pulse 2s ease-in-out infinite' : 'none',
-                }}
-              />
 
               {/* Tooltip */}
               {hoveredMilestone === milestone.id && (
