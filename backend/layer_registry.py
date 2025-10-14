@@ -116,35 +116,23 @@ LAYER_REGISTRY = {
                     "MI-1", "#7B1FA2",
                     # Downtown - Blue
                     "D", "#1E88E5",
-                    # Special/Other - Yellow/Gray shades
+                    # Land/Special - Yellow/Gray shades
+                    "L", "#FFEB3B",
                     "UZROW", "#FDD835",
                     "FR", "#9E9E9E",
-                    # Default for unmapped zones
-                    "#BDBDBD"
+                    # Default for unmapped/null zones - light gray
+                    "#E0E0E0"
                 ],
-                "fill-opacity": 0.65,
-                "fill-outline-color": [
-                    "match",
-                    ["get", "Base"],
-                    # White outlines for most zones
-                    "R-1", "#FFFFFF",
-                    "R-2", "#FFFFFF",
-                    "R-3", "#FFFFFF",
-                    "R-4", "#FFFFFF",
-                    "R-5", "#FFFFFF",
-                    "R-6", "#FFFFFF",
-                    "C-1", "#FFFFFF",
-                    "C-2", "#FFFFFF",
-                    "C-3", "#FFFFFF",
-                    "I-1", "#FFFFFF",
-                    "I-2", "#FFFFFF",
-                    "MF-33", "#FFFFFF",
-                    "MF-18", "#FFFFFF",
-                    "OCL", "#FFFFFF",
-                    # Default
-                    "#999999"
-                ]
+                "fill-opacity": 0.5,
+                "fill-outline-color": "#FFFFFF"
             }
+        },
+        "labelConfig": {
+            "textField": ["get", "Base"],
+            "textSize": 11,
+            "textColor": "#FFFFFF",
+            "textHaloColor": "#000000",
+            "textHaloWidth": 1.5
         },
         "clickFields": ["Base", "BaseDescription", "Zoning", "ZoningDetail"]
     },
