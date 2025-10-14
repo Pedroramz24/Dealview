@@ -383,10 +383,11 @@ const DealTimeline = ({ deal }) => {
                   <div style={{ marginBottom: '8px' }}>
                     <p
                       style={{
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: '600',
                         color: '#FFFFFF',
                         marginBottom: '4px',
+                        lineHeight: '1.3',
                       }}
                     >
                       {milestone.label}
