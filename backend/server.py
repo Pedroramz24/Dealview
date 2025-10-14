@@ -153,7 +153,7 @@ class DealCreate(BaseModel):
     lot_acres: Optional[float] = None
     year_built: Optional[int] = None
     zoning: Optional[str] = None
-    occupancy: Optional[float] = None
+    occupancy: Optional[str] = None
     parking_spaces: Optional[int] = None
     key_features: Optional[str] = None
     
@@ -209,7 +209,7 @@ class DealUpdate(BaseModel):
     lot_acres: Optional[float] = None
     year_built: Optional[int] = None
     zoning: Optional[str] = None
-    occupancy: Optional[float] = None
+    occupancy: Optional[str] = None
     parking_spaces: Optional[int] = None
     key_features: Optional[str] = None
     
