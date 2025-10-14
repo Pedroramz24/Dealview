@@ -22,16 +22,56 @@ const DealsList = () => {
   const navigate = useNavigate();
 
   const [newDeal, setNewDeal] = useState({
+    // Core
+    deal_title: '',
     property_address: '',
     asset_type: 'Office',
-    asking_price: '',
-    building_size: '',
+    deal_status: 'New',
+    pipeline_stage: 'New',
+    priority: 'Medium',
+    owner_visibility: 'Team',
+    
+    // Location
     latitude: 29.4241,
     longitude: -98.4936,
+    display_on_map: true,
+    market: 'San Antonio',
+    submarket: '',
+    
+    // Property Facts
+    building_size: '',
+    lot_size: '',
+    year_built: '',
+    zoning: '',
+    occupancy: '',
+    parking_spaces: '',
+    key_features: '',
+    
+    // Financials
+    asking_price: '',
+    noi: '',
+    cap_rate: '',
+    lease_type: '',
+    proforma_notes: '',
+    
+    // Contacts
+    primary_contact: '',
+    additional_contacts: [],
+    last_contact_date: '',
+    
+    // Activities
+    next_action: '',
+    next_action_date: '',
     notes: '',
-    stage: 'New',
+    
+    // Media
     primary_image_url: null,
-    documents: []
+    gallery_images: [],
+    documents: [],
+    
+    // Dates
+    target_close_date: '',
+    external_ids: ''
   });
 
   const [imageFile, setImageFile] = useState(null);
