@@ -30,6 +30,50 @@ export const useMapLayers = (mapRef) => {
   }, []);
 
   /**
+   * Fetch and update layer data for current viewport
+   */
+  const fetchLayerData = useCallback(
+    async (layerId) => {
+      if (!mapRef.current || !layerRegistry) return;
+
+      const layerConfig = layerRegistry[layerId];
+      if (!layerConfig) return;
+
+      try {
+        const token = localStorage.getItem('token');
+        const map = mapRef.current.getMap();
+
+        // Get current map bounds with some padding
+        const bounds = map.getBounds();
+        const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+
+        // Fetch layer data
+        const response = await axios.get(`${API}/layers/${layerId}/query`, {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { bbox },
+        });
+
+        const geojsonData = response.data;
+        const featureCount = geojsonData?.features?.length || 0;
+
+        // Update source data
+        const sourceId = `layer-source-${layerId}`;
+        const source = map.getSource(sourceId);
+        if (source) {
+          source.setData(geojsonData);
+          console.log(`✓ Updated layer: ${layerConfig.name} (${featureCount} features)`);
+        }
+
+        // Store layer data
+        setLayerData((prev) => ({ ...prev, [layerId]: geojsonData }));
+      } catch (error) {
+        console.error(`Error fetching layer data for ${layerId}:`, error.response?.data || error.message);
+      }
+    },
+    [mapRef, layerRegistry]
+  );
+
+  /**
    * Add a layer to the map
    */
   const addLayer = useCallback(
@@ -107,13 +151,36 @@ export const useMapLayers = (mapRef) => {
         setLoadedLayers((prev) => new Set([...prev, layerId]));
         
         console.log(`✓ Added layer: ${layerConfig.name} (${featureCount} features)`);
+
+        // Set up event listener to refresh layer data on map move
+        const refreshLayerData = () => {
+          fetchLayerData(layerId);
+        };
+
+        // Debounce the moveend event to avoid too many requests
+        let moveEndTimeout;
+        const debouncedRefresh = () => {
+          clearTimeout(moveEndTimeout);
+          moveEndTimeout = setTimeout(refreshLayerData, 500);
+        };
+
+        map.on('moveend', debouncedRefresh);
+        
+        // Store cleanup function
+        if (!window.mapLayerCleanup) {
+          window.mapLayerCleanup = {};
+        }
+        window.mapLayerCleanup[layerId] = () => {
+          map.off('moveend', debouncedRefresh);
+        };
+        
       } catch (error) {
         console.error(`Error adding layer ${layerId}:`, error.response?.data || error.message);
       } finally {
         setLoading(false);
       }
     },
-    [mapRef, layerRegistry, loadedLayers]
+    [mapRef, layerRegistry, loadedLayers, fetchLayerData]
   );
 
   /**
