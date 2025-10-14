@@ -234,8 +234,6 @@ const MapView = () => {
         <LayerManager
           isOpen={layerManagerOpen}
           onClose={() => setLayerManagerOpen(false)}
-          onLayerToggle={handleLayerToggle}
-          onLayerOpacityChange={handleLayerOpacityChange}
         />
 
         {/* Map Controls - Top Right */}
