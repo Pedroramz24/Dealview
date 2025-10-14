@@ -83,19 +83,26 @@ const SimpleTestLayer = ({ mapRef }) => {
       }
     };
 
-    if (map.isStyleLoaded()) {
-      addTestLayer();
-    } else {
-      map.once('load', addTestLayer);
-    }
+      if (map.isStyleLoaded()) {
+        addTestLayer();
+      } else {
+        map.once('load', addTestLayer);
+      }
+    };
+
+    // Start checking
+    checkAndAddLayer();
 
     // Cleanup
     return () => {
-      if (map.getLayer('test-layer')) {
-        map.removeLayer('test-layer');
-      }
-      if (map.getSource('test-source')) {
-        map.removeSource('test-source');
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        if (map && map.getLayer('test-layer')) {
+          map.removeLayer('test-layer');
+        }
+        if (map && map.getSource('test-source')) {
+          map.removeSource('test-source');
+        }
       }
     };
   }, [mapRef]);
