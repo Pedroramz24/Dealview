@@ -477,8 +477,9 @@ const DealTimeline = ({ deal }) => {
           );
         })}
       </div>
+      </div>
 
-      {/* Add keyframes for pulse animation */}
+      {/* Add keyframes for pulse animation and scrollbar styling */}
       <style>
         {`
           @keyframes pulse {
@@ -490,6 +491,32 @@ const DealTimeline = ({ deal }) => {
               opacity: 0.7;
               transform: translate(-50%, -50%) scale(1.15);
             }
+          }
+          
+          /* Custom scrollbar for timeline */
+          .timeline-scroll-container::-webkit-scrollbar {
+            height: 8px;
+          }
+          
+          .timeline-scroll-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+          }
+          
+          .timeline-scroll-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 184, 212, 0.4);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+          }
+          
+          .timeline-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 184, 212, 0.6);
+          }
+          
+          /* Firefox scrollbar */
+          .timeline-scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 184, 212, 0.4) rgba(255, 255, 255, 0.05);
           }
         `}
       </style>
