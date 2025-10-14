@@ -7,25 +7,27 @@ import { useEffect } from 'react';
 const SimpleTestLayer = ({ mapRef }) => {
   useEffect(() => {
     console.log('[TEST] SimpleTestLayer mounted');
-    console.log('[TEST] mapRef:', mapRef);
-    console.log('[TEST] mapRef.current:', mapRef.current);
     
-    if (!mapRef.current) {
-      console.log('[TEST] mapRef.current is null, waiting...');
-      return;
-    }
+    // Keep checking until mapRef.current is available
+    const checkAndAddLayer = () => {
+      if (!mapRef.current) {
+        console.log('[TEST] mapRef.current still null, retrying in 100ms...');
+        setTimeout(checkAndAddLayer, 100);
+        return;
+      }
 
-    const map = mapRef.current.getMap();
-    console.log('[TEST] map instance:', map);
-    
-    if (!map) {
-      console.log('[TEST] map is null');
-      return;
-    }
+      const map = mapRef.current.getMap();
+      console.log('[TEST] Got map instance:', !!map);
+      
+      if (!map) {
+        console.log('[TEST] map is null, retrying in 100ms...');
+        setTimeout(checkAndAddLayer, 100);
+        return;
+      }
 
-    // Wait for map to load
-    const addTestLayer = () => {
-      console.log('[TEST] Adding simple test layer...');
+      // Wait for map to load
+      const addTestLayer = () => {
+        console.log('[TEST] Adding simple test layer...');
 
       // Simple GeoJSON - a large rectangle over San Antonio
       const testGeoJSON = {
