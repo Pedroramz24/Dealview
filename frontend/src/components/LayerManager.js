@@ -132,9 +132,9 @@ const LayerManager = ({ isOpen, onClose }) => {
     const newStates = {};
     Object.keys(layerStates).forEach((layerId) => {
       newStates[layerId] = { ...layerStates[layerId], visible: false };
-      // Notify parent to turn off layers
-      if (onLayerToggle) {
-        onLayerToggle(layerId, false, layerStates[layerId]?.opacity || 100);
+      // Use context handlers if available
+      if (layerContext) {
+        layerContext.removeLayer(layerId);
       }
     });
     setLayerStates(newStates);
@@ -147,9 +147,9 @@ const LayerManager = ({ isOpen, onClose }) => {
       Object.keys(layerRegistry).forEach((category) => {
         layerRegistry[category].layers.forEach((layer) => {
           initial[layer.id] = { visible: false, opacity: 100 };
-          // Notify parent to turn off layers
-          if (onLayerToggle) {
-            onLayerToggle(layer.id, false, 100);
+          // Use context handlers if available
+          if (layerContext) {
+            layerContext.removeLayer(layer.id);
           }
         });
       });
