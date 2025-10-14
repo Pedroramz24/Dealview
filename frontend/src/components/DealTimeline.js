@@ -175,301 +175,242 @@ const DealTimeline = ({ deal }) => {
           overflowX: 'auto',
           overflowY: 'visible',
           paddingBottom: '10px',
-          position: 'relative',
         }}
         className="timeline-scroll-container"
       >
-        {/* Timeline Container - min-width ensures horizontal scroll on small screens */}
-        <div style={{ position: 'relative', height: '200px', minWidth: '900px', paddingLeft: '20px', paddingRight: '20px' }}>
-        {/* Background track - centered vertically */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '100px',
-            left: '20px',
-            right: '20px',
-            height: '3px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '2px',
-          }}
-        />
-
-        {/* Progress bar (completed portion) */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '100px',
-            left: '20px',
-            height: '3px',
-            width: `calc(${timelineMetrics.currentProgress}% - 20px)`,
-            background: 'linear-gradient(90deg, #00b8d4, #00d4ff)',
-            borderRadius: '2px',
-            boxShadow: '0 0 10px rgba(0, 184, 212, 0.5)',
-            transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        />
-
-        {/* Current date indicator (moving dot) */}
-        {timelineMetrics.currentProgress > 0 && timelineMetrics.currentProgress < 100 && (
+        {/* Timeline Container - centered timeline bar */}
+        <div style={{ position: 'relative', height: '240px', minWidth: '900px', paddingLeft: '40px', paddingRight: '40px' }}>
+          
+          {/* Timeline bar - absolutely centered */}
           <div
             style={{
               position: 'absolute',
-              top: '93px',
-              left: `calc(${timelineMetrics.currentProgress}% + 20px)`,
-              transform: 'translateX(-50%)',
-              width: '16px',
-              height: '16px',
-              background: '#00b8d4',
-              borderRadius: '50%',
-              boxShadow: '0 0 12px rgba(0, 184, 212, 0.8), 0 0 20px rgba(0, 184, 212, 0.4)',
-              border: '3px solid rgba(0, 0, 0, 0.9)',
-              zIndex: 10,
+              top: '120px',
+              left: '40px',
+              right: '40px',
+              height: '3px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '2px',
             }}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '6px',
-                height: '6px',
-                background: '#fff',
-                borderRadius: '50%',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              }}
-            />
-          </div>
-        )}
+          />
 
-        {/* Milestone markers */}
-        {timelineMetrics.milestones.map((milestone, index) => {
-          // Alternate labels above and below the timeline
-          const isAbove = index % 2 === 0;
-          
-          // Determine if milestone is near edges (for tooltip positioning)
-          const isNearLeftEdge = milestone.position < 25;
-          const isNearRightEdge = milestone.position > 75;
-          
-          return (
+          {/* Progress bar (completed portion) */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '120px',
+              left: '40px',
+              height: '3px',
+              width: `calc((100% - 80px) * ${timelineMetrics.currentProgress / 100})`,
+              background: 'linear-gradient(90deg, #00b8d4, #00d4ff)',
+              borderRadius: '2px',
+              boxShadow: '0 0 10px rgba(0, 184, 212, 0.5)',
+              transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
+
+          {/* Current date indicator */}
+          {timelineMetrics.currentProgress > 0 && timelineMetrics.currentProgress < 100 && (
             <div
-              key={milestone.id}
-              onMouseEnter={() => setHoveredMilestone(milestone.id)}
-              onMouseLeave={() => setHoveredMilestone(null)}
               style={{
                 position: 'absolute',
-                top: isAbove ? '10px' : '145px',
-                left: `calc(${milestone.position}% + 20px)`,
-                transform: 'translateX(-50%)',
-                width: '120px',
-                height: '90px',
-                cursor: 'pointer',
-                zIndex: 5,
+                top: '113px',
+                left: `calc(40px + (100% - 80px) * ${timelineMetrics.currentProgress / 100})`,
+                width: '16px',
+                height: '16px',
+                background: '#00b8d4',
+                borderRadius: '50%',
+                boxShadow: '0 0 12px rgba(0, 184, 212, 0.8)',
+                border: '3px solid rgba(0, 0, 0, 0.9)',
+                zIndex: 10,
               }}
             >
-              {/* Milestone label container */}
               <div
                 style={{
                   position: 'absolute',
-                  [isAbove ? 'top' : 'bottom']: '0',
+                  top: '50%',
                   left: '50%',
-                  transform: 'translateX(-50%)',
-                  textAlign: 'center',
-                  width: '110px',
-                  pointerEvents: 'none',
+                  transform: 'translate(-50%, -50%)',
+                  width: '6px',
+                  height: '6px',
+                  background: '#fff',
+                  borderRadius: '50%',
+                  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                }}
+              />
+            </div>
+          )}
+
+          {/* Milestone markers */}
+          {timelineMetrics.milestones.map((milestone, index) => {
+            const isAbove = index % 2 === 0;
+            const isNearLeftEdge = milestone.position < 25;
+            const isNearRightEdge = milestone.position > 75;
+            
+            return (
+              <div
+                key={milestone.id}
+                onMouseEnter={() => setHoveredMilestone(milestone.id)}
+                onMouseLeave={() => setHoveredMilestone(null)}
+                style={{
+                  position: 'absolute',
+                  top: '120px',
+                  left: `calc(40px + (100% - 80px) * ${milestone.position / 100})`,
+                  transform: 'translate(-50%, -50%)',
+                  cursor: 'pointer',
+                  zIndex: 5,
                 }}
               >
-                <p
+                {/* Milestone dot - centered on timeline */}
+                <div
                   style={{
-                    fontSize: '11px',
-                    fontWeight: '600',
-                    color:
-                      milestone.status === 'completed' || milestone.status === 'active'
-                        ? '#FFFFFF'
-                        : 'rgba(255, 255, 255, 0.5)',
-                    marginBottom: '4px',
-                    lineHeight: '1.3',
-                    wordWrap: 'break-word',
-                    hyphens: 'auto',
-                  }}
-                >
-                  {milestone.label}
-                </p>
-                <p
-                  style={{
-                    fontSize: '10px',
-                    color:
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '50%',
+                    background:
                       milestone.status === 'completed' || milestone.status === 'active'
                         ? '#00b8d4'
-                        : 'rgba(255, 255, 255, 0.4)',
+                        : 'rgba(255, 255, 255, 0.15)',
+                    border:
+                      milestone.status === 'completed' || milestone.status === 'active'
+                        ? '3px solid #00b8d4'
+                        : '3px solid rgba(255, 255, 255, 0.3)',
+                    boxShadow:
+                      milestone.status === 'completed'
+                        ? '0 0 10px rgba(0, 184, 212, 0.6)'
+                        : milestone.status === 'active'
+                        ? '0 0 14px rgba(0, 184, 212, 0.8)'
+                        : 'none',
+                    transition: 'all 0.3s ease',
+                    animation: milestone.status === 'active' ? 'pulseDot 2s ease-in-out infinite' : 'none',
                   }}
-                >
-                  {formatDate(milestone.date)}
-                </p>
-              </div>
+                />
 
-              {/* Vertical connector line */}
-              <div
-                style={{
-                  width: '2px',
-                  height: '45px',
-                  background:
-                    milestone.status === 'completed'
-                      ? 'rgba(0, 184, 212, 0.5)'
-                      : milestone.status === 'active'
-                      ? 'rgba(0, 184, 212, 0.6)'
-                      : 'rgba(255, 255, 255, 0.25)',
-                  position: 'absolute',
-                  [isAbove ? 'bottom' : 'top']: '0',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  transition: 'all 0.3s ease',
-                  pointerEvents: 'none',
-                }}
-              />
-
-              {/* Milestone dot - positioned on the timeline */}
-              <div
-                style={{
-                  width: '14px',
-                  height: '14px',
-                  borderRadius: '50%',
-                  background:
-                    milestone.status === 'completed'
-                      ? '#00b8d4'
-                      : milestone.status === 'active'
-                      ? '#00b8d4'
-                      : 'rgba(255, 255, 255, 0.15)',
-                  border:
-                    milestone.status === 'completed'
-                      ? '3px solid #00b8d4'
-                      : milestone.status === 'active'
-                      ? '3px solid #00b8d4'
-                      : '3px solid rgba(255, 255, 255, 0.3)',
-                  position: 'absolute',
-                  [isAbove ? 'bottom' : 'top']: isAbove ? '-52px' : '-52px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  boxShadow:
-                    milestone.status === 'completed'
-                      ? '0 0 10px rgba(0, 184, 212, 0.6)'
-                      : milestone.status === 'active'
-                      ? '0 0 14px rgba(0, 184, 212, 0.8)'
-                      : 'none',
-                  transition: 'all 0.3s ease',
-                  animation: milestone.status === 'active' ? 'pulse 2s ease-in-out infinite' : 'none',
-                  pointerEvents: 'none',
-                }}
-              />
-
-              {/* Tooltip - smart positioning to avoid overflow */}
-              {hoveredMilestone === milestone.id && (
+                {/* Connector line to label */}
                 <div
                   style={{
                     position: 'absolute',
-                    [isAbove ? 'top' : 'bottom']: isAbove ? '-140px' : '-140px',
-                    // Adjust left position for edge milestones
-                    left: isNearLeftEdge ? '0' : isNearRightEdge ? 'auto' : '50%',
-                    right: isNearRightEdge ? '0' : 'auto',
-                    transform: isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)',
-                    background: 'rgba(10, 10, 10, 0.98)',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(0, 184, 212, 0.4)',
-                    borderRadius: '8px',
-                    padding: '12px 14px',
-                    width: '220px',
-                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 184, 212, 0.3)',
-                    zIndex: 1000,
-                    pointerEvents: 'none',
+                    width: '2px',
+                    height: '50px',
+                    background:
+                      milestone.status === 'completed' || milestone.status === 'active'
+                        ? 'rgba(0, 184, 212, 0.5)'
+                        : 'rgba(255, 255, 255, 0.25)',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    [isAbove ? 'bottom' : 'top']: '14px',
+                  }}
+                />
+
+                {/* Label container */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    [isAbove ? 'bottom' : 'top']: '68px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    textAlign: 'center',
+                    width: '110px',
                   }}
                 >
-                  {/* Tooltip arrow - adjusted for edge positioning */}
+                  <p
+                    style={{
+                      fontSize: '11px',
+                      fontWeight: '600',
+                      color:
+                        milestone.status === 'completed' || milestone.status === 'active'
+                          ? '#FFFFFF'
+                          : 'rgba(255, 255, 255, 0.5)',
+                      marginBottom: '4px',
+                      lineHeight: '1.3',
+                      wordWrap: 'break-word',
+                    }}
+                  >
+                    {milestone.label}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: '10px',
+                      color:
+                        milestone.status === 'completed' || milestone.status === 'active'
+                          ? '#00b8d4'
+                          : 'rgba(255, 255, 255, 0.4)',
+                    }}
+                  >
+                    {formatDate(milestone.date)}
+                  </p>
+                </div>
+
+                {/* Tooltip */}
+                {hoveredMilestone === milestone.id && (
                   <div
                     style={{
                       position: 'absolute',
-                      [isAbove ? 'bottom' : 'top']: isAbove ? '-6px' : '-6px',
-                      left: isNearLeftEdge ? '20px' : isNearRightEdge ? 'auto' : '50%',
-                      right: isNearRightEdge ? '20px' : 'auto',
-                      transform: `${isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)'} ${isAbove ? 'rotate(180deg)' : ''}`,
-                      width: '0',
-                      height: '0',
-                      borderLeft: '6px solid transparent',
-                      borderRight: '6px solid transparent',
-                      borderTop: '6px solid rgba(0, 184, 212, 0.4)',
+                      [isAbove ? 'bottom' : 'top']: isAbove ? '150px' : '150px',
+                      left: isNearLeftEdge ? '-50px' : isNearRightEdge ? 'auto' : '50%',
+                      right: isNearRightEdge ? '-50px' : 'auto',
+                      transform: isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)',
+                      background: 'rgba(10, 10, 10, 0.98)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(0, 184, 212, 0.4)',
+                      borderRadius: '8px',
+                      padding: '12px 14px',
+                      width: '220px',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 184, 212, 0.3)',
+                      zIndex: 1000,
+                      pointerEvents: 'none',
                     }}
-                  />
-
-                  <div style={{ marginBottom: '8px' }}>
-                    <p
+                  >
+                    <div
                       style={{
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        color: '#FFFFFF',
-                        marginBottom: '4px',
-                        lineHeight: '1.3',
+                        position: 'absolute',
+                        [isAbove ? 'bottom' : 'top']: '-6px',
+                        left: isNearLeftEdge ? '60px' : isNearRightEdge ? 'auto' : '50%',
+                        right: isNearRightEdge ? '60px' : 'auto',
+                        transform: `${isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)'} ${isAbove ? 'rotate(180deg)' : ''}`,
+                        width: '0',
+                        height: '0',
+                        borderLeft: '6px solid transparent',
+                        borderRight: '6px solid transparent',
+                        borderTop: '6px solid rgba(0, 184, 212, 0.4)',
                       }}
-                    >
-                      {milestone.label}
-                    </p>
-                    <p style={{ fontSize: '11px', color: '#00b8d4' }}>
-                      {formatDate(milestone.date)}
-                    </p>
+                    />
+
+                    <div style={{ marginBottom: '8px' }}>
+                      <p style={{ fontSize: '12px', fontWeight: '600', color: '#FFFFFF', marginBottom: '4px', lineHeight: '1.3' }}>
+                        {milestone.label}
+                      </p>
+                      <p style={{ fontSize: '11px', color: '#00b8d4' }}>
+                        {formatDate(milestone.date)}
+                      </p>
+                    </div>
+
+                    {milestone.responsible && (
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '6px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                        <User className="w-3 h-3" style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px', flexShrink: 0 }} />
+                        <p style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.3' }}>
+                          {milestone.responsible}
+                        </p>
+                      </div>
+                    )}
+
+                    {milestone.notes && (
+                      <div style={{ display: 'flex', alignItems: 'flex-start', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                        <FileText className="w-3 h-3" style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px', marginTop: '2px', flexShrink: 0 }} />
+                        <p style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.7)', lineHeight: '1.4' }}>
+                          {milestone.notes}
+                        </p>
+                      </div>
+                    )}
                   </div>
-
-                  {milestone.responsible && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: '6px',
-                        paddingTop: '8px',
-                        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-                      }}
-                    >
-                      <User
-                        className="w-3 h-3"
-                        style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px', flexShrink: 0 }}
-                      />
-                      <p style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.3' }}>
-                        {milestone.responsible}
-                      </p>
-                    </div>
-                  )}
-
-                  {milestone.notes && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        marginTop: '6px',
-                        paddingTop: '6px',
-                        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-                      }}
-                    >
-                      <FileText
-                        className="w-3 h-3"
-                        style={{ color: 'rgba(255, 255, 255, 0.6)', marginRight: '6px', marginTop: '2px', flexShrink: 0 }}
-                      />
-                      <p
-                        style={{
-                          fontSize: '10px',
-                          color: 'rgba(255, 255, 255, 0.7)',
-                          lineHeight: '1.4',
-                        }}
-                      >
-                        {milestone.notes}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Add keyframes for pulse animation and scrollbar styling */}
+      {/* Styles */}
       <style>
         {`
           @keyframes pulse {
@@ -483,7 +424,15 @@ const DealTimeline = ({ deal }) => {
             }
           }
           
-          /* Custom scrollbar for timeline */
+          @keyframes pulseDot {
+            0%, 100% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.1);
+            }
+          }
+          
           .timeline-scroll-container::-webkit-scrollbar {
             height: 8px;
           }
@@ -503,7 +452,6 @@ const DealTimeline = ({ deal }) => {
             background: rgba(0, 184, 212, 0.6);
           }
           
-          /* Firefox scrollbar */
           .timeline-scroll-container {
             scrollbar-width: thin;
             scrollbar-color: rgba(0, 184, 212, 0.4) rgba(255, 255, 255, 0.05);
