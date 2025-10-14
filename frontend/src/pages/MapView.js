@@ -19,6 +19,7 @@ const MapView = () => {
   const [showParcels, setShowParcels] = useState(true);
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
+  const [layerManagerOpen, setLayerManagerOpen] = useState(false);
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
     latitude: 29.4241,
