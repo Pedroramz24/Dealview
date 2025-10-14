@@ -205,19 +205,32 @@ const DealTimeline = ({ deal }) => {
           <div
             style={{
               position: 'absolute',
-              top: '72px',
-              left: `${timelineMetrics.currentProgress}%`,
+              top: '93px',
+              left: `calc(${timelineMetrics.currentProgress}% + 20px)`,
               transform: 'translateX(-50%)',
-              width: '20px',
-              height: '20px',
+              width: '16px',
+              height: '16px',
               background: '#00b8d4',
               borderRadius: '50%',
-              boxShadow: '0 0 16px rgba(0, 184, 212, 0.8), 0 0 24px rgba(0, 184, 212, 0.4)',
-              border: '3px solid rgba(0, 0, 0, 0.8)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              boxShadow: '0 0 12px rgba(0, 184, 212, 0.8), 0 0 20px rgba(0, 184, 212, 0.4)',
+              border: '3px solid rgba(0, 0, 0, 0.9)',
               zIndex: 10,
             }}
-          />
+          >
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '6px',
+                height: '6px',
+                background: '#fff',
+                borderRadius: '50%',
+                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              }}
+            />
+          </div>
         )}
 
         {/* Milestone markers */}
