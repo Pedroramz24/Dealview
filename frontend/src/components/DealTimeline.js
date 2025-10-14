@@ -219,105 +219,115 @@ const DealTimeline = ({ deal }) => {
         )}
 
         {/* Milestone markers */}
-        {timelineMetrics.milestones.map((milestone, index) => (
-          <div
-            key={milestone.id}
-            style={{
-              position: 'absolute',
-              top: '0',
-              left: `${milestone.position}%`,
-              transform: 'translateX(-50%)',
-              zIndex: 5,
-            }}
-            onMouseEnter={() => setHoveredMilestone(milestone.id)}
-            onMouseLeave={() => setHoveredMilestone(null)}
-          >
-            {/* Vertical marker line */}
+        {timelineMetrics.milestones.map((milestone, index) => {
+          // Alternate labels above and below the timeline
+          const isAbove = index % 2 === 0;
+          
+          return (
             <div
+              key={milestone.id}
               style={{
-                width: '2px',
-                height: '40px',
-                background:
-                  milestone.status === 'completed'
-                    ? 'linear-gradient(180deg, #00b8d4, rgba(0, 184, 212, 0.3))'
-                    : milestone.status === 'active'
-                    ? '#00b8d4'
-                    : 'rgba(255, 255, 255, 0.3)',
-                margin: '0 auto',
-                transition: 'all 0.3s ease',
-              }}
-            />
-
-            {/* Milestone dot */}
-            <div
-              style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                background:
-                  milestone.status === 'completed'
-                    ? '#00b8d4'
-                    : milestone.status === 'active'
-                    ? '#00b8d4'
-                    : 'rgba(255, 255, 255, 0.15)',
-                border:
-                  milestone.status === 'completed'
-                    ? '2px solid #00b8d4'
-                    : milestone.status === 'active'
-                    ? '2px solid #00b8d4'
-                    : '2px solid rgba(255, 255, 255, 0.3)',
-                margin: '-6px auto 0',
-                boxShadow:
-                  milestone.status === 'completed'
-                    ? '0 0 12px rgba(0, 184, 212, 0.6)'
-                    : milestone.status === 'active'
-                    ? '0 0 16px rgba(0, 184, 212, 0.8)'
-                    : 'none',
-                transition: 'all 0.3s ease',
-                animation: milestone.status === 'active' ? 'pulse 2s ease-in-out infinite' : 'none',
-              }}
-            />
-
-            {/* Milestone label */}
-            <div
-              style={{
-                marginTop: '12px',
-                textAlign: 'center',
-                minWidth: '100px',
-                maxWidth: '120px',
+                position: 'absolute',
+                top: '0',
+                left: `${milestone.position}%`,
                 transform: 'translateX(-50%)',
-                position: 'relative',
-                left: '50%',
+                zIndex: 5,
               }}
+              onMouseEnter={() => setHoveredMilestone(milestone.id)}
+              onMouseLeave={() => setHoveredMilestone(null)}
             >
-              <p
+              {/* Milestone label - positioned above or below */}
+              <div
                 style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  color:
-                    milestone.status === 'completed' || milestone.status === 'active'
-                      ? '#FFFFFF'
-                      : 'rgba(255, 255, 255, 0.5)',
-                  marginBottom: '4px',
-                  lineHeight: '1.3',
-                  whiteSpace: 'nowrap',
+                  position: 'absolute',
+                  textAlign: 'center',
+                  minWidth: '140px',
+                  maxWidth: '140px',
+                  transform: 'translateX(-50%)',
+                  left: '50%',
+                  [isAbove ? 'bottom' : 'top']: isAbove ? '52px' : '52px',
                 }}
               >
-                {milestone.label}
-              </p>
-              <p
+                <p
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    color:
+                      milestone.status === 'completed' || milestone.status === 'active'
+                        ? '#FFFFFF'
+                        : 'rgba(255, 255, 255, 0.5)',
+                    marginBottom: '4px',
+                    lineHeight: '1.3',
+                  }}
+                >
+                  {milestone.label}
+                </p>
+                <p
+                  style={{
+                    fontSize: '10px',
+                    color:
+                      milestone.status === 'completed' || milestone.status === 'active'
+                        ? '#00b8d4'
+                        : 'rgba(255, 255, 255, 0.4)',
+                  }}
+                >
+                  {formatDate(milestone.date)}
+                </p>
+              </div>
+
+              {/* Vertical marker line - extends up or down based on position */}
+              <div
                 style={{
-                  fontSize: '10px',
-                  color:
-                    milestone.status === 'completed' || milestone.status === 'active'
+                  width: '2px',
+                  height: isAbove ? '60px' : '60px',
+                  background:
+                    milestone.status === 'completed'
+                      ? isAbove 
+                        ? 'linear-gradient(0deg, #00b8d4, rgba(0, 184, 212, 0.3))'
+                        : 'linear-gradient(180deg, #00b8d4, rgba(0, 184, 212, 0.3))'
+                      : milestone.status === 'active'
                       ? '#00b8d4'
-                      : 'rgba(255, 255, 255, 0.4)',
-                  whiteSpace: 'nowrap',
+                      : 'rgba(255, 255, 255, 0.3)',
+                  margin: '0 auto',
+                  transition: 'all 0.3s ease',
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  [isAbove ? 'bottom' : 'top']: '-6px',
                 }}
-              >
-                {formatDate(milestone.date)}
-              </p>
-            </div>
+              />
+
+              {/* Milestone dot */}
+              <div
+                style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background:
+                    milestone.status === 'completed'
+                      ? '#00b8d4'
+                      : milestone.status === 'active'
+                      ? '#00b8d4'
+                      : 'rgba(255, 255, 255, 0.15)',
+                  border:
+                    milestone.status === 'completed'
+                      ? '2px solid #00b8d4'
+                      : milestone.status === 'active'
+                      ? '2px solid #00b8d4'
+                      : '2px solid rgba(255, 255, 255, 0.3)',
+                  margin: '0 auto',
+                  position: 'relative',
+                  top: '-6px',
+                  boxShadow:
+                    milestone.status === 'completed'
+                      ? '0 0 12px rgba(0, 184, 212, 0.6)'
+                      : milestone.status === 'active'
+                      ? '0 0 16px rgba(0, 184, 212, 0.8)'
+                      : 'none',
+                  transition: 'all 0.3s ease',
+                  animation: milestone.status === 'active' ? 'pulse 2s ease-in-out infinite' : 'none',
+                }}
+              />
 
             {/* Tooltip */}
             {hoveredMilestone === milestone.id && (
