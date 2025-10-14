@@ -71,7 +71,7 @@ LAYER_REGISTRY = {
         "category": "planning",
         "source": {
             "type": "arcgis",
-            "url": "https://opendata-cosagis.opendata.arcgis.com/arcgis/rest/services/CoSAGIS/cosa_zoning/FeatureServer/0",
+            "url": "https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/COSA_Zoning/FeatureServer/12",
             "method": "query"
         },
         "style": {
