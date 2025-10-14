@@ -160,31 +160,30 @@ export const useMapLayers = (mapRef) => {
               id: labelLayerId,
               type: 'symbol',
               source: sourceId,
-              minzoom: labelConfig.minzoom || 14,
-              filter: [
-                'any',
-                // Show all commercial, industrial, office zones
-                ['in', ['get', 'Base'], ['literal', ['C-1', 'C-2', 'C-3', 'C-3R', 'C-3NA', 'C-2NA', 'NC', 'I-1', 'I-2', 'MI-1', 'O-1', 'O-2', 'OCL', 'D', 'MF-18', 'MF-33']]],
-                // For residential, only show at higher zoom levels (17+) - this naturally reduces density
-                ['all',
-                  ['>=', ['zoom'], 17],
-                  ['in', ['get', 'Base'], ['literal', ['R-1', 'R-2', 'R-3', 'R-4', 'R-5', 'R-6', 'RM-4', 'RM-5', 'RM-6']]]
-                ]
-              ],
+              minzoom: 15,
               layout: {
                 'text-field': labelConfig.textField,
-                'text-size': labelConfig.textSize,
+                'text-size': [
+                  'interpolate',
+                  ['linear'],
+                  ['zoom'],
+                  15, 9,
+                  18, 11,
+                  20, 13
+                ],
                 'text-allow-overlap': false,
                 'text-ignore-placement': false,
                 'text-optional': true,
                 'symbol-placement': 'point',
-                'symbol-spacing': 250,
-                'text-padding': 2
+                'symbol-avoid-edges': true,
+                'text-padding': 10,
+                'text-max-angle': 45
               },
               paint: {
                 'text-color': labelConfig.textColor,
                 'text-halo-color': labelConfig.textHaloColor,
                 'text-halo-width': labelConfig.textHaloWidth,
+                'text-halo-blur': 0.5,
                 'text-opacity': opacity / 100
               }
             });
