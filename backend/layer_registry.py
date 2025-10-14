@@ -182,7 +182,7 @@ LAYER_REGISTRY = {
             }
         },
         "clickFields": ["SERVICE_TYPE", "PROVIDER"],
-        "defaultVisible": false
+        "defaultVisible": False
     },
     
     # Transportation
