@@ -455,11 +455,11 @@ const DealTimeline = ({ deal }) => {
           @keyframes pulse {
             0%, 100% {
               opacity: 1;
-              transform: translateX(-50%) scale(1);
+              transform: translate(-50%, -50%) scale(1);
             }
             50% {
-              opacity: 0.8;
-              transform: translateX(-50%) scale(1.1);
+              opacity: 0.7;
+              transform: translate(-50%, -50%) scale(1.15);
             }
           }
         `}
