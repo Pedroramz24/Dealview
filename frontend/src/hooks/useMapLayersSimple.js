@@ -18,7 +18,7 @@ export const useMapLayersSimple = (mapRef) => {
   const fetchRegistry = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/layers/registry`, {
+      const response = await axios.get(`${API}/api/layers/registry`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLayerRegistry(response.data.layers);
