@@ -19,6 +19,13 @@ const LayerManager = ({ isOpen, onClose }) => {
   // Get map layer handlers from context if available (MapView only)
   const layerContext = useMapLayerContext();
 
+  // Fetch registry on mount
+  useEffect(() => {
+    if (layerContext && layerContext.fetchRegistry) {
+      layerContext.fetchRegistry();
+    }
+  }, [layerContext]);
+
   // Fetch layer registry from backend
   useEffect(() => {
     const fetchRegistry = async () => {
