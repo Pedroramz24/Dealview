@@ -19,19 +19,12 @@ const LayerManager = ({ isOpen, onClose }) => {
   // Get map layer handlers from context if available (MapView only)
   const layerContext = useMapLayerContext();
 
-  // Fetch registry on mount
-  useEffect(() => {
-    if (layerContext && layerContext.fetchRegistry) {
-      layerContext.fetchRegistry();
-    }
-  }, [layerContext]);
-
-  // Fetch layer registry from backend
+  // Fetch layer registry from backend (only this one, removed duplicate)
   useEffect(() => {
     const fetchRegistry = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${API}/layers/registry`, {
+        const response = await axios.get(`${API}/api/layers/registry`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         
