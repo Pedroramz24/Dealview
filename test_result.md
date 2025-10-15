@@ -152,6 +152,9 @@ backend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL: GET /api/layers/fema_floodplain/query fails with 502 error. External FEMA service (https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28) returns 500 server error. This is an external service availability issue, not a code problem. API implementation is correct but dependent service is down."
+      - working: false
+        agent: "testing"
+        comment: "❌ CONFIRMED: FEMA Floodplain API still failing with 502 error due to external service returning HTTP 500. Backend logs show: 'Server error 500 for url https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query'. This is a third-party service availability issue, not a code problem. Our API implementation correctly handles the error and returns appropriate 502 status. All other layer APIs (5/6) are working correctly."
 
   - task: "Layer Management API - San Antonio Zoning Query"
     implemented: true
