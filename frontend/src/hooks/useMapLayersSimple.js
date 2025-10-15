@@ -1,16 +1,17 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 /**
  * Simplified map layers hook - minimal working version
- * Focus: Get zoning layer working reliably first
+ * Focus: Get zoning layer working reliably with dynamic data loading
  */
 export const useMapLayersSimple = (mapRef) => {
   const [layerRegistry, setLayerRegistry] = useState(null);
   const [activeLayerIds, setActiveLayerIds] = useState(new Set());
   const [loading, setLoading] = useState(false);
+  const [layerMoveHandlers, setLayerMoveHandlers] = useState({});
 
   /**
    * Fetch layer registry
