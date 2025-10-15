@@ -7,6 +7,9 @@ import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { MapLayerProvider } from '../contexts/MapLayerContext';
 import LayerManager from '../components/LayerManager';
+import ParcelPopup from '../components/ParcelPopup';
+import reportallService from '../services/reportallService';
+import REPORTALL_CONFIG from '../config/reportall';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapView = () => {
@@ -19,6 +22,8 @@ const MapView = () => {
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [layerManagerOpen, setLayerManagerOpen] = useState(false);
+  const [showReportAllParcels, setShowReportAllParcels] = useState(true);
+  const [reportAllParcel, setReportAllParcel] = useState(null);
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
     latitude: 29.4241,
