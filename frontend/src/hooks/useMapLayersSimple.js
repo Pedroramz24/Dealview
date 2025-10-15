@@ -128,16 +128,18 @@ export const useMapLayersSimple = (mapRef) => {
         console.log(`[Layer] Source added`);
       }
 
-      // Add fill layer with zoom constraints
+      // Add fill layer with zoom constraints from config
       const layerIdOnMap = `layer-${layerId}`;
       const style = layerConfig.style;
+      const minzoom = layerConfig.minZoom || 0;
+      const maxzoom = layerConfig.maxZoom || 24;
 
       map.addLayer({
         id: layerIdOnMap,
         type: style.type,
         source: sourceId,
-        minzoom: 0,
-        maxzoom: 24,
+        minzoom: minzoom,
+        maxzoom: maxzoom,
         paint: {
           ...style.paint,
           [`${style.type}-opacity`]: opacity / 100,
