@@ -915,6 +915,10 @@ async def query_layer(
             "f": "geojson",
         }
         
+        # Add result limit if specified in layer config
+        max_records = layer_config.get("maxRecordCount", 2000)
+        params["resultRecordCount"] = max_records
+        
         if bbox:
             # Parse bbox
             try:
