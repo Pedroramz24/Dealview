@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef } from 'react';
-import { useMapLayers } from '../hooks/useMapLayers';
+import { useMapLayersSimple } from '../hooks/useMapLayersSimple';
 
 const MapLayerContext = createContext(null);
 
