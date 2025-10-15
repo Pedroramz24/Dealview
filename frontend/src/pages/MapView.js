@@ -825,6 +825,48 @@ const MapView = () => {
           )}
         </Map>
         </div>
+
+        {/* ReportAll Parcel Popup */}
+        {reportAllParcel && (
+          <ParcelPopup
+            parcel={reportAllParcel}
+            onClose={() => setReportAllParcel(null)}
+            onCreateDeal={(parcel) => {
+              // Navigate to create deal page with parcel data pre-filled
+              console.log('Create deal for parcel:', parcel);
+              toast.success('Parcel data ready - redirecting to create deal...');
+              // TODO: Implement navigation with parcel data
+              setReportAllParcel(null);
+            }}
+          />
+        )}
+
+        {/* Parcel Layer Toggle Button */}
+        {viewState.zoom >= REPORTALL_CONFIG.minZoom && (
+          <button
+            onClick={() => setShowReportAllParcels(!showReportAllParcels)}
+            style={{
+              position: 'absolute',
+              bottom: '100px',
+              right: '20px',
+              zIndex: 10,
+              background: showReportAllParcels
+                ? 'rgba(0, 184, 212, 0.2)'
+                : 'rgba(17, 24, 39, 0.95)',
+              backdropFilter: 'blur(12px)',
+              border: `1px solid ${showReportAllParcels ? '#00b8d4' : 'rgba(255,255,255,0.15)'}`,
+              borderRadius: '8px',
+              padding: '10px 16px',
+              color: showReportAllParcels ? '#00d4ff' : 'rgba(255,255,255,0.7)',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 500,
+              transition: 'all 0.3s',
+            }}
+          >
+            {showReportAllParcels ? '✓ Parcels ON' : 'Parcels OFF'}
+          </button>
+        )}
       </div>
     </MapLayerProvider>
   );
