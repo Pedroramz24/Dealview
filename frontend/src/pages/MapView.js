@@ -357,6 +357,8 @@ const MapView = () => {
               minzoom={REPORTALL_CONFIG.minZoom}
               maxzoom={REPORTALL_CONFIG.maxZoom}
               promoteId={{ parcels: 'robust_id' }}
+              scheme="xyz"
+              tileSize={256}
             >
               <Layer
                 id="reportall-parcels-fill"
@@ -366,6 +368,7 @@ const MapView = () => {
                   'fill-color': REPORTALL_CONFIG.style.parcelFill.color,
                   'fill-opacity': REPORTALL_CONFIG.style.parcelFill.opacity,
                 }}
+                beforeId="reportall-parcels-line"
               />
               <Layer
                 id="reportall-parcels-line"
