@@ -360,7 +360,6 @@ const MapView = () => {
               scheme="xyz"
               tileSize={512}
             >
-            >
               <Layer
                 id="reportall-parcels-fill"
                 type="fill"
