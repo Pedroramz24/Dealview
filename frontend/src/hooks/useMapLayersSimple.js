@@ -89,7 +89,7 @@ export const useMapLayersSimple = (mapRef) => {
       const bbox = '-98.9,29.0,-98.0,29.8'; // San Antonio area
       console.log(`[Layer] Fetching data for ${layerId}...`);
       
-      const response = await axios.get(`${API}/layers/${layerId}/query`, {
+      const response = await axios.get(`${API}/api/layers/${layerId}/query`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { bbox },
       });
