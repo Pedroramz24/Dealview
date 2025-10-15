@@ -336,8 +336,8 @@ frontend:
 
   - task: "Layer System - Zoning Layer Toggle"
     implemented: true
-    working: false
-    file: "/app/frontend/src/components/LayerManager.js, /app/frontend/src/hooks/useMapLayers.js"
+    working: "NA"
+    file: "/app/frontend/src/components/LayerManager.js, /app/frontend/src/hooks/useMapLayersSimple.js, /app/frontend/src/contexts/MapLayerContext.js, /app/frontend/src/pages/MapView.js"
     stuck_count: 1
     priority: "high"
     needs_retesting: true
@@ -345,6 +345,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL ISSUE: San Antonio Zoning layer toggle switch is not functional. When clicking the toggle switch in the Layer Manager, the layer does not activate or become visible on the map. The toggle UI appears to work (switch moves) but no actual layer data is loaded or displayed. This prevents testing of layer visibility across zoom levels, map style changes, and layer persistence. Root cause investigation needed for layer activation mechanism."
+      - working: "NA"
+        agent: "main"
+        comment: "✅ FIXED: Infinite re-render loop resolved. Root cause: Duplicate useEffect in LayerManager.js was calling fetchRegistry from context on every render, which updated state causing infinite loop. Solution: (1) Removed duplicate useEffect at lines 23-27, (2) Fixed API path from '/layers/registry' to '/api/layers/registry', (3) Removed MapView dependency on old useMapLayers hook, now uses MapLayerContext only. Layer toggle functionality now ready for testing. Console now shows 'Loaded 6 GIS layers' only 2 times (normal) instead of continuously."
 
 metadata:
   created_by: "main_agent"
