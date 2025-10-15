@@ -225,9 +225,6 @@ const MapView = () => {
   return (
     <MapLayerProvider mapRef={mapRef}>
       <div className="h-full relative" style={{ background: '#000000' }}>
-        {/* TEST: Simple layer to verify rendering */}
-        <SimpleTestLayer mapRef={mapRef} />
-        
         {/* Layer Manager - Controlled by MainLayout sidebar button */}
         <LayerManager
           isOpen={layerManagerOpen}
