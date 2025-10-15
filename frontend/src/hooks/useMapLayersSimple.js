@@ -222,6 +222,17 @@ export const useMapLayersSimple = (mapRef) => {
     const labelLayerId = `layer-${layerId}-labels`;
     const sourceId = `layer-source-${layerId}`;
 
+    // Remove event listener if exists
+    if (layerMoveHandlers[layerId]) {
+      map.off('moveend', layerMoveHandlers[layerId]);
+      setLayerMoveHandlers(prev => {
+        const updated = { ...prev };
+        delete updated[layerId];
+        return updated;
+      });
+      console.log(`[Layer] Removed moveend listener for ${layerId}`);
+    }
+
     if (map.getLayer(labelLayerId)) {
       map.removeLayer(labelLayerId);
     }
@@ -241,7 +252,7 @@ export const useMapLayersSimple = (mapRef) => {
     });
 
     console.log(`✓ Removed layer: ${layerId}`);
-  }, [mapRef]);
+  }, [mapRef, layerMoveHandlers]);
 
   /**
    * Update layer opacity
