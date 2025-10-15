@@ -342,9 +342,9 @@ frontend:
 
   - task: "Layer System - Zoning Layer Toggle"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/components/LayerManager.js, /app/frontend/src/hooks/useMapLayersSimple.js, /app/frontend/src/contexts/MapLayerContext.js, /app/frontend/src/pages/MapView.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
@@ -357,6 +357,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ BACKEND VERIFICATION COMPLETE: All GIS layer management APIs are working perfectly. Comprehensive testing shows: (1) Layer Registry API returns all 6 layers with complete metadata grouped by categories (administrative, environmental, planning, infrastructure, transportation), (2) San Antonio Zoning Query API successfully returns exactly 2000 zoning features in GeoJSON format with proper geometry (Polygon) and properties (16 fields including Base and Zoning codes), (3) Performance testing shows consistent response times (0.24-5.17s) across different bounding box sizes, (4) All layer endpoints use correct '/api' prefix and authentication. Backend layer system is fully functional and ready for frontend integration testing."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE IDENTIFIED: Fixed API path bug (double /api) in LayerManager.js line 27. Layer Manager now loads all 6 categories correctly (Administrative, Environmental, Planning & Zoning, Infrastructure, Transportation). ✅ Layer toggle functionality works perfectly - successfully activated Counties layer with 11 features loaded. ❌ MAIN ISSUE: San Antonio Zoning layer is missing from Planning & Zoning category despite backend API working correctly. Layer registry shows sa_zoning with category 'planning' but it's not appearing in the UI. Need to investigate layer filtering/grouping logic in LayerManager component. Layer activation mechanism is functional (proven by Counties layer working), but San Antonio Zoning layer is not being displayed in the layer list."
 
 metadata:
   created_by: "main_agent"
