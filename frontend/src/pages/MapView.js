@@ -8,7 +8,6 @@ import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { MapLayerProvider } from '../contexts/MapLayerContext';
 import { useMapLayers } from '../hooks/useMapLayers';
 import LayerManager from '../components/LayerManager';
-import SimpleTestLayer from '../components/SimpleTestLayer';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapView = () => {
