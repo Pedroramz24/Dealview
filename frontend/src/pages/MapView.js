@@ -197,12 +197,32 @@ const MapView = () => {
   //   }
   // };
 
-  // Simplified map click handler (GIS layer click disabled for now)
+  // Map click handler - queries ReportAll for parcel data
   const combinedMapClick = async (event) => {
-    // Clear previous identify tooltip
+    // Clear previous states
     setIdentifyTooltip(null);
+    setReportAllParcel(null);
     
-    // Check for parcels (original functionality)
+    // Only query ReportAll parcels if zoom level is 14+
+    const map = mapRef.current?.getMap();
+    if (map && map.getZoom() >= REPORTALL_CONFIG.minZoom && showReportAllParcels) {
+      console.log('[ReportAll] Querying parcel at:', event.lngLat);
+      
+      const result = await reportallService.queryByPoint(
+        event.lngLat.lng,
+        event.lngLat.lat
+      );
+      
+      if (result.success && result.parcel) {
+        console.log('[ReportAll] Found parcel:', result.parcel);
+        setReportAllParcel(result.parcel);
+        return; // Don't proceed to old parcel logic
+      } else {
+        console.log('[ReportAll] No parcel found at click location');
+      }
+    }
+    
+    // Fallback to original parcel click logic (if applicable)
     handleMapClick(event);
   };
 
