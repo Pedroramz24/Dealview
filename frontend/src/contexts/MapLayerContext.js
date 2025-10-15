@@ -4,7 +4,7 @@ import { useMapLayersSimple } from '../hooks/useMapLayersSimple';
 const MapLayerContext = createContext(null);
 
 export const MapLayerProvider = ({ children, mapRef }) => {
-  const layerHandlers = useMapLayers(mapRef);
+  const layerHandlers = useMapLayersSimple(mapRef);
 
   return (
     <MapLayerContext.Provider value={layerHandlers}>
