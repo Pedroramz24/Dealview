@@ -593,10 +593,13 @@ class BackendTester:
                         has_properties = "properties" in first_feature and first_feature["properties"] is not None
                         
                         if has_geometry and has_properties:
-                            # Check for zoning information
+                            # Check for zoning information - look for Base or Zoning fields
                             zoning_codes = []
                             for feature in features[:5]:  # Check first 5 features
-                                code = feature.get("properties", {}).get("ZONING_CODE", "")
+                                # Try different field names that might contain zoning info
+                                code = (feature.get("properties", {}).get("Base", "") or 
+                                       feature.get("properties", {}).get("Zoning", "") or
+                                       feature.get("properties", {}).get("ZONING_CODE", ""))
                                 if code and code not in zoning_codes:
                                     zoning_codes.append(code)
                             
