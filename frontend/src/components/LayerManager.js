@@ -24,7 +24,7 @@ const LayerManager = ({ isOpen, onClose }) => {
     const fetchRegistry = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${API}/api/layers/registry`, {
+        const response = await axios.get(`${API}/layers/registry`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         
