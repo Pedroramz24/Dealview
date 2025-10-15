@@ -181,13 +181,19 @@ export const useMapLayersSimple = (mapRef) => {
         console.log(`[Layer] Labels added`);
       }
 
-      // Set up dynamic data loading on map movement
+      // Set up dynamic data loading on map movement (debounced)
+      let moveTimeout;
       const moveHandler = async () => {
-        const newData = await fetchLayerData(layerId, map);
-        if (newData && map.getSource(sourceId)) {
-          map.getSource(sourceId).setData(newData);
-          console.log(`[Layer] Updated ${layerId} with ${newData.features.length} features`);
-        }
+        // Clear previous timeout to debounce
+        if (moveTimeout) clearTimeout(moveTimeout);
+        
+        moveTimeout = setTimeout(async () => {
+          const newData = await fetchLayerData(layerId, map);
+          if (newData && map.getSource(sourceId)) {
+            map.getSource(sourceId).setData(newData);
+            console.log(`[Layer] Updated ${layerId} with ${newData.features.length} features`);
+          }
+        }, 300); // Wait 300ms after movement stops
       };
 
       // Add moveend listener for dynamic updates
