@@ -568,9 +568,9 @@ class BackendTester:
             self.log_result("FEMA Floodplain Query", False, f"Request error: {str(e)}")
 
     def test_sa_zoning_query(self):
-        """Test GET /api/layers/sa_zoning/query"""
-        # Use San Antonio area bounding box
-        bbox = "-98.7,29.2,-98.3,29.6"
+        """Test GET /api/layers/sa_zoning/query with specific San Antonio bounding box"""
+        # Use San Antonio bounding box from review request: -98.9,29.0,-98.0,29.8
+        bbox = "-98.9,29.0,-98.0,29.8"
         
         try:
             response = requests.get(
