@@ -32,7 +32,30 @@ export const useMapLayersSimple = (mapRef) => {
   }, []);
 
   /**
-   * Wait for map to be ready, then add layer
+   * Fetch layer data for current viewport
+   */
+  const fetchLayerData = useCallback(async (layerId, map) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Get current map bounds
+      const bounds = map.getBounds();
+      const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+      
+      const response = await axios.get(`${API}/api/layers/${layerId}/query`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { bbox },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching ${layerId} data:`, error.response?.data || error.message);
+      return null;
+    }
+  }, []);
+
+  /**
+   * Wait for map to be ready, then add layer with dynamic data loading
    */
   const addLayer = useCallback(async (layerId, opacity = 100) => {
     console.log(`[Layer] Adding ${layerId}...`);
@@ -84,21 +107,16 @@ export const useMapLayersSimple = (mapRef) => {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
-      
-      // Get current map bounds for dynamic data fetching
-      const bounds = map.getBounds();
-      const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
-      console.log(`[Layer] Fetching data for ${layerId} with dynamic bbox: ${bbox}`);
-      
-      const response = await axios.get(`${API}/api/layers/${layerId}/query`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { bbox },
-      });
+      // Fetch initial data
+      const geojsonData = await fetchLayerData(layerId, map);
+      if (!geojsonData) {
+        console.error('[Layer] Failed to fetch initial data');
+        setLoading(false);
+        return;
+      }
 
-      const geojsonData = response.data;
       const featureCount = geojsonData?.features?.length || 0;
-      console.log(`[Layer] Got ${featureCount} features`);
+      console.log(`[Layer] Got ${featureCount} features for initial load`);
 
       // Add source
       const sourceId = `layer-source-${layerId}`;
@@ -118,7 +136,7 @@ export const useMapLayersSimple = (mapRef) => {
         id: layerIdOnMap,
         type: style.type,
         source: sourceId,
-        minzoom: 0,  // Visible at all zoom levels
+        minzoom: 0,
         maxzoom: 24,
         paint: {
           ...style.paint,
@@ -126,7 +144,7 @@ export const useMapLayersSimple = (mapRef) => {
         },
       });
       
-      console.log(`[Layer] Layer added to map (minzoom: 0, maxzoom: 24)`);
+      console.log(`[Layer] Layer added to map`);
 
       // Add labels if configured
       if (layerConfig.labelConfig) {
@@ -137,12 +155,12 @@ export const useMapLayersSimple = (mapRef) => {
           id: labelLayerId,
           type: 'symbol',
           source: sourceId,
-          minzoom: 13,  // Labels visible from zoom 13+
+          minzoom: 13,
           layout: {
             'text-field': labelConfig.textField,
             'text-size': 11,
-            'text-allow-overlap': false,  // Changed to false to prevent overlap
-            'text-ignore-placement': false,  // Changed to false for better performance
+            'text-allow-overlap': false,
+            'text-ignore-placement': false,
             'symbol-placement': 'point',
           },
           paint: {
@@ -160,18 +178,36 @@ export const useMapLayersSimple = (mapRef) => {
           }
         });
         
-        console.log(`[Layer] Labels added (visible from zoom 13+)`);
+        console.log(`[Layer] Labels added`);
       }
 
+      // Set up dynamic data loading on map movement
+      const moveHandler = async () => {
+        const newData = await fetchLayerData(layerId, map);
+        if (newData && map.getSource(sourceId)) {
+          map.getSource(sourceId).setData(newData);
+          console.log(`[Layer] Updated ${layerId} with ${newData.features.length} features`);
+        }
+      };
+
+      // Add moveend listener for dynamic updates
+      map.on('moveend', moveHandler);
+      
+      // Store handler reference for cleanup
+      setLayerMoveHandlers(prev => ({
+        ...prev,
+        [layerId]: moveHandler
+      }));
+
       setActiveLayerIds((prev) => new Set([...prev, layerId]));
-      console.log(`✓ ${layerConfig.name} loaded successfully (${featureCount} features)`);
+      console.log(`✓ ${layerConfig.name} loaded with dynamic updates (${featureCount} features)`);
 
     } catch (error) {
       console.error(`Error loading ${layerId}:`, error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
-  }, [mapRef, layerRegistry, fetchRegistry]);
+  }, [mapRef, layerRegistry, fetchRegistry, fetchLayerData]);
 
   /**
    * Remove a layer
