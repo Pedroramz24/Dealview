@@ -30,8 +30,10 @@ const LayerManager = ({ isOpen, onClose }) => {
         
         // Group layers by category
         const grouped = {};
+        console.log('[LayerManager] Raw API response:', response.data);
         Object.entries(response.data.layers).forEach(([layerId, layer]) => {
           const category = layer.category;
+          console.log(`[LayerManager] Processing layer: ${layerId}, category: ${category}`);
           if (!grouped[category]) {
             grouped[category] = {
               label: getCategoryLabel(category),
@@ -41,6 +43,7 @@ const LayerManager = ({ isOpen, onClose }) => {
           grouped[category].layers.push(layer);
         });
         
+        console.log('[LayerManager] Grouped registry:', grouped);
         setLayerRegistry(grouped);
         setLoading(false);
       } catch (error) {
