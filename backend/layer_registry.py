@@ -63,6 +63,9 @@ LAYER_REGISTRY = {
                 "fill-outline-color": "rgba(64, 158, 255, 0.7)"
             }
         },
+        "minZoom": 10,
+        "maxZoom": 18,
+        "maxRecordCount": 1000,
         "clickFields": ["FLD_ZONE", "ZONE_SUBTY", "STATIC_BFE"],
         "defaultVisible": False
     },
