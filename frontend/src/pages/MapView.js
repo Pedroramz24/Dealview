@@ -166,40 +166,38 @@ const MapView = () => {
 
 
   // Handle clicks on GIS layers for identify
-  const handleGISLayerClick = async (event) => {
-    // Check if any loaded layers have features at this point
-    if (loadedLayers.size === 0) return;
+  // Commented out for simplified layer implementation
+  // const handleGISLayerClick = async (event) => {
+  //   // Check if any loaded layers have features at this point
+  //   if (loadedLayers.size === 0) return;
+  //
+  //   const [lon, lat] = [event.lngLat.lng, event.lngLat.lat];
+  //   
+  //   // Try to identify features from each loaded layer
+  //   for (const layerId of loadedLayers) {
+  //     try {
+  //       const result = await identifyFeatures(layerId, lat, lon);
+  //       if (result && result.features && result.features.length > 0) {
+  //         // Show tooltip with feature data
+  //         setIdentifyTooltip({
+  //           layerName: result.layer_name,
+  //           features: result.features,
+  //           position: [lon, lat],
+  //         });
+  //         break; // Show first match
+  //       }
+  //     } catch (error) {
+  //       console.error(`Error identifying features for ${layerId}:`, error);
+  //     }
+  //   }
+  // };
 
-    const [lon, lat] = [event.lngLat.lng, event.lngLat.lat];
-    
-    // Try to identify features from each loaded layer
-    for (const layerId of loadedLayers) {
-      try {
-        const result = await identifyFeatures(layerId, lat, lon);
-        if (result && result.features && result.features.length > 0) {
-          // Show tooltip with feature data
-          setIdentifyTooltip({
-            layerName: result.layer_name,
-            features: result.features,
-            position: [lon, lat],
-          });
-          break; // Show first match
-        }
-      } catch (error) {
-        console.error(`Error identifying features for ${layerId}:`, error);
-      }
-    }
-  };
-
-  // Combined map click handler
+  // Simplified map click handler (GIS layer click disabled for now)
   const combinedMapClick = async (event) => {
     // Clear previous identify tooltip
     setIdentifyTooltip(null);
     
-    // First check for GIS layer features
-    await handleGISLayerClick(event);
-    
-    // Then check for parcels (original functionality)
+    // Check for parcels (original functionality)
     handleMapClick(event);
   };
 
