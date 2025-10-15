@@ -85,9 +85,10 @@ export const useMapLayersSimple = (mapRef) => {
     try {
       const token = localStorage.getItem('token');
       
-      // Fetch layer data
-      const bbox = '-98.9,29.0,-98.0,29.8'; // San Antonio area
-      console.log(`[Layer] Fetching data for ${layerId}...`);
+      // Get current map bounds for dynamic data fetching
+      const bounds = map.getBounds();
+      const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+      console.log(`[Layer] Fetching data for ${layerId} with dynamic bbox: ${bbox}`);
       
       const response = await axios.get(`${API}/api/layers/${layerId}/query`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -108,7 +109,7 @@ export const useMapLayersSimple = (mapRef) => {
         console.log(`[Layer] Source added`);
       }
 
-      // Add fill layer
+      // Add fill layer with zoom constraints
       const layerIdOnMap = `layer-${layerId}`;
       const style = layerConfig.style;
 
@@ -116,13 +117,15 @@ export const useMapLayersSimple = (mapRef) => {
         id: layerIdOnMap,
         type: style.type,
         source: sourceId,
+        minzoom: 0,  // Visible at all zoom levels
+        maxzoom: 24,
         paint: {
           ...style.paint,
           [`${style.type}-opacity`]: opacity / 100,
         },
       });
       
-      console.log(`[Layer] Layer added to map`);
+      console.log(`[Layer] Layer added to map (minzoom: 0, maxzoom: 24)`);
 
       // Add labels if configured
       if (layerConfig.labelConfig) {
@@ -133,11 +136,12 @@ export const useMapLayersSimple = (mapRef) => {
           id: labelLayerId,
           type: 'symbol',
           source: sourceId,
+          minzoom: 13,  // Labels visible from zoom 13+
           layout: {
             'text-field': labelConfig.textField,
             'text-size': 11,
-            'text-allow-overlap': true,
-            'text-ignore-placement': true,
+            'text-allow-overlap': false,  // Changed to false to prevent overlap
+            'text-ignore-placement': false,  // Changed to false for better performance
             'symbol-placement': 'point',
           },
           paint: {
@@ -148,14 +152,14 @@ export const useMapLayersSimple = (mapRef) => {
               'interpolate',
               ['linear'],
               ['zoom'],
-              10, 0,
-              13, 0.7,
+              13, 0,
+              14, 0.7,
               15, 1
             ]
           }
         });
         
-        console.log(`[Layer] Labels added`);
+        console.log(`[Layer] Labels added (visible from zoom 13+)`);
       }
 
       setActiveLayerIds((prev) => new Set([...prev, layerId]));
