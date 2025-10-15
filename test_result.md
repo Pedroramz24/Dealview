@@ -366,13 +366,24 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Layer Management API - FEMA Floodplain Query"
-    - "Layer Management API - Counties Identify"
+    - "Layer System - Zoning Layer Toggle"
   stuck_tasks:
     - "Layer Management API - FEMA Floodplain Query"
     - "Layer Management API - Counties Identify"
   test_all: false
   test_priority: "high_first"
+  frontend_testing_notes: |
+    Test Layer Manager and layer rendering functionality:
+    1. Open Layer Manager from sidebar
+    2. Toggle San Antonio Zoning layer ON
+    3. Verify zoning layer appears on map with distinct colors
+    4. Verify layer remains visible when zooming in/out (test zoom 10, 13, 15, 18)
+    5. Verify layer remains visible when panning map
+    6. Test opacity slider (set to 50%, verify transparency)
+    7. Toggle layer OFF, verify it disappears
+    8. Verify layer toggle state persists across page refresh
+    9. Test with both satellite and street map styles
+    10. Check for labels/tags on zoning areas
 
 agent_communication:
   - agent: "main"
