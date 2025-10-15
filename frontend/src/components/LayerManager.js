@@ -24,7 +24,13 @@ const LayerManager = ({ isOpen, onClose }) => {
     const fetchRegistry = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${API}/layers/registry`, {
+        if (!token) {
+          console.error('[LayerManager] No authentication token found');
+          setLoading(false);
+          return;
+        }
+        
+        const response = await axios.get(`${API}/api/layers/registry`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         
@@ -44,10 +50,12 @@ const LayerManager = ({ isOpen, onClose }) => {
         });
         
         console.log('[LayerManager] Grouped registry:', grouped);
+        console.log('[LayerManager] FEMA layer check:', response.data.layers.fema_floodplain ? 'FOUND' : 'NOT FOUND');
         setLayerRegistry(grouped);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching layer registry:', error);
+        console.error('[LayerManager] Error fetching registry:', error.response?.data || error.message);
+        console.error('[LayerManager] Error status:', error.response?.status);
         setLoading(false);
       }
     };
