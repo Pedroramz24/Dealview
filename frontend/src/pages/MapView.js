@@ -348,6 +348,38 @@ const MapView = () => {
           <NavigationControl position="top-right" />
           <ScaleControl />
 
+          {/* ReportAll Parcel Vector Tiles Layer */}
+          {showReportAllParcels && viewState.zoom >= REPORTALL_CONFIG.minZoom && (
+            <Source
+              id="reportall-parcels"
+              type="vector"
+              tiles={[REPORTALL_CONFIG.vectorTilesUrl]}
+              minzoom={REPORTALL_CONFIG.minZoom}
+              maxzoom={REPORTALL_CONFIG.maxZoom}
+              promoteId={{ parcels: 'robust_id' }}
+            >
+              <Layer
+                id="reportall-parcels-fill"
+                type="fill"
+                source-layer="parcels"
+                paint={{
+                  'fill-color': REPORTALL_CONFIG.style.parcelFill.color,
+                  'fill-opacity': REPORTALL_CONFIG.style.parcelFill.opacity,
+                }}
+              />
+              <Layer
+                id="reportall-parcels-line"
+                type="line"
+                source-layer="parcels"
+                paint={{
+                  'line-color': REPORTALL_CONFIG.style.parcelLine.color,
+                  'line-width': REPORTALL_CONFIG.style.parcelLine.width,
+                  'line-opacity': REPORTALL_CONFIG.style.parcelLine.opacity,
+                }}
+              />
+            </Source>
+          )}
+
           {/* Regrid Parcel Layer */}
           {showParcels && parcels && viewState.zoom >= 12 && (
             <Source
