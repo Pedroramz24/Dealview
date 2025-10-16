@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext, API } from '../App';
+import { AuthContext } from '../App';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -12,23 +11,24 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useContext(AuthContext);
+  const { login, signup } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      const payload = isLogin
-        ? { email, password }
-        : { email, password, full_name: fullName };
-
-      const response = await axios.post(`${API}${endpoint}`, payload);
-      login(response.data.access_token, response.data.user);
-      toast.success(isLogin ? 'Welcome back!' : 'Account created successfully!');
+      if (isLogin) {
+        // Login with Supabase
+        await login(email, password);
+        toast.success('Welcome back!');
+      } else {
+        // Signup with Supabase
+        await signup(email, password, { full_name: fullName });
+        toast.success('Account created! Please check your email to verify.');
+      }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Authentication failed');
+      toast.error(error.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }
