@@ -219,8 +219,9 @@ class SupabaseTester:
             # User 1 tries to read User 2's profile
             response = self.user1_client.table('user_profiles').select('*').eq('id', self.user2_id).execute()
             
-            # Should return empty array due to RLS
-            if response.data and len(response.data) == 0:
+            # Should return empty array due to RLS (user can't see other profiles)
+            # Empty array means RLS IS working correctly
+            if len(response.data) == 0:
                 self.log_result(
                     "RLS User Profile Isolation",
                     True,
