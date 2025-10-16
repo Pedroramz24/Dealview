@@ -16,33 +16,43 @@ const Contacts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const [newContact, setNewContact] = useState({
     name: '',
     email: '',
     phone: '',
     company: '',
-    tags: [],
+    title: '',
     notes: '',
   });
 
-  const [tagInput, setTagInput] = useState('');
-
-  const allTags = ['Retail', 'Industrial', 'Office', 'Land', 'Buyer', 'Seller', 'Broker', 'Principal', 'Investor'];
-
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    if (user) {
+      fetchContacts();
+    }
+  }, [user]);
 
   useEffect(() => {
     filterContacts();
-  }, [contacts, searchTerm, selectedTags]);
+  }, [contacts, searchTerm]);
 
   const fetchContacts = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.get(`${API}/contacts`);
-      setContacts(response.data);
+      const { data, error } = await supabase
+        .from('contacts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setContacts(data || []);
     } catch (error) {
+      console.error('Error fetching contacts:', error);
       toast.error('Failed to load contacts');
     } finally {
       setLoading(false);
@@ -55,13 +65,8 @@ const Contacts = () => {
     if (searchTerm) {
       filtered = filtered.filter((contact) =>
         contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (contact.company && contact.company.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    if (selectedTags.length > 0) {
-      filtered = filtered.filter((contact) =>
-        selectedTags.every((tag) => contact.tags.includes(tag))
+        (contact.company && contact.company.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (contact.email && contact.email.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
@@ -70,8 +75,23 @@ const Contacts = () => {
 
   const handleCreateContact = async (e) => {
     e.preventDefault();
+    if (!user) {
+      toast.error('You must be logged in to create contacts');
+      return;
+    }
+
     try {
-      await axios.post(`${API}/contacts`, newContact);
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert([{
+          ...newContact,
+          owner_id: user.id
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
       toast.success('Contact created successfully');
       setShowCreateDialog(false);
       setNewContact({
@@ -79,11 +99,12 @@ const Contacts = () => {
         email: '',
         phone: '',
         company: '',
-        tags: [],
+        title: '',
         notes: '',
       });
       fetchContacts();
     } catch (error) {
+      console.error('Error creating contact:', error);
       toast.error('Failed to create contact');
     }
   };
