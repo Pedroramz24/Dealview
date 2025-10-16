@@ -118,9 +118,15 @@ const DealsList = () => {
 
   const fetchDeals = async () => {
     try {
-      const response = await axios.get(`${API}/deals`);
-      setDeals(response.data);
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDeals(data || []);
     } catch (error) {
+      console.error('Error fetching deals:', error);
       toast.error('Failed to load deals');
     } finally {
       setLoading(false);
