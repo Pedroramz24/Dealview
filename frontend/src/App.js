@@ -75,7 +75,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, signup, logout }}>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
