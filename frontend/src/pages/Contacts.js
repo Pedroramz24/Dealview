@@ -238,6 +238,11 @@ const Contacts = () => {
           <div key={contact.id} className="contact-card" data-testid={`contact-card-${contact.id}`}>
             <div className="mb-4">
               <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{contact.name}</h3>
+              {contact.title && (
+                <p className="text-sm mb-1" style={{ color: 'var(--accent)' }}>
+                  {contact.title}
+                </p>
+              )}
               {contact.company && (
                 <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
                   <Building2 className="w-4 h-4 mr-1" />
@@ -260,16 +265,6 @@ const Contacts = () => {
                 </p>
               )}
             </div>
-
-            {contact.tags && contact.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-4">
-                {contact.tags.map((tag) => (
-                  <span key={tag} className="badge text-xs" style={{ background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
 
             {contact.notes && (
               <p className="text-sm line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{contact.notes}</p>
