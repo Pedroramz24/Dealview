@@ -155,50 +155,80 @@ const DealsList = () => {
 
   const handleCreateDeal = async (e) => {
     e.preventDefault();
+    if (!user) {
+      toast.error('You must be logged in to create deals');
+      return;
+    }
+
     try {
       // First, upload image if provided
       let imageUrl = null;
       if (imageFile) {
         setUploadingImage(true);
-        const formData = new FormData();
-        formData.append('file', imageFile);
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
         
-        try {
-          const uploadResponse = await axios.post(`${API}/deals/temp/upload-image`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-          imageUrl = uploadResponse.data.url;
-        } catch (uploadError) {
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('property-images')
+          .upload(fileName, imageFile);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
           toast.error('Failed to upload image');
           setUploadingImage(false);
           return;
         }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('property-images')
+          .getPublicUrl(fileName);
+        
+        imageUrl = publicUrl;
         setUploadingImage(false);
       }
 
-      const response = await axios.post(`${API}/deals`, {
-        ...newDeal,
-        asking_price: parseFloat(newDeal.asking_price),
-        building_size: newDeal.building_size ? parseFloat(newDeal.building_size) : null,
-        primary_image_url: imageUrl,
-      });
+      // Create deal in Supabase
+      const { data, error } = await supabase
+        .from('deals')
+        .insert([
+          {
+            owner_id: user.id,
+            title: newDeal.deal_title || newDeal.property_address,
+            address: newDeal.property_address,
+            asset_type: newDeal.asset_type,
+            price: newDeal.asking_price ? parseFloat(newDeal.asking_price) : null,
+            size: newDeal.building_size ? parseFloat(newDeal.building_size) : null,
+            latitude: newDeal.latitude,
+            longitude: newDeal.longitude,
+            notes: newDeal.notes,
+            status: newDeal.deal_status || 'active',
+            stage: newDeal.pipeline_stage || 'prospecting',
+            image_url: imageUrl,
+          },
+        ])
+        .select();
+
+      if (error) throw error;
+
       toast.success('Deal created successfully');
       setShowCreateDialog(false);
       setNewDeal({
+        deal_title: '',
         property_address: '',
         asset_type: 'Office',
+        deal_status: 'New',
+        pipeline_stage: 'New',
         asking_price: '',
         building_size: '',
         latitude: 29.4241,
         longitude: -98.4936,
         notes: '',
-        stage: 'New',
-        primary_image_url: null,
-        documents: []
       });
       setImageFile(null);
       fetchDeals();
     } catch (error) {
+      console.error('Error creating deal:', error);
       toast.error('Failed to create deal');
     }
   };
