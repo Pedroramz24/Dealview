@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import axios from 'axios';
+import { supabase } from './supabaseClient';
 import '@/App.css';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
