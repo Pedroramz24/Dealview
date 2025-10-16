@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { API } from '../App';
+import React, { useState, useEffect, useContext } from 'react';
+import { supabase } from '../supabaseClient';
+import { AuthContext } from '../App';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
-import { Plus, UserPlus, Mail } from 'lucide-react';
+import { Users, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Team = () => {
