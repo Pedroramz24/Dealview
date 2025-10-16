@@ -52,7 +52,9 @@ const Dashboard = () => {
         total_deals: deals.length,
         active_deals: activeDeals,
         total_value: totalValue,
+        total_pipeline_value: totalValue,
         average_deal_size: deals.length > 0 ? totalValue / deals.length : 0,
+        avg_deal_size: deals.length > 0 ? totalValue / deals.length : 0,
         asset_type_distribution: assetTypeDistribution,
         stage_counts: stageCounts,
       });
