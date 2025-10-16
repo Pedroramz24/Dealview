@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { API } from '../App';
+import React, { useState, useEffect, useContext } from 'react';
+import { supabase } from '../supabaseClient';
+import { AuthContext } from '../App';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
