@@ -1,70 +1,72 @@
 <analysis>
-The AI engineer's work primarily focused on developing and stabilizing the mapping system for a commercial real estate CRM. Initial efforts involved integrating MapLibre GL, building Create New Deal and Transaction Timeline features, and most significantly, implementing a Layer Manager for GIS data. The core challenge throughout the trajectory has been ensuring GIS layers render correctly, persistently, and with accurate styling across all zoom levels, while also debugging various architectural and timing issues. Multiple refactorings occurred, notably moving the Layer Manager between  and  and introducing . Debugging involved backend API calls, frontend console logs, and addressing specific user feedback on zoning colors, labels, and layer persistence. The latest work, following user dissatisfaction, initiated a phased fresh start approach, which exposed a critical timing issue with  initialization and is currently grappling with an infinite re-render loop in the simplified layer system.
+The AI engineer's work began by addressing persistent issues with GIS layers (zoning, FEMA) disappearing or not rendering consistently on the MapLibre GL map, stemming from a fresh start initiative involving . Initial fixes targeted an infinite re-render loop, incorrect API paths, and updating map components to the new simplified layer system. When the GIS layer issues persisted due to slow ArcGIS query endpoints, the focus shifted to implementing parcel data using ReportAll, which was successfully integrated with dynamic loading and corrected display. A critical discussion on scalability led to a major architectural pivot: moving from external API queries for GIS data to self-hosted vector tiles (PMTiles), and then transitioning the entire application's backend database from MongoDB to Supabase (PostgreSQL) for enhanced scalability, built-in authentication, and Row Level Security. The current phase involves migrating the frontend to Supabase and debugging complex RLS policies to ensure data integrity and user isolation.
 </analysis>
 
 <product_requirements>
-The goal is to develop Pedro Armando CRM, a map-first commercial real estate CRM. Key features include Map, Deals List, Deal Details, Contacts, Pipeline, Dashboard, Team, and Public Share Link. The UI should have a premium dark AI startup glass-morphism aesthetic, evolving to a Vercel.com look with pure black/white and Inter font, using specific asset type colors (Retail: Cyan, Land: Green, etc.). The map utilizes MapLibre GL with vector tiles, satellite toggle, San Antonio demo data, and a dark OpenStreetMap styling. Core functionality includes a Create New Deal form with comprehensive fields (image, size, price, financials, notes, documents, auto-calcs), which must be mirrored on the Property Details page. A Transaction Timeline progress bar with cyan, dark-glass aesthetics, alternating labels, tooltips, and responsive horizontal scrolling is required. A Layer Manager panel, sliding from the left sidebar, with dark-glass UI, search, Select None/Reset to Default actions, collapsible categories, and layer toggles with inline opacity control, must integrate live public GIS data (ArcGIS endpoints from CoSA, Bexar, TxDOT, TNRIS, FEMA) via a backend proxy with caching and rate limiting, including identify-on-click functionality. The crucial and recurring requirement is that all map layers must be visible consistently across all zoom levels, remain stable on pan/zoom, and be accurately styled, especially the zoning layer with distinct, labeled colors like TerraVault.
+The Pedro Armando CRM aims to be a map-first commercial real estate platform with core features: Map, Deals List, Details, Contacts, Pipeline, Dashboard, Team, and Public Share. It requires a dark AI startup glass-morphism UI, evolving towards a Vercel.com aesthetic, using specific asset type colors. The MapLibre GL map must display vector tiles, satellite imagery, San Antonio demo data, and a dark OSM style. Key functionality includes a Create New Deal form (with image, financials, notes, auto-calcs), a Transaction Timeline with cyan/dark-glass styling, and a Layer Manager panel for live GIS data (CoSA, Bexar, TxDOT, TNRIS, FEMA). Critical and recurring demands include consistent visibility of all map layers across zoom levels, stable rendering on pan/zoom, and accurate, labeled styling (especially for the zoning layer like TerraVault). The application needs to be scalable to over a thousand users.
 </product_requirements>
 
 <key_technical_concepts>
-- **Backend**: FastAPI, MongoDB, JWT Authentication, bcrypt, ,  for GIS definitions.
-- **Frontend**: React, MapLibre GL, Tailwind CSS, React Context (), Custom Hooks (, ), CSS filters for map styling.
+- **Backend**: FastAPI, MongoDB (migrating to Supabase PostgreSQL), JWT Authentication (migrating to Supabase Auth), ,  (deprecated for vector tiles).
+- **Frontend**: React, MapLibre GL, Tailwind CSS, React Context (), Custom Hooks (),  library.
+- **Database**: MongoDB (original), Supabase (PostgreSQL, new), Row Level Security (RLS).
+- **GIS**: ArcGIS Query Endpoints (deprecated), Vector Tiles (PMTiles).
 </key_technical_concepts>
 
 <code_architecture>
 
-**Key Files and Changes:**
-- :
-    - **Importance:** Core FastAPI application.
-    - **Changes:** Added API routes (, ) for GIS layer proxy and registry. Fixed authentication from  to  in layer endpoints.
-- :
-    - **Importance:** Defines GIS layers, their metadata, and styling rules.
-    - **Changes:**  updated to define , , , ,  layers. Significantly revised for  to include data-driven styling (match expressions for / fields), , and . Python  was corrected to .
-- :
-    - **Importance:** Main application entry point, defines routing and .
-    - **Changes:** Manages top-level routing, wrapping  and its nested routes.
-- :
-    - **Importance:** Defines main layout, including the sidebar.
-    - **Changes:** Contains the Layers toggle button which now calls  to open the Layer Manager.
-- :
-    - **Importance:** Central map view.
-    - **Changes:** Renders the  map. Provides  (wrapping the map) to pass  and layer handlers. Renders  component. Implements  to control  visibility. Includes  for debugging (later removed), now uses . Fixed  initialization to handle timing issues.
-- :
-    - **Importance:** UI for toggling and controlling map layers.
-    - **Changes:** Fetches layer definitions from the backend registry. Consumes  to interact with the map (add/remove/update opacity). Updated to fetch registry on mount and pass layer states.
-- :
-    - **Importance:** React Context for sharing map instance and layer logic.
-    - **Changes:** Provides , , ,  from the currently active map layers hook. Now uses .
-- :
-    - **Importance:** Original hook for map layer logic.
-    - **Changes:** Underwent multiple iterations to handle layer fetching, adding sources/layers, and persistence. Eventually replaced by .
-- :
-    - **Importance:** NEW simplified hook to re-implement map layer logic from scratch.
-    - **Changes:** Created to focus on a minimal, stable layer rendering solution. Currently includes  for mapRef timing and fetches the layer registry.
+
+- : Defines GIS layers and styling. **Status: Deprecated as the architectural shift will move to PMTiles for FEMA and Zoning, eliminating the need for this registry to proxy external query APIs.**
+- : Core map component. **Changes**: Updated to dynamically load ReportAll parcel data and handle its click events. Corrected  for vector tiles and fixed a JSX syntax error. Still contains  and associated logic which is slated for removal.
+- : UI for layer toggling. **Changes**: Debugging efforts involved adding logging for layer fetching. Still relies on backend registry, which will be removed post-PMTiles migration.
+- : Simplified map layer logic. **Changes**: Implemented dynamic data loading for query-based layers with debouncing, and fetching layer registry via the correct  path. Still configured for query-based layers, will be removed.
+- : **New File**. Configuration for ReportAll API.
+- : **New File**. Service for interacting with ReportAll API.
+- : **New File**. Displays detailed information for clicked parcels.
+- : **New File**. Initializes the Supabase client. **Changes**: Contains the  setup, using  and .
+- : Manages user authentication. **Changes**: Significantly refactored to use Supabase's built-in authentication methods (, , , , ).
+- : Login page. **Changes**: Updated to use Supabase authentication (, ).
+- : Displays deals. **Changes**: Migrated  and  functions to use Supabase client for data operations.
+- : Displays deals in a pipeline view. **Changes**: Migrated  to use Supabase client.
+- : Dashboard view. **Changes**: Migrated  to use Supabase client.
+-  & : **Changes**: Updated to include Supabase project URL and keys, removing MongoDB connection strings.
+- : **New Directory**. Contains SQL scripts for Supabase schema and RLS policies.
+    - : Defines , , , , ,  tables, triggers for , and initial RLS policies.
+    -  (or similar): Defines RLS policies for , , and  storage buckets.
+    - : Revised RLS policies to resolve an infinite recursion error by simplifying access rules to prevent circular dependencies, mostly restricting access to  or direct team membership.
+- : **New File**. Created to document security audit findings (currently empty, but represents a commitment to audit).
 </code_architecture>
 
 <pending_tasks>
-- Fully implement Regrid parcel data display (currently paused).
+- Fully implement the scalable vector tile (PMTiles) system for FEMA and SA Zoning.
 - Complete the Create New Deal form's auto-calculation functions.
-- Ensure the map in the Property Details page () is fully functional with the correct styling and ping interactions (needs full MapLibre GL integration).
-- Address the infinite re-render loop in the frontend when  is active.
-- Re-implement layer toggle functionality and persistence in .
-- Implement map styling (zoning colors, labels, street shading) using the simplified approach.
+- Ensure the map in the Property Details page () is fully functional.
+- Remove old query-based layer system, including  and .
+- Update all remaining frontend data pages (Contacts, Team, DealDetails, PublicShare) to use Supabase.
+- Simplify the FastAPI backend to act mainly as a proxy for custom logic/integrations, removing CRUD and auth endpoints.
+- Conduct a thorough security audit as indicated by .
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was in the middle of a fresh start initiative, specifically working on Phase 2 of a simplified layer implementation. The user had reported persistent issues with layers disappearing, not rendering at various zoom levels, and tags not showing.
+Immediately before this summary request, the AI engineer was in the critical phase of migrating the application's backend database from MongoDB to Supabase (PostgreSQL) and adapting the frontend. The user previously decided to build a scalable architecture and switch to Supabase for all primary data and authentication.
 
-The process for Phase 2 involved:
-1.  **Removing the temporary **: This component was successfully created and then removed from .
-2.  **Creating a simplified  hook**: This new hook was intended to be a minimal implementation for loading and rendering GIS layers, stripped of previous complex state management that proved problematic.
-3.  **Updating **: The context was modified to use  instead of the older .
-4.  **Updating **: The component was updated to fetch the layer registry upon mounting using a  hook.
-5.  **Debugging API Path**: An issue arose where  was incorrectly calling  instead of the required , resulting in a 404 error. This was fixed by prepending  constant (which includes ) to the path.
+The following actions have been taken in this migration phase:
+1.  **Supabase Project Configuration:** The user provided Supabase project keys (Anon Key, Service Role Key) and then later a Personal Access Token (though this was not directly used for automated setup due to connection issues, leading to an alternative approach). The Supabase Project URL and keys were saved to  and .
+2.  **Database Schema Creation:** SQL migration scripts () were generated by the AI engineer for creating core CRM tables (, , , , , ) and initial Row Level Security (RLS) policies in the Supabase PostgreSQL database. The user successfully executed these scripts manually in the Supabase SQL Editor.
+3.  **Storage Policies:** SQL scripts for storage RLS policies () were provided, addressing the user's existing bucket names (, , ). An error with existing policies was handled by providing a script () to drop and recreate them, which the user also successfully executed.
+4.  **Frontend Auth Migration:**
+    *    was installed in the frontend.
+    *    was created to initialize the Supabase client.
+    *    was refactored to use Supabase's built-in authentication for , , and .
+    *    was updated to utilize the new Supabase-based authentication from .
+5.  **Email Confirmation Fix:** An issue where Supabase email confirmation links pointed to  was identified. The user resolved this by configuring Supabase's site and redirect URLs or by turning off email confirmation for development.
+6.  **Frontend Data Page Migration:**
+    *   , , and  were updated to fetch and manage data directly using the Supabase client instead of the old  calls to the FastAPI backend.
+    *    was also migrated to use Supabase for data fetching.
 
-The most recent activity involves a critical issue: after the API path fix, the frontend entered an **infinite re-render loop**, continuously logging ✓ Loaded 6 GIS layers. This indicates a problem within  or  that triggers constant state updates or re-executions of hooks, severely impacting application performance and preventing further progress on layer rendering.
+The immediate problem is a Failed to load dashboard data error, following the resolution of an infinite recursion detected in policy for relation deals RLS issue, which was fixed by a simplified RLS script (). The last action was to fix the  page to use Supabase, and create a  file.
 </current_work>
 
 <optional_next_step>
-Debug and fix the infinite re-render loop in  and  to stabilize the application.
+Verify the Dashboard functionality and initiate a full security audit of the Supabase implementation.
 </optional_next_step>
