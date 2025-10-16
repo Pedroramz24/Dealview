@@ -74,84 +74,65 @@ const Team = () => {
 
   return (
     <div className="p-8" data-testid="team-page">
-      <div className="mb-8 flex justify-between items-center">
-        <div>
-          <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Team</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>{team.length} team members</p>
-        </div>
-        <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
-          <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700" data-testid="invite-team-button">
-              <UserPlus className="w-4 h-4 mr-2" />
-              Invite Team Member
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Invite Team Member</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleInvite} className="space-y-4">
-              <div>
-                <Label>Email</Label>
-                <Input
-                  type="email"
-                  value={inviteData.email}
-                  onChange={(e) => setInviteData({ ...inviteData, email: e.target.value })}
-                  required
-                  placeholder="colleague@company.com"
-                  data-testid="invite-email-input"
-                />
-              </div>
-              <div>
-                <Label>Role</Label>
-                <Select value={inviteData.role} onValueChange={(value) => setInviteData({ ...inviteData, role: value })}>
-                  <SelectTrigger data-testid="invite-role-select">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="readonly">Read Only</SelectItem>
-                    <SelectItem value="agent">Agent</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-                  Read Only: View deals, contacts, and dashboard only
-                </p>
-              </div>
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" data-testid="submit-invite-button">
-                Send Invitation
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Team</h1>
+        <p style={{ color: 'var(--text-secondary)' }}>Your profile and team settings</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {team.map((member) => (
-          <div key={member.id} className="team-card" data-testid={`team-member-${member.id}`}>
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' }}>
-                {member.full_name.charAt(0).toUpperCase()}
-              </div>
-              <span className="badge" style={getRoleBadgeColor(member.role)}>
-                {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* User Profile Card */}
+        <div className="team-card">
+          <div className="flex items-center mb-6">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold mr-4" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' }}>
+              {user?.email?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                {user?.email}
+              </h3>
+              <span className="badge" style={{ background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
+                {userProfile?.role || 'User'}
               </span>
             </div>
-
-            <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-              {member.full_name}
-            </h3>
-
-            <div className="flex items-center text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-              <Mail className="w-4 h-4 mr-2" />
-              {member.email}
-            </div>
-
-            <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Member since {formatDate(member.created_at)}</p>
-            </div>
           </div>
-        ))}
+
+          <div className="space-y-3">
+            <div className="flex items-center text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <Mail className="w-4 h-4 mr-3" style={{ color: 'var(--text-muted)' }} />
+              {user?.email}
+            </div>
+            {userProfile?.phone && (
+              <div className="flex items-center text-sm" style={{ color: 'var(--text-secondary)' }}>
+                <Users className="w-4 h-4 mr-3" style={{ color: 'var(--text-muted)' }} />
+                {userProfile.phone}
+              </div>
+            )}
+            {userProfile?.company && (
+              <div className="flex items-center text-sm" style={{ color: 'var(--text-secondary)' }}>
+                <Users className="w-4 h-4 mr-3" style={{ color: 'var(--text-muted)' }} />
+                {userProfile.company}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Info Card */}
+        <div className="glass-surface p-6">
+          <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+            Team Collaboration
+          </h3>
+          <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
+            Team collaboration features allow you to share deals with other users and manage permissions.
+          </p>
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            To collaborate on deals, you can:
+          </p>
+          <ul className="mt-2 space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <li>• Share individual deals with team members</li>
+            <li>• Assign roles and permissions per deal</li>
+            <li>• Track team member activities on shared deals</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
