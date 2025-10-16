@@ -118,16 +118,26 @@ const DealsList = () => {
 
   const fetchDeals = async () => {
     try {
+      console.log('[DealsList] Fetching deals for user:', user?.id);
+      
       const { data, error } = await supabase
         .from('deals')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('[DealsList] Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('[DealsList] Fetched deals:', data?.length || 0);
       setDeals(data || []);
     } catch (error) {
-      console.error('Error fetching deals:', error);
-      toast.error('Failed to load deals');
+      console.error('[DealsList] Error fetching deals:', error);
+      // Only show error if it's not just empty results
+      if (error.code !== 'PGRST116') {
+        toast.error('Failed to load deals: ' + error.message);
+      }
     } finally {
       setLoading(false);
     }
