@@ -116,18 +116,24 @@ backend:
       - working: true
         agent: "main"
         comment: "Supabase schema successfully created with all tables (user_profiles, deals, contacts, deal_milestones, documents, team_members), RLS policies, triggers, and indexes. User manually executed migration scripts in Supabase SQL Editor."
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Supabase connection working. Auth (signup, login, session) working perfectly. User profile trigger auto-creates profiles on signup. RLS policies for user_profiles, deals, and contacts are working correctly - users can only see their own data. Tested with 2 separate users and confirmed complete data isolation. All database operations (INSERT, SELECT) working as expected."
 
   - task: "Supabase Storage Policies"
     implemented: true
-    working: true
+    working: false
     file: "/app/supabase_migrations/003_storage_policies_updated.sql, /app/supabase_migrations/004_fix_rls_policies.sql"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Storage RLS policies created and fixed for property-images, deal-documents, and map-tiles buckets. Fixed infinite recursion error by simplifying RLS policies. User manually executed scripts."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL: Storage buckets 'property-images' and 'deal-documents' DO NOT EXIST in Supabase. The SQL migration files contain RLS policies for these buckets, but the buckets themselves were never created. Storage buckets cannot be created via SQL - they must be created through Supabase Dashboard or API. File uploads fail with 403 RLS policy violation because buckets don't exist. REQUIRED ACTION: Create storage buckets in Supabase Dashboard: 1) property-images (public bucket), 2) deal-documents (private bucket), then apply RLS policies from migration files."
 
 frontend:
   - task: "Dashboard Supabase Migration"
