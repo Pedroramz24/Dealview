@@ -20,6 +20,7 @@ const DealsList = () => {
   const [filterAssetType, setFilterAssetType] = useState('all');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const [newDeal, setNewDeal] = useState({
     // Core
