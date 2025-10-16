@@ -190,36 +190,22 @@ const Contacts = () => {
                 />
               </div>
               <div>
-                <Label>Tags</Label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {newContact.tags.map((tag) => (
-                    <Badge key={tag} className="bg-blue-100 text-blue-800">
-                      {tag}
-                      <button onClick={() => removeTag(tag)} className="ml-2 text-blue-600 hover:text-blue-800">
-                        ×
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {allTags.filter((tag) => !newContact.tags.includes(tag)).map((tag) => (
-                    <Button
-                      key={tag}
-                      type="button"
-                      onClick={() => addTag(tag)}
-                      variant="outline"
-                      size="sm"
-                      className="text-xs"
-                    >
-                      + {tag}
-                    </Button>
-                  ))}
-                </div>
+                <Label>Title</Label>
+                <Input
+                  value={newContact.title}
+                  onChange={(e) => setNewContact({ ...newContact, title: e.target.value })}
+                  placeholder="e.g., Principal, Broker, CFO"
+                />
               </div>
               <div>
                 <Label>Notes</Label>
                 <textarea
                   className="w-full border rounded-lg p-2 min-h-[80px]"
+                  style={{ 
+                    background: 'var(--glass-bg)', 
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)'
+                  }}
                   value={newContact.notes}
                   onChange={(e) => setNewContact({ ...newContact, notes: e.target.value })}
                 />
