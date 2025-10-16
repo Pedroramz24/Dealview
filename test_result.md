@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Add visual progress bar feature to track contract milestones in commercial real estate deals. Create premium cyan-colored horizontal timeline with 9 milestones (Under Contract, Earnest Money Due, Property Info Delivery, Title Commitment Due, Seller Survey Delivery, Feasibility Period Ends, Buyer Objections Due, Seller Response Due, Closing). Timeline shows current date indicator (cyan dot), completed milestones (cyan glow), active milestone (pulse), upcoming milestones (gray). Interactive tooltips show milestone details on hover. Spacing reflects time between milestones. Dark-glass UI aesthetic with smooth animations."
+user_problem_statement: "Complete Supabase migration: migrate all remaining pages (Dashboard, Contacts, Team, DealDetails, PublicShare) from MongoDB/FastAPI to Supabase PostgreSQL with Row Level Security. Ensure all functionality works correctly including authentication, data operations, and file uploads. Stabilize the system before adding new features."
 
 backend:
   - task: "Backend Deal Model - Milestone Fields"
