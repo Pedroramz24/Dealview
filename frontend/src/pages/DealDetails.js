@@ -27,16 +27,31 @@ const DealDetails = () => {
   const [deal, setDeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    fetchDeal();
-  }, [dealId]);
+    if (user) {
+      fetchDeal();
+    }
+  }, [dealId, user]);
 
   const fetchDeal = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.get(`${API}/deals/${dealId}`);
-      setDeal(response.data);
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*')
+        .eq('id', dealId)
+        .single();
+
+      if (error) throw error;
+      setDeal(data);
     } catch (error) {
+      console.error('Error fetching deal:', error);
       toast.error('Failed to load deal');
       navigate('/deals');
     } finally {
@@ -47,17 +62,43 @@ const DealDetails = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    if (!user) {
+      toast.error('You must be logged in to upload files');
+      return;
+    }
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-
+    
     try {
-      const response = await axios.post(`${API}/deals/${dealId}/upload-image`, formData);
+      // Generate unique file name
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${dealId}/${Date.now()}.${fileExt}`;
+
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('property-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('property-images')
+        .getPublicUrl(fileName);
+
+      // Update deal with new image URL
+      const { error: updateError } = await supabase
+        .from('deals')
+        .update({ image_url: publicUrl })
+        .eq('id', dealId);
+
+      if (updateError) throw updateError;
+
       toast.success('Image uploaded successfully');
       fetchDeal();
     } catch (error) {
-      toast.error('Failed to upload image');
+      console.error('Error uploading image:', error);
+      toast.error(error.message || 'Failed to upload image');
     } finally {
       setUploading(false);
     }
@@ -66,17 +107,49 @@ const DealDetails = () => {
   const handleDocumentUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    if (!user) {
+      toast.error('You must be logged in to upload files');
+      return;
+    }
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
 
     try {
-      await axios.post(`${API}/deals/${dealId}/upload-document`, formData);
+      // Generate unique file name
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${dealId}/${Date.now()}_${file.name}`;
+
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('deal-documents')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('deal-documents')
+        .getPublicUrl(fileName);
+
+      // Create document record
+      const { error: insertError } = await supabase
+        .from('documents')
+        .insert([{
+          owner_id: user.id,
+          deal_id: dealId,
+          name: file.name,
+          file_path: fileName,
+          file_type: file.type,
+          file_size: file.size
+        }]);
+
+      if (insertError) throw insertError;
+
       toast.success('Document uploaded successfully');
       fetchDeal();
     } catch (error) {
-      toast.error('Failed to upload document');
+      console.error('Error uploading document:', error);
+      toast.error(error.message || 'Failed to upload document');
     } finally {
       setUploading(false);
     }
