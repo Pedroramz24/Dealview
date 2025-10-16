@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import Map, { Marker, Popup, NavigationControl, ScaleControl, Source, Layer } from 'react-map-gl/maplibre';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { API } from '../App';
+import { supabase } from '../supabaseClient';
+import { AuthContext } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { MapLayerProvider } from '../contexts/MapLayerContext';
@@ -24,6 +24,7 @@ const MapView = () => {
   const [layerManagerOpen, setLayerManagerOpen] = useState(false);
   const [showReportAllParcels, setShowReportAllParcels] = useState(true);
   const [reportAllParcel, setReportAllParcel] = useState(null);
+  const { user } = useContext(AuthContext);
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
     latitude: 29.4241,
