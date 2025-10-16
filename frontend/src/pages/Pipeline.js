@@ -21,17 +21,32 @@ const Pipeline = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    fetchDeals();
-  }, []);
+    if (user) {
+      fetchDeals();
+    }
+  }, [user]);
 
   const fetchDeals = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.get(`${API}/deals`);
-      setDeals(response.data);
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*');
+
+      if (error) throw error;
+      setDeals(data || []);
     } catch (error) {
-      toast.error('Failed to load deals');
+      console.error('Error fetching deals:', error);
+      if (error.code !== 'PGRST116') {
+        toast.error('Failed to load deals');
+      }
     } finally {
       setLoading(false);
     }
@@ -49,7 +64,12 @@ const Pipeline = () => {
     setDeals(updatedDeals);
 
     try {
-      await axios.put(`${API}/deals/${dealId}/stage`, { stage: newStage });
+      const { error } = await supabase
+        .from('deals')
+        .update({ stage: newStage })
+        .eq('id', dealId);
+
+      if (error) throw error;
       toast.success('Deal stage updated');
     } catch (error) {
       toast.error('Failed to update deal stage');
