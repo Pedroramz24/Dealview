@@ -124,11 +124,32 @@ const MapView = () => {
   };
 
   const fetchDeals = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.get(`${API}/deals`);
-      setDeals(response.data);
+      console.log('[MapView] Fetching deals for user:', user.id);
+      
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('[MapView] Supabase error:', error);
+        throw error;
+      }
+
+      console.log('[MapView] Fetched deals:', data?.length || 0);
+      setDeals(data || []);
     } catch (error) {
-      toast.error('Failed to load deals');
+      console.error('[MapView] Error loading deals:', error);
+      // Don't show toast for empty results
+      if (error.code !== 'PGRST116') {
+        toast.error('Failed to load deals');
+      }
     } finally {
       setLoading(false);
     }
