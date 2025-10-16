@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
 import { Users, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
