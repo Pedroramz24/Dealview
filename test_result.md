@@ -105,83 +105,29 @@
 user_problem_statement: "Complete Supabase migration: migrate all remaining pages (Dashboard, Contacts, Team, DealDetails, PublicShare) from MongoDB/FastAPI to Supabase PostgreSQL with Row Level Security. Ensure all functionality works correctly including authentication, data operations, and file uploads. Stabilize the system before adding new features."
 
 backend:
-  - task: "Backend Deal Model - Milestone Fields"
+  - task: "Supabase Schema Setup"
     implemented: true
     working: true
-    file: "/app/backend/server.py, /app/backend/seed_san_antonio.py"
+    file: "/app/supabase_migrations/001_create_schema.sql"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
       - working: true
         agent: "main"
-        comment: "Added 27 new milestone fields to Deal, DealCreate, and DealUpdate models. Fields include date, responsible party, and notes for each of 9 milestones: under_contract_date, earnest_money_due_date, property_info_delivery_date, title_commitment_due_date, seller_survey_delivery_date, feasibility_period_ends_date, buyer_objections_due_date, seller_response_due_date, closing_date. Each milestone also has _responsible and _notes fields. Updated seed data for deal-3 to include complete timeline spanning 60 days. Backend restarted successfully."
+        comment: "Supabase schema successfully created with all tables (user_profiles, deals, contacts, deal_milestones, documents, team_members), RLS policies, triggers, and indexes. User manually executed migration scripts in Supabase SQL Editor."
 
-  - task: "Layer Management API - Registry Endpoint"
+  - task: "Supabase Storage Policies"
     implemented: true
     working: true
-    file: "/app/backend/server.py, /app/backend/layer_registry.py"
+    file: "/app/supabase_migrations/003_storage_policies_updated.sql, /app/supabase_migrations/004_fix_rls_policies.sql"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
       - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: GET /api/layers/registry successfully returns all 6 layers (counties, city_limits, fema_floodplain, sa_zoning, saws_water, txdot_projects) with complete metadata including id, name, description, category, style, and clickFields. All layers properly grouped by categories: administrative, environmental, planning, infrastructure, transportation."
-
-  - task: "Layer Management API - Counties Query"
-    implemented: true
-    working: true
-    file: "/app/backend/server.py, /app/backend/layer_registry.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: GET /api/layers/counties/query with San Antonio bounding box (-98.7,29.2,-98.3,29.6) successfully returns 5 counties in GeoJSON format including Bexar County. Response has proper FeatureCollection structure with geometry and properties for each county feature."
-
-  - task: "Layer Management API - FEMA Floodplain Query"
-    implemented: true
-    working: false
-    file: "/app/backend/server.py, /app/backend/layer_registry.py"
-    stuck_count: 1
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-      - working: false
-        agent: "testing"
-        comment: "❌ CRITICAL: GET /api/layers/fema_floodplain/query fails with 502 error. External FEMA service (https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28) returns 500 server error. This is an external service availability issue, not a code problem. API implementation is correct but dependent service is down."
-      - working: false
-        agent: "testing"
-        comment: "❌ CONFIRMED: FEMA Floodplain API still failing with 502 error due to external service returning HTTP 500. Backend logs show: 'Server error 500 for url https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query'. This is a third-party service availability issue, not a code problem. Our API implementation correctly handles the error and returns appropriate 502 status. All other layer APIs (5/6) are working correctly."
-
-  - task: "Layer Management API - San Antonio Zoning Query"
-    implemented: true
-    working: true
-    file: "/app/backend/server.py, /app/backend/layer_registry.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "testing"
-        comment: "✅ VERIFIED: GET /api/layers/sa_zoning/query successfully returns 2000 zoning features in GeoJSON format. Updated endpoint to use correct San Antonio zoning service (https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/COSA_Zoning/FeatureServer/12). Response structure is valid with geometry and properties."
-      - working: true
-        agent: "testing"
-        comment: "✅ COMPREHENSIVE VERIFICATION: San Antonio Zoning Query API working perfectly with review request specifications. Using bbox '-98.9,29.0,-98.0,29.8' returns exactly 2000 zoning features as expected. GeoJSON response contains valid Polygon geometries with 16 property fields including 'Base' and 'Zoning' codes. Performance testing shows consistent response times (0.24-5.17s) across different area sizes. Caching system working correctly. All requirements from review request satisfied: (1) Correct endpoint '/api/layers/sa_zoning/query', (2) Accepts bbox parameter, (3) Returns ~2000 features, (4) Valid GeoJSON with geometry and properties, (5) Contains Zoning/Base properties as specified."
-
-  - task: "Layer Management API - Counties Identify"
-    implemented: true
-    working: false
-    file: "/app/backend/server.py"
-    stuck_count: 1
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-      - working: false
-        agent: "testing"
-        comment: "❌ ISSUE: GET /api/layers/counties/identify returns 200 OK but 0 features at San Antonio coordinates (29.4241, -98.4936). Root cause: coordinate system mismatch - service expects Web Mercator (EPSG:3857) but receives WGS84 (EPSG:4326) coordinates. API implementation works but needs coordinate transformation. Bexar County exists in service (verified by name query)."
+        agent: "main"
+        comment: "Storage RLS policies created and fixed for property-images, deal-documents, and map-tiles buckets. Fixed infinite recursion error by simplifying RLS policies. User manually executed scripts."
 
 frontend:
   - task: "Transaction Timeline Component"
