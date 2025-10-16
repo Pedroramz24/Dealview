@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { API } from '../App';
+import React, { useState, useEffect, useContext } from 'react';
+import { supabase } from '../supabaseClient';
+import { AuthContext } from '../App';
 import { DollarSign, TrendingUp, FileText, PieChart } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RePieChart, Pie, Cell } from 'recharts';
 import { toast } from 'sonner';
@@ -8,16 +8,56 @@ import { toast } from 'sonner';
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    if (user) {
+      fetchStats();
+    }
+  }, [user]);
 
   const fetchStats = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.get(`${API}/dashboard/stats`);
-      setStats(response.data);
+      // Fetch all deals for current user
+      const { data: deals, error } = await supabase
+        .from('deals')
+        .select('*');
+
+      if (error) throw error;
+
+      // Calculate statistics
+      const totalValue = deals.reduce((sum, deal) => sum + (parseFloat(deal.price) || 0), 0);
+      const activeDeals = deals.filter(d => d.status === 'active').length;
+      
+      // Asset type distribution
+      const assetTypeDistribution = {};
+      deals.forEach(deal => {
+        const type = deal.asset_type || 'Unknown';
+        assetTypeDistribution[type] = (assetTypeDistribution[type] || 0) + 1;
+      });
+
+      // Stage counts
+      const stageCounts = {};
+      deals.forEach(deal => {
+        const stage = deal.stage || 'Unknown';
+        stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+      });
+
+      setStats({
+        total_deals: deals.length,
+        active_deals: activeDeals,
+        total_value: totalValue,
+        average_deal_size: deals.length > 0 ? totalValue / deals.length : 0,
+        asset_type_distribution: assetTypeDistribution,
+        stage_counts: stageCounts,
+      });
     } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
       toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
