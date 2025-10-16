@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { API } from '../App';
+import { supabase } from '../supabaseClient';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { DollarSign, Home, MapPin, FileText, Download } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
@@ -17,8 +16,21 @@ const PublicShare = () => {
 
   const fetchDeal = async () => {
     try {
-      const response = await axios.get(`${API}/share/${dealId}`);
-      setDeal(response.data);
+      // Public share should work without authentication
+      // We'll need a special RLS policy for this
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*')
+        .eq('id', dealId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching deal:', error);
+        // If RLS blocks it, we might need to use a public API endpoint
+        // For now, we'll handle the error gracefully
+      } else {
+        setDeal(data);
+      }
     } catch (error) {
       console.error('Failed to load deal', error);
     } finally {
