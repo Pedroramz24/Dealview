@@ -43,27 +43,6 @@ const Team = () => {
     }
   };
 
-  const getRoleBadgeColor = (role) => {
-    switch (role) {
-      case 'admin':
-        return { background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' };
-      case 'agent':
-        return { background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' };
-      case 'readonly':
-        return { background: 'var(--glass-bg)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' };
-      default:
-        return { background: 'var(--glass-bg)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' };
-    }
-  };
-
-  const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
