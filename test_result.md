@@ -198,24 +198,29 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Layer System - Zoning Layer Toggle"
-  stuck_tasks:
-    - "Layer Management API - FEMA Floodplain Query"
-    - "Layer Management API - Counties Identify"
+    - "Dashboard Supabase Migration"
+    - "Contacts Supabase Migration"
+    - "DealDetails Supabase Migration"
+    - "Team Supabase Migration"
+    - "PublicShare Supabase Migration"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+  backend_testing_notes: |
+    Backend testing for Supabase migration:
+    1. Verify Supabase connection is working
+    2. Test RLS policies are enforcing user isolation
+    3. Verify storage policies for file uploads
   frontend_testing_notes: |
-    Test Layer Manager and layer rendering functionality:
-    1. Open Layer Manager from sidebar
-    2. Toggle San Antonio Zoning layer ON
-    3. Verify zoning layer appears on map with distinct colors
-    4. Verify layer remains visible when zooming in/out (test zoom 10, 13, 15, 18)
-    5. Verify layer remains visible when panning map
-    6. Test opacity slider (set to 50%, verify transparency)
-    7. Toggle layer OFF, verify it disappears
-    8. Verify layer toggle state persists across page refresh
-    9. Test with both satellite and street map styles
-    10. Check for labels/tags on zoning areas
+    Test all migrated pages with Supabase:
+    1. Test Dashboard: Login, verify stats display, check charts render
+    2. Test Contacts: Create new contact, search contacts, verify display
+    3. Test DealDetails: View deal, upload image, upload document
+    4. Test Team: View user profile, check profile data displays
+    5. Test PublicShare: Access public deal link (may need RLS policy fix)
+    6. Verify authentication: Login, Signup, Logout
+    7. Test all pages with authenticated user
+    8. Check console for errors
 
 agent_communication:
   - agent: "main"
