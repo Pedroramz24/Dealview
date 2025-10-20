@@ -170,8 +170,8 @@ const DealDetails = () => {
   };
 
   const calculatePricePerSF = () => {
-    if (!deal?.building_size || !deal?.asking_price) return 'N/A';
-    return formatPrice(deal.asking_price / deal.building_size);
+    if (!deal?.size || !deal?.price) return 'N/A';
+    return formatPrice(deal.price / deal.size);
   };
 
   const calculatePricePerAcre = () => {
