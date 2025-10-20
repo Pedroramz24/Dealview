@@ -5,7 +5,7 @@ import { AuthContext } from '../App';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Plus, Search, Eye } from 'lucide-react';
+import { Plus, Search, Eye, Edit, Trash2, X, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
@@ -19,6 +19,11 @@ const DealsList = () => {
   const [filterStage, setFilterStage] = useState('all');
   const [filterAssetType, setFilterAssetType] = useState('all');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEditPanel, setShowEditPanel] = useState(false);
+  const [editingDeal, setEditingDeal] = useState(null);
+  const [originalDeal, setOriginalDeal] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
