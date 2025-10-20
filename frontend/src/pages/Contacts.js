@@ -7,7 +7,7 @@ import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { 
   Plus, Mail, Phone, Building2, Search, MapPin, Calendar, 
-  FileText, X, Save, Link, Eye, Edit, Filter, User
+  FileText, X, Save, Link, Eye, Edit, Filter, User, Grid, List
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
