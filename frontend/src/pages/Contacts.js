@@ -867,7 +867,167 @@ const Contacts = () => {
               </tbody>
             </table>
           </div>
-        )}
+        ) : viewMode === 'graph' ? (
+          /* Graph View */
+          <div className="relative h-full">
+            {/* Graph Controls */}
+            <div className="absolute top-4 left-4 z-10 glass-surface p-3 rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setFocusMode(!focusMode)}
+                  className="px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                  style={{
+                    background: focusMode ? 'rgba(59, 130, 246, 0.2)' : 'rgba(0, 0, 0, 0.4)',
+                    border: focusMode ? '1px solid var(--accent)' : '1px solid rgba(100, 116, 139, 0.4)',
+                    color: focusMode ? 'var(--accent)' : 'var(--text-secondary)'
+                  }}
+                >
+                  Focus Mode {focusMode ? 'ON' : 'OFF'}
+                </button>
+                <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full" style={{ background: '#00b8d4' }}></div>
+                    <span>Contacts</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full" style={{ background: '#f59e0b' }}></div>
+                    <span>Deals</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Hovered Node Info Card */}
+            {hoveredNode && (
+              <div 
+                className="absolute top-4 right-4 z-10 glass-surface p-4 rounded-lg max-w-xs"
+                style={{ 
+                  border: '1px solid var(--glass-border)',
+                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)'
+                }}
+              >
+                <h4 className="font-bold text-sm mb-2" style={{ color: 'var(--text-primary)' }}>
+                  {hoveredNode.label}
+                </h4>
+                {hoveredNode.type === 'contact' && hoveredNode.data && (
+                  <div className="space-y-1 text-xs">
+                    {hoveredNode.data.company && (
+                      <p style={{ color: 'var(--text-secondary)' }}>
+                        <Building2 className="w-3 h-3 inline mr-1" />
+                        {hoveredNode.data.company}
+                      </p>
+                    )}
+                    {hoveredNode.data.email && (
+                      <p style={{ color: 'var(--text-secondary)' }}>
+                        <Mail className="w-3 h-3 inline mr-1" />
+                        {hoveredNode.data.email}
+                      </p>
+                    )}
+                    {hoveredNode.data.phone && (
+                      <p style={{ color: 'var(--text-secondary)' }}>
+                        <Phone className="w-3 h-3 inline mr-1" />
+                        {hoveredNode.data.phone}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {hoveredNode.type === 'deal' && hoveredNode.data && (
+                  <div className="space-y-1 text-xs">
+                    <p style={{ color: 'var(--accent)' }}>
+                      {formatPrice(hoveredNode.data.price)}
+                    </p>
+                    <p style={{ color: 'var(--text-secondary)' }}>
+                      {hoveredNode.data.asset_type}
+                    </p>
+                    <p style={{ color: 'var(--text-secondary)' }}>
+                      Stage: {hoveredNode.data.stage}
+                    </p>
+                  </div>
+                )}
+                <Button
+                  size="sm"
+                  onClick={() => handleViewDetails(hoveredNode.data)}
+                  className="mt-3 w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  <Eye className="w-3 h-3 mr-2" />
+                  View Details
+                </Button>
+              </div>
+            )}
+
+            {/* Force Graph */}
+            <div 
+              className="w-full h-full rounded-xl overflow-hidden"
+              style={{
+                background: `
+                  radial-gradient(circle at 20% 50%, rgba(0, 184, 212, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
+                  repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(100, 116, 139, 0.1) 19px, rgba(100, 116, 139, 0.1) 20px),
+                  repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(100, 116, 139, 0.1) 19px, rgba(100, 116, 139, 0.1) 20px),
+                  #000000
+                `,
+                border: '1px solid var(--glass-border)'
+              }}
+            >
+              <ForceGraph2D
+                ref={graphRef}
+                graphData={graphData}
+                nodeLabel=""
+                nodeColor={node => {
+                  if (focusMode && focusedNodeId && node.id !== focusedNodeId) {
+                    return 'rgba(100, 116, 139, 0.3)';
+                  }
+                  return node.color;
+                }}
+                nodeVal={node => node.size}
+                nodeCanvasObject={(node, ctx, globalScale) => {
+                  const label = node.label;
+                  const fontSize = 12/globalScale;
+                  ctx.font = `${fontSize}px Geist Sans, sans-serif`;
+                  
+                  // Node circle
+                  const isFaded = focusMode && focusedNodeId && node.id !== focusedNodeId;
+                  ctx.fillStyle = isFaded ? 'rgba(100, 116, 139, 0.3)' : node.color;
+                  ctx.beginPath();
+                  ctx.arc(node.x, node.y, node.size, 0, 2 * Math.PI);
+                  ctx.fill();
+                  
+                  // Node glow
+                  if (!isFaded) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = node.color;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.size, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                  }
+                  
+                  // Label
+                  ctx.textAlign = 'center';
+                  ctx.textBaseline = 'middle';
+                  ctx.fillStyle = isFaded ? 'rgba(255, 255, 255, 0.3)' : '#ffffff';
+                  ctx.fillText(label, node.x, node.y + node.size + 8);
+                }}
+                linkColor={link => focusMode && focusedNodeId ? 'rgba(59, 130, 246, 0.2)' : link.color}
+                linkWidth={2}
+                linkDirectionalParticles={2}
+                linkDirectionalParticleWidth={2}
+                linkDirectionalParticleSpeed={0.005}
+                onNodeClick={(node) => {
+                  setFocusedNodeId(focusMode ? node.id : null);
+                  handleViewDetails(node.data);
+                }}
+                onNodeHover={(node) => setHoveredNode(node)}
+                enableNodeDrag={true}
+                enableZoomInteraction={true}
+                enablePanInteraction={true}
+                cooldownTime={2000}
+                d3AlphaDecay={0.02}
+                d3VelocityDecay={0.3}
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {/* Add/Edit Contact Side Panel */}
