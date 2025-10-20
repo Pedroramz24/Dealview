@@ -932,6 +932,7 @@ const DealsList = () => {
               <th>Asset Type</th>
               <th>Asking Price</th>
               <th>Stage</th>
+              <th>Linked Contacts</th>
               <th>Last Contact</th>
               <th>Actions</th>
             </tr>
