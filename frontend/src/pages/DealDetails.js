@@ -326,7 +326,7 @@ const DealDetails = () => {
               <div className="grid grid-cols-3 gap-6">
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Building Size</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.building_size ? `${deal.building_size.toLocaleString()} SF` : 'N/A'}</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.size ? `${deal.size.toLocaleString()} SF` : 'N/A'}</p>
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Lot Size</p>
