@@ -734,8 +734,7 @@ const Contacts = () => {
               </div>
             ))}
           </div>
-        ) : (
-          /* Table View */
+        ) : viewMode === 'table' ? (
           <div className="glass-surface rounded-xl overflow-hidden" style={{ border: '1px solid var(--glass-border)' }}>
             <table className="w-full">
               <thead>
