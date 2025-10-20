@@ -253,7 +253,7 @@ const DealDetails = () => {
             textAlign: 'center',
             lineHeight: '1.2'
           }}>
-            {deal.property_address}
+            {deal.address}
           </h1>
 
           {/* Asset Type Tag - Centered */}
