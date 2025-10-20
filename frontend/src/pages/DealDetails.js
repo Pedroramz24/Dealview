@@ -67,24 +67,33 @@ const DealDetails = () => {
       return;
     }
 
+    console.log('Starting image upload:', { fileName: file.name, fileSize: file.size, fileType: file.type });
     setUploading(true);
     
     try {
       // Generate unique file name
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${dealId}/${Date.now()}.${fileExt}`;
+      console.log('Upload path:', fileName);
 
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('property-images')
         .upload(fileName, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
+
+      console.log('Upload successful:', uploadData);
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('property-images')
         .getPublicUrl(fileName);
+
+      console.log('Public URL:', publicUrl);
 
       // Update deal with new image URL
       const { error: updateError } = await supabase
@@ -92,8 +101,12 @@ const DealDetails = () => {
         .update({ image_url: publicUrl })
         .eq('id', dealId);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Update error:', updateError);
+        throw updateError;
+      }
 
+      console.log('Deal updated successfully');
       toast.success('Image uploaded successfully');
       fetchDeal();
     } catch (error) {
