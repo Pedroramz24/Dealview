@@ -664,11 +664,18 @@ const Contacts = () => {
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto px-6 py-6">
-              <div className="space-y-6">
-                {/* Basic Information */}
-                <div>
-                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
-                    Basic Information
+              <div className="space-y-5">
+                {/* Contact Info Section */}
+                <div 
+                  className="p-5 rounded-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',
+                    border: '1px solid rgba(100, 116, 139, 0.3)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 className="text-xs font-bold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>
+                    Contact Info
                   </h3>
                   <div className="space-y-4">
                     <div>
@@ -680,9 +687,9 @@ const Contacts = () => {
                         onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                         placeholder="John Doe"
                         style={{
-                          background: 'var(--glass-bg)',
-                          border: '1px solid var(--glass-border)',
-                          color: 'var(--text-primary)'
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
+                          color: 'var(--text-primary)',\n                          padding: '10px 12px'
                         }}
                       />
                     </div>
@@ -698,9 +705,10 @@ const Contacts = () => {
                           onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                           placeholder="john@example.com"
                           style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
-                            color: 'var(--text-primary)'
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid rgba(100, 116, 139, 0.4)',
+                            color: 'var(--text-primary)',
+                            padding: '10px 12px'
                           }}
                         />
                       </div>
@@ -714,14 +722,30 @@ const Contacts = () => {
                           onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                           placeholder="(512) 555-0100"
                           style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
-                            color: 'var(--text-primary)'
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid rgba(100, 116, 139, 0.4)',
+                            color: 'var(--text-primary)',
+                            padding: '10px 12px'
                           }}
                         />
                       </div>
                     </div>
+                  </div>
+                </div>
 
+                {/* Company Details Section */}
+                <div 
+                  className="p-5 rounded-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',
+                    border: '1px solid rgba(100, 116, 139, 0.3)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 className="text-xs font-bold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>
+                    Company Details
+                  </h3>
+                  <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
@@ -732,9 +756,10 @@ const Contacts = () => {
                           onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
                           placeholder="ABC Realty"
                           style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
-                            color: 'var(--text-primary)'
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid rgba(100, 116, 139, 0.4)',
+                            color: 'var(--text-primary)',
+                            padding: '10px 12px'
                           }}
                         />
                       </div>
@@ -745,11 +770,12 @@ const Contacts = () => {
                         <Input
                           value={contactForm.title}
                           onChange={(e) => setContactForm({ ...contactForm, title: e.target.value })}
-                          placeholder="Principal, Broker, etc."
+                          placeholder="Principal, Broker, CFO"
                           style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
-                            color: 'var(--text-primary)'
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid rgba(100, 116, 139, 0.4)',
+                            color: 'var(--text-primary)',
+                            padding: '10px 12px'
                           }}
                         />
                       </div>
@@ -757,264 +783,67 @@ const Contacts = () => {
 
                     <div>
                       <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                        Owner Address (for property owners)
+                        Owner Address
                       </Label>
                       <Input
                         value={contactForm.owner_address}
                         onChange={(e) => setContactForm({ ...contactForm, owner_address: e.target.value })}
                         placeholder="123 Main St, Austin, TX 78701"
                         style={{
-                          background: 'var(--glass-bg)',
-                          border: '1px solid var(--glass-border)',
-                          color: 'var(--text-primary)'
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
+                          color: 'var(--text-primary)',
+                          padding: '10px 12px'
                         }}
                       />
                     </div>
-                  </div>
-                </div>
 
-                {/* Contact Classification */}
-                <div>
-                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
-                    Classification
-                  </h3>
-                  
-                  {/* Contact Types */}
-                  <div className="mb-4">
-                    <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                      Contact Type(s)
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {contactTypeOptions.map(type => (
-                        <button
-                          key={type.value}
-                          type="button"
-                          onClick={() => toggleArrayField('contact_types', type.value)}
-                          className="px-3 py-2 rounded-lg text-sm font-medium transition-all"
-                          style={{
-                            background: contactForm.contact_types.includes(type.value)
-                              ? 'rgba(59, 130, 246, 0.2)'
-                              : 'var(--glass-bg)',
-                            border: contactForm.contact_types.includes(type.value)
-                              ? '1px solid var(--accent)'
-                              : '1px solid var(--glass-border)',
-                            color: contactForm.contact_types.includes(type.value)
-                              ? 'var(--accent)'
-                              : 'var(--text-secondary)'
-                          }}
-                        >
-                          {type.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Asset Type Focus */}
-                  <div className="mb-4">
-                    <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                      Asset Type Focus
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {assetTypeOptions.map(type => (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => toggleArrayField('asset_type_focus', type)}
-                          className="px-3 py-2 rounded-lg text-sm font-medium transition-all"
-                          style={{
-                            background: contactForm.asset_type_focus.includes(type)
-                              ? 'rgba(168, 85, 247, 0.2)'
-                              : 'var(--glass-bg)',
-                            border: contactForm.asset_type_focus.includes(type)
-                              ? '1px solid #a855f7'
-                              : '1px solid var(--glass-border)',
-                            color: contactForm.asset_type_focus.includes(type)
-                              ? '#a855f7'
-                              : 'var(--text-secondary)'
-                          }}
-                        >
-                          {type}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Markets */}
-                  <div className="mb-4">
-                    <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                      Markets
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {marketOptions.map(market => (
-                        <button
-                          key={market}
-                          type="button"
-                          onClick={() => toggleArrayField('markets', market)}
-                          className="px-3 py-2 rounded-lg text-sm font-medium transition-all"
-                          style={{
-                            background: contactForm.markets.includes(market)
-                              ? 'rgba(16, 185, 129, 0.2)'
-                              : 'var(--glass-bg)',
-                            border: contactForm.markets.includes(market)
-                              ? '1px solid #10b981'
-                              : '1px solid var(--glass-border)',
-                            color: contactForm.markets.includes(market)
-                              ? '#10b981'
-                              : 'var(--text-secondary)'
-                          }}
-                        >
-                          {market}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Status */}
-                  <div>
-                    <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                      Status
-                    </Label>
-                    <select
-                      value={contactForm.status}
-                      onChange={(e) => setContactForm({ ...contactForm, status: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg"
-                      style={{
-                        background: 'var(--glass-bg)',
-                        border: '1px solid var(--glass-border)',
-                        color: 'var(--text-primary)'
-                      }}
-                    >
-                      {statusOptions.map(status => (
-                        <option key={status.value} value={status.value}>{status.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Link Deals */}
-                <div>
-                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
-                    Linked Deals
-                  </h3>
-                  <div>
-                    <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                      Select Deals to Link
-                    </Label>
-                    <div className="max-h-[200px] overflow-y-auto space-y-2 p-3 rounded-lg" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
-                      {deals.length === 0 ? (
-                        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No deals available</p>
-                      ) : (
-                        deals.map(deal => (
-                          <label
-                            key={deal.id}
-                            className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-opacity-50 transition-colors"
-                            style={{ background: contactForm.linked_deals.includes(deal.id) ? 'rgba(59, 130, 246, 0.1)' : 'transparent' }}
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Contact Type(s)
+                      </Label>
+                      <div className="flex flex-wrap gap-2">
+                        {contactTypeOptions.map(type => (
+                          <button
+                            key={type.value}
+                            type="button"
+                            onClick={() => toggleArrayField('contact_types', type.value)}
+                            className="px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                            style={{
+                              background: contactForm.contact_types.includes(type.value)
+                                ? 'rgba(59, 130, 246, 0.25)'
+                                : 'rgba(0, 0, 0, 0.4)',
+                              border: contactForm.contact_types.includes(type.value)
+                                ? '2px solid var(--accent)'
+                                : '1px solid rgba(100, 116, 139, 0.4)',
+                              color: contactForm.contact_types.includes(type.value)
+                                ? 'var(--accent)'
+                                : 'var(--text-secondary)'
+                            }}
                           >
-                            <input
-                              type="checkbox"
-                              checked={contactForm.linked_deals.includes(deal.id)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setContactForm({ ...contactForm, linked_deals: [...contactForm.linked_deals, deal.id] });
-                                } else {
-                                  setContactForm({ ...contactForm, linked_deals: contactForm.linked_deals.filter(id => id !== deal.id) });
-                                }
-                              }}
-                              className="w-4 h-4"
-                              style={{ accentColor: 'var(--accent)' }}
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                                {deal.title || deal.address}
-                              </p>
-                              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                                {deal.asset_type} • {formatPrice(deal.price)}
-                              </p>
-                            </div>
-                          </label>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Follow-up & Actions */}
-                <div>
-                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
-                    Follow-up & Actions
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                          Last Follow-up
-                        </Label>
-                        <Input
-                          type="date"
-                          value={contactForm.last_followup_date}
-                          onChange={(e) => setContactForm({ ...contactForm, last_followup_date: e.target.value })}
-                          style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
-                            color: 'var(--text-primary)'
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                          Next Action Date
-                        </Label>
-                        <Input
-                          type="date"
-                          value={contactForm.next_action_date}
-                          onChange={(e) => setContactForm({ ...contactForm, next_action_date: e.target.value })}
-                          style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
-                            color: 'var(--text-primary)'
-                          }}
-                        />
+                            {type.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
 
                     <div>
                       <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                        Lead Source
+                        Asset Type Focus
                       </Label>
-                      <Input
-                        value={contactForm.lead_source}
-                        onChange={(e) => setContactForm({ ...contactForm, lead_source: e.target.value })}
-                        placeholder="Referral, Website, Event, etc."
-                        style={{
-                          background: 'var(--glass-bg)',
-                          border: '1px solid var(--glass-border)',
-                          color: 'var(--text-primary)'
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                        Notes
-                      </Label>
-                      <textarea
-                        value={contactForm.notes}
-                        onChange={(e) => setContactForm({ ...contactForm, notes: e.target.value })}
-                        placeholder="Add notes about this contact..."
-                        rows={4}
+                      <select
+                        value={contactForm.asset_type_focus[0] || ''}
+                        onChange={(e) => setContactForm({ ...contactForm, asset_type_focus: e.target.value ? [e.target.value] : [] })}
                         className="w-full px-3 py-2 rounded-lg"
                         style={{
-                          background: 'var(--glass-bg)',
-                          border: '1px solid var(--glass-border)',
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
                           color: 'var(--text-primary)',
-                          resize: 'vertical'
+                          padding: '10px 12px'
                         }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                      >
+                        <option value="">Select asset type...</option>
+                        {assetTypeOptions.map(type => (\n                          <option \n                            key={type} \n                            value={type}\n                            style={{ \n                              background: '#1a1a1a',\n                              color: getAssetTypeColor(type).color\n                            }}\n                          >\n                            {type}\n                          </option>\n                        ))}\n                      </select>\n                    </div>\n\n                    <div>\n                      <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                        Markets (multi-select)\n                      </Label>\n                      <div className=\"flex flex-wrap gap-2\">\n                        {marketOptions.map(market => (\n                          <button\n                            key={market}\n                            type=\"button\"\n                            onClick={() => toggleArrayField('markets', market)}\n                            className=\"px-3 py-2 rounded-lg text-sm font-medium transition-all\"\n                            style={{\n                              background: contactForm.markets.includes(market)\n                                ? 'rgba(16, 185, 129, 0.25)'\n                                : 'rgba(0, 0, 0, 0.4)',\n                              border: contactForm.markets.includes(market)\n                                ? '2px solid #10b981'\n                                : '1px solid rgba(100, 116, 139, 0.4)',\n                              color: contactForm.markets.includes(market)\n                                ? '#10b981'\n                                : 'var(--text-secondary)'\n                            }}\n                          >\n                            {market}\n                          </button>\n                        ))}\n                      </div>\n                    </div>\n                  </div>\n                </div>\n\n                {/* Property Links Section */}\n                <div \n                  className=\"p-5 rounded-xl\"\n                  style={{\n                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',\n                    border: '1px solid rgba(100, 116, 139, 0.3)',\n                    backdropFilter: 'blur(10px)'\n                  }}\n                >\n                  <h3 className=\"text-xs font-bold uppercase mb-4\" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>\n                    Property Links\n                  </h3>\n                  <div>\n                    <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                      Link to Existing Deals\n                    </Label>\n                    <div \n                      className=\"max-h-[200px] overflow-y-auto space-y-2 p-3 rounded-lg\" \n                      style={{ \n                        background: 'rgba(0, 0, 0, 0.5)', \n                        border: '1px solid rgba(100, 116, 139, 0.3)' \n                      }}\n                    >\n                      {deals.length === 0 ? (\n                        <p className=\"text-sm text-center py-4\" style={{ color: 'var(--text-muted)' }}>No deals available to link</p>\n                      ) : (\n                        deals.map(deal => (\n                          <label\n                            key={deal.id}\n                            className=\"flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all\"\n                            style={{ \n                              background: contactForm.linked_deals.includes(deal.id) \n                                ? 'rgba(59, 130, 246, 0.15)' \n                                : 'rgba(0, 0, 0, 0.3)',\n                              border: contactForm.linked_deals.includes(deal.id)\n                                ? '1px solid var(--accent)'\n                                : '1px solid rgba(100, 116, 139, 0.2)'\n                            }}\n                          >\n                            <input\n                              type=\"checkbox\"\n                              checked={contactForm.linked_deals.includes(deal.id)}\n                              onChange={(e) => {\n                                if (e.target.checked) {\n                                  setContactForm({ ...contactForm, linked_deals: [...contactForm.linked_deals, deal.id] });\n                                } else {\n                                  setContactForm({ ...contactForm, linked_deals: contactForm.linked_deals.filter(id => id !== deal.id) });\n                                }\n                              }}\n                              className=\"w-4 h-4\"\n                              style={{ accentColor: 'var(--accent)' }}\n                            />\n                            <div className=\"flex-1\">\n                              <p className=\"text-sm font-medium\" style={{ color: 'var(--text-primary)' }}>\n                                {deal.title || deal.address}\n                              </p>\n                              <p className=\"text-xs\" style={{ color: 'var(--text-secondary)' }}>\n                                {deal.asset_type} • {formatPrice(deal.price)}\n                              </p>\n                            </div>\n                          </label>\n                        ))\n                      )}\n                    </div>\n                  </div>\n                </div>\n\n                {/* Status & Notes Section */}\n                <div \n                  className=\"p-5 rounded-xl\"\n                  style={{\n                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',\n                    border: '1px solid rgba(100, 116, 139, 0.3)',\n                    backdropFilter: 'blur(10px)'\n                  }}\n                >\n                  <h3 className=\"text-xs font-bold uppercase mb-4\" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>\n                    Status & Notes\n                  </h3>\n                  <div className=\"space-y-4\">\n                    <div>\n                      <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                        Status\n                      </Label>\n                      <select\n                        value={contactForm.status}\n                        onChange={(e) => setContactForm({ ...contactForm, status: e.target.value })}\n                        className=\"w-full px-3 py-2 rounded-lg\"\n                        style={{\n                          background: 'rgba(0, 0, 0, 0.4)',\n                          border: '1px solid rgba(100, 116, 139, 0.4)',\n                          color: 'var(--text-primary)',\n                          padding: '10px 12px'\n                        }}\n                      >\n                        {statusOptions.map(status => (\n                          <option key={status.value} value={status.value}>{status.label}</option>\n                        ))}\n                      </select>\n                    </div>\n\n                    <div className=\"grid grid-cols-2 gap-4\">\n                      <div>\n                        <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                          Last Follow-up\n                        </Label>\n                        <Input\n                          type=\"date\"\n                          value={contactForm.last_followup_date}\n                          onChange={(e) => setContactForm({ ...contactForm, last_followup_date: e.target.value })}\n                          style={{\n                            background: 'rgba(0, 0, 0, 0.4)',\n                            border: '1px solid rgba(100, 116, 139, 0.4)',\n                            color: 'var(--text-primary)',\n                            padding: '10px 12px'\n                          }}\n                        />\n                      </div>\n                      <div>\n                        <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                          Next Action\n                        </Label>\n                        <Input\n                          type=\"date\"\n                          value={contactForm.next_action_date}\n                          onChange={(e) => setContactForm({ ...contactForm, next_action_date: e.target.value })}\n                          style={{\n                            background: 'rgba(0, 0, 0, 0.4)',\n                            border: '1px solid rgba(100, 116, 139, 0.4)',\n                            color: 'var(--text-primary)',\n                            padding: '10px 12px'\n                          }}\n                        />\n                      </div>\n                    </div>\n\n                    <div>\n                      <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                        Lead Source\n                      </Label>\n                      <Input\n                        value={contactForm.lead_source}\n                        onChange={(e) => setContactForm({ ...contactForm, lead_source: e.target.value })}\n                        placeholder=\"Referral, Website, Event\"\n                        style={{\n                          background: 'rgba(0, 0, 0, 0.4)',\n                          border: '1px solid rgba(100, 116, 139, 0.4)',\n                          color: 'var(--text-primary)',\n                          padding: '10px 12px'\n                        }}\n                      />\n                    </div>\n\n                    <div>\n                      <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                        Notes\n                      </Label>\n                      <textarea\n                        value={contactForm.notes}\n                        onChange={(e) => setContactForm({ ...contactForm, notes: e.target.value })}\n                        placeholder=\"Add notes about this contact...\"\n                        rows={5}\n                        className=\"w-full px-3 py-2 rounded-lg\"\n                        style={{\n                          background: 'rgba(0, 0, 0, 0.4)',\n                          border: '1px solid rgba(100, 116, 139, 0.4)',\n                          color: 'var(--text-primary)',\n                          padding: '10px 12px',\n                          resize: 'vertical'\n                        }}\n                      />\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>
 
             {/* Sticky Footer */}
             <div 
