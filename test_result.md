@@ -195,15 +195,18 @@ frontend:
 
   - task: "Team Supabase Migration"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Team.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Simplified Team page to show current user's profile from user_profiles table. Removed team invitation functionality (would require Supabase Auth admin features or custom backend logic). Page now displays user email, phone, company, and role. Added informational card about team collaboration features. Needs testing."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Team page loads successfully. User profile displays correctly with email (testuser_1760982228@test.com) and role (User). Dark glass UI maintained. Informational card about team collaboration features displays correctly. All functionality working as expected."
 
 metadata:
   created_by: "main_agent"
