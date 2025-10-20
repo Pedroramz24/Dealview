@@ -868,7 +868,6 @@ const Contacts = () => {
             </table>
           </div>
         ) : viewMode === 'graph' ? (
-          /* Graph View */
           <div className="relative h-full">
             {/* Graph Controls */}
             <div className="absolute top-4 left-4 z-10 glass-surface p-3 rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
