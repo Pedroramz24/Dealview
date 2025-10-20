@@ -1323,6 +1323,139 @@ const DealsList = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Linked Contacts Section */}
+                <div>
+                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
+                    Linked Contacts
+                  </h3>
+                  <div className="space-y-3">
+                    {/* Contact Search */}
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Search & Link Contacts
+                      </Label>
+                      <Input
+                        value={contactSearchTerm}
+                        onChange={(e) => setContactSearchTerm(e.target.value)}
+                        placeholder="Type contact name to search..."
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)'
+                        }}
+                      />
+                    </div>
+
+                    {/* Filtered Contacts List */}
+                    {contactSearchTerm && (
+                      <div 
+                        className="max-h-[200px] overflow-y-auto space-y-2 p-3 rounded-lg"
+                        style={{
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid var(--glass-border)'
+                        }}
+                      >
+                        {contacts
+                          .filter(c => 
+                            c.name.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+                            c.email?.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+                            c.company?.toLowerCase().includes(contactSearchTerm.toLowerCase())
+                          )
+                          .slice(0, 10)
+                          .map(contact => (
+                            <label
+                              key={contact.id}
+                              className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-opacity-80 transition-all"
+                              style={{
+                                background: selectedContacts.includes(contact.id)
+                                  ? 'rgba(59, 130, 246, 0.2)'
+                                  : 'rgba(0, 0, 0, 0.3)',
+                                border: selectedContacts.includes(contact.id)
+                                  ? '1px solid var(--accent)'
+                                  : '1px solid rgba(100, 116, 139, 0.2)'
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedContacts.includes(contact.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedContacts([...selectedContacts, contact.id]);
+                                  } else {
+                                    setSelectedContacts(selectedContacts.filter(id => id !== contact.id));
+                                  }
+                                }}
+                                className="w-4 h-4"
+                                style={{ accentColor: 'var(--accent)' }}
+                              />
+                              <div className="flex-1">
+                                <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                                  {contact.name}
+                                </p>
+                                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                  {contact.company || contact.email}
+                                </p>
+                              </div>
+                            </label>
+                          ))}
+                        
+                        {contacts.filter(c => 
+                          c.name.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+                          c.email?.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+                          c.company?.toLowerCase().includes(contactSearchTerm.toLowerCase())
+                        ).length === 0 && (
+                          <div className="text-center py-4">
+                            <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
+                              No contact found: "{contactSearchTerm}"
+                            </p>
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setShowEditPanel(false);
+                                navigate('/contacts');
+                                toast.info('Opening Contacts page to create new contact');
+                              }}
+                              className="bg-blue-600 hover:bg-blue-700"
+                            >
+                              <Plus className="w-4 h-4 mr-2" />
+                              Create New Contact
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Selected Contacts Display */}
+                    {selectedContacts.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {selectedContacts.map(contactId => {
+                          const contact = contacts.find(c => c.id === contactId);
+                          if (!contact) return null;
+                          return (
+                            <span
+                              key={contactId}
+                              className="flex items-center gap-2 px-3 py-1 rounded-lg text-sm"
+                              style={{
+                                background: 'rgba(59, 130, 246, 0.15)',
+                                border: '1px solid rgba(59, 130, 246, 0.3)',
+                                color: 'var(--accent)'
+                              }}
+                            >
+                              {contact.name}
+                              <button
+                                onClick={() => setSelectedContacts(selectedContacts.filter(id => id !== contactId))}
+                                className="hover:opacity-70"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
