@@ -48,6 +48,13 @@ const nextActionTypes = [
 const Pipeline = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterAssetType, setFilterAssetType] = useState('all');
+  const [sortBy, setSortBy] = useState('last_contact');
+  const [showFilters, setShowFilters] = useState(false);
+  const [automationDialog, setAutomationDialog] = useState({ open: false, type: null, deal: null });
+  const [automationData, setAutomationData] = useState({});
+  const boardRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
@@ -66,10 +73,20 @@ const Pipeline = () => {
     try {
       const { data, error } = await supabase
         .from('deals')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDeals(data || []);
+      
+      // Ensure all deals have a stage, default to 'need_to_contact'
+      const dealsWithStages = (data || []).map(deal => ({
+        ...deal,
+        stage: deal.stage || 'need_to_contact',
+        last_contact: deal.last_contact || deal.created_at,
+        next_action: deal.next_action || 'call'
+      }));
+      
+      setDeals(dealsWithStages);
     } catch (error) {
       console.error('Error fetching deals:', error);
       if (error.code !== 'PGRST116') {
