@@ -689,7 +689,8 @@ const Contacts = () => {
                         style={{
                           background: 'rgba(0, 0, 0, 0.4)',
                           border: '1px solid rgba(100, 116, 139, 0.4)',
-                          color: 'var(--text-primary)',\n                          padding: '10px 12px'
+                          color: 'var(--text-primary)',
+                          padding: '10px 12px'
                         }}
                       />
                     </div>
