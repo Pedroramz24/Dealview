@@ -447,10 +447,10 @@ const Contacts = () => {
               ))}
             </select>
 
-            {/* Market Filter */}
+            {/* Asset Type Filter */}
             <select
-              value={filterMarket}
-              onChange={(e) => setFilterMarket(e.target.value)}
+              value={filterAssetType}
+              onChange={(e) => setFilterAssetType(e.target.value)}
               className="px-4 py-2 rounded-lg"
               style={{
                 background: 'var(--glass-bg)',
@@ -459,9 +459,9 @@ const Contacts = () => {
                 cursor: 'pointer'
               }}
             >
-              <option value="all">All Markets</option>
-              {marketOptions.map(market => (
-                <option key={market} value={market}>{market}</option>
+              <option value="all">All Asset Types</option>
+              {assetTypeOptions.map(type => (
+                <option key={type} value={type}>{type}</option>
               ))}
             </select>
 
