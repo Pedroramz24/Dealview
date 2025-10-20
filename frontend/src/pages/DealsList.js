@@ -304,9 +304,24 @@ const DealsList = () => {
   };
 
   // Edit Deal Handlers
-  const handleEditClick = (deal) => {
+  const handleEditClick = async (deal) => {
     setEditingDeal({ ...deal });
     setOriginalDeal({ ...deal });
+    
+    // Fetch existing contact links for this deal
+    try {
+      const { data: links, error } = await supabase
+        .from('contact_deal_links')
+        .select('contact_id')
+        .eq('deal_id', deal.id);
+
+      if (!error && links) {
+        setSelectedContacts(links.map(link => link.contact_id));
+      }
+    } catch (error) {
+      console.error('Error fetching contact links:', error);
+    }
+    
     setShowEditPanel(true);
   };
 
