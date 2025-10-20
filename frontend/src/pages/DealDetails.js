@@ -546,7 +546,7 @@ const DealDetails = () => {
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>PRICE</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{formatPrice(deal.asking_price)}</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{formatPrice(deal.price)}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
