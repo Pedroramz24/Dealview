@@ -484,6 +484,7 @@ const Pipeline = () => {
                                 {...provided.dragHandleProps}
                                 className="group relative mb-3"
                                 style={{
+                                  ...provided.draggableProps.style,
                                   cursor: snapshot.isDragging ? 'grabbing' : 'grab'
                                 }}
                               >
