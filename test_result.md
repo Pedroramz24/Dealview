@@ -253,33 +253,38 @@ metadata:
 
 test_plan:
   current_focus:
-    - "DealsList Field Name Consistency"
     - "DealDetails Supabase Migration"
     - "Pipeline Page - React Beautiful DnD Error"
-  stuck_tasks: []
+    - "File Upload Testing"
+  stuck_tasks:
+    - "DealDetails Supabase Migration"
   test_all: false
   test_priority: "high_first"
   backend_testing_notes: |
     Backend testing for Supabase migration:
     1. Verify Supabase connection is working ✅
     2. Test RLS policies are enforcing user isolation ✅
-    3. Verify storage policies for file uploads ⚠️ (buckets created but uploads not working)
+    3. Verify storage policies for file uploads ⚠️ (buckets created but uploads not tested)
   frontend_testing_notes: |
-    COMPLETED TESTS:
-    1. ✅ Dashboard: Login, stats display, charts render
-    2. ✅ Contacts: Create contact, search contacts, display working
-    3. ❌ DealDetails: View deal works, but file uploads fail silently, price shows $NaN
-    4. ✅ Team: User profile displays correctly
-    5. ⚠️ Pipeline: Displays correctly but 30 console errors (isDropDisabled prop)
-    6. ✅ Authentication: Signup, Login, Session persistence all working
-    7. ❌ DealsList: Deal creation works but display broken (field name mismatch)
-    8. ⏭️ PublicShare: Not tested (needs RLS policy for anonymous access)
+    COMPLETED TESTS (Latest Round):
+    1. ✅ Authentication: Signup with full name working, account creation successful
+    2. ✅ Dashboard: Stats display correctly ($0 for new user), charts render (14 SVG elements)
+    3. ✅ Deal Creation: Successfully created deal with all fields, form submission working
+    4. ✅ Deals List: Deal displays with correct address and price ($2,500,000 - NO $NaN!)
+    5. ❌ DealDetails: Field name mismatch (property_address vs address), asking price element not found
+    6. ❌ File Uploads: Could not locate upload inputs on DealDetails page (test timeout)
+    7. ⏭️ Pipeline: Not tested in this round
+    8. ⏭️ Contacts: Not tested in this round
     
-    PRIORITY FIXES NEEDED:
-    1. HIGH: Fix field name mismatch in DealsList.js (address/price vs property_address/asking_price)
-    2. HIGH: Fix file upload functionality in DealDetails.js (no success/error feedback)
-    3. MEDIUM: Fix Pipeline page isDropDisabled prop error (30 console errors)
-    4. LOW: Verify title field color display in Contacts page
+    CRITICAL ISSUES IDENTIFIED:
+    1. HIGH: DealDetails.js line 256 uses 'deal.property_address' but field is stored as 'address'
+    2. HIGH: File upload inputs not accessible/rendering on DealDetails page
+    3. MEDIUM: Console warnings about controlled/uncontrolled components (Select, Input)
+    
+    CORRECTION TO PREVIOUS REPORT:
+    - DealsList.js is WORKING CORRECTLY - no field mismatch
+    - The $NaN issue reported previously was INCORRECT
+    - Actual issue is in DealDetails.js, not DealsList.js
 
 agent_communication:
   - agent: "main"
