@@ -522,144 +522,273 @@ const Contacts = () => {
         </div>
       </div>
 
-      {/* Contacts Grid */}
+      {/* Contacts Display - Card or Table View */}
       <div className="px-8 pb-8 flex-1 overflow-y-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredContacts.map((contact) => (
-            <div 
-              key={contact.id} 
-              className="glass-surface rounded-xl p-5 hover:border-cyan-500 transition-all cursor-pointer group"
-              style={{ 
-                border: '1px solid var(--glass-border)',
-                background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%)',
-                backdropFilter: 'blur(20px)'
-              }}
-              onClick={() => handleViewDetails(contact)}
-              data-testid={`contact-card-${contact.id}`}
-            >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-                    {contact.name}
-                  </h3>
-                  {contact.title && (
-                    <p className="text-sm" style={{ color: 'var(--accent)' }}>
-                      {contact.title}
+        {viewMode === 'card' ? (
+          /* Card View */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredContacts.map((contact) => (
+              <div 
+                key={contact.id} 
+                className="glass-surface rounded-xl p-5 hover:border-cyan-500 transition-all cursor-pointer group"
+                style={{ 
+                  border: '1px solid var(--glass-border)',
+                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%)',
+                  backdropFilter: 'blur(20px)'
+                }}
+                onClick={() => handleViewDetails(contact)}
+                data-testid={`contact-card-${contact.id}`}
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                      {contact.name}
+                    </h3>
+                    {contact.title && (
+                      <p className="text-sm" style={{ color: 'var(--accent)' }}>
+                        {contact.title}
+                      </p>
+                    )}
+                    {contact.company && (
+                      <p className="text-sm flex items-center mt-1" style={{ color: 'var(--text-secondary)' }}>
+                        <Building2 className="w-3 h-3 mr-1" />
+                        {contact.company}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Edit Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenEdit(contact);
+                    }}
+                    className="p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{
+                      background: 'var(--glass-bg)',
+                      border: '1px solid var(--glass-border)'
+                    }}
+                  >
+                    <Edit className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+                  </button>
+                </div>
+
+                {/* Contact Info */}
+                <div className="space-y-2 mb-4">
+                  {contact.email && (
+                    <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
+                      <Mail className="w-4 h-4 mr-2" style={{ color: 'var(--text-muted)' }} />
+                      <span className="truncate">{contact.email}</span>
                     </p>
                   )}
-                  {contact.company && (
-                    <p className="text-sm flex items-center mt-1" style={{ color: 'var(--text-secondary)' }}>
-                      <Building2 className="w-3 h-3 mr-1" />
-                      {contact.company}
+                  {contact.phone && (
+                    <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
+                      <Phone className="w-4 h-4 mr-2" style={{ color: 'var(--text-muted)' }} />
+                      {contact.phone}
                     </p>
                   )}
                 </div>
-                
-                {/* Edit Button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleOpenEdit(contact);
-                  }}
-                  className="p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{
-                    background: 'var(--glass-bg)',
-                    border: '1px solid var(--glass-border)'
-                  }}
-                >
-                  <Edit className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-                </button>
-              </div>
 
-              {/* Contact Info */}
-              <div className="space-y-2 mb-4">
-                {contact.email && (
-                  <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
-                    <Mail className="w-4 h-4 mr-2" style={{ color: 'var(--text-muted)' }} />
-                    <span className="truncate">{contact.email}</span>
-                  </p>
-                )}
-                {contact.phone && (
-                  <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
-                    <Phone className="w-4 h-4 mr-2" style={{ color: 'var(--text-muted)' }} />
-                    {contact.phone}
-                  </p>
-                )}
-                {contact.owner_address && (
-                  <p className="text-sm flex items-center" style={{ color: 'var(--text-secondary)' }}>
-                    <MapPin className="w-4 h-4 mr-2" style={{ color: 'var(--text-muted)' }} />
-                    <span className="truncate">{contact.owner_address}</span>
-                  </p>
-                )}
-              </div>
-
-              {/* Contact Types */}
-              {contact.contact_types && contact.contact_types.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {contact.contact_types.slice(0, 3).map((type) => (
-                    <span 
-                      key={type} 
-                      className="text-xs px-2 py-1 rounded"
-                      style={{
-                        background: 'rgba(59, 130, 246, 0.15)',
-                        color: '#3b82f6',
-                        border: '1px solid rgba(59, 130, 246, 0.3)'
-                      }}
-                    >
-                      {contactTypeOptions.find(t => t.value === type)?.label || type}
-                    </span>
-                  ))}
-                  {contact.contact_types.length > 3 && (
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>+{contact.contact_types.length - 3}</span>
-                  )}
-                </div>
-              )}
-
-              {/* Markets */}
-              {contact.markets && contact.markets.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {contact.markets.slice(0, 3).map((market) => (
-                    <span 
-                      key={market} 
-                      className="text-xs px-2 py-1 rounded"
-                      style={{
-                        background: 'rgba(168, 85, 247, 0.15)',
-                        color: '#a855f7',
-                        border: '1px solid rgba(168, 85, 247, 0.3)'
-                      }}
-                    >
-                      {market}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                {/* Status */}
-                <span 
-                  className="text-xs px-3 py-1 rounded-full font-medium"
-                  style={{
-                    background: getStatusBadgeStyle(contact.status).bg,
-                    color: getStatusBadgeStyle(contact.status).color,
-                    border: `1px solid ${getStatusBadgeStyle(contact.status).border}`
-                  }}
-                >
-                  {statusOptions.find(s => s.value === contact.status)?.label || contact.status}
-                </span>
-
-                {/* Linked Deals Count */}
-                {contact.linked_deals_count > 0 && (
-                  <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--accent)' }}>
-                    <Link className="w-3 h-3" />
-                    <span>{contact.linked_deals_count} {contact.linked_deals_count === 1 ? 'deal' : 'deals'}</span>
+                {/* Contact Types */}
+                {contact.contact_types && contact.contact_types.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {contact.contact_types.slice(0, 3).map((type) => (
+                      <span 
+                        key={type} 
+                        className="text-xs px-2 py-1 rounded"
+                        style={{
+                          background: 'rgba(59, 130, 246, 0.15)',
+                          color: '#3b82f6',
+                          border: '1px solid rgba(59, 130, 246, 0.3)'
+                        }}
+                      >
+                        {contactTypeOptions.find(t => t.value === type)?.label || type}
+                      </span>
+                    ))}
+                    {contact.contact_types.length > 3 && (
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>+{contact.contact_types.length - 3}</span>
+                    )}
                   </div>
                 )}
+
+                {/* Asset Types */}
+                {contact.asset_type_focus && contact.asset_type_focus.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {contact.asset_type_focus.slice(0, 2).map((type) => (
+                      <span 
+                        key={type} 
+                        className="text-xs px-2 py-1 rounded"
+                        style={{
+                          background: getAssetTypeColor(type).bg,
+                          color: getAssetTypeColor(type).color,
+                          border: `1px solid ${getAssetTypeColor(type).border}`
+                        }}
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                  {/* Status */}
+                  <span 
+                    className="text-xs px-3 py-1 rounded-full font-medium"
+                    style={{
+                      background: getStatusBadgeStyle(contact.status).bg,
+                      color: getStatusBadgeStyle(contact.status).color,
+                      border: `1px solid ${getStatusBadgeStyle(contact.status).border}`
+                    }}
+                  >
+                    {statusOptions.find(s => s.value === contact.status)?.label || contact.status}
+                  </span>
+
+                  {/* Linked Deals Count */}
+                  {contact.linked_deals_count > 0 && (
+                    <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--accent)' }}>
+                      <Link className="w-3 h-3" />
+                      <span>{contact.linked_deals_count} {contact.linked_deals_count === 1 ? 'deal' : 'deals'}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          /* Table View */
+          <div className="glass-surface rounded-xl overflow-hidden" style={{ border: '1px solid var(--glass-border)' }}>
+            <table className="w-full">
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Name</th>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Company</th>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Contact Type</th>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Asset Type</th>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Linked Deals</th>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Last Follow-Up</th>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Status</th>
+                  <th className="text-left px-6 py-4" style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredContacts.map((contact) => (
+                  <tr 
+                    key={contact.id}
+                    className="hover:bg-opacity-50 transition-all cursor-pointer"
+                    style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                    onClick={() => handleViewDetails(contact)}
+                    data-testid={`contact-row-${contact.id}`}
+                  >
+                    <td className="px-6 py-4">
+                      <div>
+                        <p className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
+                          {contact.name}
+                        </p>
+                        {contact.email && (
+                          <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                            {contact.email}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                        {contact.company || '-'}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {contact.contact_types && contact.contact_types.length > 0 ? (
+                          contact.contact_types.slice(0, 2).map((type) => (
+                            <span 
+                              key={type}
+                              className="text-xs px-2 py-1 rounded"
+                              style={{
+                                background: 'rgba(59, 130, 246, 0.15)',
+                                color: '#3b82f6',
+                                border: '1px solid rgba(59, 130, 246, 0.3)'
+                              }}
+                            >
+                              {contactTypeOptions.find(t => t.value === type)?.label || type}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-sm" style={{ color: 'var(--text-muted)' }}>-</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {contact.asset_type_focus && contact.asset_type_focus.length > 0 ? (
+                          contact.asset_type_focus.slice(0, 2).map((type) => (
+                            <span 
+                              key={type}
+                              className="text-xs px-2 py-1 rounded"
+                              style={{
+                                background: getAssetTypeColor(type).bg,
+                                color: getAssetTypeColor(type).color,
+                                border: `1px solid ${getAssetTypeColor(type).border}`
+                              }}
+                            >
+                              {type}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-sm" style={{ color: 'var(--text-muted)' }}>-</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {contact.linked_deals_count > 0 ? (
+                        <div className="flex items-center gap-1" style={{ color: 'var(--accent)' }}>
+                          <Link className="w-3 h-3" />
+                          <span className="text-sm font-medium">{contact.linked_deals_count}</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm" style={{ color: 'var(--text-muted)' }}>0</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                        {formatDate(contact.last_followup_date)}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span 
+                        className="text-xs px-3 py-1 rounded-full font-medium"
+                        style={{
+                          background: getStatusBadgeStyle(contact.status).bg,
+                          color: getStatusBadgeStyle(contact.status).color,
+                          border: `1px solid ${getStatusBadgeStyle(contact.status).border}`
+                        }}
+                      >
+                        {statusOptions.find(s => s.value === contact.status)?.label || contact.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenEdit(contact);
+                        }}
+                        className="p-2 rounded-lg transition-all"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--accent)'
+                        }}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Add/Edit Contact Side Panel */}
