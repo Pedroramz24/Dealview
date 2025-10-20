@@ -191,6 +191,67 @@ const Contacts = () => {
     setFilteredContacts(filtered);
   };
 
+  // Build graph data from contacts and deals
+  const buildGraphData = useCallback(async () => {
+    const nodes = [];
+    const links = [];
+
+    // Add contact nodes
+    filteredContacts.forEach(contact => {
+      nodes.push({
+        id: `contact-${contact.id}`,
+        label: contact.name,
+        type: 'contact',
+        data: contact,
+        color: '#00b8d4', // Cyan
+        size: 8 + (contact.linked_deals_count || 0) * 2 // Larger if more deals
+      });
+    });
+
+    // Add deal nodes
+    deals.forEach(deal => {
+      nodes.push({
+        id: `deal-${deal.id}`,
+        label: deal.title || deal.address,
+        type: 'deal',
+        data: deal,
+        color: '#f59e0b', // Orange
+        size: 6
+      });
+    });
+
+    // Fetch all contact-deal links
+    try {
+      const { data: allLinks, error } = await supabase
+        .from('contact_deal_links')
+        .select('contact_id, deal_id');
+
+      if (!error && allLinks) {
+        allLinks.forEach(link => {
+          // Only add links for visible contacts
+          const contactInView = filteredContacts.find(c => c.id === link.contact_id);
+          if (contactInView) {
+            links.push({
+              source: `contact-${link.contact_id}`,
+              target: `deal-${link.deal_id}`,
+              color: 'rgba(59, 130, 246, 0.4)'
+            });
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching links for graph:', error);
+    }
+
+    setGraphData({ nodes, links });
+  }, [filteredContacts, deals]);
+
+  useEffect(() => {
+    if (viewMode === 'graph') {
+      buildGraphData();
+    }
+  }, [viewMode, filteredContacts, deals, buildGraphData]);
+
   const handleOpenAdd = () => {
     setContactForm({
       name: '',
