@@ -176,8 +176,8 @@ const DealDetails = () => {
 
   const calculatePricePerAcre = () => {
     const acres = deal?.lot_acres || deal?.lot_size;
-    if (!acres || !deal?.asking_price) return 'N/A';
-    return formatPrice(deal.asking_price / acres);
+    if (!acres || !deal?.price) return 'N/A';
+    return formatPrice(deal.price / acres);
   };
 
   if (loading) {
