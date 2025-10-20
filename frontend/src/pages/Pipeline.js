@@ -499,10 +499,8 @@ const Pipeline = () => {
                                     border: snapshot.isDragging 
                                       ? '1px solid var(--accent)' 
                                       : '1px solid rgba(100, 116, 139, 0.3)',
-                                    WebkitBackdropFilter: 'blur(20px)',
-                                    cursor: snapshot.isDragging ? 'grabbing' : 'grab'
+                                    WebkitBackdropFilter: 'blur(20px)'
                                   }}
-                                  onClick={() => !snapshot.isDragging && navigate(`/deals/${deal.id}`)}
                                 >
                                   {/* Card Content */}
                                   <div className="p-4">
