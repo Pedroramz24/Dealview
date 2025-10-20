@@ -60,8 +60,9 @@ const Contacts = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterContactType, setFilterContactType] = useState('all');
-  const [filterMarket, setFilterMarket] = useState('all');
+  const [filterAssetType, setFilterAssetType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [viewMode, setViewMode] = useState('card'); // 'card' or 'table'
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showDetailsPanel, setShowDetailsPanel] = useState(false);
   const [editingContact, setEditingContact] = useState(null);
