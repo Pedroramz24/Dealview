@@ -678,7 +678,7 @@ const DealDetails = () => {
             </div>
             <div className="flex items-start">
               <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }} />
-              <p style={{ color: 'rgba(255,255,255,0.6)' }}>{deal.property_address}</p>
+              <p style={{ color: 'rgba(255,255,255,0.6)' }}>{deal.address}</p>
             </div>
           </div>
         </div>
