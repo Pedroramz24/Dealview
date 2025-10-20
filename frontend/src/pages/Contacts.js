@@ -397,14 +397,50 @@ const Contacts = () => {
               {filteredContacts.length} contacts found
             </p>
           </div>
-          <Button
-            onClick={handleOpenAdd}
-            className="bg-blue-600 hover:bg-blue-700"
-            data-testid="create-contact-button"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Contact
-          </Button>
+          <div className="flex items-center gap-3">
+            {/* View Toggle */}
+            <div 
+              className="flex gap-1 p-1 rounded-lg"
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)'
+              }}
+            >
+              <button
+                onClick={() => setViewMode('card')}
+                className="p-2 rounded transition-all"
+                style={{
+                  background: viewMode === 'card' ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                  border: viewMode === 'card' ? '1px solid var(--accent)' : '1px solid transparent',
+                  color: viewMode === 'card' ? 'var(--accent)' : 'var(--text-secondary)'
+                }}
+                title="Card View"
+              >
+                <Grid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('table')}
+                className="p-2 rounded transition-all"
+                style={{
+                  background: viewMode === 'table' ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                  border: viewMode === 'table' ? '1px solid var(--accent)' : '1px solid transparent',
+                  color: viewMode === 'table' ? 'var(--accent)' : 'var(--text-secondary)'
+                }}
+                title="Table View"
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+
+            <Button
+              onClick={handleOpenAdd}
+              className="bg-blue-600 hover:bg-blue-700"
+              data-testid="create-contact-button"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Contact
+            </Button>
+          </div>
         </div>
       </div>
 
