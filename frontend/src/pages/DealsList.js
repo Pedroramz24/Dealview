@@ -404,11 +404,34 @@ const DealsList = () => {
 
       if (error) throw error;
 
+      // Update contact links if any selected
+      if (selectedContacts.length > 0) {
+        // First, remove existing links
+        await supabase
+          .from('contact_deal_links')
+          .delete()
+          .eq('deal_id', editingDeal.id);
+
+        // Then add new links
+        const links = selectedContacts.map(contactId => ({
+          contact_id: contactId,
+          deal_id: editingDeal.id,
+          relationship_type: 'contact'
+        }));
+
+        const { error: linkError } = await supabase
+          .from('contact_deal_links')
+          .insert(links);
+
+        if (linkError) console.error('Error linking contacts:', linkError);
+      }
+
       // Log audit entry (simplified - could be a separate audit table)
       console.log(`Deal ${editingDeal.id} edited by ${user.email} on ${new Date().toISOString()}`);
       console.log('Changed fields:', changes);
 
       toast.success('Deal updated successfully');
+      setSelectedContacts([]); // Clear selections
       fetchDeals(); // Refresh to ensure sync
       
     } catch (error) {
