@@ -170,7 +170,7 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/src/pages/DealDetails.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
@@ -180,6 +180,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL ISSUES FOUND: (1) Deal Details page loads but displays $NaN for asking price - field name mismatch between DealsList.js (stores as 'price') and DealDetails.js (reads as 'asking_price'). (2) File uploads (image and document) show no success/error toasts - uploads appear to fail silently. No network errors detected, but no confirmation of successful upload either. Storage buckets may be working but upload logic needs verification. (3) Deal data not displaying correctly due to field name inconsistencies."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL FIELD NAME MISMATCH CONFIRMED: DealDetails.js line 256 displays 'deal.property_address' but DealsList.js stores the field as 'address' (line 213). This causes the address to not display on Deal Details page. Additionally, asking price element with data-testid='deal-asking-price' could not be found during testing, suggesting the page may not be rendering correctly. File upload inputs (image and document) also could not be located on the page - test timed out trying to find 'input[type=\"file\"][accept*=\"image\"]'. REQUIRED FIX: (1) Change line 256 in DealDetails.js from 'deal.property_address' to 'deal.address', (2) Verify all other field references in DealDetails match the actual database schema, (3) Investigate why file upload inputs are not rendering or accessible."
 
   - task: "PublicShare Supabase Migration"
     implemented: true
