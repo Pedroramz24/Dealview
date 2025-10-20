@@ -383,7 +383,10 @@ const DealsList = () => {
     // Get changed fields for audit
     const changes = getChangedFields(originalDeal, editingDeal);
     
-    if (changes.length === 0) {
+    // Check if contacts have changed (this is a change even if deal fields haven't)
+    const hasContactChanges = selectedContacts.length > 0;
+    
+    if (changes.length === 0 && !hasContactChanges) {
       toast.info('No changes to save');
       setShowEditPanel(false);
       return;
@@ -397,37 +400,40 @@ const DealsList = () => {
     setShowEditPanel(false);
 
     try {
-      // Prepare update data
-      const updateData = {
-        title: editingDeal.title,
-        address: editingDeal.address,
-        asset_type: editingDeal.asset_type,
-        stage: editingDeal.stage,
-        price: editingDeal.price ? parseFloat(editingDeal.price) : null,
-        size: editingDeal.size ? parseFloat(editingDeal.size) : null,
-        status: editingDeal.status,
-        notes: editingDeal.notes,
-        cap_rate: editingDeal.cap_rate ? parseFloat(editingDeal.cap_rate) : null,
-        noi: editingDeal.noi ? parseFloat(editingDeal.noi) : null,
-        updated_at: new Date().toISOString()
-      };
+      // Only update deal if fields changed
+      if (changes.length > 0) {
+        // Prepare update data
+        const updateData = {
+          title: editingDeal.title,
+          address: editingDeal.address,
+          asset_type: editingDeal.asset_type,
+          stage: editingDeal.stage,
+          price: editingDeal.price ? parseFloat(editingDeal.price) : null,
+          size: editingDeal.size ? parseFloat(editingDeal.size) : null,
+          status: editingDeal.status,
+          notes: editingDeal.notes,
+          cap_rate: editingDeal.cap_rate ? parseFloat(editingDeal.cap_rate) : null,
+          noi: editingDeal.noi ? parseFloat(editingDeal.noi) : null,
+          updated_at: new Date().toISOString()
+        };
 
-      const { error } = await supabase
-        .from('deals')
-        .update(updateData)
-        .eq('id', editingDeal.id);
+        const { error } = await supabase
+          .from('deals')
+          .update(updateData)
+          .eq('id', editingDeal.id);
 
-      if (error) throw error;
+        if (error) throw error;
+      }
 
-      // Update contact links if any selected
+      // Always update contact links (even if deal fields didn't change)
+      // First, remove existing links
+      await supabase
+        .from('contact_deal_links')
+        .delete()
+        .eq('deal_id', editingDeal.id);
+
+      // Then add new links if any selected
       if (selectedContacts.length > 0) {
-        // First, remove existing links
-        await supabase
-          .from('contact_deal_links')
-          .delete()
-          .eq('deal_id', editingDeal.id);
-
-        // Then add new links
         const links = selectedContacts.map(contactId => ({
           contact_id: contactId,
           deal_id: editingDeal.id,
@@ -438,7 +444,7 @@ const DealsList = () => {
           .from('contact_deal_links')
           .insert(links);
 
-        if (linkError) console.error('Error linking contacts:', linkError);
+        if (linkError) throw linkError;
       }
 
       // Log audit entry (simplified - could be a separate audit table)
