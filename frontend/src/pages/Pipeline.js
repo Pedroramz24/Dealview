@@ -506,7 +506,15 @@ const Pipeline = () => {
                                   }}
                                 >
                                   {/* Card Content */}
-                                  <div className="p-4">
+                                  <div 
+                                    className="p-4"
+                                    onClick={(e) => {
+                                      if (!snapshot.isDragging) {
+                                        navigate(`/deals/${deal.id}`);
+                                      }
+                                    }}
+                                    style={{ cursor: snapshot.isDragging ? 'grabbing' : 'pointer' }}
+                                  >
                                     {/* Title & Address */}
                                     <div className="mb-3">
                                       <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
