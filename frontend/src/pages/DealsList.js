@@ -14,6 +14,8 @@ import { getAssetTypeColor } from '../utils/assetTypeColors';
 const DealsList = () => {
   const [deals, setDeals] = useState([]);
   const [filteredDeals, setFilteredDeals] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [dealContactLinks, setDealContactLinks] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStage, setFilterStage] = useState('all');
@@ -24,6 +26,8 @@ const DealsList = () => {
   const [originalDeal, setOriginalDeal] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
+  const [selectedContacts, setSelectedContacts] = useState([]);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
