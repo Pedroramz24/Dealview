@@ -601,10 +601,9 @@ const Contacts = () => {
         </div>
       </div>
 
-      {/* Contacts Display - Card or Table View */}
+      {/* Contacts Display - Card, Table, or Graph View */}
       <div className="px-8 pb-8 flex-1 overflow-y-auto">
         {viewMode === 'card' ? (
-          /* Card View */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredContacts.map((contact) => (
               <div 
