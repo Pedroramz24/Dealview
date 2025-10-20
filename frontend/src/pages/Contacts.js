@@ -170,10 +170,10 @@ const Contacts = () => {
       );
     }
 
-    // Market filter
-    if (filterMarket !== 'all') {
+    // Asset type filter
+    if (filterAssetType !== 'all') {
       filtered = filtered.filter(contact => 
-        contact.markets && contact.markets.includes(filterMarket)
+        contact.asset_type_focus && contact.asset_type_focus.includes(filterAssetType)
       );
     }
 
