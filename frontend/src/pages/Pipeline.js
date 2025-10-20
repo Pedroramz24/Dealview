@@ -214,12 +214,78 @@ const Pipeline = () => {
   };
 
   const formatPrice = (price) => {
+    if (!price) return '$0';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(price);
   };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'Never';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const getFilteredDeals = () => {
+    return deals.filter(deal => {
+      // Search filter
+      if (searchTerm && !deal.address?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !deal.title?.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+      
+      // Asset type filter
+      if (filterAssetType !== 'all' && deal.asset_type !== filterAssetType) {
+        return false;
+      }
+      
+      return true;
+    });
+  };
+
+  const getDealsByStage = (stageId) => {
+    const filtered = getFilteredDeals();
+    let stageDeals = filtered.filter(deal => deal.stage === stageId);
+    
+    // Sort deals
+    if (sortBy === 'price') {
+      stageDeals.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortBy === 'last_contact') {
+      stageDeals.sort((a, b) => new Date(b.last_contact || 0) - new Date(a.last_contact || 0));
+    }
+    
+    return stageDeals;
+  };
+
+  const calculateMetrics = () => {
+    const filtered = getFilteredDeals();
+    const totalValue = filtered.reduce((sum, deal) => sum + (deal.price || 0), 0);
+    const weightedValue = filtered.reduce((sum, deal) => {
+      const weight = stageWeights[deal.stage] || 0;
+      return sum + (deal.price || 0) * weight;
+    }, 0);
+    
+    const stageCounts = {};
+    stages.forEach(stage => {
+      stageCounts[stage.id] = filtered.filter(d => d.stage === stage.id).length;
+    });
+    
+    return { totalValue, weightedValue, stageCounts, totalDeals: filtered.length };
+  };
+
+  const metrics = calculateMetrics();
+  const assetTypes = [...new Set(deals.map(d => d.asset_type).filter(Boolean))];
 
   if (loading) {
     return (
