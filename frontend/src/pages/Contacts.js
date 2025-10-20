@@ -890,7 +890,182 @@ const Contacts = () => {
                   </div>
                 </div>
 
-                {/* Property Links Section */}\n                <div \n                  className=\"p-5 rounded-xl\"\n                  style={{\n                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',\n                    border: '1px solid rgba(100, 116, 139, 0.3)',\n                    backdropFilter: 'blur(10px)'\n                  }}\n                >\n                  <h3 className=\"text-xs font-bold uppercase mb-4\" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>\n                    Property Links\n                  </h3>\n                  <div>\n                    <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                      Link to Existing Deals\n                    </Label>\n                    <div \n                      className=\"max-h-[200px] overflow-y-auto space-y-2 p-3 rounded-lg\" \n                      style={{ \n                        background: 'rgba(0, 0, 0, 0.5)', \n                        border: '1px solid rgba(100, 116, 139, 0.3)' \n                      }}\n                    >\n                      {deals.length === 0 ? (\n                        <p className=\"text-sm text-center py-4\" style={{ color: 'var(--text-muted)' }}>No deals available to link</p>\n                      ) : (\n                        deals.map(deal => (\n                          <label\n                            key={deal.id}\n                            className=\"flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all\"\n                            style={{ \n                              background: contactForm.linked_deals.includes(deal.id) \n                                ? 'rgba(59, 130, 246, 0.15)' \n                                : 'rgba(0, 0, 0, 0.3)',\n                              border: contactForm.linked_deals.includes(deal.id)\n                                ? '1px solid var(--accent)'\n                                : '1px solid rgba(100, 116, 139, 0.2)'\n                            }}\n                          >\n                            <input\n                              type=\"checkbox\"\n                              checked={contactForm.linked_deals.includes(deal.id)}\n                              onChange={(e) => {\n                                if (e.target.checked) {\n                                  setContactForm({ ...contactForm, linked_deals: [...contactForm.linked_deals, deal.id] });\n                                } else {\n                                  setContactForm({ ...contactForm, linked_deals: contactForm.linked_deals.filter(id => id !== deal.id) });\n                                }\n                              }}\n                              className=\"w-4 h-4\"\n                              style={{ accentColor: 'var(--accent)' }}\n                            />\n                            <div className=\"flex-1\">\n                              <p className=\"text-sm font-medium\" style={{ color: 'var(--text-primary)' }}>\n                                {deal.title || deal.address}\n                              </p>\n                              <p className=\"text-xs\" style={{ color: 'var(--text-secondary)' }}>\n                                {deal.asset_type} • {formatPrice(deal.price)}\n                              </p>\n                            </div>\n                          </label>\n                        ))\n                      )}\n                    </div>\n                  </div>\n                </div>\n\n                {/* Status & Notes Section */}\n                <div \n                  className=\"p-5 rounded-xl\"\n                  style={{\n                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',\n                    border: '1px solid rgba(100, 116, 139, 0.3)',\n                    backdropFilter: 'blur(10px)'\n                  }}\n                >\n                  <h3 className=\"text-xs font-bold uppercase mb-4\" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>\n                    Status & Notes\n                  </h3>\n                  <div className=\"space-y-4\">\n                    <div>\n                      <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                        Status\n                      </Label>\n                      <select\n                        value={contactForm.status}\n                        onChange={(e) => setContactForm({ ...contactForm, status: e.target.value })}\n                        className=\"w-full px-3 py-2 rounded-lg\"\n                        style={{\n                          background: 'rgba(0, 0, 0, 0.4)',\n                          border: '1px solid rgba(100, 116, 139, 0.4)',\n                          color: 'var(--text-primary)',\n                          padding: '10px 12px'\n                        }}\n                      >\n                        {statusOptions.map(status => (\n                          <option key={status.value} value={status.value}>{status.label}</option>\n                        ))}\n                      </select>\n                    </div>\n\n                    <div className=\"grid grid-cols-2 gap-4\">\n                      <div>\n                        <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                          Last Follow-up\n                        </Label>\n                        <Input\n                          type=\"date\"\n                          value={contactForm.last_followup_date}\n                          onChange={(e) => setContactForm({ ...contactForm, last_followup_date: e.target.value })}\n                          style={{\n                            background: 'rgba(0, 0, 0, 0.4)',\n                            border: '1px solid rgba(100, 116, 139, 0.4)',\n                            color: 'var(--text-primary)',\n                            padding: '10px 12px'\n                          }}\n                        />\n                      </div>\n                      <div>\n                        <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                          Next Action\n                        </Label>\n                        <Input\n                          type=\"date\"\n                          value={contactForm.next_action_date}\n                          onChange={(e) => setContactForm({ ...contactForm, next_action_date: e.target.value })}\n                          style={{\n                            background: 'rgba(0, 0, 0, 0.4)',\n                            border: '1px solid rgba(100, 116, 139, 0.4)',\n                            color: 'var(--text-primary)',\n                            padding: '10px 12px'\n                          }}\n                        />\n                      </div>\n                    </div>\n\n                    <div>\n                      <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                        Lead Source\n                      </Label>\n                      <Input\n                        value={contactForm.lead_source}\n                        onChange={(e) => setContactForm({ ...contactForm, lead_source: e.target.value })}\n                        placeholder=\"Referral, Website, Event\"\n                        style={{\n                          background: 'rgba(0, 0, 0, 0.4)',\n                          border: '1px solid rgba(100, 116, 139, 0.4)',\n                          color: 'var(--text-primary)',\n                          padding: '10px 12px'\n                        }}\n                      />\n                    </div>\n\n                    <div>\n                      <Label className=\"text-sm font-medium mb-2 block\" style={{ color: 'var(--text-primary)' }}>\n                        Notes\n                      </Label>\n                      <textarea\n                        value={contactForm.notes}\n                        onChange={(e) => setContactForm({ ...contactForm, notes: e.target.value })}\n                        placeholder=\"Add notes about this contact...\"\n                        rows={5}\n                        className=\"w-full px-3 py-2 rounded-lg\"\n                        style={{\n                          background: 'rgba(0, 0, 0, 0.4)',\n                          border: '1px solid rgba(100, 116, 139, 0.4)',\n                          color: 'var(--text-primary)',\n                          padding: '10px 12px',\n                          resize: 'vertical'\n                        }}\n                      />\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </div>
+                {/* Property Links Section */}
+                <div 
+                  className="p-5 rounded-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',
+                    border: '1px solid rgba(100, 116, 139, 0.3)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 className="text-xs font-bold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>
+                    Property Links
+                  </h3>
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                      Link to Existing Deals
+                    </Label>
+                    <div 
+                      className="max-h-[200px] overflow-y-auto space-y-2 p-3 rounded-lg" 
+                      style={{ 
+                        background: 'rgba(0, 0, 0, 0.5)', 
+                        border: '1px solid rgba(100, 116, 139, 0.3)' 
+                      }}
+                    >
+                      {deals.length === 0 ? (
+                        <p className="text-sm text-center py-4" style={{ color: 'var(--text-muted)' }}>No deals available to link</p>
+                      ) : (
+                        deals.map(deal => (
+                          <label
+                            key={deal.id}
+                            className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all"
+                            style={{ 
+                              background: contactForm.linked_deals.includes(deal.id) 
+                                ? 'rgba(59, 130, 246, 0.15)' 
+                                : 'rgba(0, 0, 0, 0.3)',
+                              border: contactForm.linked_deals.includes(deal.id)
+                                ? '1px solid var(--accent)'
+                                : '1px solid rgba(100, 116, 139, 0.2)'
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={contactForm.linked_deals.includes(deal.id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setContactForm({ ...contactForm, linked_deals: [...contactForm.linked_deals, deal.id] });
+                                } else {
+                                  setContactForm({ ...contactForm, linked_deals: contactForm.linked_deals.filter(id => id !== deal.id) });
+                                }
+                              }}
+                              className="w-4 h-4"
+                              style={{ accentColor: 'var(--accent)' }}
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                                {deal.title || deal.address}
+                              </p>
+                              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                {deal.asset_type} • {formatPrice(deal.price)}
+                              </p>
+                            </div>
+                          </label>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Status & Notes Section */}
+                <div 
+                  className="p-5 rounded-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.6) 100%)',
+                    border: '1px solid rgba(100, 116, 139, 0.3)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 className="text-xs font-bold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '1px' }}>
+                    Status & Notes
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Status
+                      </Label>
+                      <select
+                        value={contactForm.status}
+                        onChange={(e) => setContactForm({ ...contactForm, status: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg"
+                        style={{
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
+                          color: 'var(--text-primary)',
+                          padding: '10px 12px'
+                        }}
+                      >
+                        {statusOptions.map(status => (
+                          <option key={status.value} value={status.value}>{status.label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Last Follow-up
+                        </Label>
+                        <Input
+                          type="date"
+                          value={contactForm.last_followup_date}
+                          onChange={(e) => setContactForm({ ...contactForm, last_followup_date: e.target.value })}
+                          style={{
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid rgba(100, 116, 139, 0.4)',
+                            color: 'var(--text-primary)',
+                            padding: '10px 12px'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Next Action
+                        </Label>
+                        <Input
+                          type="date"
+                          value={contactForm.next_action_date}
+                          onChange={(e) => setContactForm({ ...contactForm, next_action_date: e.target.value })}
+                          style={{
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid rgba(100, 116, 139, 0.4)',
+                            color: 'var(--text-primary)',
+                            padding: '10px 12px'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Lead Source
+                      </Label>
+                      <Input
+                        value={contactForm.lead_source}
+                        onChange={(e) => setContactForm({ ...contactForm, lead_source: e.target.value })}
+                        placeholder="Referral, Website, Event"
+                        style={{
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
+                          color: 'var(--text-primary)',
+                          padding: '10px 12px'
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Notes
+                      </Label>
+                      <textarea
+                        value={contactForm.notes}
+                        onChange={(e) => setContactForm({ ...contactForm, notes: e.target.value })}
+                        placeholder="Add notes about this contact..."
+                        rows={5}
+                        className="w-full px-3 py-2 rounded-lg"
+                        style={{
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
+                          color: 'var(--text-primary)',
+                          padding: '10px 12px',
+                          resize: 'vertical'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Sticky Footer */}
             <div 
