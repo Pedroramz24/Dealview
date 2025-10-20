@@ -598,9 +598,6 @@ const Pipeline = () => {
                                       <Eye className="w-3.5 h-3.5" />
                                       View Details
                                     </button>
-                                        </div>
-                                      </div>
-                                    )}
                                   </div>
                                 </div>
                               </div>
