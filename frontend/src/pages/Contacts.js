@@ -63,12 +63,17 @@ const Contacts = () => {
   const [filterContactType, setFilterContactType] = useState('all');
   const [filterAssetType, setFilterAssetType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [viewMode, setViewMode] = useState('card'); // 'card' or 'table'
+  const [viewMode, setViewMode] = useState('card'); // 'card', 'table', or 'graph'
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showDetailsPanel, setShowDetailsPanel] = useState(false);
   const [editingContact, setEditingContact] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
   const [contactLinks, setContactLinks] = useState({});
+  const [graphData, setGraphData] = useState({ nodes: [], links: [] });
+  const [hoveredNode, setHoveredNode] = useState(null);
+  const [focusMode, setFocusMode] = useState(false);
+  const [focusedNodeId, setFocusedNodeId] = useState(null);
+  const graphRef = useRef();
   const { user } = useContext(AuthContext);
 
   const [contactForm, setContactForm] = useState({
