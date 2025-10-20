@@ -497,6 +497,18 @@ const Contacts = () => {
               >
                 <List className="w-4 h-4" />
               </button>
+              <button
+                onClick={() => setViewMode('graph')}
+                className="p-2 rounded transition-all"
+                style={{
+                  background: viewMode === 'graph' ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                  border: viewMode === 'graph' ? '1px solid var(--accent)' : '1px solid transparent',
+                  color: viewMode === 'graph' ? 'var(--accent)' : 'var(--text-secondary)'
+                }}
+                title="Graph View"
+              >
+                <Network className="w-4 h-4" />
+              </button>
             </div>
 
             <Button
