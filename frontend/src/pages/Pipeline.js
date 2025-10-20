@@ -296,10 +296,123 @@ const Pipeline = () => {
   }
 
   return (
-    <div className="p-8 h-full" data-testid="pipeline-page">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Pipeline</h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Drag and drop deals between stages</p>
+    <div className="flex flex-col h-screen" style={{ background: 'var(--bg-base)' }} data-testid="pipeline-page">
+      {/* Header */}
+      <div className="px-8 pt-8 pb-4">
+        <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+          Pipeline
+        </h1>
+        <p style={{ color: 'var(--text-secondary)' }}>Visual deal flow with drag & drop</p>
+      </div>
+
+      {/* Metrics Bar */}
+      <div className="px-8 pb-4">
+        <div className="glass-surface p-4 flex flex-wrap gap-6">
+          <div>
+            <p className="text-xs uppercase" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px', marginBottom: '4px' }}>
+              Total Pipeline
+            </p>
+            <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+              {formatPrice(metrics.totalValue)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs uppercase" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px', marginBottom: '4px' }}>
+              Weighted Pipeline
+            </p>
+            <p className="text-2xl font-bold" style={{ color: 'var(--accent)' }}>
+              {formatPrice(metrics.weightedValue)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs uppercase" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px', marginBottom: '4px' }}>
+              Total Deals
+            </p>
+            <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+              {metrics.totalDeals}
+            </p>
+          </div>
+          {stages.slice(0, 4).map(stage => (
+            <div key={stage.id}>
+              <p className="text-xs uppercase" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px', marginBottom: '4px' }}>
+                {stage.label}
+              </p>
+              <p className="text-xl font-semibold" style={{ color: stage.color }}>
+                {metrics.stageCounts[stage.id] || 0}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Filters & Search */}
+      <div className="px-8 pb-4">
+        <div className="glass-surface p-4">
+          <div className="flex flex-wrap gap-3">
+            {/* Search */}
+            <div className="relative flex-1 min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+              <Input
+                placeholder="Search by address or title..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+                style={{ 
+                  background: 'var(--glass-bg)', 
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)'
+                }}
+              />
+            </div>
+
+            {/* Asset Type Filter */}
+            <select
+              value={filterAssetType}
+              onChange={(e) => setFilterAssetType(e.target.value)}
+              className="px-4 py-2 rounded-lg"
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="all">All Asset Types</option>
+              {assetTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+
+            {/* Sort */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2 rounded-lg flex items-center gap-2"
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="last_contact">Sort: Last Contact</option>
+              <option value="price">Sort: Price</option>
+            </select>
+
+            <Button
+              onClick={() => setShowFilters(!showFilters)}
+              variant="outline"
+              className="px-4"
+              style={{
+                background: showFilters ? 'var(--accent)' : 'var(--glass-bg)',
+                border: `1px solid ${showFilters ? 'var(--accent)' : 'var(--glass-border)'}`,
+                color: showFilters ? '#ffffff' : 'var(--text-primary)'
+              }}
+            >
+              <Filter className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
