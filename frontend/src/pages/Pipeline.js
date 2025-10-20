@@ -465,9 +465,9 @@ const Pipeline = () => {
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className="flex flex-col gap-3 p-2 rounded-xl transition-all duration-200"
+                        className="flex flex-col p-2 rounded-xl transition-all duration-200"
                         style={{
-                          background: snapshot.isDraggingOver ? 'rgba(0, 184, 212, 0.05)' : 'transparent',
+                          background: snapshot.isDraggingOver ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
                           border: snapshot.isDraggingOver ? '2px dashed var(--accent)' : '2px dashed transparent',
                           minHeight: '500px',
                           maxHeight: 'calc(100vh - 420px)',
