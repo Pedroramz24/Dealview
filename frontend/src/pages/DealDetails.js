@@ -125,24 +125,33 @@ const DealDetails = () => {
       return;
     }
 
+    console.log('Starting document upload:', { fileName: file.name, fileSize: file.size, fileType: file.type });
     setUploading(true);
 
     try {
       // Generate unique file name
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${dealId}/${Date.now()}_${file.name}`;
+      console.log('Upload path:', fileName);
 
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('deal-documents')
         .upload(fileName, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
+
+      console.log('Upload successful:', uploadData);
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('deal-documents')
         .getPublicUrl(fileName);
+
+      console.log('Public URL:', publicUrl);
 
       // Create document record
       const { error: insertError } = await supabase
@@ -156,8 +165,12 @@ const DealDetails = () => {
           file_size: file.size
         }]);
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error('Insert error:', insertError);
+        throw insertError;
+      }
 
+      console.log('Document record created successfully');
       toast.success('Document uploaded successfully');
       fetchDeal();
     } catch (error) {
