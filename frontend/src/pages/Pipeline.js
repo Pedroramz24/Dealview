@@ -579,28 +579,6 @@ const Pipeline = () => {
                                       </div>
                                     )}
                                   </div>
-
-                                  {/* Hover Quick Actions */}
-                                  <div 
-                                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1"
-                                    style={{ pointerEvents: snapshot.isDragging ? 'none' : 'auto' }}
-                                  >
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toast.info('Log note feature coming soon');
-                                      }}
-                                      className="p-2 rounded-lg"
-                                      style={{
-                                        background: 'rgba(0, 0, 0, 0.8)',
-                                        backdropFilter: 'blur(10px)',
-                                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                                      }}
-                                      title="Log Note"
-                                    >
-                                      <Edit className="w-3 h-3" style={{ color: 'var(--accent)' }} />
-                                    </button>
-                                  </div>
                                 </div>
                               </div>
                             )}
