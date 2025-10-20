@@ -1003,6 +1003,16 @@ const DealsList = () => {
                     {deal.stage}
                   </span>
                 </td>
+                <td>
+                  {deal.linked_contacts_count > 0 ? (
+                    <div className="flex items-center gap-1" style={{ color: 'var(--accent)' }}>
+                      <User className="w-3 h-3" />
+                      <span className="text-sm font-medium">{deal.linked_contacts_count}</span>
+                    </div>
+                  ) : (
+                    <span className="text-sm" style={{ color: 'var(--text-muted)' }}>0</span>
+                  )}
+                </td>
                 <td style={{ color: 'var(--text-secondary)' }}>
                   {formatDate(deal.last_contact)}
                 </td>
