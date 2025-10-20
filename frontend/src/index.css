@@ -183,6 +183,22 @@ input[type="file"]::file-selector-button:hover {
     animation: pulse 2s ease-out infinite;
 }
 
+/* Slide-in animation for side panel */
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+}
+
 /* Smooth marker transitions on hover */
 .map-marker:hover > div:nth-child(2) {
     transform: translate(-50%, -50%) scale(1.1);
