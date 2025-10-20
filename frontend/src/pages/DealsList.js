@@ -140,10 +140,23 @@ const DealsList = () => {
       }
       
       console.log('[DealsList] Fetched deals:', data?.length || 0);
-      setDeals(data || []);
+      
+      // Fetch contact links for each deal
+      const dealsWithContactCounts = await Promise.all((data || []).map(async (deal) => {
+        const { data: links, error: linksError } = await supabase
+          .from('contact_deal_links')
+          .select('contact_id')
+          .eq('deal_id', deal.id);
+        
+        return {
+          ...deal,
+          linked_contacts_count: links ? links.length : 0
+        };
+      }));
+      
+      setDeals(dealsWithContactCounts);
     } catch (error) {
       console.error('[DealsList] Error fetching deals:', error);
-      // Only show error if it's not just empty results
       if (error.code !== 'PGRST116') {
         toast.error('Failed to load deals: ' + error.message);
       }
@@ -151,6 +164,27 @@ const DealsList = () => {
       setLoading(false);
     }
   };
+
+  const fetchContacts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('contacts')
+        .select('id, name, email, company, title')
+        .order('name', { ascending: true });
+
+      if (error) throw error;
+      setContacts(data || []);
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchDeals();
+      fetchContacts();
+    }
+  }, [user]);
 
   const filterDeals = () => {
     let filtered = [...deals];
