@@ -783,7 +783,7 @@ const DealsList = () => {
             {filteredDeals.map((deal) => (
               <tr key={deal.id} data-testid={`deal-row-${deal.id}`}>
                 <td>
-                  <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{deal.property_address}</div>
+                  <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{deal.address}</div>
                 </td>
                 <td>
                   <span style={{ 
@@ -800,7 +800,7 @@ const DealsList = () => {
                   </span>
                 </td>
                 <td>
-                  <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatPrice(deal.asking_price)}</span>
+                  <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatPrice(deal.price)}</span>
                 </td>
                 <td>
                   <span className="badge" style={{ background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
