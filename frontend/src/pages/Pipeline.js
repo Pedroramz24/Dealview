@@ -559,27 +559,6 @@ const Pipeline = () => {
                                       </div>
                                     </div>
 
-                                    {/* Next Action Chip */}
-                                    {deal.next_action && (
-                                      <div 
-                                        className="flex items-center gap-2 px-3 py-2 rounded-lg"
-                                        style={{
-                                          background: 'rgba(59, 130, 246, 0.1)',
-                                          border: '1px solid rgba(59, 130, 246, 0.3)'
-                                        }}
-                                      >
-                                        {nextActionTypes.find(a => a.value === deal.next_action)?.icon && 
-                                          React.createElement(nextActionTypes.find(a => a.value === deal.next_action).icon, {
-                                            className: "w-3 h-3",
-                                            style: { color: '#3b82f6' }
-                                          })
-                                        }
-                                        <span className="text-xs font-medium" style={{ color: '#3b82f6' }}>
-                                          {nextActionTypes.find(a => a.value === deal.next_action)?.label || deal.next_action}
-                                        </span>
-                                      </div>
-                                    )}
-
                                     {/* Owner Avatar */}
                                     {deal.owner_email && (
                                       <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
