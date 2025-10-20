@@ -98,7 +98,7 @@ const Contacts = () => {
 
   useEffect(() => {
     filterContacts();
-  }, [contacts, searchTerm, filterContactType, filterMarket, filterStatus]);
+  }, [contacts, searchTerm, filterContactType, filterAssetType, filterStatus]);
 
   const fetchContacts = async () => {
     if (!user) {
