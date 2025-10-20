@@ -265,6 +265,158 @@ const DealsList = () => {
     });
   };
 
+  // Edit Deal Handlers
+  const handleEditClick = (deal) => {
+    setEditingDeal({ ...deal });
+    setOriginalDeal({ ...deal });
+    setShowEditPanel(true);
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditingDeal(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const validateDeal = (deal) => {
+    const errors = [];
+    
+    if (!deal.title && !deal.address) {
+      errors.push('Either title or address is required');
+    }
+    
+    if (deal.price && isNaN(parseFloat(deal.price))) {
+      errors.push('Price must be a valid number');
+    }
+    
+    if (deal.size && isNaN(parseFloat(deal.size))) {
+      errors.push('Building size must be a valid number');
+    }
+    
+    return errors;
+  };
+
+  const getChangedFields = (original, updated) => {
+    const changes = [];
+    const fields = Object.keys(updated);
+    
+    fields.forEach(field => {
+      if (original[field] !== updated[field]) {
+        changes.push({
+          field,
+          oldValue: original[field],
+          newValue: updated[field]
+        });
+      }
+    });
+    
+    return changes;
+  };
+
+  const handleSaveDeal = async () => {
+    if (!user) {
+      toast.error('You must be logged in to edit deals');
+      return;
+    }
+
+    // Validate
+    const errors = validateDeal(editingDeal);
+    if (errors.length > 0) {
+      errors.forEach(error => toast.error(error));
+      return;
+    }
+
+    // Get changed fields for audit
+    const changes = getChangedFields(originalDeal, editingDeal);
+    
+    if (changes.length === 0) {
+      toast.info('No changes to save');
+      setShowEditPanel(false);
+      return;
+    }
+
+    // Optimistic update
+    const updatedDeals = deals.map(d => 
+      d.id === editingDeal.id ? { ...editingDeal } : d
+    );
+    setDeals(updatedDeals);
+    setShowEditPanel(false);
+
+    try {
+      // Prepare update data
+      const updateData = {
+        title: editingDeal.title,
+        address: editingDeal.address,
+        asset_type: editingDeal.asset_type,
+        stage: editingDeal.stage,
+        price: editingDeal.price ? parseFloat(editingDeal.price) : null,
+        size: editingDeal.size ? parseFloat(editingDeal.size) : null,
+        status: editingDeal.status,
+        notes: editingDeal.notes,
+        cap_rate: editingDeal.cap_rate ? parseFloat(editingDeal.cap_rate) : null,
+        noi: editingDeal.noi ? parseFloat(editingDeal.noi) : null,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('deals')
+        .update(updateData)
+        .eq('id', editingDeal.id);
+
+      if (error) throw error;
+
+      // Log audit entry (simplified - could be a separate audit table)
+      console.log(`Deal ${editingDeal.id} edited by ${user.email} on ${new Date().toISOString()}`);
+      console.log('Changed fields:', changes);
+
+      toast.success('Deal updated successfully');
+      fetchDeals(); // Refresh to ensure sync
+      
+    } catch (error) {
+      console.error('Error updating deal:', error);
+      toast.error('Failed to update deal');
+      
+      // Revert optimistic update
+      setDeals(deals);
+    }
+  };
+
+  const handleDeleteDeal = async () => {
+    if (!user) {
+      toast.error('You must be logged in to delete deals');
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      const { error } = await supabase
+        .from('deals')
+        .delete()
+        .eq('id', editingDeal.id);
+
+      if (error) throw error;
+
+      toast.success('Deal deleted successfully');
+      setShowDeleteConfirm(false);
+      setShowEditPanel(false);
+      fetchDeals();
+      
+    } catch (error) {
+      console.error('Error deleting deal:', error);
+      toast.error('Failed to delete deal');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setShowEditPanel(false);
+    setEditingDeal(null);
+    setOriginalDeal(null);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
