@@ -415,78 +415,241 @@ const Pipeline = () => {
         </div>
       </div>
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 h-[calc(100vh-220px)]">
-          {stages.map((stage) => {
-            const stageDeals = deals.filter((deal) => deal.stage === stage);
-            const stageValue = stageDeals.reduce((sum, deal) => sum + (deal.asking_price || 0), 0);
+      {/* Kanban Board */}
+      <div className="px-8 pb-8 flex-1 overflow-hidden">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div 
+            ref={boardRef}
+            className="flex gap-4 h-full overflow-x-auto overflow-y-hidden pb-4"
+            style={{ scrollBehavior: 'smooth' }}
+          >
+            {stages.map((stage) => {
+              const stageDeals = getDealsByStage(stage.id);
+              const stageValue = stageDeals.reduce((sum, deal) => sum + (deal.price || 0), 0);
 
-            return (
-              <div key={stage} className="flex flex-col">
-                <div className="glass-surface p-4 mb-3">
-                  <h3 className="font-bold mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{stage}</h3>
-                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{stageDeals.length} deals</p>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--accent)' }}>{formatPrice(stageValue)}</p>
-                </div>
-
-                <Droppable droppableId={stage}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className={`stage-column flex-1 overflow-y-auto ${snapshot.isDraggingOver ? 'drag-over' : ''}`}
-                      data-testid={`stage-column-${stage}`}
-                    >
-                      {stageDeals.map((deal, index) => (
-                        <Draggable key={deal.id} draggableId={deal.id} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={`pipeline-card ${snapshot.isDragging ? 'shadow-2xl' : ''}`}
-                              onClick={() => navigate(`/deals/${deal.id}`)}
-                              data-testid={`deal-card-${deal.id}`}
-                            >
-                              {deal.primary_image_url && (
-                                <img
-                                  src={deal.primary_image_url}
-                                  alt={deal.property_address}
-                                  className="w-full h-24 object-cover rounded-lg mb-2"
-                                />
-                              )}
-                              <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
-                                {deal.property_address}
-                              </h4>
-                              <span style={{ 
-                                padding: '3px 10px',
-                                background: getAssetTypeColor(deal.asset_type).bg,
-                                color: getAssetTypeColor(deal.asset_type).color,
-                                borderRadius: '4px',
-                                fontSize: '11px',
-                                fontWeight: '500',
-                                border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
-                                display: 'inline-block',
-                                marginBottom: '8px'
-                              }}>
-                                {deal.asset_type}
-                              </span>
-                              <p className="text-sm font-bold" style={{ color: 'var(--accent)' }}>{formatPrice(deal.asking_price)}</p>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
+              return (
+                <div 
+                  key={stage.id} 
+                  className="flex-shrink-0"
+                  style={{ width: '320px' }}
+                >
+                  {/* Stage Header */}
+                  <div 
+                    className="glass-surface p-4 mb-3 rounded-xl"
+                    style={{
+                      borderTop: `3px solid ${stage.color}`
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                        {stage.label}
+                      </h3>
+                      <span 
+                        className="px-2 py-1 rounded-full text-xs font-semibold"
+                        style={{
+                          background: `${stage.color}20`,
+                          color: stage.color
+                        }}
+                      >
+                        {stageDeals.length}
+                      </span>
                     </div>
-                  )}
-                </Droppable>
-              </div>
-            );
-          })}
-        </div>
-      </DragDropContext>
-    </div>
-  );
-};
+                    <p className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>
+                      {formatPrice(stageValue)}
+                    </p>
+                  </div>
+
+                  {/* Droppable Column */}
+                  <Droppable droppableId={stage.id}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="flex flex-col gap-3 p-2 rounded-xl transition-all duration-200"
+                        style={{
+                          background: snapshot.isDraggingOver ? 'rgba(0, 184, 212, 0.05)' : 'transparent',
+                          border: snapshot.isDraggingOver ? '2px dashed var(--accent)' : '2px dashed transparent',
+                          minHeight: '500px',
+                          maxHeight: 'calc(100vh - 420px)',
+                          overflowY: 'auto',
+                          overflowX: 'hidden'
+                        }}
+                      >
+                        {stageDeals.map((deal, index) => (
+                          <Draggable key={deal.id} draggableId={deal.id} index={index}>
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="group relative"
+                                style={{
+                                  ...provided.draggableProps.style,
+                                  cursor: snapshot.isDragging ? 'grabbing' : 'grab'
+                                }}
+                              >
+                                {/* Deal Card */}
+                                <div
+                                  className="glass-surface rounded-xl overflow-hidden transition-all duration-200"
+                                  style={{
+                                    transform: snapshot.isDragging ? 'scale(1.02)' : 'scale(1)',
+                                    boxShadow: snapshot.isDragging 
+                                      ? '0 20px 50px rgba(0, 184, 212, 0.3), 0 0 0 2px var(--accent)' 
+                                      : '0 2px 8px rgba(0,0,0,0.1)',
+                                    background: snapshot.isDragging
+                                      ? 'linear-gradient(135deg, rgba(11, 12, 14, 0.95), rgba(26, 26, 26, 0.95))'
+                                      : 'var(--glass-bg)',
+                                    backdropFilter: snapshot.isDragging ? 'blur(20px)' : 'blur(16px)',
+                                    border: snapshot.isDragging ? '1px solid var(--accent)' : '1px solid var(--glass-border)'
+                                  }}
+                                  onClick={() => !snapshot.isDragging && navigate(`/deals/${deal.id}`)}
+                                >
+                                  {/* Card Content */}
+                                  <div className="p-4">
+                                    {/* Title & Address */}
+                                    <div className="mb-3">
+                                      <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
+                                        {deal.title || deal.address || 'Untitled Deal'}
+                                      </h4>
+                                      {deal.address && (
+                                        <p className="text-xs line-clamp-1" style={{ color: 'var(--text-secondary)' }}>
+                                          {deal.address}
+                                        </p>
+                                      )}
+                                    </div>
+
+                                    {/* Asset Type Badge */}
+                                    <div className="mb-3">
+                                      <span style={{ 
+                                        padding: '4px 10px',
+                                        background: getAssetTypeColor(deal.asset_type).bg,
+                                        color: getAssetTypeColor(deal.asset_type).color,
+                                        borderRadius: '6px',
+                                        fontSize: '11px',
+                                        fontWeight: '600',
+                                        border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
+                                        display: 'inline-block'
+                                      }}>
+                                        {deal.asset_type || 'N/A'}
+                                      </span>
+                                    </div>
+
+                                    {/* Price */}
+                                    <p className="text-lg font-bold mb-3" style={{ color: 'var(--accent)' }}>
+                                      {formatPrice(deal.price)}
+                                    </p>
+
+                                    {/* Meta Info */}
+                                    <div className="flex items-center justify-between text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+                                      <div className="flex items-center gap-1">
+                                        <Calendar className="w-3 h-3" />
+                                        <span>{formatDate(deal.last_contact)}</span>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        {deal.documents_count > 0 && (
+                                          <div className="flex items-center gap-1">
+                                            <FileText className="w-3 h-3" />
+                                            <span>{deal.documents_count}</span>
+                                          </div>
+                                        )}
+                                        {deal.tasks_count > 0 && (
+                                          <div className="flex items-center gap-1">
+                                            <CheckSquare className="w-3 h-3" />
+                                            <span>{deal.tasks_count}</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* Next Action Chip */}
+                                    {deal.next_action && (
+                                      <div 
+                                        className="flex items-center gap-2 px-3 py-2 rounded-lg"
+                                        style={{
+                                          background: 'rgba(59, 130, 246, 0.1)',
+                                          border: '1px solid rgba(59, 130, 246, 0.3)'
+                                        }}
+                                      >
+                                        {nextActionTypes.find(a => a.value === deal.next_action)?.icon && 
+                                          React.createElement(nextActionTypes.find(a => a.value === deal.next_action).icon, {
+                                            className: "w-3 h-3",
+                                            style: { color: '#3b82f6' }
+                                          })
+                                        }
+                                        <span className="text-xs font-medium" style={{ color: '#3b82f6' }}>
+                                          {nextActionTypes.find(a => a.value === deal.next_action)?.label || deal.next_action}
+                                        </span>
+                                      </div>
+                                    )}
+
+                                    {/* Owner Avatar */}
+                                    {deal.owner_email && (
+                                      <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                                        <div className="flex items-center gap-2">
+                                          <div 
+                                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                                            style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}
+                                          >
+                                            {deal.owner_email.charAt(0).toUpperCase()}
+                                          </div>
+                                          <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                            {deal.owner_email.split('@')[0]}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Hover Quick Actions */}
+                                  <div 
+                                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1"
+                                    style={{ pointerEvents: snapshot.isDragging ? 'none' : 'auto' }}
+                                  >
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toast.info('Log note feature coming soon');
+                                      }}
+                                      className="p-2 rounded-lg"
+                                      style={{
+                                        background: 'rgba(0, 0, 0, 0.8)',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                                      }}
+                                      title="Log Note"
+                                    >
+                                      <Edit className="w-3 h-3" style={{ color: 'var(--accent)' }} />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                        
+                        {/* Empty State */}
+                        {stageDeals.length === 0 && !snapshot.isDraggingOver && (
+                          <div 
+                            className="flex items-center justify-center py-8 text-center rounded-xl"
+                            style={{ 
+                              border: '2px dashed var(--border-subtle)',
+                              background: 'var(--glass-bg)'
+                            }}
+                          >
+                            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                              No deals in this stage
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Droppable>
+                </div>
+              );
+            })}
+          </div>
+        </DragDropContext>
+      </div>
 
 export default Pipeline;
