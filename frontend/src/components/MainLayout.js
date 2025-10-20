@@ -16,10 +16,10 @@ const MainLayout = () => {
 
   const navItems = [
     { path: '/', label: 'Map', icon: Map, exact: true },
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/deals', label: 'Deals', icon: FileText },
-    { path: '/contacts', label: 'Contacts', icon: Users },
     { path: '/pipeline', label: 'Pipeline', icon: Trello },
+    { path: '/contacts', label: 'Contacts', icon: Users },
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/team', label: 'Team', icon: UsersRound },
   ];
 
