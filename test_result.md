@@ -168,15 +168,18 @@ frontend:
 
   - task: "DealDetails Supabase Migration"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/pages/DealDetails.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Migrated DealDetails to Supabase. Replaced axios with Supabase client. Implemented file uploads to Supabase Storage: images upload to 'property-images' bucket and update deal.image_url, documents upload to 'deal-documents' bucket and create document records in documents table. Both uploads use user.id/dealId path structure. Needs testing including file upload functionality."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUES FOUND: (1) Deal Details page loads but displays $NaN for asking price - field name mismatch between DealsList.js (stores as 'price') and DealDetails.js (reads as 'asking_price'). (2) File uploads (image and document) show no success/error toasts - uploads appear to fail silently. No network errors detected, but no confirmation of successful upload either. Storage buckets may be working but upload logic needs verification. (3) Deal data not displaying correctly due to field name inconsistencies."
 
   - task: "PublicShare Supabase Migration"
     implemented: true
