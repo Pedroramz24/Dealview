@@ -999,6 +999,370 @@ const DealsList = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Edit Deal Side Panel */}
+      {showEditPanel && editingDeal && (
+        <div 
+          className="fixed inset-0 z-50 flex justify-end"
+          style={{ background: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)' }}
+          onClick={handleCancelEdit}
+        >
+          <div
+            className="w-full md:w-[600px] h-full glass-surface overflow-hidden flex flex-col animate-slide-in"
+            style={{
+              borderLeft: '1px solid var(--glass-border)',
+              boxShadow: '-10px 0 50px rgba(0, 0, 0, 0.5)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div 
+              className="px-6 py-4 flex items-center justify-between"
+              style={{ borderBottom: '1px solid var(--border-subtle)' }}
+            >
+              <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                Edit Deal
+              </h2>
+              <button
+                onClick={handleCancelEdit}
+                className="p-2 rounded-lg transition-colors"
+                style={{
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-secondary)'
+                }}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="space-y-6">
+                {/* Core Information */}
+                <div>
+                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
+                    Core Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Title <span style={{ color: '#ef4444' }}>*</span>
+                      </Label>
+                      <Input
+                        value={editingDeal.title || ''}
+                        onChange={(e) => handleEditChange('title', e.target.value)}
+                        placeholder="Deal title"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)'
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Address
+                      </Label>
+                      <Input
+                        value={editingDeal.address || ''}
+                        onChange={(e) => handleEditChange('address', e.target.value)}
+                        placeholder="Property address"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)'
+                        }}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Asset Type
+                        </Label>
+                        <select
+                          value={editingDeal.asset_type || 'Office'}
+                          onChange={(e) => handleEditChange('asset_type', e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        >
+                          <option value="Office">Office</option>
+                          <option value="Retail">Retail</option>
+                          <option value="Industrial">Industrial</option>
+                          <option value="Multifamily">Multifamily</option>
+                          <option value="Land">Land</option>
+                          <option value="Mixed Use">Mixed Use</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Stage
+                        </Label>
+                        <select
+                          value={editingDeal.stage || 'need_to_contact'}
+                          onChange={(e) => handleEditChange('stage', e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        >
+                          <option value="need_to_contact">Need to Contact</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="prospect">Prospect</option>
+                          <option value="offer_sent">Offer Sent</option>
+                          <option value="under_contract">Under Contract</option>
+                          <option value="closed_won">Closed Won</option>
+                          <option value="overpriced">Overpriced</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Status
+                      </Label>
+                      <select
+                        value={editingDeal.status || 'active'}
+                        onChange={(e) => handleEditChange('status', e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)'
+                        }}
+                      >
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="closed">Closed</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Financial Information */}
+                <div>
+                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
+                    Financial Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Asking Price ($)
+                        </Label>
+                        <Input
+                          type="number"
+                          value={editingDeal.price || ''}
+                          onChange={(e) => handleEditChange('price', e.target.value)}
+                          placeholder="0"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Cap Rate (%)
+                        </Label>
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={editingDeal.cap_rate || ''}
+                          onChange={(e) => handleEditChange('cap_rate', e.target.value)}
+                          placeholder="0.0"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        NOI ($)
+                      </Label>
+                      <Input
+                        type="number"
+                        value={editingDeal.noi || ''}
+                        onChange={(e) => handleEditChange('noi', e.target.value)}
+                        placeholder="0"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Property Details */}
+                <div>
+                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
+                    Property Details
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Building Size (SF)
+                        </Label>
+                        <Input
+                          type="number"
+                          value={editingDeal.size || ''}
+                          onChange={(e) => handleEditChange('size', e.target.value)}
+                          placeholder="0"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Lot Size (Acres)
+                        </Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={editingDeal.lot_size || ''}
+                          onChange={(e) => handleEditChange('lot_size', e.target.value)}
+                          placeholder="0.00"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Notes
+                      </Label>
+                      <textarea
+                        value={editingDeal.notes || ''}
+                        onChange={(e) => handleEditChange('notes', e.target.value)}
+                        placeholder="Add notes about this deal..."
+                        rows={4}
+                        className="w-full px-3 py-2 rounded-lg"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)',
+                          resize: 'vertical'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sticky Footer */}
+            <div 
+              className="px-6 py-4 flex items-center justify-between"
+              style={{
+                borderTop: '1px solid var(--border-subtle)',
+                background: 'var(--glass-bg)',
+                backdropFilter: 'blur(20px)'
+              }}
+            >
+              <Button
+                onClick={() => setShowDeleteConfirm(true)}
+                variant="outline"
+                className="text-red-500 hover:bg-red-500 hover:text-white"
+                style={{
+                  border: '1px solid rgba(239, 68, 68, 0.3)'
+                }}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleCancelEdit}
+                  variant="outline"
+                  style={{
+                    background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)'
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveDeal}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center"
+          style={{ background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(4px)' }}
+        >
+          <div
+            className="glass-surface p-6 rounded-xl max-w-md mx-4"
+            style={{ border: '1px solid var(--glass-border)' }}
+          >
+            <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
+              Delete Deal?
+            </h3>
+            <p className="mb-6" style={{ color: 'var(--text-secondary)' }}>
+              Are you sure you want to delete this deal? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <Button
+                onClick={() => setShowDeleteConfirm(false)}
+                variant="outline"
+                disabled={isDeleting}
+                style={{
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)'
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDeleteDeal}
+                disabled={isDeleting}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Deal'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
