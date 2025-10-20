@@ -102,7 +102,11 @@ const Pipeline = () => {
 
     const dealId = result.draggableId;
     const newStage = result.destination.droppableId;
+    const oldStage = result.source.droppableId;
 
+    if (newStage === oldStage) return;
+
+    // Optimistic update
     const updatedDeals = deals.map((deal) =>
       deal.id === dealId ? { ...deal, stage: newStage } : deal
     );
@@ -111,14 +115,101 @@ const Pipeline = () => {
     try {
       const { error } = await supabase
         .from('deals')
-        .update({ stage: newStage })
+        .update({ stage: newStage, updated_at: new Date().toISOString() })
         .eq('id', dealId);
 
       if (error) throw error;
-      toast.success('Deal stage updated');
+      
+      toast.success('Deal moved successfully');
+
+      // Trigger automations based on stage
+      const deal = deals.find(d => d.id === dealId);
+      triggerAutomation(newStage, deal);
+      
     } catch (error) {
+      console.error('Error updating deal stage:', error);
       toast.error('Failed to update deal stage');
-      fetchDeals();
+      fetchDeals(); // Revert on error
+    }
+  };
+
+  const triggerAutomation = (stage, deal) => {
+    switch(stage) {
+      case 'offer_sent':
+        setAutomationDialog({
+          open: true,
+          type: 'offer_sent',
+          deal: deal,
+          title: 'Offer Sent - Set Follow-up',
+          message: 'Would you like to set a follow-up date for this offer?'
+        });
+        break;
+      case 'under_contract':
+        setAutomationDialog({
+          open: true,
+          type: 'under_contract',
+          deal: deal,
+          title: 'Under Contract - Attach Key Documents',
+          message: 'Please attach key contract documents.'
+        });
+        break;
+      case 'closed_won':
+        setAutomationDialog({
+          open: true,
+          type: 'closed_won',
+          deal: deal,
+          title: 'Closed Won - Final Details',
+          message: 'Log final price and mark tasks as complete.'
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleAutomationSubmit = async () => {
+    const { type, deal } = automationDialog;
+    
+    try {
+      let updateData = {};
+      
+      switch(type) {
+        case 'offer_sent':
+          if (automationData.followUpDate) {
+            updateData = { 
+              next_action: 'follow_up',
+              next_action_date: automationData.followUpDate 
+            };
+          }
+          break;
+        case 'closed_won':
+          if (automationData.finalPrice) {
+            updateData = { 
+              price: parseFloat(automationData.finalPrice),
+              status: 'closed'
+            };
+          }
+          break;
+        default:
+          break;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        const { error } = await supabase
+          .from('deals')
+          .update(updateData)
+          .eq('id', deal.id);
+
+        if (error) throw error;
+        toast.success('Deal updated successfully');
+        fetchDeals();
+      }
+
+      setAutomationDialog({ open: false, type: null, deal: null });
+      setAutomationData({});
+    } catch (error) {
+      console.error('Error in automation:', error);
+      toast.error('Failed to update deal');
     }
   };
 
