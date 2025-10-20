@@ -482,11 +482,7 @@ const Pipeline = () => {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="group relative"
-                                style={{
-                                  ...provided.draggableProps.style,
-                                  cursor: snapshot.isDragging ? 'grabbing' : 'grab'
-                                }}
+                                className="group relative mb-3"
                               >
                                 {/* Deal Card */}
                                 <div
