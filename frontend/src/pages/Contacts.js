@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
 import { Button } from '../components/ui/button';
@@ -7,10 +7,11 @@ import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { 
   Plus, Mail, Phone, Building2, Search, MapPin, Calendar, 
-  FileText, X, Save, Link, Eye, Edit, Filter, User, Grid, List
+  FileText, X, Save, Link, Eye, Edit, Filter, User, Grid, List, Network
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
+import ForceGraph2D from 'react-force-graph-2d';
 
 // Contact types options
 const contactTypeOptions = [
