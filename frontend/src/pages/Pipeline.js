@@ -490,17 +490,21 @@ const Pipeline = () => {
                               >
                                 {/* Deal Card */}
                                 <div
-                                  className="glass-surface rounded-xl overflow-hidden transition-all duration-200"
+                                  className="rounded-xl overflow-hidden transition-all duration-200"
                                   style={{
-                                    transform: snapshot.isDragging ? 'scale(1.02)' : 'scale(1)',
+                                    transform: snapshot.isDragging ? 'scale(1.05)' : 'scale(1)',
                                     boxShadow: snapshot.isDragging 
-                                      ? '0 20px 50px rgba(0, 184, 212, 0.3), 0 0 0 2px var(--accent)' 
-                                      : '0 2px 8px rgba(0,0,0,0.1)',
+                                      ? '0 20px 50px rgba(0, 184, 212, 0.4), 0 0 0 2px var(--accent), 0 0 20px rgba(0, 184, 212, 0.3)' 
+                                      : '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(100, 116, 139, 0.2)',
                                     background: snapshot.isDragging
-                                      ? 'linear-gradient(135deg, rgba(11, 12, 14, 0.95), rgba(26, 26, 26, 0.95))'
-                                      : 'var(--glass-bg)',
-                                    backdropFilter: snapshot.isDragging ? 'blur(20px)' : 'blur(16px)',
-                                    border: snapshot.isDragging ? '1px solid var(--accent)' : '1px solid var(--glass-border)'
+                                      ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)'
+                                      : 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%)',
+                                    backdropFilter: 'blur(20px)',
+                                    border: snapshot.isDragging 
+                                      ? '1px solid var(--accent)' 
+                                      : '1px solid rgba(100, 116, 139, 0.3)',
+                                    WebkitBackdropFilter: 'blur(20px)',
+                                    cursor: snapshot.isDragging ? 'grabbing' : 'grab'
                                   }}
                                   onClick={() => !snapshot.isDragging && navigate(`/deals/${deal.id}`)}
                                 >
