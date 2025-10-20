@@ -582,7 +582,7 @@ const DealDetails = () => {
                   <DollarSign className="w-5 h-5 mr-2" style={{ color: '#00b8d4' }} />
                   <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>Asking Price</p>
                 </div>
-                <p className="text-3xl font-bold" style={{ color: '#FFFFFF' }} data-testid="deal-asking-price">{formatPrice(deal.asking_price)}</p>
+                <p className="text-3xl font-bold" style={{ color: '#FFFFFF' }} data-testid="deal-asking-price">{formatPrice(deal.price)}</p>
               </div>
               <div>
                 <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Price per SF (Building)</p>
