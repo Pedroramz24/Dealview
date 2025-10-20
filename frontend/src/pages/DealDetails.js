@@ -287,8 +287,8 @@ const DealDetails = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Primary Image */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
-              {deal.primary_image_url ? (
-                <img src={deal.primary_image_url} alt={deal.property_address} className="w-full h-96 object-cover" />
+              {deal.image_url ? (
+                <img src={deal.image_url} alt={deal.address} className="w-full h-96 object-cover" />
               ) : (
                 <div className="w-full h-96 flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
                   <div className="text-center">
