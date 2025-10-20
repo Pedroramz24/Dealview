@@ -244,29 +244,33 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Dashboard Supabase Migration"
-    - "Contacts Supabase Migration"
+    - "DealsList Field Name Consistency"
     - "DealDetails Supabase Migration"
-    - "Team Supabase Migration"
-    - "PublicShare Supabase Migration"
+    - "Pipeline Page - React Beautiful DnD Error"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
   backend_testing_notes: |
     Backend testing for Supabase migration:
-    1. Verify Supabase connection is working
-    2. Test RLS policies are enforcing user isolation
-    3. Verify storage policies for file uploads
+    1. Verify Supabase connection is working ✅
+    2. Test RLS policies are enforcing user isolation ✅
+    3. Verify storage policies for file uploads ⚠️ (buckets created but uploads not working)
   frontend_testing_notes: |
-    Test all migrated pages with Supabase:
-    1. Test Dashboard: Login, verify stats display, check charts render
-    2. Test Contacts: Create new contact, search contacts, verify display
-    3. Test DealDetails: View deal, upload image, upload document
-    4. Test Team: View user profile, check profile data displays
-    5. Test PublicShare: Access public deal link (may need RLS policy fix)
-    6. Verify authentication: Login, Signup, Logout
-    7. Test all pages with authenticated user
-    8. Check console for errors
+    COMPLETED TESTS:
+    1. ✅ Dashboard: Login, stats display, charts render
+    2. ✅ Contacts: Create contact, search contacts, display working
+    3. ❌ DealDetails: View deal works, but file uploads fail silently, price shows $NaN
+    4. ✅ Team: User profile displays correctly
+    5. ⚠️ Pipeline: Displays correctly but 30 console errors (isDropDisabled prop)
+    6. ✅ Authentication: Signup, Login, Session persistence all working
+    7. ❌ DealsList: Deal creation works but display broken (field name mismatch)
+    8. ⏭️ PublicShare: Not tested (needs RLS policy for anonymous access)
+    
+    PRIORITY FIXES NEEDED:
+    1. HIGH: Fix field name mismatch in DealsList.js (address/price vs property_address/asking_price)
+    2. HIGH: Fix file upload functionality in DealDetails.js (no success/error feedback)
+    3. MEDIUM: Fix Pipeline page isDropDisabled prop error (30 console errors)
+    4. LOW: Verify title field color display in Contacts page
 
 agent_communication:
   - agent: "main"
