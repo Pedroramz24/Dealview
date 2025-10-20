@@ -506,15 +506,7 @@ const Pipeline = () => {
                                   }}
                                 >
                                   {/* Card Content */}
-                                  <div 
-                                    className="p-4"
-                                    onClick={(e) => {
-                                      if (!snapshot.isDragging) {
-                                        navigate(`/deals/${deal.id}`);
-                                      }
-                                    }}
-                                    style={{ cursor: snapshot.isDragging ? 'grabbing' : 'pointer' }}
-                                  >
+                                  <div className="p-4">
                                     {/* Title & Address */}
                                     <div className="mb-3">
                                       <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
@@ -572,7 +564,7 @@ const Pipeline = () => {
 
                                     {/* Owner Avatar */}
                                     {deal.owner_email && (
-                                      <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                                      <div className="mb-3 pb-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                                         <div className="flex items-center gap-2">
                                           <div 
                                             className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold"
@@ -583,6 +575,29 @@ const Pipeline = () => {
                                           <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                                             {deal.owner_email.split('@')[0]}
                                           </span>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {/* View Details Button */}
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(`/deals/${deal.id}`);
+                                      }}
+                                      className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-opacity-80"
+                                      style={{
+                                        background: 'rgba(59, 130, 246, 0.15)',
+                                        border: '1px solid rgba(59, 130, 246, 0.4)',
+                                        color: 'var(--accent)',
+                                        fontSize: '12px',
+                                        fontWeight: '600'
+                                      }}
+                                      onMouseDown={(e) => e.stopPropagation()}
+                                    >
+                                      <Eye className="w-3.5 h-3.5" />
+                                      View Details
+                                    </button>
                                         </div>
                                       </div>
                                     )}
