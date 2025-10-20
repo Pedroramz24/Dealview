@@ -652,4 +652,86 @@ const Pipeline = () => {
         </DragDropContext>
       </div>
 
+      {/* Automation Dialog */}
+      <Dialog open={automationDialog.open} onOpenChange={(open) => !open && setAutomationDialog({ open: false, type: null, deal: null })}>
+        <DialogContent className="glass-surface" style={{ border: '1px solid var(--glass-border)' }}>
+          <DialogHeader>
+            <DialogTitle style={{ color: 'var(--text-primary)' }}>{automationDialog.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p style={{ color: 'var(--text-secondary)' }}>{automationDialog.message}</p>
+            
+            {automationDialog.type === 'offer_sent' && (
+              <div>
+                <Label style={{ color: 'var(--text-primary)' }}>Follow-up Date</Label>
+                <Input
+                  type="date"
+                  value={automationData.followUpDate || ''}
+                  onChange={(e) => setAutomationData({ ...automationData, followUpDate: e.target.value })}
+                  style={{ 
+                    background: 'var(--glass-bg)', 
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)'
+                  }}
+                />
+              </div>
+            )}
+            
+            {automationDialog.type === 'closed_won' && (
+              <div>
+                <Label style={{ color: 'var(--text-primary)' }}>Final Price</Label>
+                <Input
+                  type="number"
+                  placeholder="Enter final price"
+                  value={automationData.finalPrice || ''}
+                  onChange={(e) => setAutomationData({ ...automationData, finalPrice: e.target.value })}
+                  style={{ 
+                    background: 'var(--glass-bg)', 
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)'
+                  }}
+                />
+              </div>
+            )}
+            
+            {automationDialog.type === 'under_contract' && (
+              <div className="text-center py-4">
+                <Button
+                  onClick={() => navigate(`/deals/${automationDialog.deal?.id}`)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Attach Documents
+                </Button>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setAutomationDialog({ open: false, type: null, deal: null })}
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text-primary)'
+              }}
+            >
+              Skip
+            </Button>
+            {(automationDialog.type === 'offer_sent' || automationDialog.type === 'closed_won') && (
+              <Button
+                onClick={handleAutomationSubmit}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Save
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
 export default Pipeline;
