@@ -1,21 +1,49 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
+import { 
+  Search, Filter, SortAsc, DollarSign, Calendar, FileText, 
+  CheckSquare, Phone, Mail, Eye, Edit, Plus, X 
+} from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 
-const stages = ['New', 'Qualified', 'Underwriting', 'Negotiation', 'Under Contract', 'Closed'];
+// Pipeline stages with proper configuration
+const stages = [
+  { id: 'need_to_contact', label: 'Need to Contact', color: '#94a3b8' },
+  { id: 'contacted', label: 'Contacted', color: '#60a5fa' },
+  { id: 'prospect', label: 'Prospect', color: '#a78bfa' },
+  { id: 'offer_sent', label: 'Offer Sent', color: '#f59e0b' },
+  { id: 'under_contract', label: 'Under Contract', color: '#10b981' },
+  { id: 'closed_won', label: 'Closed Won', color: '#00d4aa' },
+  { id: 'overpriced', label: 'Overpriced', color: '#ef4444' }
+];
 
-const stageColors = {
-  'New': 'bg-gray-100',
-  'Qualified': 'bg-blue-100',
-  'Underwriting': 'bg-yellow-100',
-  'Negotiation': 'bg-orange-100',
-  'Under Contract': 'bg-purple-100',
-  'Closed': 'bg-green-100',
+// Stage weights for weighted pipeline calculation
+const stageWeights = {
+  'need_to_contact': 0.1,
+  'contacted': 0.2,
+  'prospect': 0.3,
+  'offer_sent': 0.5,
+  'under_contract': 0.8,
+  'closed_won': 1.0,
+  'overpriced': 0.05
 };
+
+// Next action types
+const nextActionTypes = [
+  { value: 'call', label: 'Call', icon: Phone },
+  { value: 'email', label: 'Email', icon: Mail },
+  { value: 'tour', label: 'Tour', icon: Eye },
+  { value: 'send_om', label: 'Send OM', icon: FileText },
+  { value: 'follow_up', label: 'Follow Up', icon: Calendar }
+];
 
 const Pipeline = () => {
   const [deals, setDeals] = useState([]);
