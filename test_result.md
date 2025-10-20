@@ -192,6 +192,34 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Migrated PublicShare to Supabase. Note: Public sharing may require additional RLS policy to allow anonymous access to specific deals. Current implementation attempts to query deals table but RLS may block unauthenticated users. May need backend API endpoint for public shares or specific RLS policy. Needs testing and potential RLS policy update."
+      - working: "NA"
+        agent: "testing"
+        comment: "NOT TESTED: PublicShare page was not tested in this round as it requires specific deal share link and may need RLS policy updates for anonymous access. Will need separate testing once RLS policies for public access are configured."
+
+frontend:
+  - task: "DealsList Field Name Consistency"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/pages/DealsList.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL BUG FOUND: Field name mismatch in DealsList.js. When creating a deal, it stores fields as 'address' and 'price' (lines 208, 210), but the table displays 'property_address' and 'asking_price' (lines 786, 803). This causes deals to show empty address and $NaN for price in the deals list table. REQUIRED FIX: Either (1) Change INSERT to use 'property_address' and 'asking_price', OR (2) Change table display to use 'address' and 'price'. Recommend option 1 to match Supabase schema naming convention."
+
+  - task: "Pipeline Page - React Beautiful DnD Error"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/Pipeline.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CONSOLE ERRORS: Pipeline page loads and displays correctly (shows 1 deal in 'New' column with $NaN price), but generates 30 console errors: 'react-beautiful-dnd: Invariant failed: isDropDisabled must be a boolean'. This is a development-only warning but indicates incorrect prop type being passed to Droppable component. The isDropDisabled prop is likely receiving undefined or non-boolean value. Page is functional but needs prop fix to clean up console errors."
 
   - task: "Team Supabase Migration"
     implemented: true
