@@ -633,6 +633,7 @@ const Pipeline = () => {
                       </div>
                     )}
                   </Droppable>
+                  </div>
                 </div>
               );
             })}
