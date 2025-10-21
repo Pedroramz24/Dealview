@@ -808,31 +808,35 @@ const DealsList = () => {
                   <div>
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Asking Price *</Label>
                     <Input
-                      type="number"
-                      value={newDeal.asking_price}
-                      onChange={(e) => setNewDeal({ ...newDeal, asking_price: e.target.value })}
+                      type="text"
+                      value={formatNumberWithCommas(newDeal.asking_price)}
+                      onChange={(e) => handleFormattedNumberInput(e, (val) => setNewDeal({ ...newDeal, asking_price: val }))}
                       required
-                      placeholder="1000000"
+                      placeholder="1,000,000"
                       className="premium-glass-input"
                     />
                   </div>
                   <div>
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>NOI</Label>
                     <Input
-                      type="number"
-                      value={newDeal.noi}
-                      onChange={(e) => setNewDeal({ ...newDeal, noi: e.target.value })}
-                      placeholder="75000"
+                      type="text"
+                      value={formatNumberWithCommas(newDeal.noi)}
+                      onChange={(e) => handleFormattedNumberInput(e, (val) => setNewDeal({ ...newDeal, noi: val }))}
+                      placeholder="75,000"
                       className="premium-glass-input"
                     />
                   </div>
                   <div>
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Cap Rate (%)</Label>
                     <Input
-                      type="number"
-                      step="0.01"
+                      type="text"
                       value={newDeal.cap_rate}
-                      onChange={(e) => setNewDeal({ ...newDeal, cap_rate: e.target.value })}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                          setNewDeal({ ...newDeal, cap_rate: val });
+                        }
+                      }}
                       placeholder="7.5"
                       className="premium-glass-input"
                     />
@@ -851,6 +855,18 @@ const DealsList = () => {
                     </Select>
                   </div>
                 </div>
+                
+                {/* Price per SQFT Display */}
+                {newDeal.asking_price && newDeal.building_size && (
+                  <div className="mt-4">
+                    <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price per SQFT</span>
+                      <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>
+                        {calculatePricePerSqft(newDeal.asking_price, newDeal.building_size)}
+                      </span>
+                    </div>
+                  </div>
+                )}
                 
                 <div className="mt-4">
                   <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Pro Forma Notes</Label>
