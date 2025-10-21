@@ -411,38 +411,45 @@ const DealDetails = () => {
     return formatPrice(price / acres);
   };
   
-  // Helper to render editable field
-  const EditableField = ({ label, value, field, type = 'text', placeholder, options = null, textarea = false }) => {
-    const currentValue = isEditMode ? editedDeal?.[field] : deal?.[field];
+  // Optimized EditableField with proper controlled input handling
+  const EditableField = React.memo(({ field, type = 'text', placeholder, options = null, textarea = false }) => {
+    const currentValue = isEditMode ? (editedDeal?.[field] ?? '') : (deal?.[field] ?? '');
     
+    // View mode
     if (!isEditMode) {
-      // View mode
       if (type === 'select' && options) {
         return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{currentValue || 'N/A'}</p>;
       }
+      if (type === 'date' && currentValue) {
+        return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+          {new Date(currentValue).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+        </p>;
+      }
       if (type === 'number' || field === 'price' || field === 'size' || field === 'noi') {
         return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
-          {currentValue ? (field === 'price' || field === 'noi' ? formatPrice(currentValue) : currentValue.toLocaleString()) : 'N/A'}
+          {currentValue ? (field === 'price' || field === 'noi' ? formatPrice(currentValue) : parseFloat(currentValue).toLocaleString()) : 'N/A'}
         </p>;
       }
       return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{currentValue || 'N/A'}</p>;
     }
     
-    // Edit mode
+    // Edit mode - using uncontrolled inputs with defaultValue for better performance
+    const inputStyle = {
+      width: '100%',
+      padding: '8px 12px',
+      background: 'rgba(0, 0, 0, 0.3)',
+      border: '1px solid rgba(0, 184, 212, 0.3)',
+      borderRadius: '6px',
+      color: '#FFFFFF',
+      fontSize: '14px'
+    };
+    
     if (type === 'select' && options) {
       return (
         <select
-          value={currentValue || ''}
+          defaultValue={currentValue}
           onChange={(e) => handleFieldChange(field, e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px 12px',
-            background: 'rgba(0, 0, 0, 0.3)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
-            borderRadius: '6px',
-            color: '#FFFFFF',
-            fontSize: '14px'
-          }}
+          style={inputStyle}
         >
           {options.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -454,60 +461,36 @@ const DealDetails = () => {
     if (textarea) {
       return (
         <textarea
-          value={currentValue || ''}
+          defaultValue={currentValue}
           onChange={(e) => handleFieldChange(field, e.target.value)}
           placeholder={placeholder}
           rows={4}
-          style={{
-            width: '100%',
-            padding: '8px 12px',
-            background: 'rgba(0, 0, 0, 0.3)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
-            borderRadius: '6px',
-            color: '#FFFFFF',
-            fontSize: '14px',
-            resize: 'vertical'
-          }}
+          style={{ ...inputStyle, resize: 'vertical' }}
         />
       );
     }
     
-    if (field === 'price' || field === 'size' || field === 'noi') {
+    if (type === 'date') {
       return (
-        <Input
-          type="text"
-          value={formatNumberWithCommas(currentValue || '')}
-          onChange={(e) => handleFormattedNumberInput(e, (val) => handleFieldChange(field, val))}
-          placeholder={placeholder}
-          style={{
-            background: 'rgba(0, 0, 0, 0.3)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
-            color: '#FFFFFF',
-            fontSize: '14px'
-          }}
+        <input
+          type="date"
+          defaultValue={currentValue}
+          onChange={(e) => handleFieldChange(field, e.target.value)}
+          style={inputStyle}
         />
       );
     }
     
     return (
-      <Input
+      <input
         type={type}
-        value={currentValue || ''}
-        onChange={(e) => {
-          const val = e.target.value;
-          if (type === 'number' && val !== '' && !/^\d*\.?\d*$/.test(val)) return;
-          handleFieldChange(field, val);
-        }}
+        defaultValue={currentValue}
+        onChange={(e) => handleFieldChange(field, e.target.value)}
         placeholder={placeholder}
-        style={{
-          background: 'rgba(0, 0, 0, 0.3)',
-          border: '1px solid rgba(0, 184, 212, 0.3)',
-          color: '#FFFFFF',
-          fontSize: '14px'
-        }}
+        style={inputStyle}
       />
     );
-  };
+  });
 
   if (loading) {
     return (
