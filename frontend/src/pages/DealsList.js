@@ -87,6 +87,46 @@ const DealsList = () => {
 
   const [imageFile, setImageFile] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  
+  // Geocode address handler
+  const handleAddressChange = async (address) => {
+    setNewDeal({ ...newDeal, property_address: address });
+    
+    // Geocode if address is long enough
+    if (address && address.length > 10) {
+      setIsGeocoding(true);
+      const result = await geocodeAddress(address);
+      setIsGeocoding(false);
+      
+      if (result) {
+        setNewDeal(prev => ({
+          ...prev,
+          property_address: address,
+          latitude: result.lat,
+          longitude: result.lon
+        }));
+        console.log('Geocoded:', address, '→', result.lat, result.lon);
+      }
+    }
+  };
+
+  // Geocode address for edit panel
+  const handleEditAddressChange = async (address) => {
+    handleEditChange('address', address);
+    
+    if (address && address.length > 10) {
+      setIsGeocoding(true);
+      const result = await geocodeAddress(address);
+      setIsGeocoding(false);
+      
+      if (result) {
+        handleEditChange('latitude', result.lat);
+        handleEditChange('longitude', result.lon);
+        console.log('Geocoded:', address, '→', result.lat, result.lon);
+      }
+    }
+  };
   
   // Auto-calculate functions
   const calculatePricePerSFBuilding = () => {
