@@ -790,68 +790,174 @@ const DealDetails = () => {
               </div>
             </div>
 
-            {/* Contacts & Activities */}
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Contacts & Activities</h3>
-              <div className="space-y-4">
-                <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Primary Contact</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.primary_contact_text || 'No primary contact set'}</p>
-                </div>
-                {deal.last_contact_date && (
+            {/* Contacts & Link Management */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: isEditMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Contacts & Activities {isEditMode && <span style={{ color: 'rgba(0, 184, 212, 0.6)', fontSize: '11px', fontWeight: '400', marginLeft: '8px' }}>• EDITING</span>}
+              </h3>
+              
+              {isEditMode ? (
+                <div className="space-y-4">
+                  {/* Link Contacts */}
                   <div>
-                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Last Contact Date</p>
-                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
-                      {new Date(deal.last_contact_date).toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                      })}
-                    </p>
+                    <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>Link Contacts</Label>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        placeholder="Search contacts by name..."
+                        value={contactSearchTerm}
+                        onChange={(e) => setContactSearchTerm(e.target.value)}
+                        style={{
+                          background: 'rgba(0, 0, 0, 0.3)',
+                          border: '1px solid rgba(0, 184, 212, 0.3)',
+                          color: '#FFFFFF',
+                          fontSize: '14px'
+                        }}
+                      />
+                      
+                      {contactSearchTerm && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '100%',
+                          left: 0,
+                          right: 0,
+                          marginTop: '4px',
+                          background: 'rgba(15, 23, 42, 0.98)',
+                          border: '1px solid rgba(0, 184, 212, 0.3)',
+                          borderRadius: '8px',
+                          maxHeight: '200px',
+                          overflowY: 'auto',
+                          zIndex: 50
+                        }}>
+                          {allContacts
+                            .filter(c => c.name.toLowerCase().includes(contactSearchTerm.toLowerCase()))
+                            .slice(0, 5)
+                            .map(contact => (
+                              <div
+                                key={contact.id}
+                                onClick={() => {
+                                  handleAddContact(contact.id);
+                                  setContactSearchTerm('');
+                                }}
+                                style={{
+                                  padding: '12px',
+                                  cursor: 'pointer',
+                                  borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                              >
+                                <div style={{ color: '#FFFFFF', fontWeight: '500' }}>{contact.name}</div>
+                                {contact.company && <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>}
+                              </div>
+                            ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
+                  
+                  {/* Linked Contacts List */}
+                  {linkedContacts.length > 0 && (
+                    <div>
+                      <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                        Linked Contacts ({linkedContacts.length})
+                      </Label>
+                      <div className="space-y-2">
+                        {linkedContacts.map((contact, idx) => (
+                          <div key={contact.id} style={{
+                            padding: '8px 12px',
+                            background: 'rgba(0, 0, 0, 0.3)',
+                            border: '1px solid rgba(100, 116, 139, 0.3)',
+                            borderRadius: '6px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}>
+                            <div>
+                              <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
+                                {contact.name} {idx === 0 && <span style={{ color: '#00b8d4', fontSize: '11px' }}>(Primary)</span>}
+                              </span>
+                              {contact.company && <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>}
+                            </div>
+                            <button
+                              onClick={() => handleRemoveContact(contact.id)}
+                              style={{
+                                background: 'rgba(239, 68, 68, 0.2)',
+                                border: '1px solid rgba(239, 68, 68, 0.4)',
+                                color: '#ef4444',
+                                padding: '4px 12px',
+                                borderRadius: '4px',
+                                fontSize: '12px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Last Contact Date */}
+                  <div>
+                    <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>Last Contact Date</Label>
+                    <EditableField field="last_contact_date" type="date" />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Linked Contacts</p>
+                    {linkedContacts.length > 0 ? (
+                      <div className="space-y-2">
+                        {linkedContacts.map((contact, idx) => (
+                          <div key={contact.id} style={{ padding: '8px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '6px' }}>
+                            <div style={{ color: '#FFFFFF', fontWeight: '500' }}>
+                              {contact.name} {idx === 0 && <span style={{ color: '#00b8d4', fontSize: '11px' }}>(Primary)</span>}
+                            </div>
+                            {contact.company && <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>No contacts linked</p>
+                    )}
+                  </div>
+                  {deal.last_contact_date && (
+                    <div>
+                      <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Last Contact Date</p>
+                      <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                        {new Date(deal.last_contact_date).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             
             {/* Important Dates & Details */}
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Important Dates & Details</h3>
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: isEditMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Important Dates & Details {isEditMode && <span style={{ color: 'rgba(0, 184, 212, 0.6)', fontSize: '11px', fontWeight: '400', marginLeft: '8px' }}>• EDITING</span>}
+              </h3>
               <div className="grid grid-cols-2 gap-6">
-                {deal.target_close_date && (
-                  <div>
-                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Target Close Date</p>
-                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
-                      {new Date(deal.target_close_date).toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                      })}
-                    </p>
-                  </div>
-                )}
-                {deal.next_action_date && (
-                  <div>
-                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action Date</p>
-                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
-                      {new Date(deal.next_action_date).toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                      })}
-                    </p>
-                  </div>
-                )}
-                {deal.next_action && (
-                  <div className="col-span-2">
-                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action</p>
-                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.next_action}</p>
-                  </div>
-                )}
-                {!deal.target_close_date && !deal.next_action_date && !deal.next_action && (
-                  <div className="col-span-2">
-                    <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic' }}>No important dates set yet</p>
-                  </div>
-                )}
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Target Close Date</p>
+                  <EditableField field="target_close_date" type="date" />
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action Date</p>
+                  <EditableField field="next_action_date" type="date" />
+                </div>
+                <div className="col-span-2">
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action</p>
+                  <EditableField field="next_action" placeholder="Follow up call, send proposal..." />
+                </div>
               </div>
             </div>
 
