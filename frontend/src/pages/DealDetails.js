@@ -128,6 +128,7 @@ const DealDetails = () => {
       console.log('Deal updated successfully');
       toast.success('Image uploaded successfully');
       fetchDeal();
+      fetchLinkedContacts();
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error(error.message || 'Failed to upload image');
