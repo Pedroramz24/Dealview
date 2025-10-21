@@ -402,6 +402,60 @@ const DealDetails = () => {
               )}
             </div>
 
+            {/* Linked Contacts */}
+            {linkedContacts.length > 0 && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Linked Contacts ({linkedContacts.length})
+                </h3>
+                <div className="space-y-3">
+                  {linkedContacts.map(contact => (
+                    <div 
+                      key={contact.id}
+                      className="p-4 rounded-lg"
+                      style={{
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(100, 116, 139, 0.3)'
+                      }}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-sm mb-1" style={{ color: '#FFFFFF' }}>
+                            {contact.name}
+                          </h4>
+                          {contact.title && (
+                            <p className="text-xs mb-2" style={{ color: '#00b8d4' }}>
+                              {contact.title}
+                            </p>
+                          )}
+                          <div className="space-y-1">
+                            {contact.email && (
+                              <p className="text-xs flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                                <Mail className="w-3 h-3" />
+                                {contact.email}
+                              </p>
+                            )}
+                            {contact.phone && (
+                              <p className="text-xs flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                                <Phone className="w-3 h-3" />
+                                {contact.phone}
+                              </p>
+                            )}
+                            {contact.company && (
+                              <p className="text-xs flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                                <Building2 className="w-3 h-3" />
+                                {contact.company}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Location & Market */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location & Market</h3>
