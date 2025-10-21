@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { ArrowLeft, Upload, FileText, Share2, DollarSign, Home, MapPin, Calendar, Users, Building2, FileCheck, User, Mail, Phone } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Share2, DollarSign, Home, MapPin, Calendar, Users, Building2, FileCheck, User, Mail, Phone, Edit, Save, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { formatCurrency, calculatePricePerSqft } from '../utils/numberFormat';
