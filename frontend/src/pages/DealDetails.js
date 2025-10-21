@@ -231,6 +231,93 @@ const DealDetails = () => {
     navigator.clipboard.writeText(shareUrl);
     toast.success('Share link copied to clipboard');
   };
+  
+  // Edit Mode Handlers
+  const handleEditMode = () => {
+    setEditedDeal({ ...deal });
+    setIsEditMode(true);
+  };
+  
+  const handleCancelEdit = () => {
+    setEditedDeal(null);
+    setIsEditMode(false);
+  };
+  
+  const handleFieldChange = (field, value) => {
+    setEditedDeal(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+  
+  const handleSave = async () => {
+    if (!user) {
+      toast.error('You must be logged in to save changes');
+      return;
+    }
+    
+    setIsSaving(true);
+    try {
+      const updateData = {
+        title: editedDeal.title,
+        address: editedDeal.address,
+        asset_type: editedDeal.asset_type,
+        stage: editedDeal.stage,
+        status: editedDeal.status,
+        
+        // Financial
+        price: editedDeal.price ? parseFormattedNumber(editedDeal.price) : null,
+        size: editedDeal.size ? parseFormattedNumber(editedDeal.size) : null,
+        cap_rate: editedDeal.cap_rate ? parseFloat(editedDeal.cap_rate) : null,
+        noi: editedDeal.noi ? parseFormattedNumber(editedDeal.noi) : null,
+        lease_type: editedDeal.lease_type || null,
+        proforma_notes: editedDeal.proforma_notes || null,
+        
+        // Property Details
+        lot_size: editedDeal.lot_size ? parseFloat(editedDeal.lot_size) : null,
+        year_built: editedDeal.year_built ? parseInt(editedDeal.year_built) : null,
+        zoning: editedDeal.zoning || null,
+        occupancy: editedDeal.occupancy ? parseFloat(editedDeal.occupancy) : null,
+        parking_spaces: editedDeal.parking_spaces ? parseInt(editedDeal.parking_spaces) : null,
+        key_features: editedDeal.key_features || null,
+        
+        // Deal Management
+        priority: editedDeal.priority || 'Medium',
+        owner_visibility: editedDeal.owner_visibility || 'Team',
+        next_action: editedDeal.next_action || null,
+        next_action_date: editedDeal.next_action_date || null,
+        target_close_date: editedDeal.target_close_date || null,
+        last_contact_date: editedDeal.last_contact_date || null,
+        
+        // Contact
+        primary_contact_text: editedDeal.primary_contact_text || null,
+        
+        // Notes
+        notes: editedDeal.notes,
+        
+        updated_at: new Date().toISOString()
+      };
+      
+      const { error } = await supabase
+        .from('deals')
+        .update(updateData)
+        .eq('id', dealId);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setDeal({ ...editedDeal, ...updateData });
+      setIsEditMode(false);
+      setEditedDeal(null);
+      toast.success('Deal updated successfully');
+      
+    } catch (error) {
+      console.error('Error updating deal:', error);
+      toast.error('Failed to update deal: ' + error.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
