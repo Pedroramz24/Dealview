@@ -288,7 +288,7 @@ const DealsList = () => {
         setUploadingImage(false);
       }
 
-      // Create deal in Supabase
+      // Create deal in Supabase with ALL fields
       const { data, error } = await supabase
         .from('deals')
         .insert([
@@ -297,14 +297,43 @@ const DealsList = () => {
             title: newDeal.deal_title || newDeal.property_address,
             address: newDeal.property_address,
             asset_type: newDeal.asset_type,
+            
+            // Financial fields
             price: newDeal.asking_price ? parseFormattedNumber(newDeal.asking_price) : null,
+            noi: newDeal.noi ? parseFormattedNumber(newDeal.noi) : null,
+            cap_rate: newDeal.cap_rate ? parseFloat(newDeal.cap_rate) : null,
+            lease_type: newDeal.lease_type || null,
+            proforma_notes: newDeal.proforma_notes || null,
+            
+            // Property details
             size: newDeal.building_size ? parseFormattedNumber(newDeal.building_size) : null,
+            lot_size: newDeal.lot_size ? parseFloat(newDeal.lot_size) : null,
+            year_built: newDeal.year_built ? parseInt(newDeal.year_built) : null,
+            zoning: newDeal.zoning || null,
+            occupancy: newDeal.occupancy ? parseFloat(newDeal.occupancy) : null,
+            parking_spaces: newDeal.parking_spaces ? parseInt(newDeal.parking_spaces) : null,
+            key_features: newDeal.key_features || null,
+            
+            // Location
             latitude: newDeal.latitude,
             longitude: newDeal.longitude,
-            notes: newDeal.notes,
+            display_on_map: newDeal.display_on_map !== false,
+            
+            // Contact & Activity
+            primary_contact_text: newDeal.primary_contact || null,
+            last_contact_date: newDeal.last_contact_date || null,
+            next_action: newDeal.next_action || null,
+            next_action_date: newDeal.next_action_date || null,
+            
+            // Deal Management
+            priority: newDeal.priority || 'Medium',
+            owner_visibility: newDeal.owner_visibility || 'Team',
             status: newDeal.deal_status || 'active',
-            stage: newDeal.pipeline_stage || 'prospecting',
+            stage: newDeal.pipeline_stage || 'need_to_contact',
+            
+            // Media & Notes
             image_url: imageUrl,
+            notes: newDeal.notes,
           },
         ])
         .select();
