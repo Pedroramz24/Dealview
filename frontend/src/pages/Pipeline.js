@@ -476,10 +476,12 @@ const Pipeline = () => {
                         style={{
                           background: snapshot.isDraggingOver ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
                           border: snapshot.isDraggingOver ? '2px dashed var(--accent)' : '2px dashed transparent',
-                          minHeight: '500px',
-                          maxHeight: 'calc(100vh - 420px)',
+                          minHeight: '200px',
+                          height: 'calc(100vh - 320px)',
                           overflowY: 'auto',
-                          overflowX: 'hidden'
+                          overflowX: 'hidden',
+                          scrollbarWidth: 'thin',
+                          scrollbarColor: 'rgba(0, 184, 212, 0.5) rgba(0, 0, 0, 0.2)'
                         }}
                       >
                         {stageDeals.map((deal, index) => (
