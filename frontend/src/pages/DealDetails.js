@@ -63,6 +63,7 @@ const DealDetails = () => {
     if (user) {
       fetchDeal();
       fetchLinkedContacts();
+      fetchAllContacts();
     }
   }, [dealId, user]);
 
