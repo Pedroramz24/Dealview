@@ -39,9 +39,14 @@ const DealDetails = () => {
   const navigate = useNavigate();
   const [deal, setDeal] = useState(null);
   const [linkedContacts, setLinkedContacts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const { user } = useContext(AuthContext);
+  
+  // Edit Mode State
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedDeal, setEditedDeal] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (user) {
