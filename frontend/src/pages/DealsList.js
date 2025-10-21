@@ -1258,7 +1258,12 @@ const DealsList = () => {
                   <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatPrice(deal.price)}</span>
                 </td>
                 <td>
-                  <span className="badge" style={{ background: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
+                  <span className="badge" style={{ 
+                    background: stageColors[deal.stage] ? `${stageColors[deal.stage]}20` : 'rgba(59, 130, 246, 0.12)', 
+                    color: stageColors[deal.stage] || 'var(--accent)', 
+                    border: `1px solid ${stageColors[deal.stage] ? `${stageColors[deal.stage]}40` : 'var(--accent)'}`,
+                    fontWeight: '600'
+                  }}>
                     {deal.stage}
                   </span>
                 </td>
