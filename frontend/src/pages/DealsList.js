@@ -914,12 +914,91 @@ const DealsList = () => {
                 <div className="space-y-4">
                   <div>
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Primary Contact</Label>
-                    <Input
-                      value={newDeal.primary_contact}
-                      onChange={(e) => setNewDeal({ ...newDeal, primary_contact: e.target.value })}
-                      placeholder="John Doe - Seller/Owner/Broker"
-                      className="premium-glass-input"
-                    />
+                    <div className="relative">
+                      <Input
+                        value={newDeal.primary_contact}
+                        onChange={(e) => {
+                          setNewDeal({ ...newDeal, primary_contact: e.target.value });
+                          setContactSearchTerm(e.target.value);
+                        }}
+                        onFocus={() => setContactSearchTerm(newDeal.primary_contact || '')}
+                        placeholder="Search or type contact name..."
+                        className="premium-glass-input"
+                      />
+                      
+                      {/* Contact Suggestions Dropdown */}
+                      {contactSearchTerm && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '100%',
+                          left: 0,
+                          right: 0,
+                          marginTop: '4px',
+                          background: 'rgba(15, 23, 42, 0.95)',
+                          border: '1px solid rgba(0, 184, 212, 0.3)',
+                          borderRadius: '8px',
+                          maxHeight: '200px',
+                          overflowY: 'auto',
+                          zIndex: 50,
+                          backdropFilter: 'blur(20px)'
+                        }}>
+                          {contacts
+                            .filter(c => 
+                              c.name.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+                              (c.email && c.email.toLowerCase().includes(contactSearchTerm.toLowerCase())) ||
+                              (c.company && c.company.toLowerCase().includes(contactSearchTerm.toLowerCase()))
+                            )
+                            .slice(0, 5)
+                            .map(contact => (
+                              <div
+                                key={contact.id}
+                                onClick={() => {
+                                  setNewDeal({ ...newDeal, primary_contact: contact.name });
+                                  setContactSearchTerm('');
+                                }}
+                                style={{
+                                  padding: '12px',
+                                  cursor: 'pointer',
+                                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                                  transition: 'background 0.2s'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                              >
+                                <div style={{ color: '#FFFFFF', fontWeight: '500' }}>{contact.name}</div>
+                                {contact.company && (
+                                  <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>
+                                )}
+                                {contact.email && (
+                                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px' }}>{contact.email}</div>
+                                )}
+                              </div>
+                            ))}
+                          
+                          {/* Create New Contact Option */}
+                          <div
+                            onClick={() => {
+                              navigate('/contacts?create=true&name=' + encodeURIComponent(contactSearchTerm));
+                            }}
+                            style={{
+                              padding: '12px',
+                              cursor: 'pointer',
+                              background: 'rgba(0, 184, 212, 0.15)',
+                              color: '#00b8d4',
+                              fontWeight: '600',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.25)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)'}
+                          >
+                            <Plus size={16} />
+                            Create new contact "{contactSearchTerm}"
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Last Contact Date</Label>
