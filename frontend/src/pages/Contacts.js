@@ -713,14 +713,14 @@ const Contacts = () => {
                 <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                   {/* Status */}
                   <span 
-                    className="text-xs px-3 py-1 rounded-full font-medium"
+                    className="text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap"
                     style={{
                       background: getStatusBadgeStyle(contact.status).bg,
                       color: getStatusBadgeStyle(contact.status).color,
                       border: `1px solid ${getStatusBadgeStyle(contact.status).border}`
                     }}
                   >
-                    {statusOptions.find(s => s.value === contact.status)?.label || contact.status}
+                    {statusOptions.find(s => s.value === contact.status)?.shortLabel || contact.status}
                   </span>
 
                   {/* Linked Deals Count */}
