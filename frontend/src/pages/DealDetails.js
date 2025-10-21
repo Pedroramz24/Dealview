@@ -361,11 +361,12 @@ const DealDetails = () => {
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Status</p>
                   <span style={{
                     padding: '6px 16px',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: '#FFFFFF',
+                    background: stageColors[deal.stage] ? `${stageColors[deal.stage]}20` : 'rgba(255, 255, 255, 0.1)',
+                    color: stageColors[deal.stage] || '#FFFFFF',
+                    border: stageColors[deal.stage] ? `1px solid ${stageColors[deal.stage]}40` : '1px solid rgba(255, 255, 255, 0.2)',
                     borderRadius: '6px',
                     fontSize: '14px',
-                    fontWeight: '500',
+                    fontWeight: '600',
                     display: 'inline-block'
                   }}>{deal.stage || deal.deal_status}</span>
                 </div>
