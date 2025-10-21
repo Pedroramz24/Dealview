@@ -1302,8 +1302,8 @@ const DealsList = () => {
         </table>
       </div>
 
-      {/* Edit Deal Side Panel */}
-      {showEditPanel && editingDeal && (
+      {/* Edit Deal Side Panel - REMOVED - Now using inline editing on Property Details page */}
+      {false && (
         <div 
           className="fixed inset-0 z-50 flex justify-end"
           style={{ background: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)' }}
