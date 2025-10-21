@@ -613,33 +613,74 @@ const DealDetails = () => {
             </div>
 
             {/* Core Information */}
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Core Information</h3>
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: isEditMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Core Information {isEditMode && <span style={{ color: 'rgba(0, 184, 212, 0.6)', fontSize: '11px', fontWeight: '400', marginLeft: '8px' }}>• EDITING</span>}
+              </h3>
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Deal Title</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.title || deal.address}</p>
+                  <EditableField field="title" placeholder="Deal Title" />
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Address</p>
+                  <EditableField field="address" placeholder="123 Main St, City, State" />
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Asset Type</p>
+                  <EditableField 
+                    field="asset_type" 
+                    type="select" 
+                    options={[
+                      { value: 'Office', label: 'Office' },
+                      { value: 'Retail', label: 'Retail' },
+                      { value: 'Industrial', label: 'Industrial' },
+                      { value: 'Multifamily', label: 'Multifamily' },
+                      { value: 'Land', label: 'Land' },
+                      { value: 'Mixed Use', label: 'Mixed Use' }
+                    ]} 
+                  />
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Status</p>
-                  <span style={{
-                    padding: '6px 16px',
-                    background: stageColors[deal.stage] ? `${stageColors[deal.stage]}20` : 'rgba(255, 255, 255, 0.1)',
-                    color: stageColors[deal.stage] || '#FFFFFF',
-                    border: stageColors[deal.stage] ? `1px solid ${stageColors[deal.stage]}40` : '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    display: 'inline-block'
-                  }}>{deal.stage || deal.deal_status}</span>
+                  <EditableField 
+                    field="stage" 
+                    type="select" 
+                    options={[
+                      { value: 'need_to_contact', label: 'Need to Contact' },
+                      { value: 'contacted', label: 'Contacted' },
+                      { value: 'prospect', label: 'Prospect' },
+                      { value: 'negotiations', label: 'Negotiations' },
+                      { value: 'offer_sent', label: 'Offer Sent' },
+                      { value: 'under_contract', label: 'Under Contract' },
+                      { value: 'closed_won', label: 'Closed Won' },
+                      { value: 'overpriced', label: 'Overpriced' }
+                    ]} 
+                  />
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Priority</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.priority || 'Medium'}</p>
+                  <EditableField 
+                    field="priority" 
+                    type="select" 
+                    options={[
+                      { value: 'High', label: 'High' },
+                      { value: 'Medium', label: 'Medium' },
+                      { value: 'Low', label: 'Low' }
+                    ]} 
+                  />
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Visibility</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.owner_visibility || 'Team'}</p>
+                  <EditableField 
+                    field="owner_visibility" 
+                    type="select" 
+                    options={[
+                      { value: 'Private', label: 'Private' },
+                      { value: 'Team', label: 'Team' },
+                      { value: 'Public', label: 'Public' }
+                    ]} 
+                  />
                 </div>
               </div>
             </div>
