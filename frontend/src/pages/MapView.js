@@ -22,7 +22,7 @@ const MapView = () => {
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [layerManagerOpen, setLayerManagerOpen] = useState(false);
-  const [showReportAllParcels, setShowReportAllParcels] = useState(true);
+  const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
   const [reportAllParcel, setReportAllParcel] = useState(null);
   const { user } = useContext(AuthContext);
   const [viewState, setViewState] = useState({
