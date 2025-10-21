@@ -418,6 +418,71 @@ const DealDetails = () => {
               )}
             </div>
 
+            {/* Contacts & Activities */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Contacts & Activities</h3>
+              <div className="space-y-4">
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Primary Contact</p>
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.primary_contact_text || 'No primary contact set'}</p>
+                </div>
+                {deal.last_contact_date && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Last Contact Date</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {new Date(deal.last_contact_date).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Important Dates & Details */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Important Dates & Details</h3>
+              <div className="grid grid-cols-2 gap-6">
+                {deal.target_close_date && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Target Close Date</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {new Date(deal.target_close_date).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                )}
+                {deal.next_action_date && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action Date</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {new Date(deal.next_action_date).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                )}
+                {deal.next_action && (
+                  <div className="col-span-2">
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.next_action}</p>
+                  </div>
+                )}
+                {!deal.target_close_date && !deal.next_action_date && !deal.next_action && (
+                  <div className="col-span-2">
+                    <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic' }}>No important dates set yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Linked Contacts */}
             {linkedContacts.length > 0 && (
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
