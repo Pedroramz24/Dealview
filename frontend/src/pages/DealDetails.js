@@ -9,7 +9,13 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { ArrowLeft, Upload, FileText, Share2, DollarSign, Home, MapPin, Calendar, Users, Building2, FileCheck, User, Mail, Phone, Edit, Save, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
-import { formatCurrency, calculatePricePerSqft } from '../utils/numberFormat';
+import { 
+  formatCurrency, 
+  calculatePricePerSqft, 
+  formatNumberWithCommas, 
+  parseFormattedNumber,
+  handleFormattedNumberInput 
+} from '../utils/numberFormat';
 import DealTimeline from '../components/DealTimeline';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
