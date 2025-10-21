@@ -418,12 +418,15 @@ const Pipeline = () => {
       </div>
 
       {/* Kanban Board */}
-      <div className="px-8 pb-8 flex-1 overflow-hidden">
+      <div className="px-8 pb-8 flex-1" style={{ height: 'calc(100vh - 280px)' }}>
         <DragDropContext onDragEnd={onDragEnd}>
           <div 
             ref={boardRef}
-            className="flex gap-4 h-full overflow-x-auto overflow-y-hidden pb-4"
-            style={{ scrollBehavior: 'smooth' }}
+            className="flex gap-4 overflow-x-auto pb-4"
+            style={{ 
+              scrollBehavior: 'smooth',
+              height: '100%'
+            }}
           >
             {stages.map((stage) => {
               const stageDeals = getDealsByStage(stage.id);
