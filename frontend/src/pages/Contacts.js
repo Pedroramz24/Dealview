@@ -47,11 +47,11 @@ const marketOptions = [
 
 // Status options
 const statusOptions = [
-  { value: 'active_contact', label: 'Active Contact' },
-  { value: 'no_active_contact', label: 'No Active Contact' },
-  { value: 'need_to_call', label: 'Need to Call' },
-  { value: 'does_not_want_to_sell', label: 'Does Not Want to Sell' },
-  { value: 'need_to_find_contact_number', label: 'Need to Find Contact Number' }
+  { value: 'active_contact', label: 'Active Contact', shortLabel: 'Active' },
+  { value: 'no_active_contact', label: 'No Active Contact', shortLabel: 'Inactive' },
+  { value: 'need_to_call', label: 'Need to Call', shortLabel: 'Call Needed' },
+  { value: 'does_not_want_to_sell', label: 'Does Not Want to Sell', shortLabel: 'Not Selling' },
+  { value: 'need_to_find_contact_number', label: 'Need to Find Contact Number', shortLabel: 'No Number' }
 ];
 
 const Contacts = () => {
