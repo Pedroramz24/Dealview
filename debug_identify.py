@@ -5,7 +5,7 @@ Debug the counties identify issue
 
 import requests
 
-BASE_URL = "https://realty-command-2.preview.emergentagent.com/api"
+BASE_URL = "https://promap-crm.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {"email": "pedro@test.com", "password": "password123"}
 
 # Authenticate

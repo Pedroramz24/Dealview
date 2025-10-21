@@ -1,55 +1,58 @@
 <analysis>
-The AI engineer's work initiated with stabilizing the application post-migration from MongoDB to Supabase, which involved extensive schema and RLS policy setup. Subsequent development focused on core CRM features: a Kanban Pipeline with drag-and-drop, a robust Edit Deal panel, and a comprehensive overhaul of the Contacts page with Card/Table/Graph views. Throughout this, the engineer meticulously debugged UI inconsistencies and compilation errors. The trajectory shows a strong emphasis on user feedback, iterative refinement, and a strategic pause in new feature development (like Email Inbox) to address critical existing bugs, including geocoding, default view settings, parcel layer management, and data synchronization across pages.
+The AI engineer's work focused on stabilizing and enhancing a map-first CRM. Initially, the task involved fixing  console errors in the Pipeline, which was achieved by adding . Subsequently, the engineer addressed multiple user requests: integrating a Negotiations stage in the Pipeline, making map parcels off by default, implementing number formatting with commas across financial inputs, and overhauling contact linking in deal forms. A major phase involved implementing a comprehensive five-phase plan for data synchronization and inline editing on the  page. This included database schema updates, enhancing create/edit deal forms, adding pipeline stage color-coding, and refactoring the inline editing to resolve severe performance issues, map rendering bugs, and contact/date input problems. The overhaul shifted inputs to an uncontrolled pattern for responsiveness.
 </analysis>
 
 <product_requirements>
-The Pedro Armando CRM aims to be a map-first commercial real estate platform with core features: Map, Deals List, Details, Contacts, Pipeline, Dashboard, Team, and Public Share. It requires a dark AI startup glass-morphism UI, evolving towards a Vercel.com aesthetic, using specific asset type colors. The MapLibre GL map must display vector tiles, satellite imagery, San Antonio demo data, and a dark OSM style. Key functionality includes a Create New Deal form (with image, financials, notes, auto-calcs), a Transaction Timeline with cyan/dark-glass styling, and a Layer Manager panel for live GIS data (CoSA, Bexar, TxDOT, TNRIS, FEMA). Critical and recurring demands include consistent visibility of all map layers, stable rendering, accurate styling, and scalability to over a thousand users. Recent requests include a Kanban Pipeline, rich Edit Deal experience, a Contacts command center with various views (Card, Table, Graph), and features like geocoding and robust data synchronization.
+The Pedro Armando CRM is a map-first commercial real estate platform featuring Map, Deals List, Details, Contacts, Pipeline, Dashboard, Team, and Public Share. It demands a dark AI startup glass-morphism UI, specific asset type colors, and a MapLibre GL map with vector tiles, satellite imagery, San Antonio data, and dark OSM styling. Core functionality includes a Create New Deal form (image, financials, notes, auto-calcs), a Transaction Timeline, and a Layer Manager for live GIS data (CoSA, Bexar, TxDOT, TNRIS, FEMA). Recurring demands are consistent map layer visibility, stable rendering, accurate styling, and scalability. Recent feature additions include a Kanban Pipeline, rich Edit Deal experience, a Contacts command center (Card/Table/Graph views), geocoding, and robust data synchronization. The user explicitly requested fixes for Pipeline drag-and-drop, automated PSF calculation, number formatting, functional contact linking, the Negotiations stage, synchronized property details, and a smooth, comprehensive inline editing experience.
 </product_requirements>
 
 <key_technical_concepts>
-- **Backend**: FastAPI, Supabase (PostgreSQL), JWT (migrated to Supabase Auth).
-- **Frontend**: React, MapLibre GL, Tailwind CSS, React Context, Custom Hooks, , .
-- **Database**: Supabase (PostgreSQL) with Row Level Security (RLS) for fine-grained access.
-- **GIS**: OpenStreetMap Nominatim (for geocoding), Vector Tiles (PMTiles) for map layers.
+- **Backend**: FastAPI, Supabase (PostgreSQL), JWT.
+- **Frontend**: React, MapLibre GL, Tailwind CSS, React Context, Custom Hooks, , , .
+- **Database**: Supabase (PostgreSQL) with Row Level Security (RLS).
+- **GIS**: OpenStreetMap Nominatim (geocoding), Vector Tiles (PMTiles).
 </key_technical_concepts>
 
 <code_architecture>
 
-- : Important for displaying summary metrics. Fixed field name mismatches (, ).
-- : Central to contact management. Migrated to Supabase, revamped with Add/Edit modals, Card/Table/Graph views, linked deals, and filter/search. Fixed status badge text and numerous JSX syntax errors. Set Table View as default.
-- : Manages deals. Migrated to Supabase. Added Edit Deal side panel with comprehensive fields and optimistic updates. Integrated contact linking with autocomplete. Added Linked Contacts column to the table display.
-- : Displays detailed deal information. Migrated to Supabase. Updated to use correct field names (e.g., , ). Enhanced file upload handlers with better logging. Displays linked contacts and updates in real-time.
-- : Implemented Kanban board. Developed drag-and-drop functionality for deal stages. Enhanced card visuals with glass/gradient styles. Fixed drag-and-drop interference and reordered navigation. Resolved multiple JSX syntax errors.
-- : Core map display. Parcels are now off by default and the toggle button removed from the map.
-- : Main UI layout. Navigation tabs reordered (Map, Deals, Pipeline, Contacts, Dashboard, Team).
-- : Global CSS. Added slide-in animation for edit panels.
-- : **New File**. Utility for geocoding addresses using OpenStreetMap Nominatim.
-- : **New File**. SQL script for Contacts page overhaul, defining  and new fields in  table.
-- : **New File**. SQL script for email inbox system tables (not yet implemented in UI).
+- : Implements the Kanban board.
+    - **Changes**: Fixed  console errors (). Added Negotiations stage. Restructured CSS (removed  from board, adjusted column heights, added flex properties) and introduced custom scrollbar styling in  to enable proper vertical scrolling within columns and horizontal scrolling for the board.
+- : **New File**. Provides utility functions for formatting numbers with commas.
+    - **Changes**: Created to standardize number formatting across the application.
+- : Renders the interactive map.
+    - **Changes**: Modified to set parcel layers off by default, and the associated toggle button was removed from the map UI.
+- : Manages the list view of deals and deal creation/editing.
+    - **Changes**: Integrated  for various financial inputs. Updated deal creation and the now-removed edit panel to save comprehensive deal fields. Replaced a simple text input for primary contact with an autocomplete dropdown for better usability. The entire Edit Deal Side Panel was removed to transition to inline editing.
+- : **New File**. A database migration script.
+    - **Changes**: Created to add numerous missing fields (e.g., , , , , , ) to the  table in Supabase, enabling better data capture and synchronization.
+- : Displays detailed information for a single deal.
+    - **Changes**: Underwent a major overhaul for Full Inline Editing. This involved adding an  toggle, state management for , and handlers for saving/cancelling edits. An  helper component was introduced, and core sections (Property Facts, Core Information, Important Dates, Contacts & Activities) were refactored to utilize this, converting display elements into editable inputs in edit mode. Pipeline stage colors were integrated for status badges. Map rendering issues (gray screen) were fixed with conditional rendering based on valid coordinates. Contact fetching, search functionality, and a create new contact option were implemented. The overall inline editing system was re-architected to use uncontrolled inputs to fix performance and freezing issues.
+- : Global CSS file.
+    - **Changes**: Added custom styling for scrollbars to enhance the visual appearance of scrollable elements, particularly in the Pipeline columns.
 </code_architecture>
 
 <pending_tasks>
 - Fully implement the scalable vector tile (PMTiles) system for FEMA and SA Zoning.
-- Complete the Create New Deal form's auto-calculation functions.
-- Ensure the map in the Property Details page () is fully functional.
+- Complete the Create New Deal form's auto-calculation functions (beyond current PSF calculations).
 - Remove old query-based layer system, including  and .
 - Simplify the FastAPI backend to act mainly as a proxy for custom logic/integrations, removing CRUD and auth endpoints.
 - Conduct a thorough security audit as indicated by .
 - Implement advanced graphical enhancements for Contacts page (Owner-first focus, improved Focus Mode, Density Control, smarter layout).
-- Fix the drag-and-drop feature in the Pipeline tab (deferred).
 - Complete the Email Inbox Integration (paused).
 </pending_tasks>
 
 <current_work>
-Immediately before this summary, the AI engineer was addressing a list of critical bug fixes identified by the user to stabilize the application before further feature development. This included:
-1.  **Table View as Default**:  was updated to render the Table View by default.
-2.  **Add Linked Deals to Add Contact Form**: Verified that the Property Links Section is already present and functional in the  form for both adding and editing.
-3.  **Parcels Off by Default**: Modified  to ensure parcel layers are off by default and removed the corresponding toggle button from the map UI.
-4.  **Automate Latitude/Longitude Input (Geocoding)**: Integrated OpenStreetMap Nominatim geocoding using a new utility file (). This automatically populates latitude and longitude fields in  when an address is entered in both the Create Deal form and Edit Deal panel.
-5.  **Data Synchronization**:  was updated to fetch and display linked contacts, ensuring that  and  information is accurately reflected and updated in real-time. This involved adding the  icon import and a Linked Contacts section after Property Facts.
-The last operation was restarting the frontend after fixing the DealDetails page and creating a summary.
+Immediately before this summary, the AI engineer successfully completed a major overhaul of the  page to address critical inline editing performance, map rendering, and contacts/dates functionality, as reported by the user. The user had identified significant lag when typing into inputs, a disappearing map, non-functional contact linking, and non-editable date inputs.
+
+The core of the recent work involved:
+1.  **Input Performance Fix**: The entire inline editing system in  was overhauled (Chat 429) to resolve freezing and lag issues. This was achieved by transitioning inputs to an uncontrolled component pattern, likely using  instead of  prop extensively, to prevent excessive re-renders on every keystroke, leading to smooth typing performance.
+2.  **Map Rendering Fix**: The  section in  was updated with conditional rendering for the  component. It now only renders when valid  and  exist (Chat 437), preventing the map from appearing as a gray screen when coordinates are not available.
+3.  **Contacts Search & Linking Enhancement**: The  section in  was significantly enhanced. It now correctly fetches and suggests contacts in a dropdown, and importantly, includes an explicit Create new contact ...  option when a typed name does not match existing contacts (Chat 445). Filtering logic was also improved.
+4.  **Important Dates Editing Functionality**: The  section in  was made fully functional. Users can now smoothly type into the  field, and date inputs display proper placeholders () without issues like scrolling or focus loss (Chat 450).
+
+All these comprehensive fixes were confirmed functional and smooth through a final screenshot test, successfully resolving all immediate critical user concerns regarding the  page's inline editing experience.
 </current_work>
 
 <optional_next_step>
-The next immediate step is to fix the remaining drag-and-drop issue in the Pipeline as it was explicitly deferred.
+Implement a date picker calendar for all date inputs and ensure price per square foot calculation uses  instead of  on the Property Details page, as explicitly requested by the user.
 </optional_next_step>
