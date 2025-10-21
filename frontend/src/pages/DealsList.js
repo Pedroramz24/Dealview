@@ -455,12 +455,12 @@ const DealsList = () => {
           address: editingDeal.address,
           asset_type: editingDeal.asset_type,
           stage: editingDeal.stage,
-          price: editingDeal.price ? parseFloat(editingDeal.price) : null,
-          size: editingDeal.size ? parseFloat(editingDeal.size) : null,
+          price: editingDeal.price ? parseFormattedNumber(editingDeal.price) : null,
+          size: editingDeal.size ? parseFormattedNumber(editingDeal.size) : null,
           status: editingDeal.status,
           notes: editingDeal.notes,
           cap_rate: editingDeal.cap_rate ? parseFloat(editingDeal.cap_rate) : null,
-          noi: editingDeal.noi ? parseFloat(editingDeal.noi) : null,
+          noi: editingDeal.noi ? parseFormattedNumber(editingDeal.noi) : null,
           updated_at: new Date().toISOString()
         };
 
