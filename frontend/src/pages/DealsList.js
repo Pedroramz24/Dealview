@@ -18,6 +18,18 @@ import {
   calculatePricePerSqft 
 } from '../utils/numberFormat';
 
+// Pipeline stage colors - matching Pipeline.js
+const stageColors = {
+  'need_to_contact': '#94a3b8',
+  'contacted': '#60a5fa',
+  'prospect': '#a78bfa',
+  'negotiations': '#ec4899',
+  'offer_sent': '#f59e0b',
+  'under_contract': '#10b981',
+  'closed_won': '#00d4aa',
+  'overpriced': '#ef4444'
+};
+
 const DealsList = () => {
   const [deals, setDeals] = useState([]);
   const [filteredDeals, setFilteredDeals] = useState([]);
