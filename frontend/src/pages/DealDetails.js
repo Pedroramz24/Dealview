@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
@@ -17,6 +17,8 @@ import {
   handleFormattedNumberInput 
 } from '../utils/numberFormat';
 import DealTimeline from '../components/DealTimeline';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
