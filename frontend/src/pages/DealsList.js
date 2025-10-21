@@ -1522,40 +1522,27 @@ const DealsList = () => {
                 </div>
               </div>
 
-              {/* Property Details */}
+              {/* Property Details - Extended */}
                 <div>
                   <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
                     Property Details
                   </h3>
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                          Building Size (SF)
-                        </Label>
-                        <Input
-                          type="number"
-                          value={editingDeal.size || ''}
-                          onChange={(e) => handleEditChange('size', e.target.value)}
-                          placeholder="0"
-                          style={{
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-border)',
-                            color: 'var(--text-primary)'
-                          }}
-                        />
-                      </div>
-
+                    <div className="grid grid-cols-3 gap-4">
                       <div>
                         <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
                           Lot Size (Acres)
                         </Label>
                         <Input
-                          type="number"
-                          step="0.01"
+                          type="text"
                           value={editingDeal.lot_size || ''}
-                          onChange={(e) => handleEditChange('lot_size', e.target.value)}
-                          placeholder="0.00"
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                              handleEditChange('lot_size', val);
+                            }
+                          }}
+                          placeholder="1.5"
                           style={{
                             background: 'var(--glass-bg)',
                             border: '1px solid var(--glass-border)',
@@ -1563,6 +1550,110 @@ const DealsList = () => {
                           }}
                         />
                       </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Year Built
+                        </Label>
+                        <Input
+                          type="text"
+                          value={editingDeal.year_built || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '' || /^\d{0,4}$/.test(val)) {
+                              handleEditChange('year_built', val);
+                            }
+                          }}
+                          placeholder="2020"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Zoning
+                        </Label>
+                        <Input
+                          type="text"
+                          value={editingDeal.zoning || ''}
+                          onChange={(e) => handleEditChange('zoning', e.target.value)}
+                          placeholder="C-2"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Occupancy (%)
+                        </Label>
+                        <Input
+                          type="text"
+                          value={editingDeal.occupancy || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                              handleEditChange('occupancy', val);
+                            }
+                          }}
+                          placeholder="95.5"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Parking Spaces
+                        </Label>
+                        <Input
+                          type="text"
+                          value={editingDeal.parking_spaces || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '' || /^\d+$/.test(val)) {
+                              handleEditChange('parking_spaces', val);
+                            }
+                          }}
+                          placeholder="50"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Key Features
+                      </Label>
+                      <textarea
+                        value={editingDeal.key_features || ''}
+                        onChange={(e) => handleEditChange('key_features', e.target.value)}
+                        placeholder="Highway access, Updated HVAC, Recent renovations..."
+                        rows={3}
+                        className="w-full px-3 py-2 rounded-lg"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)',
+                          resize: 'vertical'
+                        }}
+                      />
                     </div>
 
                     <div>
@@ -1574,6 +1665,165 @@ const DealsList = () => {
                         onChange={(e) => handleEditChange('notes', e.target.value)}
                         placeholder="Add notes about this deal..."
                         rows={4}
+                        className="w-full px-3 py-2 rounded-lg"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)',
+                          resize: 'vertical'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Deal Management */}
+                <div>
+                  <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
+                    Deal Management
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Priority
+                        </Label>
+                        <select
+                          value={editingDeal.priority || 'Medium'}
+                          onChange={(e) => handleEditChange('priority', e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        >
+                          <option value="High">High</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Low">Low</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Owner Visibility
+                        </Label>
+                        <select
+                          value={editingDeal.owner_visibility || 'Team'}
+                          onChange={(e) => handleEditChange('owner_visibility', e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        >
+                          <option value="Private">Private</option>
+                          <option value="Team">Team</option>
+                          <option value="Public">Public</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Next Action
+                        </Label>
+                        <Input
+                          type="text"
+                          value={editingDeal.next_action || ''}
+                          onChange={(e) => handleEditChange('next_action', e.target.value)}
+                          placeholder="Follow up call"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Next Action Date
+                        </Label>
+                        <Input
+                          type="date"
+                          value={editingDeal.next_action_date || ''}
+                          onChange={(e) => handleEditChange('next_action_date', e.target.value)}
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Target Close Date
+                        </Label>
+                        <Input
+                          type="date"
+                          value={editingDeal.target_close_date || ''}
+                          onChange={(e) => handleEditChange('target_close_date', e.target.value)}
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Last Contact Date
+                        </Label>
+                        <Input
+                          type="date"
+                          value={editingDeal.last_contact_date || ''}
+                          onChange={(e) => handleEditChange('last_contact_date', e.target.value)}
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Lease Type
+                      </Label>
+                      <select
+                        value={editingDeal.lease_type || ''}
+                        onChange={(e) => handleEditChange('lease_type', e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg"
+                        style={{
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-primary)'
+                        }}
+                      >
+                        <option value="">Select Lease Type</option>
+                        <option value="NNN">NNN</option>
+                        <option value="Gross">Gross</option>
+                        <option value="Modified Gross">Modified Gross</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                        Pro Forma Notes
+                      </Label>
+                      <textarea
+                        value={editingDeal.proforma_notes || ''}
+                        onChange={(e) => handleEditChange('proforma_notes', e.target.value)}
+                        placeholder="Financial assumptions and pro forma details..."
+                        rows={3}
                         className="w-full px-3 py-2 rounded-lg"
                         style={{
                           background: 'var(--glass-bg)',
