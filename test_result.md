@@ -262,11 +262,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "DealDetails Supabase Migration"
-    - "Pipeline Page - React Beautiful DnD Error"
-    - "File Upload Testing"
+    - "DealDetails Complete Inline Editing Overhaul"
+    - "Date Picker Calendar Functionality"
+    - "PSF Calculation with Lot Size"
   stuck_tasks:
-    - "DealDetails Supabase Migration"
+    - "DealDetails Complete Inline Editing Overhaul"
   test_all: false
   test_priority: "high_first"
   backend_testing_notes: |
