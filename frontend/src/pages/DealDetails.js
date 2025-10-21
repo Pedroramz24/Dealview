@@ -53,6 +53,11 @@ const DealDetails = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedDeal, setEditedDeal] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Contact Management
+  const [allContacts, setAllContacts] = useState([]);
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
+  const [selectedContacts, setSelectedContacts] = useState([]);
 
   useEffect(() => {
     if (user) {
