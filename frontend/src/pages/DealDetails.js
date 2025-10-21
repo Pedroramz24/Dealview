@@ -102,9 +102,25 @@ const DealDetails = () => {
         .eq('deal_id', dealId);
 
       if (error) throw error;
-      setLinkedContacts(links?.map(link => link.contacts) || []);
+      const contacts = links?.map(link => link.contacts) || [];
+      setLinkedContacts(contacts);
+      setSelectedContacts(contacts.map(c => c.id));
     } catch (error) {
       console.error('Error fetching linked contacts:', error);
+    }
+  };
+  
+  const fetchAllContacts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('contacts')
+        .select('id, name, email, company, title')
+        .order('name');
+      
+      if (error) throw error;
+      setAllContacts(data || []);
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
     }
   };
 
