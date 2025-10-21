@@ -25,6 +25,7 @@ const DealDetails = () => {
   const { dealId } = useParams();
   const navigate = useNavigate();
   const [deal, setDeal] = useState(null);
+  const [linkedContacts, setLinkedContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const { user } = useContext(AuthContext);
@@ -32,6 +33,7 @@ const DealDetails = () => {
   useEffect(() => {
     if (user) {
       fetchDeal();
+      fetchLinkedContacts();
     }
   }, [dealId, user]);
 
@@ -56,6 +58,23 @@ const DealDetails = () => {
       navigate('/deals');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchLinkedContacts = async () => {
+    try {
+      const { data: links, error } = await supabase
+        .from('contact_deal_links')
+        .select(`
+          contact_id,
+          contacts:contact_id (id, name, email, phone, company, title)
+        `)
+        .eq('deal_id', dealId);
+
+      if (error) throw error;
+      setLinkedContacts(links?.map(link => link.contacts) || []);
+    } catch (error) {
+      console.error('Error fetching linked contacts:', error);
     }
   };
 
