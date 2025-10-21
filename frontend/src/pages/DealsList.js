@@ -1480,14 +1480,14 @@ const DealsList = () => {
                         <Input
                           type="text"
                           value={formatNumberWithCommas(editingDeal.noi || '')}
-                        onChange={(e) => handleEditChange('noi', e.target.value)}
-                        placeholder="0"
-                        style={{
-                          background: 'var(--glass-bg)',
-                          border: '1px solid var(--glass-border)',
-                          color: 'var(--text-primary)'
-                        }}
-                      />
+                          onChange={(e) => handleFormattedNumberInput(e, (val) => handleEditChange('noi', val))}
+                          placeholder="75,000"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
                     </div>
                   </div>
                 </div>
