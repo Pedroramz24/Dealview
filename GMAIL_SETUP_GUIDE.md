@@ -62,7 +62,7 @@ This creates:
 3. Application type: **Web application**
 4. Name: "DealView CRM Web Client"
 5. **Authorized redirect URIs**: Add:
-   - `https://parcelmap-2.preview.emergentagent.com/api/email/oauth-callback`
+   - `https://realty-command-2.preview.emergentagent.com/api/email/oauth-callback`
    - `http://localhost:8001/api/email/oauth-callback` (for testing)
 6. Click "Create"
 7. **Download JSON** - Click the download icon
