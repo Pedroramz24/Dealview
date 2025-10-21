@@ -808,32 +808,67 @@ const DealDetails = () => {
                           background: 'rgba(15, 23, 42, 0.98)',
                           border: '1px solid rgba(0, 184, 212, 0.3)',
                           borderRadius: '8px',
-                          maxHeight: '200px',
+                          maxHeight: '250px',
                           overflowY: 'auto',
                           zIndex: 50
                         }}>
-                          {allContacts
-                            .filter(c => c.name.toLowerCase().includes(contactSearchTerm.toLowerCase()))
-                            .slice(0, 5)
-                            .map(contact => (
-                              <div
-                                key={contact.id}
-                                onClick={() => {
-                                  handleAddContact(contact.id);
-                                  setContactSearchTerm('');
-                                }}
-                                style={{
-                                  padding: '12px',
-                                  cursor: 'pointer',
-                                  borderBottom: '1px solid rgba(255,255,255,0.05)'
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                              >
-                                <div style={{ color: '#FFFFFF', fontWeight: '500' }}>{contact.name}</div>
-                                {contact.company && <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>}
-                              </div>
-                            ))}
+                          {(() => {
+                            const filteredContacts = allContacts.filter(c => 
+                              c.name.toLowerCase().includes(contactSearchTerm.toLowerCase()) &&
+                              !selectedContacts.includes(c.id)
+                            ).slice(0, 5);
+                            
+                            return (
+                              <>
+                                {filteredContacts.length > 0 ? (
+                                  filteredContacts.map(contact => (
+                                    <div
+                                      key={contact.id}
+                                      onClick={() => {
+                                        handleAddContact(contact.id);
+                                        setContactSearchTerm('');
+                                      }}
+                                      style={{
+                                        padding: '12px',
+                                        cursor: 'pointer',
+                                        borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                      }}
+                                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
+                                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                    >
+                                      <div style={{ color: '#FFFFFF', fontWeight: '500' }}>{contact.name}</div>
+                                      {contact.company && <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>}
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div style={{ padding: '12px', color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>
+                                    No contacts found
+                                  </div>
+                                )}
+                                
+                                {/* Create New Contact Option */}
+                                <div
+                                  onClick={() => navigate(`/contacts?create=true&name=${encodeURIComponent(contactSearchTerm)}`)}
+                                  style={{
+                                    padding: '12px',
+                                    cursor: 'pointer',
+                                    background: 'rgba(0, 184, 212, 0.15)',
+                                    color: '#00b8d4',
+                                    fontWeight: '600',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    borderTop: '1px solid rgba(0, 184, 212, 0.3)'
+                                  }}
+                                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.25)'}
+                                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)'}
+                                >
+                                  <User size={16} />
+                                  Create new contact "{contactSearchTerm}"
+                                </div>
+                              </>
+                            );
+                          })()}
                         </div>
                       )}
                     </div>
