@@ -11,6 +11,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '../components/ui/label';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { geocodeAddress } from '../utils/geocoding';
+import { 
+  formatNumberWithCommas, 
+  parseFormattedNumber, 
+  handleFormattedNumberInput,
+  calculatePricePerSqft 
+} from '../utils/numberFormat';
 
 const DealsList = () => {
   const [deals, setDeals] = useState([]);
