@@ -9,9 +9,22 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { ArrowLeft, Upload, FileText, Share2, DollarSign, Home, MapPin, Calendar, Users, Building2, FileCheck, User, Mail, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
+import { formatCurrency, calculatePricePerSqft } from '../utils/numberFormat';
 import DealTimeline from '../components/DealTimeline';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+
+// Pipeline stage colors - matching Pipeline.js
+const stageColors = {
+  'need_to_contact': '#94a3b8',
+  'contacted': '#60a5fa',
+  'prospect': '#a78bfa',
+  'negotiations': '#ec4899',
+  'offer_sent': '#f59e0b',
+  'under_contract': '#10b981',
+  'closed_won': '#00d4aa',
+  'overpriced': '#ef4444'
+};
 
 // Fix Leaflet default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
