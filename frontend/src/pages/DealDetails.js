@@ -193,6 +193,7 @@ const DealDetails = () => {
       console.log('Document record created successfully');
       toast.success('Document uploaded successfully');
       fetchDeal();
+      fetchLinkedContacts();
     } catch (error) {
       console.error('Error uploading document:', error);
       toast.error(error.message || 'Failed to upload document');
