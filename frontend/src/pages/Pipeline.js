@@ -440,7 +440,7 @@ const Pipeline = () => {
                 >
                   {/* Stage Header */}
                   <div 
-                    className="glass-surface p-4 mb-3 rounded-xl"
+                    className="glass-surface p-4 mb-3 rounded-xl flex-shrink-0"
                     style={{
                       borderTop: `3px solid ${stage.color}`
                     }}
