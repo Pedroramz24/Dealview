@@ -1281,31 +1281,20 @@ const DealsList = () => {
                   {formatDate(deal.last_contact)}
                 </td>
                 <td>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => handleEditClick(deal)}
-                      variant="outline"
-                      size="sm"
-                      data-testid={`edit-deal-${deal.id}`}
-                      style={{
-                        background: 'var(--glass-bg)',
-                        border: '1px solid var(--glass-border)',
-                        color: 'var(--accent)'
-                      }}
-                    >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() => navigate(`/deals/${deal.id}`)}
-                      variant="outline"
-                      size="sm"
-                      data-testid={`view-deal-${deal.id}`}
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      View
-                    </Button>
-                  </div>
+                  <Button
+                    onClick={() => navigate(`/deals/${deal.id}`)}
+                    variant="outline"
+                    size="sm"
+                    data-testid={`view-deal-${deal.id}`}
+                    style={{
+                      background: 'var(--glass-bg)',
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--accent)'
+                    }}
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    View
+                  </Button>
                 </td>
               </tr>
             ))}
