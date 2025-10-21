@@ -1206,7 +1206,7 @@ const DealsList = () => {
                       </Label>
                       <Input
                         value={editingDeal.address || ''}
-                        onChange={(e) => handleEditChange('address', e.target.value)}
+                        onChange={(e) => handleEditAddressChange(e.target.value)}
                         placeholder="Property address"
                         style={{
                           background: 'var(--glass-bg)',
@@ -1214,6 +1214,11 @@ const DealsList = () => {
                           color: 'var(--text-primary)'
                         }}
                       />
+                      {isGeocoding && (
+                        <p className="text-xs mt-1" style={{ color: 'var(--accent)' }}>
+                          📍 Finding location...
+                        </p>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
