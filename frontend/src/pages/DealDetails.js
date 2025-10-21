@@ -3,19 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { ArrowLeft, Upload, FileText, Share2, DollarSign, Home, MapPin, Calendar, Users, Building2, FileCheck, User, Mail, Phone, Edit, Save, X } from 'lucide-react';
+import { ArrowLeft, Upload, Edit, Save, X, Home, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
-import { 
-  formatCurrency, 
-  calculatePricePerSqft, 
-  formatNumberWithCommas, 
-  parseFormattedNumber,
-  handleFormattedNumberInput 
-} from '../utils/numberFormat';
 import DealTimeline from '../components/DealTimeline';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -47,19 +39,45 @@ const DealDetails = () => {
   const navigate = useNavigate();
   const [deal, setDeal] = useState(null);
   const [linkedContacts, setLinkedContacts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const { user } = useContext(AuthContext);
   
   // Edit Mode State
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editedDeal, setEditedDeal] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   
   // Contact Management
   const [allContacts, setAllContacts] = useState([]);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
+  
+  // Date States for DatePicker
+  const [targetCloseDate, setTargetCloseDate] = useState(null);
+  const [nextActionDate, setNextActionDate] = useState(null);
+  const [lastContactDate, setLastContactDate] = useState(null);
+  
+  // Refs for ALL uncontrolled inputs
+  const titleRef = useRef(null);
+  const addressRef = useRef(null);
+  const assetTypeRef = useRef(null);
+  const stageRef = useRef(null);
+  const priorityRef = useRef(null);
+  const visibilityRef = useRef(null);
+  const sizeRef = useRef(null);
+  const lotSizeRef = useRef(null);
+  const yearBuiltRef = useRef(null);
+  const zoningRef = useRef(null);
+  const occupancyRef = useRef(null);
+  const parkingSpacesRef = useRef(null);
+  const keyFeaturesRef = useRef(null);
+  const priceRef = useRef(null);
+  const capRateRef = useRef(null);
+  const noiRef = useRef(null);
+  const leaseTypeRef = useRef(null);
+  const proformaNotesRef = useRef(null);
+  const nextActionRef = useRef(null);
+  const notesRef = useRef(null);
 
   useEffect(() => {
     if (user) {
@@ -84,6 +102,11 @@ const DealDetails = () => {
 
       if (error) throw error;
       setDeal(data);
+      
+      // Set date states
+      if (data.target_close_date) setTargetCloseDate(new Date(data.target_close_date));
+      if (data.next_action_date) setNextActionDate(new Date(data.next_action_date));
+      if (data.last_contact_date) setLastContactDate(new Date(data.last_contact_date));
     } catch (error) {
       console.error('Error fetching deal:', error);
       toast.error('Failed to load deal');
@@ -134,49 +157,31 @@ const DealDetails = () => {
       return;
     }
 
-    console.log('Starting image upload:', { fileName: file.name, fileSize: file.size, fileType: file.type });
     setUploading(true);
     
     try {
-      // Generate unique file name
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${dealId}/${Date.now()}.${fileExt}`;
-      console.log('Upload path:', fileName);
 
-      // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('property-images')
         .upload(fileName, file);
 
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw uploadError;
-      }
+      if (uploadError) throw uploadError;
 
-      console.log('Upload successful:', uploadData);
-
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('property-images')
         .getPublicUrl(fileName);
 
-      console.log('Public URL:', publicUrl);
-
-      // Update deal with new image URL
       const { error: updateError } = await supabase
         .from('deals')
         .update({ image_url: publicUrl })
         .eq('id', dealId);
 
-      if (updateError) {
-        console.error('Update error:', updateError);
-        throw updateError;
-      }
+      if (updateError) throw updateError;
 
-      console.log('Deal updated successfully');
       toast.success('Image uploaded successfully');
       fetchDeal();
-      fetchLinkedContacts();
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error(error.message || 'Failed to upload image');
@@ -193,35 +198,22 @@ const DealDetails = () => {
       return;
     }
 
-    console.log('Starting document upload:', { fileName: file.name, fileSize: file.size, fileType: file.type });
     setUploading(true);
 
     try {
-      // Generate unique file name
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${dealId}/${Date.now()}_${file.name}`;
-      console.log('Upload path:', fileName);
 
-      // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('deal-documents')
         .upload(fileName, file);
 
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw uploadError;
-      }
+      if (uploadError) throw uploadError;
 
-      console.log('Upload successful:', uploadData);
-
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('deal-documents')
         .getPublicUrl(fileName);
 
-      console.log('Public URL:', publicUrl);
-
-      // Create document record
       const { error: insertError } = await supabase
         .from('documents')
         .insert([{
@@ -233,15 +225,10 @@ const DealDetails = () => {
           file_size: file.size
         }]);
 
-      if (insertError) {
-        console.error('Insert error:', insertError);
-        throw insertError;
-      }
+      if (insertError) throw insertError;
 
-      console.log('Document record created successfully');
       toast.success('Document uploaded successfully');
       fetchDeal();
-      fetchLinkedContacts();
     } catch (error) {
       console.error('Error uploading document:', error);
       toast.error(error.message || 'Failed to upload document');
@@ -258,20 +245,18 @@ const DealDetails = () => {
   
   // Edit Mode Handlers
   const handleEditMode = () => {
-    setEditedDeal({ ...deal });
     setIsEditMode(true);
   };
   
   const handleCancelEdit = () => {
-    setEditedDeal(null);
     setIsEditMode(false);
-  };
-  
-  const handleFieldChange = (field, value) => {
-    setEditedDeal(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    // Reset dates to original values
+    if (deal.target_close_date) setTargetCloseDate(new Date(deal.target_close_date));
+    else setTargetCloseDate(null);
+    if (deal.next_action_date) setNextActionDate(new Date(deal.next_action_date));
+    else setNextActionDate(null);
+    if (deal.last_contact_date) setLastContactDate(new Date(deal.last_contact_date));
+    else setLastContactDate(null);
   };
   
   const handleSave = async () => {
@@ -282,42 +267,40 @@ const DealDetails = () => {
     
     setIsSaving(true);
     try {
+      // Collect all values from refs
       const updateData = {
-        title: editedDeal.title,
-        address: editedDeal.address,
-        asset_type: editedDeal.asset_type,
-        stage: editedDeal.stage,
-        status: editedDeal.status,
-        
-        // Financial
-        price: editedDeal.price ? parseFormattedNumber(editedDeal.price) : null,
-        size: editedDeal.size ? parseFormattedNumber(editedDeal.size) : null,
-        cap_rate: editedDeal.cap_rate ? parseFloat(editedDeal.cap_rate) : null,
-        noi: editedDeal.noi ? parseFormattedNumber(editedDeal.noi) : null,
-        lease_type: editedDeal.lease_type || null,
-        proforma_notes: editedDeal.proforma_notes || null,
+        title: titleRef.current?.value || deal.title,
+        address: addressRef.current?.value || deal.address,
+        asset_type: assetTypeRef.current?.value || deal.asset_type,
+        stage: stageRef.current?.value || deal.stage,
+        status: stageRef.current?.value || deal.status,
+        priority: priorityRef.current?.value || 'Medium',
+        owner_visibility: visibilityRef.current?.value || 'Team',
         
         // Property Details
-        lot_size: editedDeal.lot_size ? parseFloat(editedDeal.lot_size) : null,
-        year_built: editedDeal.year_built ? parseInt(editedDeal.year_built) : null,
-        zoning: editedDeal.zoning || null,
-        occupancy: editedDeal.occupancy ? parseFloat(editedDeal.occupancy) : null,
-        parking_spaces: editedDeal.parking_spaces ? parseInt(editedDeal.parking_spaces) : null,
-        key_features: editedDeal.key_features || null,
+        size: sizeRef.current?.value ? parseFloat(sizeRef.current.value.replace(/,/g, '')) : null,
+        lot_size: lotSizeRef.current?.value ? parseFloat(lotSizeRef.current.value) : null,
+        year_built: yearBuiltRef.current?.value ? parseInt(yearBuiltRef.current.value) : null,
+        zoning: zoningRef.current?.value || null,
+        occupancy: occupancyRef.current?.value ? parseFloat(occupancyRef.current.value) : null,
+        parking_spaces: parkingSpacesRef.current?.value ? parseInt(parkingSpacesRef.current.value) : null,
+        key_features: keyFeaturesRef.current?.value || null,
+        
+        // Financial
+        price: priceRef.current?.value ? parseFloat(priceRef.current.value.replace(/,/g, '')) : null,
+        cap_rate: capRateRef.current?.value ? parseFloat(capRateRef.current.value) : null,
+        noi: noiRef.current?.value ? parseFloat(noiRef.current.value.replace(/,/g, '')) : null,
+        lease_type: leaseTypeRef.current?.value || null,
+        proforma_notes: proformaNotesRef.current?.value || null,
         
         // Deal Management
-        priority: editedDeal.priority || 'Medium',
-        owner_visibility: editedDeal.owner_visibility || 'Team',
-        next_action: editedDeal.next_action || null,
-        next_action_date: editedDeal.next_action_date || null,
-        target_close_date: editedDeal.target_close_date || null,
-        last_contact_date: editedDeal.last_contact_date || null,
-        
-        // Contact
-        primary_contact_text: editedDeal.primary_contact_text || null,
+        next_action: nextActionRef.current?.value || null,
+        next_action_date: nextActionDate ? nextActionDate.toISOString().split('T')[0] : null,
+        target_close_date: targetCloseDate ? targetCloseDate.toISOString().split('T')[0] : null,
+        last_contact_date: lastContactDate ? lastContactDate.toISOString().split('T')[0] : null,
         
         // Notes
-        notes: editedDeal.notes,
+        notes: notesRef.current?.value || null,
         
         updated_at: new Date().toISOString()
       };
@@ -329,10 +312,9 @@ const DealDetails = () => {
       
       if (error) throw error;
       
-      // Update local state
-      setDeal({ ...editedDeal, ...updateData });
+      // Refresh deal data
+      await fetchDeal();
       setIsEditMode(false);
-      setEditedDeal(null);
       toast.success('Deal updated successfully');
       
     } catch (error) {
@@ -363,6 +345,7 @@ const DealDetails = () => {
       
       setSelectedContacts([...selectedContacts, contactId]);
       await fetchLinkedContacts();
+      setContactSearchTerm('');
       toast.success('Contact linked successfully');
     } catch (error) {
       console.error('Error linking contact:', error);
@@ -390,6 +373,7 @@ const DealDetails = () => {
   };
 
   const formatPrice = (price) => {
+    if (!price) return 'N/A';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -397,102 +381,18 @@ const DealDetails = () => {
     }).format(price);
   };
 
-  const calculatePricePerSF = () => {
-    const currentDeal = isEditMode ? editedDeal : deal;
-    if (!currentDeal?.size || !currentDeal?.price) return 'N/A';
-    const size = typeof currentDeal.size === 'string' ? parseFormattedNumber(currentDeal.size) : currentDeal.size;
-    const price = typeof currentDeal.price === 'string' ? parseFormattedNumber(currentDeal.price) : currentDeal.price;
-    return formatPrice(price / size);
+  // PSF calculation using LOT SIZE
+  const calculatePricePerLotSF = () => {
+    if (!deal?.lot_size || !deal?.price) return 'N/A';
+    const psf = deal.price / deal.lot_size;
+    return formatPrice(psf);
   };
 
-  const calculatePricePerAcre = () => {
-    const currentDeal = isEditMode ? editedDeal : deal;
-    const acres = currentDeal?.lot_acres || currentDeal?.lot_size;
-    if (!acres || !currentDeal?.price) return 'N/A';
-    const price = typeof currentDeal.price === 'string' ? parseFormattedNumber(currentDeal.price) : currentDeal.price;
-    return formatPrice(price / acres);
+  const calculatePricePerBuildingSF = () => {
+    if (!deal?.size || !deal?.price) return 'N/A';
+    const psf = deal.price / deal.size;
+    return formatPrice(psf);
   };
-  
-  // Optimized EditableField with proper controlled input handling
-  const EditableField = React.memo(({ field, type = 'text', placeholder, options = null, textarea = false }) => {
-    const currentValue = isEditMode ? (editedDeal?.[field] ?? '') : (deal?.[field] ?? '');
-    
-    // View mode
-    if (!isEditMode) {
-      if (type === 'select' && options) {
-        return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{currentValue || 'N/A'}</p>;
-      }
-      if (type === 'date' && currentValue) {
-        return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
-          {new Date(currentValue).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-        </p>;
-      }
-      if (type === 'number' || field === 'price' || field === 'size' || field === 'noi') {
-        return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
-          {currentValue ? (field === 'price' || field === 'noi' ? formatPrice(currentValue) : parseFloat(currentValue).toLocaleString()) : 'N/A'}
-        </p>;
-      }
-      return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{currentValue || 'N/A'}</p>;
-    }
-    
-    // Edit mode - using uncontrolled inputs with defaultValue for better performance
-    const inputStyle = {
-      width: '100%',
-      padding: '8px 12px',
-      background: 'rgba(0, 0, 0, 0.3)',
-      border: '1px solid rgba(0, 184, 212, 0.3)',
-      borderRadius: '6px',
-      color: '#FFFFFF',
-      fontSize: '14px'
-    };
-    
-    if (type === 'select' && options) {
-      return (
-        <select
-          defaultValue={currentValue}
-          onChange={(e) => handleFieldChange(field, e.target.value)}
-          style={inputStyle}
-        >
-          {options.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-      );
-    }
-    
-    if (textarea) {
-      return (
-        <textarea
-          defaultValue={currentValue}
-          onChange={(e) => handleFieldChange(field, e.target.value)}
-          placeholder={placeholder}
-          rows={4}
-          style={{ ...inputStyle, resize: 'vertical' }}
-        />
-      );
-    }
-    
-    if (type === 'date') {
-      return (
-        <input
-          type="date"
-          defaultValue={currentValue}
-          onChange={(e) => handleFieldChange(field, e.target.value)}
-          style={inputStyle}
-        />
-      );
-    }
-    
-    return (
-      <input
-        type={type}
-        defaultValue={currentValue}
-        onChange={(e) => handleFieldChange(field, e.target.value)}
-        placeholder={placeholder}
-        style={inputStyle}
-      />
-    );
-  });
 
   if (loading) {
     return (
@@ -503,6 +403,10 @@ const DealDetails = () => {
   }
 
   if (!deal) return null;
+  
+  const hasValidCoordinates = deal.latitude && deal.longitude && 
+                              !isNaN(parseFloat(deal.latitude)) && 
+                              !isNaN(parseFloat(deal.longitude));
 
   return (
     <div style={{ background: '#000000', minHeight: '100vh' }}>
@@ -607,7 +511,7 @@ const DealDetails = () => {
           </h1>
 
           {/* Asset Type Tag - Centered */}
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
             <span style={{
               padding: '10px 24px',
               background: getAssetTypeColor(deal.asset_type).bg,
@@ -621,13 +525,28 @@ const DealDetails = () => {
             }}>
               {deal.asset_type}
             </span>
+            {deal.stage && (
+              <span style={{
+                padding: '10px 24px',
+                background: `${stageColors[deal.stage] || '#94a3b8'}20`,
+                color: stageColors[deal.stage] || '#94a3b8',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                border: `1px solid ${stageColors[deal.stage] || '#94a3b8'}`,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {deal.stage.replace(/_/g, ' ')}
+              </span>
+            )}
           </div>
         </div>
       </div>
 
       {/* Main Content Area */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
-        {/* Transaction Timeline - Only show for deals with milestone data */}
+        {/* Transaction Timeline */}
         {(deal.under_contract_date || deal.closing_date) && (
           <DealTimeline deal={deal} />
         )}
@@ -673,67 +592,149 @@ const DealDetails = () => {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Deal Title</p>
-                  <EditableField field="title" placeholder="Deal Title" />
+                  {isEditMode ? (
+                    <input
+                      ref={titleRef}
+                      type="text"
+                      defaultValue={deal.title}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.title || 'N/A'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Address</p>
-                  <EditableField field="address" placeholder="123 Main St, City, State" />
+                  {isEditMode ? (
+                    <input
+                      ref={addressRef}
+                      type="text"
+                      defaultValue={deal.address}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.address || 'N/A'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Asset Type</p>
-                  <EditableField 
-                    field="asset_type" 
-                    type="select" 
-                    options={[
-                      { value: 'Office', label: 'Office' },
-                      { value: 'Retail', label: 'Retail' },
-                      { value: 'Industrial', label: 'Industrial' },
-                      { value: 'Multifamily', label: 'Multifamily' },
-                      { value: 'Land', label: 'Land' },
-                      { value: 'Mixed Use', label: 'Mixed Use' }
-                    ]} 
-                  />
+                  {isEditMode ? (
+                    <select
+                      ref={assetTypeRef}
+                      defaultValue={deal.asset_type}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    >
+                      <option value="Office">Office</option>
+                      <option value="Retail">Retail</option>
+                      <option value="Industrial">Industrial</option>
+                      <option value="Multifamily">Multifamily</option>
+                      <option value="Land">Land</option>
+                      <option value="Mixed Use">Mixed Use</option>
+                    </select>
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.asset_type || 'N/A'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Status</p>
-                  <EditableField 
-                    field="stage" 
-                    type="select" 
-                    options={[
-                      { value: 'need_to_contact', label: 'Need to Contact' },
-                      { value: 'contacted', label: 'Contacted' },
-                      { value: 'prospect', label: 'Prospect' },
-                      { value: 'negotiations', label: 'Negotiations' },
-                      { value: 'offer_sent', label: 'Offer Sent' },
-                      { value: 'under_contract', label: 'Under Contract' },
-                      { value: 'closed_won', label: 'Closed Won' },
-                      { value: 'overpriced', label: 'Overpriced' }
-                    ]} 
-                  />
+                  {isEditMode ? (
+                    <select
+                      ref={stageRef}
+                      defaultValue={deal.stage}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    >
+                      <option value="need_to_contact">Need to Contact</option>
+                      <option value="contacted">Contacted</option>
+                      <option value="prospect">Prospect</option>
+                      <option value="negotiations">Negotiations</option>
+                      <option value="offer_sent">Offer Sent</option>
+                      <option value="under_contract">Under Contract</option>
+                      <option value="closed_won">Closed Won</option>
+                      <option value="overpriced">Overpriced</option>
+                    </select>
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.stage?.replace(/_/g, ' ') || 'N/A'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Priority</p>
-                  <EditableField 
-                    field="priority" 
-                    type="select" 
-                    options={[
-                      { value: 'High', label: 'High' },
-                      { value: 'Medium', label: 'Medium' },
-                      { value: 'Low', label: 'Low' }
-                    ]} 
-                  />
+                  {isEditMode ? (
+                    <select
+                      ref={priorityRef}
+                      defaultValue={deal.priority || 'Medium'}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    >
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.priority || 'Medium'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Visibility</p>
-                  <EditableField 
-                    field="owner_visibility" 
-                    type="select" 
-                    options={[
-                      { value: 'Private', label: 'Private' },
-                      { value: 'Team', label: 'Team' },
-                      { value: 'Public', label: 'Public' }
-                    ]} 
-                  />
+                  {isEditMode ? (
+                    <select
+                      ref={visibilityRef}
+                      defaultValue={deal.owner_visibility || 'Team'}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    >
+                      <option value="Private">Private</option>
+                      <option value="Team">Team</option>
+                      <option value="Public">Public</option>
+                    </select>
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.owner_visibility || 'Team'}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -746,36 +747,167 @@ const DealDetails = () => {
               <div className="grid grid-cols-3 gap-6">
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Building Size (SF)</p>
-                  <EditableField field="size" placeholder="5,000" />
+                  {isEditMode ? (
+                    <input
+                      ref={sizeRef}
+                      type="text"
+                      defaultValue={deal.size || ''}
+                      placeholder="5,000"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.size ? parseFloat(deal.size).toLocaleString() : 'N/A'}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Lot Size (acres)</p>
-                  <EditableField field="lot_size" type="number" placeholder="1.5" />
+                  {isEditMode ? (
+                    <input
+                      ref={lotSizeRef}
+                      type="text"
+                      defaultValue={deal.lot_size || ''}
+                      placeholder="1.5"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.lot_size ? parseFloat(deal.lot_size).toLocaleString() : 'N/A'}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Year Built</p>
-                  <EditableField field="year_built" type="number" placeholder="2020" />
+                  {isEditMode ? (
+                    <input
+                      ref={yearBuiltRef}
+                      type="text"
+                      defaultValue={deal.year_built || ''}
+                      placeholder="2020"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.year_built || 'N/A'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Zoning</p>
-                  <EditableField field="zoning" placeholder="C-2" />
+                  {isEditMode ? (
+                    <input
+                      ref={zoningRef}
+                      type="text"
+                      defaultValue={deal.zoning || ''}
+                      placeholder="C-2"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.zoning || 'N/A'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Occupancy (%)</p>
-                  <EditableField field="occupancy" type="number" placeholder="95.5" />
+                  {isEditMode ? (
+                    <input
+                      ref={occupancyRef}
+                      type="text"
+                      defaultValue={deal.occupancy || ''}
+                      placeholder="95.5"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.occupancy || 'N/A'}</p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Parking Spaces</p>
-                  <EditableField field="parking_spaces" type="number" placeholder="50" />
+                  {isEditMode ? (
+                    <input
+                      ref={parkingSpacesRef}
+                      type="text"
+                      defaultValue={deal.parking_spaces || ''}
+                      placeholder="50"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.parking_spaces || 'N/A'}</p>
+                  )}
                 </div>
               </div>
               <div className="mt-6">
                 <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '8px' }}>Key Features</p>
-                <EditableField field="key_features" textarea={true} placeholder="Highway access, Updated HVAC, Recent renovations..." />
+                {isEditMode ? (
+                  <textarea
+                    ref={keyFeaturesRef}
+                    defaultValue={deal.key_features || ''}
+                    placeholder="Highway access, Updated HVAC, Recent renovations..."
+                    rows={4}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(0, 184, 212, 0.3)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px',
+                      resize: 'vertical'
+                    }}
+                  />
+                ) : (
+                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.key_features || 'N/A'}</p>
+                )}
               </div>
             </div>
 
-            {/* Contacts & Link Management */}
+            {/* Contacts & Activities */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: isEditMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Contacts & Activities {isEditMode && <span style={{ color: 'rgba(0, 184, 212, 0.6)', fontSize: '11px', fontWeight: '400', marginLeft: '8px' }}>• EDITING</span>}
@@ -785,16 +917,19 @@ const DealDetails = () => {
                 <div className="space-y-4">
                   {/* Link Contacts */}
                   <div>
-                    <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>Link Contacts</Label>
+                    <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>Search & Link Contacts</Label>
                     <div className="relative">
-                      <Input
+                      <input
                         type="text"
                         placeholder="Search contacts by name..."
                         value={contactSearchTerm}
                         onChange={(e) => setContactSearchTerm(e.target.value)}
                         style={{
+                          width: '100%',
+                          padding: '8px 12px',
                           background: 'rgba(0, 0, 0, 0.3)',
                           border: '1px solid rgba(0, 184, 212, 0.3)',
+                          borderRadius: '6px',
                           color: '#FFFFFF',
                           fontSize: '14px'
                         }}
@@ -826,10 +961,7 @@ const DealDetails = () => {
                                   filteredContacts.map(contact => (
                                     <div
                                       key={contact.id}
-                                      onClick={() => {
-                                        handleAddContact(contact.id);
-                                        setContactSearchTerm('');
-                                      }}
+                                      onClick={() => handleAddContact(contact.id)}
                                       style={{
                                         padding: '12px',
                                         cursor: 'pointer',
@@ -918,12 +1050,6 @@ const DealDetails = () => {
                       </div>
                     </div>
                   )}
-                  
-                  {/* Last Contact Date */}
-                  <div>
-                    <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>Last Contact Date</Label>
-                    <EditableField field="last_contact_date" type="date" />
-                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -944,18 +1070,6 @@ const DealDetails = () => {
                       <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>No contacts linked</p>
                     )}
                   </div>
-                  {deal.last_contact_date && (
-                    <div>
-                      <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Last Contact Date</p>
-                      <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
-                        {new Date(deal.last_contact_date).toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric', 
-                          year: 'numeric' 
-                        })}
-                      </p>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -968,320 +1082,330 @@ const DealDetails = () => {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Target Close Date</p>
-                  <EditableField field="target_close_date" type="date" />
+                  {isEditMode ? (
+                    <DatePicker
+                      selected={targetCloseDate}
+                      onChange={(date) => setTargetCloseDate(date)}
+                      placeholderText="mm/dd/yyyy"
+                      dateFormat="MM/dd/yyyy"
+                      className="custom-datepicker"
+                      wrapperClassName="w-full"
+                      customInput={
+                        <input
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            background: 'rgba(0, 0, 0, 0.3)',
+                            border: '1px solid rgba(0, 184, 212, 0.3)',
+                            borderRadius: '6px',
+                            color: '#FFFFFF',
+                            fontSize: '14px',
+                            cursor: 'pointer'
+                          }}
+                        />
+                      }
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.target_close_date ? new Date(deal.target_close_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action Date</p>
-                  <EditableField field="next_action_date" type="date" />
+                  {isEditMode ? (
+                    <DatePicker
+                      selected={nextActionDate}
+                      onChange={(date) => setNextActionDate(date)}
+                      placeholderText="mm/dd/yyyy"
+                      dateFormat="MM/dd/yyyy"
+                      className="custom-datepicker"
+                      wrapperClassName="w-full"
+                      customInput={
+                        <input
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            background: 'rgba(0, 0, 0, 0.3)',
+                            border: '1px solid rgba(0, 184, 212, 0.3)',
+                            borderRadius: '6px',
+                            color: '#FFFFFF',
+                            fontSize: '14px',
+                            cursor: 'pointer'
+                          }}
+                        />
+                      }
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.next_action_date ? new Date(deal.next_action_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Last Contact Date</p>
+                  {isEditMode ? (
+                    <DatePicker
+                      selected={lastContactDate}
+                      onChange={(date) => setLastContactDate(date)}
+                      placeholderText="mm/dd/yyyy"
+                      dateFormat="MM/dd/yyyy"
+                      className="custom-datepicker"
+                      wrapperClassName="w-full"
+                      customInput={
+                        <input
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            background: 'rgba(0, 0, 0, 0.3)',
+                            border: '1px solid rgba(0, 184, 212, 0.3)',
+                            borderRadius: '6px',
+                            color: '#FFFFFF',
+                            fontSize: '14px',
+                            cursor: 'pointer'
+                          }}
+                        />
+                      }
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.last_contact_date ? new Date(deal.last_contact_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                    </p>
+                  )}
                 </div>
                 <div className="col-span-2">
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Next Action</p>
-                  <EditableField field="next_action" placeholder="Follow up call, send proposal..." />
+                  {isEditMode ? (
+                    <input
+                      ref={nextActionRef}
+                      type="text"
+                      defaultValue={deal.next_action || ''}
+                      placeholder="Follow up call, send proposal..."
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.next_action || 'N/A'}</p>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Linked Contacts */}
-            {linkedContacts.length > 0 && (
-              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                  Linked Contacts ({linkedContacts.length})
-                </h3>
-                <div className="space-y-3">
-                  {linkedContacts.map(contact => (
-                    <div 
-                      key={contact.id}
-                      className="p-4 rounded-lg"
-                      style={{
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(100, 116, 139, 0.3)'
-                      }}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-sm mb-1" style={{ color: '#FFFFFF' }}>
-                            {contact.name}
-                          </h4>
-                          {contact.title && (
-                            <p className="text-xs mb-2" style={{ color: '#00b8d4' }}>
-                              {contact.title}
-                            </p>
-                          )}
-                          <div className="space-y-1">
-                            {contact.email && (
-                              <p className="text-xs flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                                <Mail className="w-3 h-3" />
-                                {contact.email}
-                              </p>
-                            )}
-                            {contact.phone && (
-                              <p className="text-xs flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                                <Phone className="w-3 h-3" />
-                                {contact.phone}
-                              </p>
-                            )}
-                            {contact.company && (
-                              <p className="text-xs flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                                <Building2 className="w-3 h-3" />
-                                {contact.company}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Notes */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: isEditMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Notes {isEditMode && <span style={{ color: 'rgba(0, 184, 212, 0.6)', fontSize: '11px', fontWeight: '400', marginLeft: '8px' }}>• EDITING</span>}
+              </h3>
+              {isEditMode ? (
+                <textarea
+                  ref={notesRef}
+                  defaultValue={deal.notes || ''}
+                  placeholder="Add detailed notes about this property..."
+                  rows={6}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    borderRadius: '6px',
+                    color: '#FFFFFF',
+                    fontSize: '14px',
+                    resize: 'vertical'
+                  }}
+                />
+              ) : (
+                <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500', whiteSpace: 'pre-wrap' }}>{deal.notes || 'No notes added'}</p>
+              )}
+            </div>
+          </div>
 
-            {/* Location & Market */}
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location & Market</h3>
-              <div className="grid grid-cols-2 gap-6 mb-4">
+          {/* Right Column - Sidebar */}
+          <div className="space-y-6">
+            {/* Financial Summary */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: isEditMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Financial Details {isEditMode && <span style={{ color: 'rgba(0, 184, 212, 0.6)', fontSize: '11px', fontWeight: '400', marginLeft: '8px' }}>• EDITING</span>}
+              </h3>
+              <div className="space-y-4">
                 <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Market</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.market || 'San Antonio'}</p>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Asking Price</p>
+                  {isEditMode ? (
+                    <input
+                      ref={priceRef}
+                      type="text"
+                      defaultValue={deal.price || ''}
+                      placeholder="2,500,000"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '24px', color: '#00d4aa', fontWeight: '700' }}>
+                      {formatPrice(deal.price)}
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Submarket</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.submarket || 'N/A'}</p>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per Lot SF</p>
+                  <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {calculatePricePerLotSF()}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per Building SF</p>
+                  <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {calculatePricePerBuildingSF()}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Cap Rate</p>
+                  {isEditMode ? (
+                    <input
+                      ref={capRateRef}
+                      type="text"
+                      defaultValue={deal.cap_rate || ''}
+                      placeholder="7.5"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.cap_rate ? `${deal.cap_rate}%` : 'N/A'}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>NOI</p>
+                  {isEditMode ? (
+                    <input
+                      ref={noiRef}
+                      type="text"
+                      defaultValue={deal.noi || ''}
+                      placeholder="187,500"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {formatPrice(deal.noi)}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Lease Type</p>
+                  {isEditMode ? (
+                    <input
+                      ref={leaseTypeRef}
+                      type="text"
+                      defaultValue={deal.lease_type || ''}
+                      placeholder="NNN, Gross, Modified Gross"
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.lease_type || 'N/A'}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Proforma Notes</p>
+                  {isEditMode ? (
+                    <textarea
+                      ref={proformaNotesRef}
+                      defaultValue={deal.proforma_notes || ''}
+                      placeholder="Financial notes and assumptions..."
+                      rows={3}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px',
+                        resize: 'vertical'
+                      }}
+                    />
+                  ) : (
+                    <p style={{ fontSize: '14px', color: '#FFFFFF', fontWeight: '500', whiteSpace: 'pre-wrap' }}>
+                      {deal.proforma_notes || 'N/A'}
+                    </p>
+                  )}
                 </div>
               </div>
-              
-              {/* Map */}
-              {deal.latitude && deal.longitude ? (
-                <div className="h-64 rounded-lg overflow-hidden custom-dark-map">
+            </div>
+
+            {/* Location Map */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location Map</h3>
+              {hasValidCoordinates ? (
+                <div style={{ height: '300px', borderRadius: '8px', overflow: 'hidden' }}>
                   <MapContainer
-                    center={[deal.latitude, deal.longitude]}
+                    center={[parseFloat(deal.latitude), parseFloat(deal.longitude)]}
                     zoom={15}
                     style={{ height: '100%', width: '100%' }}
-                    scrollWheelZoom={false}
                   >
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; OpenStreetMap contributors'
-                      maxZoom={19}
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                     />
-                    <Marker position={[deal.latitude, deal.longitude]} />
+                    <Marker position={[parseFloat(deal.latitude), parseFloat(deal.longitude)]} />
                   </MapContainer>
                 </div>
               ) : (
-                <div className="h-64 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <p style={{ color: 'rgba(255,255,255,0.5)' }}>No location coordinates available</p>
+                <div style={{ 
+                  height: '300px', 
+                  borderRadius: '8px', 
+                  background: 'rgba(255,255,255,0.02)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid rgba(255,255,255,0.05)'
+                }}>
+                  <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
+                    <MapPin className="w-12 h-12 mx-auto mb-2" style={{ opacity: 0.3 }} />
+                    <p style={{ fontSize: '14px' }}>No location data available</p>
+                  </div>
                 </div>
               )}
-              <div className="flex items-start mt-3">
-                <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }} />
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>{deal.address}</p>
-              </div>
-            </div>
-
-            {/* Documents */}
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                <FileCheck className="inline w-4 h-4 mr-2" />
-                Documents & Media
-              </h3>
-              {deal.documents && deal.documents.length > 0 ? (
-                <div className="space-y-2 mb-4">
-                  {deal.documents.map((doc, index) => (
-                    <a
-                      key={index}
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center p-3 rounded-lg transition-colors"
-                      style={{ border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)' }}
-                    >
-                      <FileText className="w-5 h-5 mr-3" style={{ color: '#00b8d4' }} />
-                      <span style={{ color: '#FFFFFF' }}>{doc.name}</span>
-                    </a>
-                  ))}
-                </div>
-              ) : (
-                <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>No documents uploaded yet.</p>
-              )}
-              <Label htmlFor="doc-upload" className="cursor-pointer">
-                <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
-                  <Upload className="w-5 h-5 mr-2" style={{ color: 'rgba(255,255,255,0.6)' }} />
-                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Upload Document (OM, Survey, etc.)</span>
-                  <input
-                    id="doc-upload"
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={handleDocumentUpload}
-                    className="hidden"
-                    disabled={uploading}
-                  />
-                </div>
-              </Label>
-            </div>
-          </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Share Button */}
-          <Button onClick={handleShare} data-testid="share-deal-button" style={{
-            background: '#00b8d4',
-            color: '#000000',
-            padding: '14px 24px',
-            borderRadius: '8px',
-            border: 'none',
-            fontWeight: '600',
-            fontSize: '15px',
-            boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
-            cursor: 'pointer',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            transition: 'all 0.3s ease'
-          }}>
-            <Share2 className="w-5 h-5" />
-            Share Property
-          </Button>
-
-          {/* Property Details Card */}
-          <div style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '12px',
-            padding: '24px'
-          }}>
-            <h2 style={{ 
-              color: '#FFFFFF', 
-              fontSize: '18px',
-              fontWeight: '600',
-              marginBottom: '20px',
-              letterSpacing: '-0.02em'
-            }}>Property Details</h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>BUILDING SIZE</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.size ? `${deal.size.toLocaleString()} SF` : 'N/A'}</p>
-                </div>
-                <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>PRICE</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{formatPrice(deal.price)}</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>PROPERTY TYPE</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.asset_type}</p>
-                </div>
-                <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>STATUS</p>
-                  <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.stage}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Financials */}
-          <div style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '12px',
-            padding: '24px'
-          }}>
-            <h2 style={{ 
-              color: '#FFFFFF', 
-              fontSize: '18px',
-              fontWeight: '600',
-              marginBottom: '20px',
-              letterSpacing: '-0.02em'
-            }}>Financials</h2>
-            <div className="space-y-4">
-              <div className="pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                <div className="flex items-center mb-2">
-                  <DollarSign className="w-5 h-5 mr-2" style={{ color: '#00b8d4' }} />
-                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>Asking Price</p>
-                </div>
-                <p className="text-3xl font-bold" style={{ color: '#FFFFFF' }} data-testid="deal-asking-price">{formatPrice(deal.price)}</p>
-              </div>
-              <div>
-                <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Price per SF (Building)</p>
-                <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{calculatePricePerSF()}</p>
-              </div>
-              <div>
-                <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Price per Acre</p>
-                <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{calculatePricePerAcre()}</p>
-              </div>
-              {deal.noi && (
-                <div className="pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                  <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>NOI</p>
-                  <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{formatPrice(deal.noi)}</p>
-                </div>
-              )}
-              {deal.cap_rate && (
-                <div>
-                  <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Cap Rate</p>
-                  <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{deal.cap_rate}%</p>
-                </div>
-              )}
-              {deal.lease_type && (
-                <div>
-                  <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Lease Type</p>
-                  <p className="text-xl font-semibold" style={{ color: '#FFFFFF' }}>{deal.lease_type}</p>
-                </div>
-              )}
-              {deal.proforma_notes && (
-                <div className="pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                  <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>Pro Forma Notes</p>
-                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{deal.proforma_notes}</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Location Map */}
-          <div style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '12px',
-            padding: '24px'
-          }}>
-            <h2 style={{ 
-              color: '#FFFFFF', 
-              fontSize: '18px',
-              fontWeight: '600',
-              marginBottom: '16px',
-              letterSpacing: '-0.02em'
-            }}>Location</h2>
-            {deal?.latitude && deal?.longitude ? (
-              <div className="h-64 rounded-lg overflow-hidden mb-3 custom-dark-map">
-                <MapContainer
-                  key={`map-${deal.latitude}-${deal.longitude}`}
-                  center={[parseFloat(deal.latitude), parseFloat(deal.longitude)]}
-                  zoom={15}
-                  style={{ height: '100%', width: '100%' }}
-                  scrollWheelZoom={false}
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; OpenStreetMap contributors'
-                    maxZoom={19}
-                    className="custom-dark-map"
-                  />
-                  <Marker position={[parseFloat(deal.latitude), parseFloat(deal.longitude)]} />
-                </MapContainer>
-              </div>
-            ) : (
-              <div className="h-64 rounded-lg overflow-hidden mb-3 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <p style={{ color: 'rgba(255,255,255,0.5)' }}>No location coordinates available</p>
-              </div>
-            )}
-            <div className="flex items-start">
-              <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }} />
-              <p style={{ color: 'rgba(255,255,255,0.6)' }}>{deal.address}</p>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );
