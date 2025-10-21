@@ -728,20 +728,24 @@ const DealsList = () => {
                   <div>
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Building Size (SF)</Label>
                     <Input
-                      type="number"
-                      value={newDeal.building_size}
-                      onChange={(e) => setNewDeal({ ...newDeal, building_size: e.target.value })}
-                      placeholder="5000"
+                      type="text"
+                      value={formatNumberWithCommas(newDeal.building_size)}
+                      onChange={(e) => handleFormattedNumberInput(e, (val) => setNewDeal({ ...newDeal, building_size: val }))}
+                      placeholder="5,000"
                       className="premium-glass-input"
                     />
                   </div>
                   <div>
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Lot Size (acres)</Label>
                     <Input
-                      type="number"
-                      step="0.01"
+                      type="text"
                       value={newDeal.lot_size}
-                      onChange={(e) => setNewDeal({ ...newDeal, lot_size: e.target.value })}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                          setNewDeal({ ...newDeal, lot_size: val });
+                        }
+                      }}
                       placeholder="1.5"
                       className="premium-glass-input"
                     />
