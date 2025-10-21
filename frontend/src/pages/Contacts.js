@@ -834,14 +834,14 @@ const Contacts = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span 
-                        className="text-xs px-3 py-1 rounded-full font-medium"
+                        className="text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap"
                         style={{
                           background: getStatusBadgeStyle(contact.status).bg,
                           color: getStatusBadgeStyle(contact.status).color,
                           border: `1px solid ${getStatusBadgeStyle(contact.status).border}`
                         }}
                       >
-                        {statusOptions.find(s => s.value === contact.status)?.label || contact.status}
+                        {statusOptions.find(s => s.value === contact.status)?.shortLabel || contact.status}
                       </span>
                     </td>
                     <td className="px-6 py-4">
