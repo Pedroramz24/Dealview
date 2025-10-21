@@ -589,11 +589,16 @@ const DealsList = () => {
                     <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '8px', display: 'block' }}>Property Address *</Label>
                     <Input
                       value={newDeal.property_address}
-                      onChange={(e) => setNewDeal({ ...newDeal, property_address: e.target.value })}
+                      onChange={(e) => handleAddressChange(e.target.value)}
                       required
                       placeholder="123 Main St, San Antonio, TX 78201"
                       className="premium-glass-input"
                     />
+                    {isGeocoding && (
+                      <p className="text-xs mt-1" style={{ color: 'var(--accent)' }}>
+                        📍 Finding location...
+                      </p>
+                    )}
                   </div>
                   
                   <div className="grid grid-cols-3 gap-4">
