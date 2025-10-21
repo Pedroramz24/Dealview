@@ -169,13 +169,13 @@ frontend:
         agent: "testing"
         comment: "✅ TESTED: Contacts page loads successfully. Contact creation works - created test contact 'John Test' with email, phone, company, and title. Contact displays in grid correctly. Minor: Title field not displaying in cyan color as expected in code, but contact data is saved and displayed correctly. Core functionality working."
 
-  - task: "DealDetails Supabase Migration"
+  - task: "DealDetails Complete Inline Editing Overhaul"
     implemented: true
-    working: false
+    working: "NA"
     file: "/app/frontend/src/pages/DealDetails.js"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -186,6 +186,12 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL FIELD NAME MISMATCH CONFIRMED: DealDetails.js line 256 displays 'deal.property_address' but DealsList.js stores the field as 'address' (line 213). This causes the address to not display on Deal Details page. Additionally, asking price element with data-testid='deal-asking-price' could not be found during testing, suggesting the page may not be rendering correctly. File upload inputs (image and document) also could not be located on the page - test timed out trying to find 'input[type=\"file\"][accept*=\"image\"]'. REQUIRED FIX: (1) Change line 256 in DealDetails.js from 'deal.property_address' to 'deal.address', (2) Verify all other field references in DealDetails match the actual database schema, (3) Investigate why file upload inputs are not rendering or accessible."
+      - working: "NA"
+        agent: "user"
+        comment: "USER REPORTED MULTIPLE CRITICAL ISSUES: (1) Input fields freezing - typing lot_size causes freeze after each digit, must click field again to continue. (2) PSF calculation showing wrong value - should use lot_size not building_size. (3) Map turning gray and disappearing. (4) Contacts section not suggesting names or showing 'create new contact' option. (5) Date inputs need calendar pickers, cannot type year in dates, Next Action field scrolls/freezes after one letter. User mentioned the previous side panel edit popup was working smoothly."
+      - working: "NA"
+        agent: "main"
+        comment: "🔄 COMPLETE OVERHAUL IMPLEMENTED: Completely rewrote DealDetails.js with uncontrolled inputs architecture. Changes: (1) Installed react-datepicker library. (2) Converted ALL inputs to uncontrolled pattern using useRef - zero state updates during typing. (3) Added DatePicker components for all date fields (Target Close Date, Next Action Date, Last Contact Date) with calendar popups. (4) Fixed PSF calculation to use lot_size instead of building_size - now shows 'Price per Lot SF' and 'Price per Building SF' separately. (5) Maintained contact search functionality with dropdown and 'create new contact' option. (6) Fixed map rendering with proper conditional check for valid coordinates. (7) Added dark theme CSS for DatePicker. (8) All field values collected from refs only on Save button click - no onChange handlers. This architectural change should eliminate all freezing/lag issues. Initial screenshot test shows Edit Mode activating and inputs accepting text (lot size, next action tested). Needs comprehensive testing."
 
   - task: "PublicShare Supabase Migration"
     implemented: true
