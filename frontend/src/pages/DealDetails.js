@@ -357,22 +357,84 @@ const DealDetails = () => {
         padding: '40px 0'
       }} data-testid="deal-details-page">
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
-          {/* Back Button */}
-          <div className="flex items-center justify-start mb-6">
-            <Button onClick={() => navigate('/deals')} variant="outline" data-testid="back-to-deals" style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.15)',
-              color: 'rgba(255,255,255,0.6)',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              fontSize: '13px',
-              fontWeight: '500',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }}>
+          {/* Back Button & Edit Toggle */}
+          <div className="flex items-center justify-between w-full mb-4">
+            <Button
+              onClick={() => navigate('/deals')}
+              variant="ghost"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                color: 'rgba(255,255,255,0.6)',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                fontSize: '13px',
+                fontWeight: '500',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               BACK TO PROPERTIES
             </Button>
+            
+            {/* Edit Mode Toggle */}
+            {!isEditMode ? (
+              <Button
+                onClick={handleEditMode}
+                style={{
+                  background: 'rgba(0, 184, 212, 0.15)',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  color: '#00b8d4',
+                  padding: '8px 24px',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                EDIT MODE
+              </Button>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleCancelEdit}
+                  disabled={isSaving}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    padding: '8px 20px',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    fontWeight: '600'
+                  }}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  CANCEL
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  style={{
+                    background: '#00b8d4',
+                    border: '1px solid #00d4aa',
+                    color: '#FFFFFF',
+                    padding: '8px 24px',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  {isSaving ? 'SAVING...' : 'SAVE CHANGES'}
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Property Address - Centered */}
