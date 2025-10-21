@@ -552,21 +552,27 @@ const DealDetails = () => {
               </div>
               
               {/* Map */}
-              <div className="h-64 rounded-lg overflow-hidden custom-dark-map">
-                <MapContainer
-                  center={[deal.latitude, deal.longitude]}
-                  zoom={15}
-                  style={{ height: '100%', width: '100%' }}
-                  scrollWheelZoom={false}
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; OpenStreetMap contributors'
-                    maxZoom={19}
-                  />
-                  <Marker position={[deal.latitude, deal.longitude]} />
-                </MapContainer>
-              </div>
+              {deal.latitude && deal.longitude ? (
+                <div className="h-64 rounded-lg overflow-hidden custom-dark-map">
+                  <MapContainer
+                    center={[deal.latitude, deal.longitude]}
+                    zoom={15}
+                    style={{ height: '100%', width: '100%' }}
+                    scrollWheelZoom={false}
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; OpenStreetMap contributors'
+                      maxZoom={19}
+                    />
+                    <Marker position={[deal.latitude, deal.longitude]} />
+                  </MapContainer>
+                </div>
+              ) : (
+                <div className="h-64 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <p style={{ color: 'rgba(255,255,255,0.5)' }}>No location coordinates available</p>
+                </div>
+              )}
               <div className="flex items-start mt-3">
                 <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }} />
                 <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>{deal.address}</p>
