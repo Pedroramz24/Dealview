@@ -460,7 +460,7 @@ const Pipeline = () => {
                   </div>
 
                   {/* Droppable Column */}
-                  <Droppable droppableId={stage.id}>
+                  <Droppable droppableId={stage.id} isDropDisabled={false}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
