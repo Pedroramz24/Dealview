@@ -1491,8 +1491,9 @@ const DealsList = () => {
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Property Details */}
+              {/* Property Details */}
                 <div>
                   <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
                     Property Details
