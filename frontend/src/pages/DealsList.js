@@ -1410,10 +1410,10 @@ const DealsList = () => {
                           Asking Price ($)
                         </Label>
                         <Input
-                          type="number"
-                          value={editingDeal.price || ''}
-                          onChange={(e) => handleEditChange('price', e.target.value)}
-                          placeholder="0"
+                          type="text"
+                          value={formatNumberWithCommas(editingDeal.price || '')}
+                          onChange={(e) => handleFormattedNumberInput(e, (val) => handleEditChange('price', val))}
+                          placeholder="1,000,000"
                           style={{
                             background: 'var(--glass-bg)',
                             border: '1px solid var(--glass-border)',
@@ -1424,14 +1424,13 @@ const DealsList = () => {
 
                       <div>
                         <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                          Cap Rate (%)
+                          Building Size (SF)
                         </Label>
                         <Input
-                          type="number"
-                          step="0.1"
-                          value={editingDeal.cap_rate || ''}
-                          onChange={(e) => handleEditChange('cap_rate', e.target.value)}
-                          placeholder="0.0"
+                          type="text"
+                          value={formatNumberWithCommas(editingDeal.size || '')}
+                          onChange={(e) => handleFormattedNumberInput(e, (val) => handleEditChange('size', val))}
+                          placeholder="5,000"
                           style={{
                             background: 'var(--glass-bg)',
                             border: '1px solid var(--glass-border)',
@@ -1440,14 +1439,47 @@ const DealsList = () => {
                         />
                       </div>
                     </div>
+                    
+                    {/* Price per SQFT Display in Edit Panel */}
+                    {editingDeal.price && editingDeal.size && (
+                      <div style={{ padding: '12px', background: 'rgba(0, 184, 212, 0.1)', borderRadius: '8px', border: '1px solid rgba(0, 184, 212, 0.3)' }}>
+                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price per SQFT</span>
+                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>
+                          {calculatePricePerSqft(editingDeal.price, editingDeal.size)}
+                        </span>
+                      </div>
+                    )}
 
-                    <div>
-                      <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
-                        NOI ($)
-                      </Label>
-                      <Input
-                        type="number"
-                        value={editingDeal.noi || ''}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          Cap Rate (%)
+                        </Label>
+                        <Input
+                          type="text"
+                          value={editingDeal.cap_rate || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                              handleEditChange('cap_rate', val);
+                            }
+                          }}
+                          placeholder="7.5"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)'
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium mb-2 block" style={{ color: 'var(--text-primary)' }}>
+                          NOI ($)
+                        </Label>
+                        <Input
+                          type="text"
+                          value={formatNumberWithCommas(editingDeal.noi || '')}
                         onChange={(e) => handleEditChange('noi', e.target.value)}
                         placeholder="0"
                         style={{
