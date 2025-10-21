@@ -340,6 +340,52 @@ const DealDetails = () => {
       setIsSaving(false);
     }
   };
+  
+  // Contact Management Functions
+  const handleAddContact = async (contactId) => {
+    if (selectedContacts.includes(contactId)) {
+      toast.info('Contact already linked');
+      return;
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('contact_deal_links')
+        .insert({
+          contact_id: contactId,
+          deal_id: dealId,
+          role: selectedContacts.length === 0 ? 'primary' : 'secondary'
+        });
+      
+      if (error) throw error;
+      
+      setSelectedContacts([...selectedContacts, contactId]);
+      await fetchLinkedContacts();
+      toast.success('Contact linked successfully');
+    } catch (error) {
+      console.error('Error linking contact:', error);
+      toast.error('Failed to link contact');
+    }
+  };
+  
+  const handleRemoveContact = async (contactId) => {
+    try {
+      const { error } = await supabase
+        .from('contact_deal_links')
+        .delete()
+        .eq('contact_id', contactId)
+        .eq('deal_id', dealId);
+      
+      if (error) throw error;
+      
+      setSelectedContacts(selectedContacts.filter(id => id !== contactId));
+      await fetchLinkedContacts();
+      toast.success('Contact unlinked successfully');
+    } catch (error) {
+      console.error('Error unlinking contact:', error);
+      toast.error('Failed to unlink contact');
+    }
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
