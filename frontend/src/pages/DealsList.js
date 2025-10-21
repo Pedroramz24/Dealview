@@ -484,12 +484,35 @@ const DealsList = () => {
           address: editingDeal.address,
           asset_type: editingDeal.asset_type,
           stage: editingDeal.stage,
+          status: editingDeal.status,
+          
+          // Financial
           price: editingDeal.price ? parseFormattedNumber(editingDeal.price) : null,
           size: editingDeal.size ? parseFormattedNumber(editingDeal.size) : null,
-          status: editingDeal.status,
-          notes: editingDeal.notes,
           cap_rate: editingDeal.cap_rate ? parseFloat(editingDeal.cap_rate) : null,
           noi: editingDeal.noi ? parseFormattedNumber(editingDeal.noi) : null,
+          lease_type: editingDeal.lease_type || null,
+          proforma_notes: editingDeal.proforma_notes || null,
+          
+          // Property Details
+          lot_size: editingDeal.lot_size ? parseFloat(editingDeal.lot_size) : null,
+          year_built: editingDeal.year_built ? parseInt(editingDeal.year_built) : null,
+          zoning: editingDeal.zoning || null,
+          occupancy: editingDeal.occupancy ? parseFloat(editingDeal.occupancy) : null,
+          parking_spaces: editingDeal.parking_spaces ? parseInt(editingDeal.parking_spaces) : null,
+          key_features: editingDeal.key_features || null,
+          
+          // Deal Management
+          priority: editingDeal.priority || 'Medium',
+          owner_visibility: editingDeal.owner_visibility || 'Team',
+          next_action: editingDeal.next_action || null,
+          next_action_date: editingDeal.next_action_date || null,
+          target_close_date: editingDeal.target_close_date || null,
+          last_contact_date: editingDeal.last_contact_date || null,
+          
+          // Notes
+          notes: editingDeal.notes,
+          
           updated_at: new Date().toISOString()
         };
 
