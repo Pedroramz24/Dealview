@@ -435,8 +435,8 @@ const Pipeline = () => {
               return (
                 <div 
                   key={stage.id} 
-                  className="flex-shrink-0"
-                  style={{ width: '320px' }}
+                  className="flex-shrink-0 flex flex-col"
+                  style={{ width: '320px', height: '100%' }}
                 >
                   {/* Stage Header */}
                   <div 
