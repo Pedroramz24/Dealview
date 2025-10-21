@@ -268,25 +268,6 @@ const MapView = () => {
 
         {/* Map Controls - Top Right */}
         <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-3">
-          <button
-            onClick={() => setShowParcels(!showParcels)}
-            className="premium-glass-btn"
-            style={{
-              color: showParcels ? '#000000' : '#FFFFFF',
-              backgroundColor: showParcels ? '#00b8d4' : 'transparent',
-              fontWeight: 500,
-              cursor: 'pointer',
-              fontSize: '14px',
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(12px)',
-              transition: 'all 0.3s ease',
-              boxShadow: showParcels ? '0 4px 12px rgba(0,184,212,0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
-            }}
-          >
-            Parcels
-          </button>
 
           <button
             onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
