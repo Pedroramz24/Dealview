@@ -465,25 +465,24 @@ const Pipeline = () => {
                   </div>
 
                   {/* Droppable Column */}
-                  <Droppable 
-                    droppableId={stage.id} 
-                    isDropDisabled={false} 
-                    isCombineEnabled={false}
-                    ignoreContainerClipping={false}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="flex flex-col p-2 rounded-xl transition-all duration-200"
-                        style={{
-                          background: snapshot.isDraggingOver ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
-                          border: snapshot.isDraggingOver ? '2px dashed var(--accent)' : '2px dashed transparent',
-                          minHeight: '300px',
-                          height: '100%',
-                          overflowY: 'auto',
-                          overflowX: 'hidden'
-                        }}
+                  <div className="flex-1 overflow-hidden">
+                    <Droppable 
+                      droppableId={stage.id} 
+                      isDropDisabled={false} 
+                      isCombineEnabled={false}
+                      ignoreContainerClipping={false}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className="flex flex-col p-2 rounded-xl transition-all duration-200 h-full"
+                          style={{
+                            background: snapshot.isDraggingOver ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
+                            border: snapshot.isDraggingOver ? '2px dashed var(--accent)' : '2px dashed transparent',
+                            overflowY: 'auto',
+                            overflowX: 'hidden'
+                          }}
                       >
                         {stageDeals.map((deal, index) => (
                           <Draggable key={deal.id} draggableId={deal.id} index={index}>
