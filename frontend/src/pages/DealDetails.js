@@ -328,14 +328,117 @@ const DealDetails = () => {
   };
 
   const calculatePricePerSF = () => {
-    if (!deal?.size || !deal?.price) return 'N/A';
-    return formatPrice(deal.price / deal.size);
+    const currentDeal = isEditMode ? editedDeal : deal;
+    if (!currentDeal?.size || !currentDeal?.price) return 'N/A';
+    const size = typeof currentDeal.size === 'string' ? parseFormattedNumber(currentDeal.size) : currentDeal.size;
+    const price = typeof currentDeal.price === 'string' ? parseFormattedNumber(currentDeal.price) : currentDeal.price;
+    return formatPrice(price / size);
   };
 
   const calculatePricePerAcre = () => {
-    const acres = deal?.lot_acres || deal?.lot_size;
-    if (!acres || !deal?.price) return 'N/A';
-    return formatPrice(deal.price / acres);
+    const currentDeal = isEditMode ? editedDeal : deal;
+    const acres = currentDeal?.lot_acres || currentDeal?.lot_size;
+    if (!acres || !currentDeal?.price) return 'N/A';
+    const price = typeof currentDeal.price === 'string' ? parseFormattedNumber(currentDeal.price) : currentDeal.price;
+    return formatPrice(price / acres);
+  };
+  
+  // Helper to render editable field
+  const EditableField = ({ label, value, field, type = 'text', placeholder, options = null, textarea = false }) => {
+    const currentValue = isEditMode ? editedDeal?.[field] : deal?.[field];
+    
+    if (!isEditMode) {
+      // View mode
+      if (type === 'select' && options) {
+        return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{currentValue || 'N/A'}</p>;
+      }
+      if (type === 'number' || field === 'price' || field === 'size' || field === 'noi') {
+        return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+          {currentValue ? (field === 'price' || field === 'noi' ? formatPrice(currentValue) : currentValue.toLocaleString()) : 'N/A'}
+        </p>;
+      }
+      return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{currentValue || 'N/A'}</p>;
+    }
+    
+    // Edit mode
+    if (type === 'select' && options) {
+      return (
+        <select
+          value={currentValue || ''}
+          onChange={(e) => handleFieldChange(field, e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            background: 'rgba(0, 0, 0, 0.3)',
+            border: '1px solid rgba(0, 184, 212, 0.3)',
+            borderRadius: '6px',
+            color: '#FFFFFF',
+            fontSize: '14px'
+          }}
+        >
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      );
+    }
+    
+    if (textarea) {
+      return (
+        <textarea
+          value={currentValue || ''}
+          onChange={(e) => handleFieldChange(field, e.target.value)}
+          placeholder={placeholder}
+          rows={4}
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            background: 'rgba(0, 0, 0, 0.3)',
+            border: '1px solid rgba(0, 184, 212, 0.3)',
+            borderRadius: '6px',
+            color: '#FFFFFF',
+            fontSize: '14px',
+            resize: 'vertical'
+          }}
+        />
+      );
+    }
+    
+    if (field === 'price' || field === 'size' || field === 'noi') {
+      return (
+        <Input
+          type="text"
+          value={formatNumberWithCommas(currentValue || '')}
+          onChange={(e) => handleFormattedNumberInput(e, (val) => handleFieldChange(field, val))}
+          placeholder={placeholder}
+          style={{
+            background: 'rgba(0, 0, 0, 0.3)',
+            border: '1px solid rgba(0, 184, 212, 0.3)',
+            color: '#FFFFFF',
+            fontSize: '14px'
+          }}
+        />
+      );
+    }
+    
+    return (
+      <Input
+        type={type}
+        value={currentValue || ''}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (type === 'number' && val !== '' && !/^\d*\.?\d*$/.test(val)) return;
+          handleFieldChange(field, val);
+        }}
+        placeholder={placeholder}
+        style={{
+          background: 'rgba(0, 0, 0, 0.3)',
+          border: '1px solid rgba(0, 184, 212, 0.3)',
+          color: '#FFFFFF',
+          fontSize: '14px'
+        }}
+      />
+    );
   };
 
   if (loading) {
