@@ -1293,15 +1293,21 @@ const DealDetails = () => {
                   )}
                 </div>
                 <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per Lot SF</p>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per SQFT</p>
                   <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
-                    {calculatePricePerLotSF()}
+                    {calculatePricePerSQFT()}
                   </p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per Building SF</p>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per AC</p>
                   <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
-                    {calculatePricePerBuildingSF()}
+                    {calculatePricePerAC()}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per SQFT (Building)</p>
+                  <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {calculatePricePerSQFTBuilding()}
                   </p>
                 </div>
                 <div>
