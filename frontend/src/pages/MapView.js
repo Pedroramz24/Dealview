@@ -394,7 +394,7 @@ const MapView = () => {
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
         />
 
-        {/* Panel Toggle Buttons - Hugs the leftmost panel */}
+        {/* Panel Toggle Buttons - Hugs the leftmost panel with minimal gap */}
         <div 
           className="absolute top-6 z-[900] flex flex-col gap-3"
           style={{
@@ -403,11 +403,11 @@ const MapView = () => {
               
               if (leftPanelOpen) {
                 // Property or Create panel is open (leftmost panel)
-                // Button hugs right after it, regardless of layer panel state
-                return 'calc(500px + 8px)';
+                // Button hugs right after it with minimal 2px gap
+                return 'calc(500px + 2px)';
               } else if (layersPanelOpen && !leftPanelOpen) {
                 // Only layers panel open (it becomes the leftmost)
-                return 'calc(380px + 8px)';
+                return 'calc(380px + 2px)';
               } else {
                 // No panels open: far left
                 return '24px';
