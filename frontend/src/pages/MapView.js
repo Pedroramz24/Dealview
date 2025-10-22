@@ -55,86 +55,102 @@ const MapView = () => {
     const map = mapRef.current.getMap();
     if (!map || !map.isStyleLoaded()) return;
     
-    const sourceId = 'street-labels-source';
-    const shouldShowLabels = showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13;
+    const sourceId = 'osm-street-labels';
+    const shouldShowLabels = showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 12;
     
     if (shouldShowLabels) {
-      // Add source if it doesn't exist
-      if (!map.getSource(sourceId)) {
-        map.addSource(sourceId, {
-          type: 'vector',
-          tiles: ['https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf'],
-          minzoom: 0,
-          maxzoom: 14,
-          scheme: 'xyz',
-          tileSize: 512
-        });
-        console.log('[MapView] ✅ Added street labels source');
-      }
-      
-      // Add layers if they don't exist
-      if (!map.getLayer('roads-casing')) {
-        map.addLayer({
-          id: 'roads-casing',
-          type: 'line',
-          source: sourceId,
-          'source-layer': 'transportation',
-          filter: ['==', 'class', 'primary'],
-          paint: {
-            'line-color': '#000000',
-            'line-width': 6,
-            'line-opacity': 0.8
-          }
-        });
-        console.log('[MapView] ✅ Added roads-casing layer');
-      }
-      
-      if (!map.getLayer('roads-primary')) {
-        map.addLayer({
-          id: 'roads-primary',
-          type: 'line',
-          source: sourceId,
-          'source-layer': 'transportation',
-          filter: ['==', 'class', 'primary'],
-          paint: {
-            'line-color': '#ffffff',
-            'line-width': 3,
-            'line-opacity': 1
-          }
-        });
-        console.log('[MapView] ✅ Added roads-primary layer');
-      }
-      
-      if (!map.getLayer('road-labels')) {
-        map.addLayer({
-          id: 'road-labels',
-          type: 'symbol',
-          source: sourceId,
-          'source-layer': 'transportation_name',
-          layout: {
-            'text-field': ['get', 'name'],
-            'text-size': 13,
-            'text-max-width': 8,
-            'symbol-placement': 'line',
-            'text-rotation-alignment': 'map'
-          },
-          paint: {
-            'text-color': '#ffffff',
-            'text-halo-color': '#000000',
-            'text-halo-width': 2
-          }
-        });
-        console.log('[MapView] ✅ Added road-labels layer');
-      }
-    } else {
-      // Remove layers when street labels are disabled
-      ['road-labels', 'roads-primary', 'roads-casing'].forEach(layerId => {
+      // Remove existing layers first to avoid duplicates
+      ['street-labels-text', 'street-lines'].forEach(layerId => {
         if (map.getLayer(layerId)) {
           map.removeLayer(layerId);
+          console.log(`[MapView] Removed existing layer: ${layerId}`);
         }
       });
       if (map.getSource(sourceId)) {
         map.removeSource(sourceId);
+        console.log('[MapView] Removed existing source');
+      }
+
+      // Add OSM vector tile source
+      try {
+        map.addSource(sourceId, {
+          type: 'vector',
+          tiles: [
+            'https://tiles.openstreetmap.org/vector/{z}/{x}/{y}.pbf'
+          ],
+          minzoom: 0,
+          maxzoom: 14,
+          attribution: '© OpenStreetMap contributors'
+        });
+        console.log('[MapView] ✅ Added OSM vector tile source');
+        
+        // Add street lines layer
+        map.addLayer({
+          id: 'street-lines',
+          type: 'line',
+          source: sourceId,
+          'source-layer': 'transportation',
+          filter: ['in', 'class', 'primary', 'secondary', 'tertiary', 'motorway', 'trunk'],
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              12, 1,
+              16, 3,
+              20, 5
+            ],
+            'line-opacity': 0.6
+          }
+        });
+        console.log('[MapView] ✅ Added street lines layer');
+        
+        // Add street labels layer
+        map.addLayer({
+          id: 'street-labels-text',
+          type: 'symbol',
+          source: sourceId,
+          'source-layer': 'transportation_name',
+          filter: ['has', 'name'],
+          layout: {
+            'text-field': ['get', 'name'],
+            'text-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              12, 10,
+              16, 14,
+              20, 18
+            ],
+            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+            'symbol-placement': 'line',
+            'text-rotation-alignment': 'map',
+            'text-pitch-alignment': 'viewport',
+            'text-max-angle': 30
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': 'rgba(0, 0, 0, 0.9)',
+            'text-halo-width': 2,
+            'text-halo-blur': 1
+          }
+        });
+        console.log('[MapView] ✅ Added street labels text layer');
+      } catch (error) {
+        console.error('[MapView] ❌ Error adding street labels:', error);
+      }
+    } else {
+      // Remove layers when street labels are disabled
+      ['street-labels-text', 'street-lines'].forEach(layerId => {
+        if (map.getLayer(layerId)) {
+          map.removeLayer(layerId);
+          console.log(`[MapView] Removed layer: ${layerId}`);
+        }
+      });
+      if (map.getSource(sourceId)) {
+        map.removeSource(sourceId);
+        console.log('[MapView] Removed source');
       }
     }
   }, [showStreetLabels, mapStyle, viewState.zoom]);
