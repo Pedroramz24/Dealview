@@ -71,10 +71,8 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
       style={{
         position: 'fixed',
         top: 0,
-        left: isOpen ? 0 : '-35%',
-        width: '35%',
-        maxWidth: '500px',
-        minWidth: '400px',
+        left: isOpen ? 0 : '-500px',
+        width: '500px',
         height: '100vh',
         background: 'rgba(11, 12, 14, 0.95)',
         backdropFilter: 'blur(20px)',
