@@ -71,37 +71,40 @@ const MapView = () => {
   
   // Panel toggle functions
   const togglePropertyPanel = (data = null) => {
-    if (activePanel === 'property' && !data) {
-      setActivePanel(null);
+    if (propertyPanelOpen && !data) {
+      setPropertyPanelOpen(false);
       setPropertyPanelData(null);
+      setCreateDealPanelOpen(false); // Close create deal if switching
     } else {
-      setActivePanel('property');
+      setPropertyPanelOpen(true);
       setPropertyPanelData(data);
+      setCreateDealPanelOpen(false); // Close create deal if opening property
     }
   };
   
   const toggleLayersPanel = () => {
-    setActivePanel(activePanel === 'layers' ? null : 'layers');
+    setLayersPanelOpen(!layersPanelOpen);
   };
   
   const toggleActionsPanel = (data = null) => {
-    if (activePanel === 'actions' && !data) {
-      setActivePanel(null);
+    if (actionsPanelOpen && !data) {
+      setActionsPanelOpen(false);
       setActionsPanelData(null);
     } else {
-      setActivePanel('actions');
+      setActionsPanelOpen(true);
       setActionsPanelData(data);
     }
   };
   
   const openCreateDealPanel = (location, parcelData = null) => {
-    setActivePanel('createDeal');
+    setCreateDealPanelOpen(true);
+    setPropertyPanelOpen(false); // Close property if opening create
     setCreateDealLocation(location);
     setCreateDealParcelData(parcelData);
   };
   
   const closeCreateDealPanel = () => {
-    setActivePanel(null);
+    setCreateDealPanelOpen(false);
     setCreateDealLocation(null);
     setCreateDealParcelData(null);
   };
