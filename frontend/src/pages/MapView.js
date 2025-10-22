@@ -389,6 +389,8 @@ const MapView = () => {
           onClose={() => setLayersPanelOpen(false)}
           showStreetLabels={showStreetLabels}
           onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
+          showParcels={showReportAllParcels}
+          onToggleParcels={() => setShowReportAllParcels(!showReportAllParcels)}
           mapStyle={mapStyle}
           currentZoom={viewState.zoom}
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
