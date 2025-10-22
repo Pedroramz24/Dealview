@@ -387,14 +387,21 @@ const MapView = () => {
           className="absolute top-6 z-[900] flex flex-col gap-3"
           style={{
             left: (() => {
-              if (activePanel === 'layers') {
-                // Both panels open: left panel (35%) + layer (380px) + gap (24px)
+              const propertyOrCreateOpen = activePanel === 'property' || activePanel === 'createDeal';
+              const layersOpen = activePanel === 'layers';
+              
+              if (propertyOrCreateOpen && layersOpen) {
+                // Both panels open: button right of layers panel
+                // Property (35%) + Layers (380px) + gap (24px)
                 return 'calc(35% + 380px + 24px)';
-              } else if (activePanel === 'property' || activePanel === 'createDeal') {
-                // Only left panel open (property or create deal)
+              } else if (layersOpen && !propertyOrCreateOpen) {
+                // Only layers panel open: button right of layers
+                return 'calc(380px + 24px)';
+              } else if (propertyOrCreateOpen && !layersOpen) {
+                // Only property/create panel open: button right of it
                 return 'calc(35% + 24px)';
               } else {
-                // No panels open
+                // No panels open: far left
                 return '24px';
               }
             })(),
