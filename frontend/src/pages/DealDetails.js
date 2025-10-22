@@ -547,14 +547,15 @@ const DealDetails = () => {
             {deal.stage && (
               <span style={{
                 padding: '10px 24px',
-                background: `${stageColors[deal.stage] || '#94a3b8'}20`,
-                color: stageColors[deal.stage] || '#94a3b8',
+                background: `${stageColors[deal.stage] || '#94a3b8'}`,
+                color: '#FFFFFF',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: '600',
                 border: `1px solid ${stageColors[deal.stage] || '#94a3b8'}`,
                 textTransform: 'uppercase',
-                letterSpacing: '0.5px'
+                letterSpacing: '0.5px',
+                boxShadow: `0 0 20px ${stageColors[deal.stage] || '#94a3b8'}40`
               }}>
                 {deal.stage.replace(/_/g, ' ')}
               </span>
