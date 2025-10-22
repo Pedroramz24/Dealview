@@ -167,6 +167,7 @@ const MapView = () => {
       setPropertyPanelOpen(false);
       setPropertyPanelData(null);
       setCreateDealPanelOpen(false); // Close create deal if switching
+      setSelectedParcelId(null); // Clear selected parcel
     } else {
       setPropertyPanelOpen(true);
       setPropertyPanelData(data);
