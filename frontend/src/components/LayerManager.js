@@ -412,6 +412,85 @@ const LayerManager = ({ isOpen, onClose }) => {
           </div>
         </div>
 
+        {/* Base Map Controls Section */}
+        <div
+          style={{
+            padding: '12px 24px 16px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'rgba(0, 184, 212, 0.03)'
+          }}
+        >
+          <div style={{ marginBottom: '8px' }}>
+            <span style={{
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: '11px',
+              fontWeight: '600',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase'
+            }}>
+              Base Map
+            </span>
+          </div>
+          
+          {/* Street Labels Toggle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                background: 'rgba(0, 184, 212, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00b8d4" strokeWidth="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </div>
+              <div>
+                <div style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                  Street Labels
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>
+                  {props.mapStyle === 'satellite' ? 
+                    (props.currentZoom >= 13 ? 'Zoom 13+ (Active)' : 'Zoom 13+ to enable') : 
+                    'Only on Satellite view'}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={props.onToggleStreetLabels}
+              disabled={props.mapStyle !== 'satellite' || props.currentZoom < 13}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: props.showStreetLabels ? 
+                  'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)' : 
+                  'rgba(255, 255, 255, 0.08)',
+                color: props.showStreetLabels ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: props.mapStyle !== 'satellite' || props.currentZoom < 13 ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: props.mapStyle !== 'satellite' || props.currentZoom < 13 ? 0.5 : 1
+              }}
+            >
+              {props.showStreetLabels ? 'ON' : 'OFF'}
+            </button>
+          </div>
+        </div>
+
         {/* Layer Categories */}
         <div
           style={{
