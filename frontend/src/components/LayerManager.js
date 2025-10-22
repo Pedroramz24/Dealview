@@ -551,7 +551,7 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
             </div>
             <button
               onClick={props.onToggleParcels}
-              disabled={props.currentZoom < 12}
+              disabled={!props.onToggleParcels || props.currentZoom < 12}
               style={{
                 padding: '6px 16px',
                 borderRadius: '6px',
@@ -562,9 +562,9 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
                 color: props.showParcels ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
                 fontSize: '12px',
                 fontWeight: '600',
-                cursor: props.currentZoom < 12 ? 'not-allowed' : 'pointer',
+                cursor: (!props.onToggleParcels || props.currentZoom < 12) ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
-                opacity: props.currentZoom < 12 ? 0.5 : 1
+                opacity: (!props.onToggleParcels || props.currentZoom < 12) ? 0.5 : 1
               }}
             >
               {props.showParcels ? 'ON' : 'OFF'}
