@@ -392,14 +392,14 @@ const MapView = () => {
               
               if (propertyOrCreateOpen && layersOpen) {
                 // Both panels open: button right of layers panel
-                // Property (35%) + Layers (380px) + small gap (12px)
-                return 'calc(35% + 380px + 12px)';
+                // Property (500px) + Layers (380px) + tight gap (12px)
+                return 'calc(500px + 380px + 12px)';
               } else if (layersOpen && !propertyOrCreateOpen) {
-                // Only layers panel open: button right of layers
+                // Only layers panel open: button right of layers (tight hug)
                 return 'calc(380px + 12px)';
               } else if (propertyOrCreateOpen && !layersOpen) {
                 // Only property/create panel open: button right of it (tight hug)
-                return 'calc(35% + 12px)';
+                return 'calc(500px + 12px)';
               } else {
                 // No panels open: far left
                 return '24px';
