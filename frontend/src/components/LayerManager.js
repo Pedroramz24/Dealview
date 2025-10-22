@@ -233,20 +233,21 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
         />
       )}
 
-      {/* Layer Manager Panel */}
+      {/* Layer Manager Panel - Positioned next to Property Panel */}
       <div
         style={{
           position: 'fixed',
           top: 0,
-          left: isOpen ? '0' : '-380px',
+          left: isOpen ? (propertyPanelOpen ? '35%' : '0') : (propertyPanelOpen ? 'calc(35% - 380px)' : '-380px'),
           width: '380px',
           height: '100vh',
           background: 'rgba(11, 12, 14, 0.95)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderLeft: 'none',
-          zIndex: 999,
-          transition: 'left 200ms ease-in-out',
+          borderLeft: propertyPanelOpen ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+          zIndex: 998,
+          transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
