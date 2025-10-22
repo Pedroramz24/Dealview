@@ -88,6 +88,19 @@ const DealDetails = () => {
       fetchAllContacts();
     }
   }, [dealId, user]);
+  
+  // Click away handler for contact dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (contactDropdownRef.current && !contactDropdownRef.current.contains(event.target)) {
+        setShowContactDropdown(false);
+        setContactSearchTerm('');
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchDeal = async () => {
     if (!user) {
