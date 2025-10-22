@@ -47,6 +47,16 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
+  // Debug logging for street labels
+  useEffect(() => {
+    console.log('[MapView] Street labels state:', {
+      showStreetLabels,
+      mapStyle,
+      zoom: viewState.zoom,
+      shouldRender: showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13
+    });
+  }, [showStreetLabels, mapStyle, viewState.zoom]);
+  
   // Load panel state from session storage
   useEffect(() => {
     const savedPanelState = sessionStorage.getItem('mapActivePanels');
