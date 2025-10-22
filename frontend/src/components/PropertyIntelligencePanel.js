@@ -35,18 +35,31 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
       
       // Debug parcel data
       if (!isDeal && data.isParcel) {
-        console.log('[PropertyIntelligencePanel] Parcel data received:', data);
+        console.log('[PropertyIntelligencePanel] === FULL PARCEL DATA ===');
+        console.log('[PropertyIntelligencePanel] All fields:', Object.keys(data).sort());
+        console.log('[PropertyIntelligencePanel] Full parcel object:', data);
+        console.log('[PropertyIntelligencePanel] === OWNER FIELDS CHECK ===');
         console.log('[PropertyIntelligencePanel] Owner fields:', {
           owner: data.owner,
           owner_name: data.owner_name,
+          ownername: data.ownername,
           mail_addr: data.mail_addr,
+          mail_address: data.mail_address,
           owner_addr: data.owner_addr,
           owner_address: data.owner_address,
+          owneraddr: data.owneraddr,
+          situs_addr: data.situs_addr,
+          situs_address: data.situs_address,
           owner_city: data.owner_city,
+          mail_city: data.mail_city,
           owner_state: data.owner_state,
+          mail_state: data.mail_state,
           owner_zip: data.owner_zip,
+          mail_zip: data.mail_zip,
           county_id: data.county_id,
-          fips: data.fips
+          fips: data.fips,
+          countyfips: data.countyfips,
+          county_fips: data.county_fips
         });
       }
     }
