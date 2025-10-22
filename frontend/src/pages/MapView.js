@@ -55,6 +55,16 @@ const MapView = () => {
       zoom: viewState.zoom,
       shouldRender: showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13
     });
+    
+    if (showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13) {
+      console.log('[MapView] ✅ Street labels SHOULD be visible now');
+    } else {
+      console.log('[MapView] ❌ Street labels hidden because:', {
+        labelsEnabled: showStreetLabels,
+        isSatellite: mapStyle === 'satellite',
+        zoomOK: viewState.zoom >= 13
+      });
+    }
   }, [showStreetLabels, mapStyle, viewState.zoom]);
   
   // Load panel state from session storage
