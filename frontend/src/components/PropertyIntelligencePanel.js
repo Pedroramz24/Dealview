@@ -32,6 +32,23 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
         fetchLinkedContacts();
         fetchDocuments();
       }
+      
+      // Debug parcel data
+      if (!isDeal && data.isParcel) {
+        console.log('[PropertyIntelligencePanel] Parcel data received:', data);
+        console.log('[PropertyIntelligencePanel] Owner fields:', {
+          owner: data.owner,
+          owner_name: data.owner_name,
+          mail_addr: data.mail_addr,
+          owner_addr: data.owner_addr,
+          owner_address: data.owner_address,
+          owner_city: data.owner_city,
+          owner_state: data.owner_state,
+          owner_zip: data.owner_zip,
+          county_id: data.county_id,
+          fips: data.fips
+        });
+      }
     }
   }, [data]);
 
