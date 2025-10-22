@@ -544,83 +544,24 @@ const MapView = () => {
           {/* Street Labels Overlay - Only show when zoomed in (zoom >= 13) */}
           {showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13 && (
             <Source
-              id="openmaptiles"
-              type="vector"
-              tiles={['https://tiles.openmaptiles.org/data/v3/{z}/{x}/{y}.pbf?key=free']}
+              id="carto-labels"
+              type="raster"
+              tiles={[
+                'https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png',
+                'https://b.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png',
+                'https://c.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png'
+              ]}
+              tileSize={256}
               minzoom={13}
-              maxzoom={14}
+              maxzoom={19}
             >
-              {/* Major Roads */}
               <Layer
-                id="road-labels-major"
-                type="symbol"
-                source-layer="transportation_name"
-                filter={['in', 'class', 'motorway', 'trunk', 'primary']}
+                id="street-labels-layer"
+                type="raster"
+                source="carto-labels"
                 minzoom={13}
-                layout={{
-                  'text-field': ['get', 'name:latin'],
-                  'text-font': ['Noto Sans Regular'],
-                  'text-size': 13,
-                  'text-max-width': 8,
-                  'text-line-height': 1.1,
-                  'symbol-placement': 'line',
-                  'text-rotation-alignment': 'map',
-                  'text-pitch-alignment': 'viewport',
-                  visibility: 'visible'
-                }}
                 paint={{
-                  'text-color': '#ffffff',
-                  'text-halo-color': '#000000',
-                  'text-halo-width': 2,
-                  'text-halo-blur': 1
-                }}
-              />
-              {/* Secondary Roads - Only at higher zoom */}
-              <Layer
-                id="road-labels-secondary"
-                type="symbol"
-                source-layer="transportation_name"
-                filter={['in', 'class', 'secondary', 'tertiary']}
-                minzoom={14}
-                layout={{
-                  'text-field': ['get', 'name:latin'],
-                  'text-font': ['Noto Sans Regular'],
-                  'text-size': 11,
-                  'text-max-width': 8,
-                  'symbol-placement': 'line',
-                  'text-rotation-alignment': 'map',
-                  'text-pitch-alignment': 'viewport',
-                  visibility: 'visible'
-                }}
-                paint={{
-                  'text-color': '#ffffff',
-                  'text-halo-color': '#000000',
-                  'text-halo-width': 1.5,
-                  'text-halo-blur': 0.5
-                }}
-              />
-              {/* Local Streets - Only at max zoom */}
-              <Layer
-                id="road-labels-local"
-                type="symbol"
-                source-layer="transportation_name"
-                filter={['in', 'class', 'minor', 'service']}
-                minzoom={15}
-                layout={{
-                  'text-field': ['get', 'name:latin'],
-                  'text-font': ['Noto Sans Regular'],
-                  'text-size': 10,
-                  'text-max-width': 6,
-                  'symbol-placement': 'line',
-                  'text-rotation-alignment': 'map',
-                  'text-pitch-alignment': 'viewport',
-                  visibility: 'visible'
-                }}
-                paint={{
-                  'text-color': '#ffffff',
-                  'text-halo-color': '#000000',
-                  'text-halo-width': 1,
-                  'text-halo-blur': 0.5
+                  'raster-opacity': 1
                 }}
               />
             </Source>
