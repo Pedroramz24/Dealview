@@ -21,10 +21,15 @@ const MapView = () => {
   const [showParcels, setShowParcels] = useState(false);
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
-  const [layerManagerOpen, setLayerManagerOpen] = useState(false);
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
   const [reportAllParcel, setReportAllParcel] = useState(null);
   const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
+  
+  // Panel Management System
+  const [activePanel, setActivePanel] = useState(null); // 'property', 'layers', 'actions', or null
+  const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
+  const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
+  
   const { user } = useContext(AuthContext);
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
@@ -33,6 +38,51 @@ const MapView = () => {
   });
   const mapRef = useRef();
   const navigate = useNavigate();
+  
+  // Load panel state from session storage
+  useEffect(() => {
+    const savedPanelState = sessionStorage.getItem('mapActivePanels');
+    if (savedPanelState) {
+      try {
+        const parsed = JSON.parse(savedPanelState);
+        if (parsed.activePanel) {
+          setActivePanel(parsed.activePanel);
+        }
+      } catch (e) {
+        console.error('Failed to parse saved panel state:', e);
+      }
+    }
+  }, []);
+  
+  // Save panel state to session storage
+  useEffect(() => {
+    sessionStorage.setItem('mapActivePanels', JSON.stringify({ activePanel }));
+  }, [activePanel]);
+  
+  // Panel toggle functions
+  const togglePropertyPanel = (data = null) => {
+    if (activePanel === 'property' && !data) {
+      setActivePanel(null);
+      setPropertyPanelData(null);
+    } else {
+      setActivePanel('property');
+      setPropertyPanelData(data);
+    }
+  };
+  
+  const toggleLayersPanel = () => {
+    setActivePanel(activePanel === 'layers' ? null : 'layers');
+  };
+  
+  const toggleActionsPanel = (data = null) => {
+    if (activePanel === 'actions' && !data) {
+      setActivePanel(null);
+      setActionsPanelData(null);
+    } else {
+      setActivePanel('actions');
+      setActionsPanelData(data);
+    }
+  };
   
   // Expose layer manager toggle to MainLayout
   useEffect(() => {
