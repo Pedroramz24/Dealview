@@ -564,124 +564,67 @@ const MapView = () => {
           {/* Street Labels Overlay - Using vector tiles for MapLibre compatibility */}
           {showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13 && (
             <>
-              {/* Using Maptiler's free streets-v2 style which works reliably with MapLibre */}
+              {/* Using MapLibre's own demo tiles - fully compatible */}
               <Source
-                id="maptiler-streets"
+                id="demotiles"
                 type="vector"
-                url="https://api.maptiler.com/tiles/v3/tiles.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL"
+                tiles={['https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf']}
+                minzoom={0}
+                maxzoom={14}
               >
-                {/* Major roads with casing */}
+                {/* Major roads with casing for visibility */}
                 <Layer
-                  id="roads-casing"
+                  id="road-casing"
                   type="line"
                   source-layer="transportation"
-                  filter={['all', 
-                    ['==', '$type', 'LineString'],
-                    ['in', 'class', 'motorway', 'trunk', 'primary', 'secondary']
-                  ]}
+                  filter={['==', 'class', 'primary']}
                   paint={{
                     'line-color': '#000000',
-                    'line-width': [
-                      'interpolate', ['exponential', 1.5], ['zoom'],
-                      13, 4,
-                      18, 12
-                    ],
+                    'line-width': 6,
                     'line-opacity': 0.8
                   }}
                 />
                 <Layer
-                  id="roads-major"
+                  id="road-primary"
                   type="line"
                   source-layer="transportation"
-                  filter={['all', 
-                    ['==', '$type', 'LineString'],
-                    ['in', 'class', 'motorway', 'trunk', 'primary', 'secondary']
-                  ]}
+                  filter={['==', 'class', 'primary']}
                   paint={{
                     'line-color': '#ffffff',
-                    'line-width': [
-                      'interpolate', ['exponential', 1.5], ['zoom'],
-                      13, 2,
-                      18, 8
-                    ],
+                    'line-width': 3,
                     'line-opacity': 1
                   }}
                 />
-                {/* Minor roads */}
+                {/* Secondary roads */}
                 <Layer
-                  id="roads-minor"
+                  id="road-secondary"
                   type="line"
                   source-layer="transportation"
-                  filter={['all', 
-                    ['==', '$type', 'LineString'],
-                    ['in', 'class', 'tertiary', 'minor', 'service']
-                  ]}
+                  filter={['==', 'class', 'secondary']}
                   minzoom={14}
                   paint={{
                     'line-color': '#ffffff',
-                    'line-width': [
-                      'interpolate', ['exponential', 1.5], ['zoom'],
-                      14, 1,
-                      18, 4
-                    ],
+                    'line-width': 2,
                     'line-opacity': 0.8
                   }}
                 />
-                {/* Road labels */}
+                {/* Road name labels - simplified */}
                 <Layer
-                  id="road-label"
+                  id="road-name-labels"
                   type="symbol"
                   source-layer="transportation_name"
-                  filter={['all',
-                    ['has', 'name'],
-                    ['!in', 'class', 'ferry', 'path', 'rail']
-                  ]}
                   minzoom={13}
                   layout={{
-                    'text-field': '{name}',
-                    'text-font': ['Open Sans Regular'],
-                    'text-size': [
-                      'interpolate', ['linear'], ['zoom'],
-                      13, 11,
-                      18, 15
-                    ],
+                    'text-field': ['get', 'name'],
+                    'text-size': 13,
                     'text-max-width': 8,
                     'symbol-placement': 'line',
-                    'text-rotation-alignment': 'map',
-                    'text-pitch-alignment': 'viewport',
-                    'text-padding': 2
+                    'text-rotation-alignment': 'map'
                   }}
                   paint={{
                     'text-color': '#ffffff',
                     'text-halo-color': '#000000',
-                    'text-halo-width': 2,
-                    'text-halo-blur': 1
-                  }}
-                />
-                {/* Place labels */}
-                <Layer
-                  id="place-label"
-                  type="symbol"
-                  source-layer="place"
-                  filter={['in', 'class', 'city', 'town', 'village', 'suburb']}
-                  minzoom={13}
-                  layout={{
-                    'text-field': '{name}',
-                    'text-font': ['Open Sans Bold'],
-                    'text-size': [
-                      'interpolate', ['linear'], ['zoom'],
-                      13, 13,
-                      18, 22
-                    ],
-                    'text-anchor': 'center',
-                    'text-offset': [0, 0],
-                    'text-max-width': 8
-                  }}
-                  paint={{
-                    'text-color': '#ffffff',
-                    'text-halo-color': '#000000',
-                    'text-halo-width': 3,
-                    'text-halo-blur': 1.5
+                    'text-halo-width': 2
                   }}
                 />
               </Source>
