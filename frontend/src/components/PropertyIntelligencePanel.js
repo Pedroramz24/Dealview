@@ -732,24 +732,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                     </span>
                   </div>
                 )}
-                {(data.land_cover || data.crop_cover) && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center',
-                    padding: '12px 16px',
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(255, 255, 255, 0.05)'
-                  }}>
-                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Land/Crop Cover</span>
-                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
-                      {typeof (data.land_cover || data.crop_cover) === 'object' 
-                        ? Object.keys(data.land_cover || data.crop_cover).join(', ') 
-                        : (data.land_cover || data.crop_cover)}
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
           )}
