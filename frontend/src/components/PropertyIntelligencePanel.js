@@ -419,6 +419,194 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type }) => {
             </div>
           )}
 
+          {/* Linked Contacts */}
+          {isDeal && linkedContacts.length > 0 && (
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <Users size={16} style={{ color: '#00b8d4' }} />
+                <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Linked Contacts ({linkedContacts.length})
+                </span>
+              </div>
+              <div style={{ display: 'grid', gap: '8px' }}>
+                {linkedContacts.map((contact, idx) => (
+                  <div
+                    key={contact.id}
+                    style={{
+                      padding: '12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <div>
+                      <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
+                        {contact.name} {idx === 0 && <span style={{ color: '#00b8d4', fontSize: '11px' }}>(Primary)</span>}
+                      </div>
+                      {contact.company && (
+                        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>
+                      )}
+                      {contact.email && (
+                        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>{contact.email}</div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
+                      style={{
+                        padding: '6px 12px',
+                        background: 'rgba(0, 184, 212, 0.1)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#00b8d4',
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      <ExternalLink size={12} />
+                      Email
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Documents & Media */}
+          {isDeal && (
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <FileText size={16} style={{ color: '#00b8d4' }} />
+                  <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Documents ({documents.length})
+                  </span>
+                </div>
+                <label
+                  htmlFor="doc-upload"
+                  style={{
+                    padding: '6px 12px',
+                    background: 'rgba(0, 184, 212, 0.15)',
+                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    borderRadius: '6px',
+                    color: '#00b8d4',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    cursor: isUploadingDoc ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  <Upload size={12} />
+                  {isUploadingDoc ? 'Uploading...' : 'Upload'}
+                  <input
+                    id="doc-upload"
+                    type="file"
+                    onChange={handleDocumentUpload}
+                    disabled={isUploadingDoc}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
+
+              {/* Documents Table - Mac Finder Style */}
+              {documents.length > 0 ? (
+                <div
+                  style={{
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Table Header */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 120px 60px',
+                      padding: '8px 12px',
+                      background: 'rgba(0, 0, 0, 0.4)',
+                      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                    }}
+                  >
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>
+                      Name
+                    </div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>
+                      Date Uploaded
+                    </div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', textAlign: 'center' }}>
+                      Action
+                    </div>
+                  </div>
+
+                  {/* Table Rows */}
+                  {documents.map((doc) => (
+                    <div
+                      key={doc.id}
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 120px 60px',
+                        padding: '10px 12px',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                        alignItems: 'center',
+                        transition: 'background 0.15s ease',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div style={{ color: '#FFFFFF', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {doc.name}
+                      </div>
+                      <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>
+                        {new Date(doc.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <button
+                          onClick={() => {
+                            // Download logic here
+                            toast.info('Download feature coming soon');
+                          }}
+                          style={{
+                            padding: '4px 8px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#00b8d4',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Download size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    padding: '24px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    textAlign: 'center',
+                    color: 'rgba(255,255,255,0.5)',
+                    fontSize: '13px',
+                  }}
+                >
+                  No documents uploaded yet
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Notes */}
           {data.notes && (
             <div style={{ marginBottom: '24px' }}>
