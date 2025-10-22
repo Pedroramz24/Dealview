@@ -556,11 +556,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                         Last Sale Date
                       </div>
                       <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500' }}>
-                        {new Date(data.sale_date || data.last_sale_date).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {formatDate(data.sale_date || data.last_sale_date)}
                       </div>
                     </div>
                   )}
