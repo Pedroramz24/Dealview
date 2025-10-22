@@ -84,13 +84,13 @@ const MapView = () => {
     }
   };
   
-  // Expose layer manager toggle to MainLayout
+  // Expose panel toggles to window for external access if needed
   useEffect(() => {
-    window.toggleLayerManager = () => setLayerManagerOpen(prev => !prev);
+    window.toggleLayersPanel = toggleLayersPanel;
     return () => {
-      delete window.toggleLayerManager;
+      delete window.toggleLayersPanel;
     };
-  }, []);
+  }, [activePanel]);
 
   // Map style configurations
   const mapStyles = {
