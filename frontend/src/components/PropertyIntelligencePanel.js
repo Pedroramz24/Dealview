@@ -445,7 +445,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   Owner Name
                 </div>
                 <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
-                  {data.owner || data.owner_name || 'N/A'}
+                  {data.owner || data.owner_name || data.ownername || 'N/A'}
                 </div>
               </div>
               <div style={{ marginBottom: '12px' }}>
@@ -453,11 +453,24 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   Mailing Address
                 </div>
                 <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', lineHeight: '1.5' }}>
-                  {data.mail_addr || data.owner_addr || data.owner_address || 'N/A'}
-                  {(data.owner_city || data.owner_state || data.owner_zip) && (
+                  {/* Try all possible mailing address field variations */}
+                  {data.mail_addr || 
+                   data.mail_address || 
+                   data.owner_addr || 
+                   data.owner_address || 
+                   data.owneraddr ||
+                   data.situs_addr ||
+                   data.situs_address ||
+                   'N/A'}
+                  {(data.owner_city || data.owner_state || data.owner_zip || 
+                    data.mail_city || data.mail_state || data.mail_zip) && (
                     <>
                       <br />
-                      {[data.owner_city, data.owner_state, data.owner_zip].filter(Boolean).join(', ')}
+                      {[
+                        data.owner_city || data.mail_city, 
+                        data.owner_state || data.mail_state, 
+                        data.owner_zip || data.mail_zip
+                      ].filter(Boolean).join(', ')}
                     </>
                   )}
                 </div>
@@ -467,7 +480,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   County ID
                 </div>
                 <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontFamily: 'monospace' }}>
-                  {data.county_id || data.fips || 'N/A'}
+                  {data.county_id || data.fips || data.countyfips || data.county_fips || 'N/A'}
                 </div>
               </div>
             </div>
