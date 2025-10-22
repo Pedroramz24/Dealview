@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { toast } from 'sonner';
 
 const PropertyIntelligencePanel = ({ isOpen, onClose, data, type }) => {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
