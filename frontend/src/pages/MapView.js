@@ -362,7 +362,7 @@ const MapView = () => {
             setPropertyPanelData(null);
           }}
           data={propertyPanelData}
-          type={propertyPanelData?.id ? 'deal' : 'parcel'}
+          type={propertyPanelData?.isParcel ? 'parcel' : 'deal'}
         />
         
         {/* Create Deal Panel (LEFT - same slot as Property Panel) */}
