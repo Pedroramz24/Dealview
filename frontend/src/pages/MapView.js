@@ -335,6 +335,7 @@ const MapView = () => {
       
       if (result.success && result.parcel) {
         console.log('[ReportAll] Found parcel:', result.parcel);
+        console.log('[ReportAll] Available fields:', Object.keys(result.parcel));
         // Show parcel information in PropertyIntelligencePanel
         const parcelData = {
           ...result.parcel,
