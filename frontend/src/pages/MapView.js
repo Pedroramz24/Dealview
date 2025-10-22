@@ -394,7 +394,7 @@ const MapView = () => {
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
         />
 
-        {/* Panel Toggle Buttons - Overlaps slightly with panel edge for seamless appearance */}
+        {/* Panel Toggle Buttons - Overlaps panel edge to eliminate gap */}
         <div 
           className="absolute top-6 z-[900] flex flex-col gap-3"
           style={{
@@ -403,11 +403,11 @@ const MapView = () => {
               
               if (leftPanelOpen) {
                 // Property or Create panel is open (leftmost panel)
-                // Button slightly overlaps panel edge for seamless look
-                return '498px';
+                // Button overlaps panel edge significantly to eliminate gap
+                return '492px';
               } else if (layersPanelOpen && !leftPanelOpen) {
                 // Only layers panel open (it becomes the leftmost)
-                return '378px';
+                return '372px';
               } else {
                 // No panels open: far left
                 return '24px';
