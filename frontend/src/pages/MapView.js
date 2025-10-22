@@ -122,7 +122,7 @@ const MapView = () => {
     return () => {
       delete window.toggleLayersPanel;
     };
-  }, [activePanel]);
+  }, [layersPanelOpen]);
 
   // Map style configurations
   const mapStyles = {
