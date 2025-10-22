@@ -53,6 +53,11 @@ const MapView = () => {
           tileSize: 256,
           maxzoom: 18,
           attribution: '&copy; Esri'
+        },
+        'osm-labels': {
+          type: 'vector',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.pbf'],
+          maxzoom: 14
         }
       },
       layers: [
