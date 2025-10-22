@@ -53,9 +53,8 @@ const MapView = () => {
     if (savedPanelState) {
       try {
         const parsed = JSON.parse(savedPanelState);
-        if (parsed.activePanel) {
-          setActivePanel(parsed.activePanel);
-        }
+        if (parsed.propertyPanelOpen) setPropertyPanelOpen(parsed.propertyPanelOpen);
+        if (parsed.layersPanelOpen) setLayersPanelOpen(parsed.layersPanelOpen);
       } catch (e) {
         console.error('Failed to parse saved panel state:', e);
       }
@@ -64,8 +63,11 @@ const MapView = () => {
   
   // Save panel state to session storage
   useEffect(() => {
-    sessionStorage.setItem('mapActivePanels', JSON.stringify({ activePanel }));
-  }, [activePanel]);
+    sessionStorage.setItem('mapActivePanels', JSON.stringify({ 
+      propertyPanelOpen, 
+      layersPanelOpen 
+    }));
+  }, [propertyPanelOpen, layersPanelOpen]);
   
   // Panel toggle functions
   const togglePropertyPanel = (data = null) => {
