@@ -388,10 +388,10 @@ const MapView = () => {
           style={{
             left: (() => {
               if (activePanel === 'layers') {
-                // Both panels open: property (35%) + layer (380px) + gap (24px)
+                // Both panels open: left panel (35%) + layer (380px) + gap (24px)
                 return 'calc(35% + 380px + 24px)';
-              } else if (activePanel === 'property') {
-                // Only property panel open
+              } else if (activePanel === 'property' || activePanel === 'createDeal') {
+                // Only left panel open (property or create deal)
                 return 'calc(35% + 24px)';
               } else {
                 // No panels open
