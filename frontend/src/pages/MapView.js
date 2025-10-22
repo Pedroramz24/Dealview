@@ -47,7 +47,7 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
-  // Debug logging for street labels
+  // Debug logging for street labels with map inspection
   useEffect(() => {
     console.log('[MapView] Street labels state:', {
       showStreetLabels,
@@ -58,6 +58,29 @@ const MapView = () => {
     
     if (showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13) {
       console.log('[MapView] ✅ Street labels SHOULD be visible now');
+      
+      // Inspect map sources and layers after a delay to allow rendering
+      setTimeout(() => {
+        if (mapRef.current) {
+          const map = mapRef.current.getMap();
+          const style = map.getStyle();
+          console.log('[MapView] Current map sources:', Object.keys(style.sources));
+          console.log('[MapView] Current map layers:', style.layers.map(l => l.id));
+          
+          // Check if our street label source exists
+          if (style.sources['street-labels-source']) {
+            console.log('[MapView] ✅ Street labels source EXISTS');
+          } else {
+            console.log('[MapView] ❌ Street labels source NOT FOUND');
+          }
+          
+          // Check if our street label layers exist
+          const streetLayers = style.layers.filter(l => 
+            l.id === 'roads-casing' || l.id === 'roads-primary' || l.id === 'road-labels'
+          );
+          console.log('[MapView] Street label layers found:', streetLayers.length, streetLayers.map(l => l.id));
+        }
+      }, 1000);
     } else {
       console.log('[MapView] ❌ Street labels hidden because:', {
         labelsEnabled: showStreetLabels,
