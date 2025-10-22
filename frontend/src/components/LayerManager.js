@@ -240,8 +240,8 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
           top: 0,
           left: (() => {
             if (isOpen && propertyPanelOpen) {
-              // Both panels open: Layer sits next to Property panel
-              return '35%';
+              // Both panels open: Layer sits next to Property panel (500px fixed)
+              return '500px';
             } else if (isOpen && !propertyPanelOpen) {
               // Only Layer panel open: sits at far left
               return '0';
