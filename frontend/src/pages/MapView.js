@@ -335,8 +335,14 @@ const MapView = () => {
           currentZoom={viewState.zoom}
         />
 
-        {/* Panel Toggle Buttons - Left Side */}
-        <div className="absolute top-6 left-6 z-[900] flex flex-col gap-3">
+        {/* Panel Toggle Buttons - Left Side (repositions when property panel is open) */}
+        <div 
+          className="absolute top-6 z-[900] flex flex-col gap-3"
+          style={{
+            left: activePanel === 'property' ? 'calc(35% + 24px)' : '24px',
+            transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+        >
           <button
             onClick={() => toggleLayersPanel()}
             className="premium-glass-btn"
@@ -353,7 +359,7 @@ const MapView = () => {
               border: `1px solid ${activePanel === 'layers' ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255,255,255,0.15)'}`,
               backdropFilter: 'blur(12px)',
               transition: 'all 0.3s ease',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+              boxShadow: activePanel === 'layers' ? '0 0 24px rgba(0, 184, 212, 0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
             }}
             title="Layers & Intelligence"
           >
