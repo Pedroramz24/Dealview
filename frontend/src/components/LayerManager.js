@@ -493,7 +493,7 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
             </div>
             <button
               onClick={props.onToggleStreetLabels}
-              disabled={props.mapStyle !== 'satellite' || props.currentZoom < 13}
+              disabled={!props.onToggleStreetLabels || props.mapStyle !== 'satellite' || props.currentZoom < 13}
               style={{
                 padding: '6px 16px',
                 borderRadius: '6px',
@@ -504,9 +504,9 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
                 color: props.showStreetLabels ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
                 fontSize: '12px',
                 fontWeight: '600',
-                cursor: props.mapStyle !== 'satellite' || props.currentZoom < 13 ? 'not-allowed' : 'pointer',
+                cursor: (!props.onToggleStreetLabels || props.mapStyle !== 'satellite' || props.currentZoom < 13) ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
-                opacity: props.mapStyle !== 'satellite' || props.currentZoom < 13 ? 0.5 : 1
+                opacity: (!props.onToggleStreetLabels || props.mapStyle !== 'satellite' || props.currentZoom < 13) ? 0.5 : 1
               }}
             >
               {props.showStreetLabels ? 'ON' : 'OFF'}
