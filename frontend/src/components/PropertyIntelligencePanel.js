@@ -1,14 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calendar, ChevronLeft, ChevronRight, Upload, Download, ExternalLink } from 'lucide-react';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { toast } from 'sonner';
+
+// Pipeline stage colors - matching Pipeline.js
+const stageColors = {
+  'need_to_contact': '#94a3b8',
+  'contacted': '#60a5fa',
+  'prospect': '#a78bfa',
+  'negotiations': '#ec4899',
+  'offer_sent': '#f59e0b',
+  'under_contract': '#10b981',
+  'closed_won': '#00d4aa',
+  'overpriced': '#ef4444'
+};
 
 const PropertyIntelligencePanel = ({ isOpen, onClose, data, type }) => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [linkedContacts, setLinkedContacts] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [isUploadingDoc, setIsUploadingDoc] = useState(false);
 
   useEffect(() => {
     if (data) {
