@@ -572,17 +572,18 @@ const MapView = () => {
               anchor="center"
               onClick={e => {
                 e.originalEvent.stopPropagation();
-                setSelectedDeal(deal);
+                // Open property panel with deal data
+                togglePropertyPanel(deal);
                 
-                // Use map's flyTo for better centering with popup
+                // Use map's flyTo for better centering with panel
                 if (mapRef.current) {
                   mapRef.current.flyTo({
                     center: [deal.longitude, deal.latitude],
                     zoom: 15,
                     duration: 1000,
                     essential: true,
-                    // Offset to account for popup appearing below
-                    offset: [0, 100]
+                    // Offset to account for panel on left
+                    offset: [150, 0]
                   });
                 }
               }}
