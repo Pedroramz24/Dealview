@@ -51,6 +51,8 @@ const DealDetails = () => {
   const [allContacts, setAllContacts] = useState([]);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
+  const [showContactDropdown, setShowContactDropdown] = useState(false);
+  const contactDropdownRef = useRef(null);
   
   // Date States for DatePicker
   const [targetCloseDate, setTargetCloseDate] = useState(null);
