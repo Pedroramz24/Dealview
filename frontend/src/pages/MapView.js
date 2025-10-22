@@ -421,7 +421,9 @@ const MapView = () => {
         console.log('[ReportAll] Available fields:', Object.keys(result.parcel));
         
         // Set selected parcel for highlighting
-        setSelectedParcelId(result.parcel.parcel_id || result.parcel.robust_id);
+        const parcelIdForHighlight = result.parcel.robust_id || result.parcel.parcel_id;
+        console.log('[ReportAll] Setting selected parcel ID for highlighting:', parcelIdForHighlight);
+        setSelectedParcelId(parcelIdForHighlight);
         
         // Show parcel information in PropertyIntelligencePanel
         const parcelData = {
