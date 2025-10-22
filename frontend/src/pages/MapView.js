@@ -270,6 +270,10 @@ const MapView = () => {
         <LayerManager
           isOpen={layerManagerOpen}
           onClose={() => setLayerManagerOpen(false)}
+          showStreetLabels={showStreetLabels}
+          onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
+          mapStyle={mapStyle}
+          currentZoom={viewState.zoom}
         />
 
         {/* Map Controls - Top Right */}
