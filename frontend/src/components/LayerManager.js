@@ -233,18 +233,29 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
         />
       )}
 
-      {/* Layer Manager Panel - Positioned next to Property Panel */}
+      {/* Layer Manager Panel - Positioned next to Property Panel when both open */}
       <div
         style={{
           position: 'fixed',
           top: 0,
-          left: isOpen ? (propertyPanelOpen ? '35%' : '0') : (propertyPanelOpen ? 'calc(35% - 380px)' : '-380px'),
+          left: (() => {
+            if (isOpen && propertyPanelOpen) {
+              // Both panels open: Layer sits next to Property panel
+              return '35%';
+            } else if (isOpen && !propertyPanelOpen) {
+              // Only Layer panel open: sits at far left
+              return '0';
+            } else {
+              // Layer panel closed: hide off-screen
+              return '-380px';
+            }
+          })(),
           width: '380px',
           height: '100vh',
           background: 'rgba(11, 12, 14, 0.95)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderLeft: propertyPanelOpen ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          borderLeft: (isOpen && propertyPanelOpen) ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
           borderRight: '1px solid rgba(255, 255, 255, 0.1)',
           zIndex: 998,
           transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
