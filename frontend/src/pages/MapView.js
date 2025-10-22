@@ -313,7 +313,7 @@ const MapView = () => {
     setIdentifyTooltip(null);
     setReportAllParcel(null);
     
-    // Only query ReportAll parcels if zoom level is 14+
+    // Only query ReportAll parcels if zoom level is 14+ and parcels are shown
     const map = mapRef.current?.getMap();
     if (map && map.getZoom() >= REPORTALL_CONFIG.minZoom && showReportAllParcels) {
       console.log('[ReportAll] Querying parcel at:', event.lngLat);
@@ -325,30 +325,21 @@ const MapView = () => {
       
       if (result.success && result.parcel) {
         console.log('[ReportAll] Found parcel:', result.parcel);
-        // Open create deal panel with parcel data
-        openCreateDealPanel(
-          { lat: event.lngLat.lat, lng: event.lngLat.lng },
-          result.parcel
-        );
-        return;
-      } else {
-        console.log('[ReportAll] No parcel found - opening create deal panel with location only');
-        // No parcel found, but user clicked map - open create deal with just location
-        openCreateDealPanel(
-          { lat: event.lngLat.lat, lng: event.lngLat.lng },
-          null
-        );
+        // Show parcel information in PropertyIntelligencePanel
+        const parcelData = {
+          ...result.parcel,
+          latitude: event.lngLat.lat,
+          longitude: event.lngLat.lng,
+          isParcel: true // Flag to identify this is parcel data, not a deal
+        };
+        togglePropertyPanel(parcelData);
         return;
       }
     }
     
-    // If parcels not shown or zoom < 14, open create deal panel with just location
-    if (map && map.getZoom() >= 12) {
-      openCreateDealPanel(
-        { lat: event.lngLat.lat, lng: event.lngLat.lng },
-        null
-      );
-    }
+    // If no parcel found or parcels not shown, do nothing (don't auto-open create deal panel)
+    // User must explicitly click a button to create a deal
+    console.log('[MapView] Map clicked - no action (parcel not found or parcels disabled)');
   };
 
 
