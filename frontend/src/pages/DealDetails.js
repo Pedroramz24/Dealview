@@ -400,17 +400,27 @@ const DealDetails = () => {
     }).format(price);
   };
 
-  // PSF calculation using LOT SIZE
-  const calculatePricePerLotSF = () => {
+  // Price calculations
+  const calculatePricePerSQFT = () => {
+    // Price per SQFT (lot) = purchase_price / (lot_size_in_acres * 43560)
     if (!deal?.lot_size || !deal?.price) return 'N/A';
-    const psf = deal.price / deal.lot_size;
-    return formatPrice(psf);
+    const sqft = deal.lot_size * 43560; // Convert acres to square feet
+    const pricePerSqft = deal.price / sqft;
+    return formatPrice(pricePerSqft);
   };
 
-  const calculatePricePerBuildingSF = () => {
+  const calculatePricePerAC = () => {
+    // Price per AC = purchase_price / lot_size_in_acres
+    if (!deal?.lot_size || !deal?.price) return 'N/A';
+    const pricePerAc = deal.price / deal.lot_size;
+    return formatPrice(pricePerAc);
+  };
+
+  const calculatePricePerSQFTBuilding = () => {
+    // Price per SQFT (Building) = purchase_price / building_size
     if (!deal?.size || !deal?.price) return 'N/A';
-    const psf = deal.price / deal.size;
-    return formatPrice(psf);
+    const pricePerSqft = deal.price / deal.size;
+    return formatPrice(pricePerSqft);
   };
 
   if (loading) {
