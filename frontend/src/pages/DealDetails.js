@@ -937,12 +937,16 @@ const DealDetails = () => {
                   {/* Link Contacts */}
                   <div>
                     <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>Search & Link Contacts</Label>
-                    <div className="relative">
+                    <div className="relative" ref={contactDropdownRef}>
                       <input
                         type="text"
                         placeholder="Search contacts by name..."
                         value={contactSearchTerm}
-                        onChange={(e) => setContactSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                          setContactSearchTerm(e.target.value);
+                          setShowContactDropdown(e.target.value.length > 0);
+                        }}
+                        onFocus={() => contactSearchTerm && setShowContactDropdown(true)}
                         style={{
                           width: '100%',
                           padding: '8px 12px',
@@ -954,7 +958,7 @@ const DealDetails = () => {
                         }}
                       />
                       
-                      {contactSearchTerm && (
+                      {showContactDropdown && contactSearchTerm && (
                         <div style={{
                           position: 'absolute',
                           top: '100%',
