@@ -553,24 +553,23 @@ const MapView = () => {
           {/* Street Labels Overlay - Only show when zoomed in (zoom >= 13) */}
           {showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13 && (
             <Source
-              id="carto-labels"
+              id="stamen-labels"
               type="raster"
               tiles={[
-                'https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png',
-                'https://b.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png',
-                'https://c.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png'
+                'https://tiles.stadiamaps.com/tiles/stamen_terrain_labels/{z}/{x}/{y}.png'
               ]}
               tileSize={256}
               minzoom={13}
-              maxzoom={19}
+              maxzoom={18}
+              attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a>'
             >
               <Layer
                 id="street-labels-layer"
                 type="raster"
-                source="carto-labels"
+                source="stamen-labels"
                 minzoom={13}
                 paint={{
-                  'raster-opacity': 1
+                  'raster-opacity': 0.9
                 }}
               />
             </Source>
