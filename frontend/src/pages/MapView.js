@@ -335,11 +335,22 @@ const MapView = () => {
           currentZoom={viewState.zoom}
         />
 
-        {/* Panel Toggle Buttons - Left Side (repositions when property panel is open) */}
+        {/* Panel Toggle Buttons - Repositions to hug rightmost panel */}
         <div 
           className="absolute top-6 z-[900] flex flex-col gap-3"
           style={{
-            left: activePanel === 'property' ? 'calc(35% + 24px)' : '24px',
+            left: (() => {
+              if (activePanel === 'layers') {
+                // Both panels open: property (35%) + layer (380px) + gap (24px)
+                return 'calc(35% + 380px + 24px)';
+              } else if (activePanel === 'property') {
+                // Only property panel open
+                return 'calc(35% + 24px)';
+              } else {
+                // No panels open
+                return '24px';
+              }
+            })(),
             transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         >
