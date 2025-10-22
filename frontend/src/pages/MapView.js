@@ -605,13 +605,13 @@ const MapView = () => {
                 paint={{
                   'fill-color': [
                     'case',
-                    ['==', ['id'], selectedParcelId || ''],
+                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
                     '#FF0000', // Red for selected parcel
                     REPORTALL_CONFIG.style.parcelFill.color // Default cyan
                   ],
                   'fill-opacity': [
                     'case',
-                    ['==', ['id'], selectedParcelId || ''],
+                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
                     0.4, // Higher opacity for selected
                     REPORTALL_CONFIG.style.parcelFill.opacity
                   ],
@@ -625,19 +625,19 @@ const MapView = () => {
                 paint={{
                   'line-color': [
                     'case',
-                    ['==', ['id'], selectedParcelId || ''],
+                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
                     '#FF0000', // Bold red for selected parcel
                     REPORTALL_CONFIG.style.parcelLine.color
                   ],
                   'line-width': [
                     'case',
-                    ['==', ['id'], selectedParcelId || ''],
-                    3, // Thicker line for selected
+                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
+                    4, // Thicker line for selected (increased from 3)
                     REPORTALL_CONFIG.style.parcelLine.width
                   ],
                   'line-opacity': [
                     'case',
-                    ['==', ['id'], selectedParcelId || ''],
+                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
                     1, // Full opacity for selected
                     REPORTALL_CONFIG.style.parcelLine.opacity
                   ],
