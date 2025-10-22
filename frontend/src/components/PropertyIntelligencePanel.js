@@ -132,6 +132,21 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     }).format(price);
   };
 
+  const formatDate = (dateValue) => {
+    if (!dateValue) return 'N/A';
+    try {
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) return 'N/A';
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (e) {
+      return 'N/A';
+    }
+  };
+
   const handleSave = async () => {
     // TODO: Implement save logic
     toast.success('Property updated successfully');
