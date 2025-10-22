@@ -29,6 +29,18 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
     currentZoom: currentZoom || 0
   };
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[LayerManager] Props received:', {
+      showStreetLabels,
+      showParcels,
+      hasStreetLabelsCallback: !!onToggleStreetLabels,
+      hasParcelsCallback: !!onToggleParcels,
+      mapStyle,
+      currentZoom
+    });
+  }, [showStreetLabels, showParcels, onToggleStreetLabels, onToggleParcels, mapStyle, currentZoom]);
+
   // Fetch layer registry from backend (only this one, removed duplicate)
   useEffect(() => {
     const fetchRegistry = async () => {
