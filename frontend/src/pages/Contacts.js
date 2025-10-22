@@ -103,6 +103,19 @@ const Contacts = () => {
       fetchDeals();
     }
   }, [user]);
+  
+  // Handle URL params for auto-opening create contact form
+  useEffect(() => {
+    const shouldCreate = searchParams.get('create');
+    const contactName = searchParams.get('name');
+    
+    if (shouldCreate === 'true') {
+      setShowAddPanel(true);
+      if (contactName) {
+        setContactForm(prev => ({ ...prev, name: contactName }));
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     filterContacts();
