@@ -147,7 +147,7 @@ SELECT USING (same check)
 
 ### Your Configuration:
 ```
-Site URL: https://promap-crm.preview.emergentagent.com
+Site URL: https://map-crm.preview.emergentagent.com
 Email confirmation: OFF (for development)
 JWT expiry: 3600 seconds (1 hour)
 Auto-refresh: YES

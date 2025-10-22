@@ -10,7 +10,7 @@ from datetime import datetime
 import sys
 
 # Configuration
-BASE_URL = "https://promap-crm.preview.emergentagent.com/api"
+BASE_URL = "https://map-crm.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {
     "email": "pedro@test.com",
     "password": "password123"
