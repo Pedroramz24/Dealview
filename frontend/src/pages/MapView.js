@@ -365,15 +365,18 @@ const MapView = () => {
       <div className="h-full relative" style={{ background: '#000000' }}>
         {/* Property Intelligence Panel (LEFT) */}
         <PropertyIntelligencePanel
-          isOpen={activePanel === 'property'}
-          onClose={() => setActivePanel(null)}
+          isOpen={propertyPanelOpen}
+          onClose={() => {
+            setPropertyPanelOpen(false);
+            setPropertyPanelData(null);
+          }}
           data={propertyPanelData}
           type={propertyPanelData?.id ? 'deal' : 'parcel'}
         />
         
         {/* Create Deal Panel (LEFT - same slot as Property Panel) */}
         <CreateDealPanel
-          isOpen={activePanel === 'createDeal'}
+          isOpen={createDealPanelOpen}
           onClose={closeCreateDealPanel}
           location={createDealLocation}
           parcelData={createDealParcelData}
@@ -382,13 +385,13 @@ const MapView = () => {
         
         {/* Layer Manager Panel (MIDDLE - next to Property/Create panel) */}
         <LayerManager
-          isOpen={activePanel === 'layers'}
-          onClose={() => setActivePanel(null)}
+          isOpen={layersPanelOpen}
+          onClose={() => setLayersPanelOpen(false)}
           showStreetLabels={showStreetLabels}
           onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
           mapStyle={mapStyle}
           currentZoom={viewState.zoom}
-          propertyPanelOpen={activePanel === 'property' || activePanel === 'createDeal'}
+          propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
         />
 
         {/* Panel Toggle Buttons - Repositions to hug rightmost panel */}
