@@ -317,10 +317,18 @@ const MapView = () => {
   return (
     <MapLayerProvider mapRef={mapRef}>
       <div className="h-full relative" style={{ background: '#000000' }}>
-        {/* Layer Manager - Controlled by MainLayout sidebar button */}
+        {/* Property Intelligence Panel (LEFT) */}
+        <PropertyIntelligencePanel
+          isOpen={activePanel === 'property'}
+          onClose={() => setActivePanel(null)}
+          data={propertyPanelData}
+          type={propertyPanelData?.id ? 'deal' : 'parcel'}
+        />
+        
+        {/* Layer Manager Panel (MIDDLE) */}
         <LayerManager
-          isOpen={layerManagerOpen}
-          onClose={() => setLayerManagerOpen(false)}
+          isOpen={activePanel === 'layers'}
+          onClose={() => setActivePanel(null)}
           showStreetLabels={showStreetLabels}
           onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
           mapStyle={mapStyle}
