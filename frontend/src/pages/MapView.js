@@ -571,74 +571,60 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* Street Labels Overlay - Using vector tiles for MapLibre compatibility */}
+          {/* Street Labels Overlay - Using EXACT same pattern as working parcel layer */}
           {showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13 && (
-            <>
-              {/* Using MapLibre's own demo tiles - fully compatible */}
-              <Source
-                id="demotiles"
-                type="vector"
-                tiles={['https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf']}
-                minzoom={0}
-                maxzoom={14}
-              >
-                {/* Major roads with casing for visibility */}
-                <Layer
-                  id="road-casing"
-                  type="line"
-                  source-layer="transportation"
-                  filter={['==', 'class', 'primary']}
-                  paint={{
-                    'line-color': '#000000',
-                    'line-width': 6,
-                    'line-opacity': 0.8
-                  }}
-                />
-                <Layer
-                  id="road-primary"
-                  type="line"
-                  source-layer="transportation"
-                  filter={['==', 'class', 'primary']}
-                  paint={{
-                    'line-color': '#ffffff',
-                    'line-width': 3,
-                    'line-opacity': 1
-                  }}
-                />
-                {/* Secondary roads */}
-                <Layer
-                  id="road-secondary"
-                  type="line"
-                  source-layer="transportation"
-                  filter={['==', 'class', 'secondary']}
-                  minzoom={14}
-                  paint={{
-                    'line-color': '#ffffff',
-                    'line-width': 2,
-                    'line-opacity': 0.8
-                  }}
-                />
-                {/* Road name labels - simplified */}
-                <Layer
-                  id="road-name-labels"
-                  type="symbol"
-                  source-layer="transportation_name"
-                  minzoom={13}
-                  layout={{
-                    'text-field': ['get', 'name'],
-                    'text-size': 13,
-                    'text-max-width': 8,
-                    'symbol-placement': 'line',
-                    'text-rotation-alignment': 'map'
-                  }}
-                  paint={{
-                    'text-color': '#ffffff',
-                    'text-halo-color': '#000000',
-                    'text-halo-width': 2
-                  }}
-                />
-              </Source>
-            </>
+            <Source
+              id="street-labels-source"
+              type="vector"
+              tiles={['https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf']}
+              minzoom={0}
+              maxzoom={14}
+              scheme="xyz"
+              tileSize={512}
+            >
+              {/* Major roads - black casing */}
+              <Layer
+                id="roads-casing"
+                type="line"
+                source-layer="transportation"
+                filter={['==', 'class', 'primary']}
+                paint={{
+                  'line-color': '#000000',
+                  'line-width': 6,
+                  'line-opacity': 0.8
+                }}
+              />
+              {/* Major roads - white fill */}
+              <Layer
+                id="roads-primary"
+                type="line"
+                source-layer="transportation"
+                filter={['==', 'class', 'primary']}
+                paint={{
+                  'line-color': '#ffffff',
+                  'line-width': 3,
+                  'line-opacity': 1
+                }}
+              />
+              {/* Road name labels */}
+              <Layer
+                id="road-labels"
+                type="symbol"
+                source-layer="transportation_name"
+                layout={{
+                  'text-field': ['get', 'name'],
+                  'text-size': 13,
+                  'text-max-width': 8,
+                  'symbol-placement': 'line',
+                  'text-rotation-alignment': 'map'
+                }}
+                paint={{
+                  'text-color': '#ffffff',
+                  'text-halo-color': '#000000',
+                  'text-halo-width': 2
+                }}
+              />
+            </Source>
           )}
 
           {deals.map((deal) => (
