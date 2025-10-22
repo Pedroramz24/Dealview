@@ -564,6 +564,39 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                 </span>
               </div>
               <div style={{ display: 'grid', gap: '12px' }}>
+                {/* Property Address Details */}
+                {(data.addr_city || data.city) && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>City</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.addr_city || data.city}
+                    </span>
+                  </div>
+                )}
+                {(data.addr_zip || data.zip) && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Zip Code</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.addr_zip || data.zip}
+                    </span>
+                  </div>
+                )}
                 {(data.acreage_calc || data.acreage || data.acres) && (
                   <div style={{ 
                     display: 'flex', 
@@ -580,7 +613,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                     </span>
                   </div>
                 )}
-                {data.sqft && (
+                {(data.sqft || data.bldg_sqft || data.building_sqft) && (
                   <div style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between', 
@@ -592,7 +625,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   }}>
                     <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Building Size</span>
                     <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
-                      {parseFloat(data.sqft).toLocaleString()} SF
+                      {parseFloat(data.sqft || data.bldg_sqft || data.building_sqft).toLocaleString()} SF
                     </span>
                   </div>
                 )}
@@ -641,6 +674,70 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                     <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>County</span>
                     <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
                       {data.county}
+                    </span>
+                  </div>
+                )}
+                {(data.muni_name || data.municipality) && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Municipality</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.muni_name || data.municipality}
+                    </span>
+                  </div>
+                )}
+                {data.school_district && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>School District</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.school_district}
+                    </span>
+                  </div>
+                )}
+                {data.section_township_range && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Section/Township/Range</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.section_township_range}
+                    </span>
+                  </div>
+                )}
+                {(data.land_cover || data.crop_cover) && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Land/Crop Cover</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.land_cover || data.crop_cover}
                     </span>
                   </div>
                 )}
