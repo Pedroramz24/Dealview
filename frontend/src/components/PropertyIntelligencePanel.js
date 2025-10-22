@@ -16,7 +16,7 @@ const stageColors = {
   'overpriced': '#ef4444'
 };
 
-const PropertyIntelligencePanel = ({ isOpen, onClose, data, type }) => {
+const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }) => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
