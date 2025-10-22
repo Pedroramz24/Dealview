@@ -85,6 +85,7 @@ function App() {
             element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
             <Route index element={<MapView />} />
+            <Route path="map" element={<MapView />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="deals" element={<DealsList />} />
             <Route path="deals/:dealId" element={<DealDetails />} />
