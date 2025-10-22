@@ -26,6 +26,7 @@ const MapView = () => {
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
   const [reportAllParcel, setReportAllParcel] = useState(null);
   const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
+  const [selectedParcelId, setSelectedParcelId] = useState(null); // Track selected parcel for highlighting
   
   // Panel Management System - Independent panel states
   const [propertyPanelOpen, setPropertyPanelOpen] = useState(false);
