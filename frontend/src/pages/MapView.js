@@ -399,19 +399,18 @@ const MapView = () => {
           className="absolute top-6 z-[900] flex flex-col gap-3"
           style={{
             left: (() => {
-              const propertyOrCreateOpen = activePanel === 'property' || activePanel === 'createDeal';
-              const layersOpen = activePanel === 'layers';
+              const leftPanelOpen = propertyPanelOpen || createDealPanelOpen;
               
-              if (propertyOrCreateOpen && layersOpen) {
-                // Both panels open: button right of layers panel
-                // Property (500px) + Layers (380px) + tight gap (12px)
-                return 'calc(500px + 380px + 12px)';
-              } else if (layersOpen && !propertyOrCreateOpen) {
+              if (leftPanelOpen && layersPanelOpen) {
+                // Both panels open: button right of layers panel (tight hug)
+                // Property (500px) + Layers (380px) + tiny gap (8px)
+                return 'calc(500px + 380px + 8px)';
+              } else if (layersPanelOpen && !leftPanelOpen) {
                 // Only layers panel open: button right of layers (tight hug)
-                return 'calc(380px + 12px)';
-              } else if (propertyOrCreateOpen && !layersOpen) {
+                return 'calc(380px + 8px)';
+              } else if (leftPanelOpen && !layersPanelOpen) {
                 // Only property/create panel open: button right of it (tight hug)
-                return 'calc(500px + 12px)';
+                return 'calc(500px + 8px)';
               } else {
                 // No panels open: far left
                 return '24px';
@@ -429,14 +428,14 @@ const MapView = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: activePanel === 'layers' ? '#00d4aa' : '#FFFFFF',
-              backgroundColor: activePanel === 'layers' ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255,255,255,0.05)',
+              color: layersPanelOpen ? '#00d4aa' : '#FFFFFF',
+              backgroundColor: layersPanelOpen ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255,255,255,0.05)',
               cursor: 'pointer',
               borderRadius: '12px',
-              border: `1px solid ${activePanel === 'layers' ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255,255,255,0.15)'}`,
+              border: `1px solid ${layersPanelOpen ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255,255,255,0.15)'}`,
               backdropFilter: 'blur(12px)',
               transition: 'all 0.3s ease',
-              boxShadow: activePanel === 'layers' ? '0 0 24px rgba(0, 184, 212, 0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
+              boxShadow: layersPanelOpen ? '0 0 24px rgba(0, 184, 212, 0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
             }}
             title="Layers & Intelligence"
           >
