@@ -4,7 +4,7 @@ import axios from 'axios';
 import { API } from '../App';
 import { useMapLayerContext } from '../contexts/MapLayerContext';
 
-const LayerManager = ({ isOpen, onClose }) => {
+const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels, mapStyle, currentZoom }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({
     administrative: true,
@@ -18,6 +18,14 @@ const LayerManager = ({ isOpen, onClose }) => {
   
   // Get map layer handlers from context if available (MapView only)
   const layerContext = useMapLayerContext();
+  
+  // Create props object for easy access in JSX
+  const props = {
+    showStreetLabels,
+    onToggleStreetLabels,
+    mapStyle: mapStyle || 'satellite',
+    currentZoom: currentZoom || 0
+  };
 
   // Fetch layer registry from backend (only this one, removed duplicate)
   useEffect(() => {
