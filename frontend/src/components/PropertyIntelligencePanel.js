@@ -314,12 +314,13 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type }) => {
                 <span
                   style={{
                     padding: '6px 12px',
-                    background: 'rgba(0, 184, 212, 0.15)',
-                    color: '#00b8d4',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    background: stageColors[data.stage] || '#94a3b8',
+                    color: '#FFFFFF',
+                    border: `1px solid ${stageColors[data.stage] || '#94a3b8'}`,
                     borderRadius: '6px',
                     fontSize: '12px',
                     fontWeight: '600',
+                    boxShadow: `0 0 12px ${stageColors[data.stage] || '#94a3b8'}40`
                   }}
                 >
                   {data.stage.replace(/_/g, ' ')}
