@@ -8,6 +8,7 @@ import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { MapLayerProvider } from '../contexts/MapLayerContext';
 import LayerManager from '../components/LayerManager';
 import PropertyIntelligencePanel from '../components/PropertyIntelligencePanel';
+import CreateDealPanel from '../components/CreateDealPanel';
 import ParcelPopup from '../components/ParcelPopup';
 import reportallService from '../services/reportallService';
 import REPORTALL_CONFIG from '../config/reportall';
