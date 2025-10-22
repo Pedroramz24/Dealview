@@ -115,6 +115,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type }) => {
           flex: 1,
           overflowY: 'auto',
           overflowX: 'hidden',
+          minHeight: 0, // Critical for flex scrolling
         }}
         className="custom-scrollbar"
       >
