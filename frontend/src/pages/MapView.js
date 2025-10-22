@@ -335,6 +335,36 @@ const MapView = () => {
           currentZoom={viewState.zoom}
         />
 
+        {/* Panel Toggle Buttons - Left Side */}
+        <div className="absolute top-6 left-6 z-[900] flex flex-col gap-3">
+          <button
+            onClick={() => toggleLayersPanel()}
+            className="premium-glass-btn"
+            style={{
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: activePanel === 'layers' ? '#00d4aa' : '#FFFFFF',
+              backgroundColor: activePanel === 'layers' ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255,255,255,0.05)',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              border: `1px solid ${activePanel === 'layers' ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255,255,255,0.15)'}`,
+              backdropFilter: 'blur(12px)',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+            }}
+            title="Layers & Intelligence"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+          </button>
+        </div>
+
         {/* Map Controls - Top Right */}
         <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-3">
 
