@@ -27,8 +27,12 @@ const MapView = () => {
   const [reportAllParcel, setReportAllParcel] = useState(null);
   const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
   
-  // Panel Management System
-  const [activePanel, setActivePanel] = useState(null); // 'property', 'layers', 'actions', 'createDeal', or null
+  // Panel Management System - Independent panel states
+  const [propertyPanelOpen, setPropertyPanelOpen] = useState(false);
+  const [layersPanelOpen, setLayersPanelOpen] = useState(false);
+  const [actionsPanelOpen, setActionsPanelOpen] = useState(false);
+  const [createDealPanelOpen, setCreateDealPanelOpen] = useState(false);
+  
   const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
   const [createDealLocation, setCreateDealLocation] = useState(null); // Location for new deal
