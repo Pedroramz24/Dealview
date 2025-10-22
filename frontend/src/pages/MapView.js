@@ -395,49 +395,6 @@ const MapView = () => {
           </button>
         </div>
 
-        {/* Bottom Action Buttons */}
-        <div className="absolute bottom-6 right-6 z-[1000] flex gap-3">
-          <button
-            onClick={fetchDeals}
-            className="premium-glass-btn"
-            style={{
-              color: '#00b8d4',
-              backgroundColor: 'rgba(255,255,255,0.05)',
-              fontWeight: 500,
-              cursor: 'pointer',
-              fontSize: '14px',
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(12px)',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-            }}
-          >
-            Refresh
-          </button>
-          <button
-            onClick={() => navigate('/deals')}
-            data-testid="view-all-deals-button"
-            className="premium-glass-btn"
-            style={{
-              color: '#00b8d4',
-              backgroundColor: 'rgba(255,255,255,0.05)',
-              fontWeight: 500,
-              cursor: 'pointer',
-              fontSize: '14px',
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(12px)',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-            }}
-          >
-            View All Deals
-          </button>
-        </div>
-
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
           <Map
             {...viewState}
