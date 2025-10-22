@@ -748,7 +748,9 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   }}>
                     <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Land/Crop Cover</span>
                     <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
-                      {data.land_cover || data.crop_cover}
+                      {typeof (data.land_cover || data.crop_cover) === 'object' 
+                        ? Object.keys(data.land_cover || data.crop_cover).join(', ') 
+                        : (data.land_cover || data.crop_cover)}
                     </span>
                   </div>
                 )}
