@@ -602,8 +602,18 @@ const MapView = () => {
                 type="fill"
                 source-layer="parcels"
                 paint={{
-                  'fill-color': REPORTALL_CONFIG.style.parcelFill.color,
-                  'fill-opacity': REPORTALL_CONFIG.style.parcelFill.opacity,
+                  'fill-color': [
+                    'case',
+                    ['==', ['id'], selectedParcelId || ''],
+                    '#FF0000', // Red for selected parcel
+                    REPORTALL_CONFIG.style.parcelFill.color // Default cyan
+                  ],
+                  'fill-opacity': [
+                    'case',
+                    ['==', ['id'], selectedParcelId || ''],
+                    0.4, // Higher opacity for selected
+                    REPORTALL_CONFIG.style.parcelFill.opacity
+                  ],
                 }}
                 beforeId="reportall-parcels-line"
               />
@@ -612,9 +622,24 @@ const MapView = () => {
                 type="line"
                 source-layer="parcels"
                 paint={{
-                  'line-color': REPORTALL_CONFIG.style.parcelLine.color,
-                  'line-width': REPORTALL_CONFIG.style.parcelLine.width,
-                  'line-opacity': REPORTALL_CONFIG.style.parcelLine.opacity,
+                  'line-color': [
+                    'case',
+                    ['==', ['id'], selectedParcelId || ''],
+                    '#FF0000', // Bold red for selected parcel
+                    REPORTALL_CONFIG.style.parcelLine.color
+                  ],
+                  'line-width': [
+                    'case',
+                    ['==', ['id'], selectedParcelId || ''],
+                    3, // Thicker line for selected
+                    REPORTALL_CONFIG.style.parcelLine.width
+                  ],
+                  'line-opacity': [
+                    'case',
+                    ['==', ['id'], selectedParcelId || ''],
+                    1, // Full opacity for selected
+                    REPORTALL_CONFIG.style.parcelLine.opacity
+                  ],
                 }}
               />
             </Source>
