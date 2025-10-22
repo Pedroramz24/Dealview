@@ -562,31 +562,88 @@ const MapView = () => {
           )}
 
           {/* Street Labels Overlay - Only show when zoomed in (zoom >= 13) */}
+          {/* Using vector tiles for better MapLibre compatibility */}
           {showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13 && (
             <Source
-              id="osm-labels"
-              type="raster"
-              tiles={[
-                'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
-              ]}
-              tileSize={256}
-              minzoom={13}
-              maxzoom={19}
-              attribution='&copy; OpenStreetMap contributors'
+              id="protomaps"
+              type="vector"
+              tiles={['https://api.protomaps.com/tiles/v3/{z}/{x}/{y}.mvt?key=free']}
+              minzoom={0}
+              maxzoom={15}
             >
+              {/* Road lines */}
               <Layer
-                id="street-labels-layer"
-                type="raster"
-                source="osm-labels"
-                minzoom={13}
+                id="roads-major"
+                type="line"
+                source-layer="roads"
+                filter={['in', 'pmap:kind', 'highway', 'major_road', 'medium_road']}
                 paint={{
-                  'raster-opacity': 0.5,
-                  'raster-contrast': 0.3,
-                  'raster-saturation': -0.8,
-                  'raster-brightness-min': 0.3,
-                  'raster-brightness-max': 1
+                  'line-color': '#ffffff',
+                  'line-width': [
+                    'interpolate',
+                    ['exponential', 1.5],
+                    ['zoom'],
+                    13, 1,
+                    18, 4
+                  ],
+                  'line-opacity': 0.5
+                }}
+              />
+              {/* Road labels */}
+              <Layer
+                id="road-labels"
+                type="symbol"
+                source-layer="roads"
+                filter={['has', 'name']}
+                minzoom={13}
+                layout={{
+                  'text-field': ['get', 'name'],
+                  'text-font': ['Noto Sans Regular'],
+                  'text-size': [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    13, 10,
+                    16, 14
+                  ],
+                  'text-max-width': 8,
+                  'symbol-placement': 'line',
+                  'text-rotation-alignment': 'map',
+                  'text-pitch-alignment': 'viewport',
+                  'text-offset': [0, 0.5]
+                }}
+                paint={{
+                  'text-color': '#ffffff',
+                  'text-halo-color': '#000000',
+                  'text-halo-width': 2,
+                  'text-halo-blur': 1
+                }}
+              />
+              {/* Place labels (cities, neighborhoods) */}
+              <Layer
+                id="place-labels"
+                type="symbol"
+                source-layer="places"
+                filter={['in', 'pmap:kind', 'city', 'town', 'village', 'neighbourhood']}
+                minzoom={13}
+                layout={{
+                  'text-field': ['get', 'name'],
+                  'text-font': ['Noto Sans Bold'],
+                  'text-size': [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    13, 12,
+                    16, 18
+                  ],
+                  'text-anchor': 'center',
+                  'text-max-width': 8
+                }}
+                paint={{
+                  'text-color': '#ffffff',
+                  'text-halo-color': '#000000',
+                  'text-halo-width': 2,
+                  'text-halo-blur': 1
                 }}
               />
             </Source>
