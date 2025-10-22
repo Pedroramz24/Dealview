@@ -416,13 +416,33 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   {data.owner || data.owner_name || 'N/A'}
                 </div>
               </div>
-              {data.owner_addr && (
+              {(data.owner_addr || data.owner_address) && (
                 <div style={{ marginBottom: '12px' }}>
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
                     Mailing Address
                   </div>
                   <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', lineHeight: '1.5' }}>
-                    {data.owner_addr}
+                    {data.owner_addr || data.owner_address}
+                  </div>
+                </div>
+              )}
+              {(data.owner_city || data.owner_state || data.owner_zip) && (
+                <div style={{ marginBottom: '12px' }}>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    Owner City/State/Zip
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>
+                    {[data.owner_city, data.owner_state, data.owner_zip].filter(Boolean).join(', ') || 'N/A'}
+                  </div>
+                </div>
+              )}
+              {data.mail_addr && (
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    Full Mailing Address
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', lineHeight: '1.5' }}>
+                    {data.mail_addr}
                   </div>
                 </div>
               )}
