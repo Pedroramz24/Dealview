@@ -319,14 +319,14 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <MapPin size={16} style={{ color: '#00b8d4' }} />
               <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Address
+                {isDeal ? 'Address' : 'Parcel Address'}
               </span>
             </div>
             <h3 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: '600', marginBottom: '12px', lineHeight: '1.3' }}>
-              {data.address || data.property_address || 'Address not available'}
+              {data.address || data.property_address || data.addr || 'Address not available'}
             </h3>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {data.asset_type && (
+              {isDeal && data.asset_type && (
                 <span
                   style={{
                     padding: '6px 12px',
@@ -341,7 +341,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   {data.asset_type}
                 </span>
               )}
-              {data.stage && (
+              {isDeal && data.stage && (
                 <span
                   style={{
                     padding: '6px 12px',
@@ -357,8 +357,77 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                   {data.stage.replace(/_/g, ' ')}
                 </span>
               )}
+              {!isDeal && data.parcel_id && (
+                <span
+                  style={{
+                    padding: '6px 12px',
+                    background: 'rgba(0, 184, 212, 0.1)',
+                    color: '#00b8d4',
+                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    fontFamily: 'monospace'
+                  }}
+                >
+                  ID: {data.parcel_id}
+                </span>
+              )}
+              {!isDeal && data.land_use_class && (
+                <span
+                  style={{
+                    padding: '6px 12px',
+                    background: 'rgba(0, 212, 170, 0.1)',
+                    color: '#00d4aa',
+                    border: '1px solid rgba(0, 212, 170, 0.3)',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                  }}
+                >
+                  {data.land_use_class}
+                </span>
+              )}
             </div>
           </div>
+
+          {/* Parcel Owner Information - Only for parcels */}
+          {!isDeal && (
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '20px',
+                background: 'rgba(0, 212, 170, 0.05)',
+                border: '1px solid rgba(0, 212, 170, 0.15)',
+                borderRadius: '12px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                <Users size={16} style={{ color: '#00d4aa' }} />
+                <span style={{ color: '#00d4aa', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Owner Information
+                </span>
+              </div>
+              <div style={{ marginBottom: '12px' }}>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                  Owner Name
+                </div>
+                <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                  {data.owner || data.owner_name || 'N/A'}
+                </div>
+              </div>
+              {data.owner_addr && (
+                <div style={{ marginBottom: '12px' }}>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                    Mailing Address
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', lineHeight: '1.5' }}>
+                    {data.owner_addr}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Financial Overview */}
           <div
@@ -373,46 +442,193 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
               <DollarSign size={16} style={{ color: '#00b8d4' }} />
               <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Financial Overview
+                {isDeal ? 'Financial Overview' : 'Valuation & Sales'}
               </span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  Asking Price
-                </div>
-                <div style={{ color: '#00d4aa', fontSize: '20px', fontWeight: '700' }}>
-                  {formatPrice(data.price)}
-                </div>
-              </div>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  Lot Size
-                </div>
-                <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
-                  {data.lot_size ? `${data.lot_size} AC` : 'N/A'}
-                </div>
-              </div>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  Building Size
-                </div>
-                <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
-                  {data.size ? `${parseFloat(data.size).toLocaleString()} SF` : 'N/A'}
-                </div>
-              </div>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  Cap Rate
-                </div>
-                <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
-                  {data.cap_rate ? `${data.cap_rate}%` : 'N/A'}
-                </div>
-              </div>
+              {isDeal ? (
+                <>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Asking Price
+                    </div>
+                    <div style={{ color: '#00d4aa', fontSize: '20px', fontWeight: '700' }}>
+                      {formatPrice(data.price)}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Lot Size
+                    </div>
+                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                      {data.lot_size ? `${data.lot_size} AC` : 'N/A'}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Building Size
+                    </div>
+                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                      {data.size ? `${parseFloat(data.size).toLocaleString()} SF` : 'N/A'}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Cap Rate
+                    </div>
+                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                      {data.cap_rate ? `${data.cap_rate}%` : 'N/A'}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Market Value
+                    </div>
+                    <div style={{ color: '#00d4aa', fontSize: '18px', fontWeight: '700' }}>
+                      {formatPrice(data.mkt_val_tot || data.market_value)}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Last Sale Price
+                    </div>
+                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                      {formatPrice(data.sale_price || data.last_sale_price)}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Land Value
+                    </div>
+                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                      {formatPrice(data.land_val || data.land_value)}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Improvement Value
+                    </div>
+                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                      {formatPrice(data.impr_val || data.improvement_value)}
+                    </div>
+                  </div>
+                  {(data.sale_date || data.last_sale_date) && (
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                        Last Sale Date
+                      </div>
+                      <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500' }}>
+                        {new Date(data.sale_date || data.last_sale_date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
 
-          {/* Property Details */}
+          {/* Property Details for Parcels */}
+          {!isDeal && (
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                <Home size={16} style={{ color: '#00b8d4' }} />
+                <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Property Details
+                </span>
+              </div>
+              <div style={{ display: 'grid', gap: '12px' }}>
+                {(data.acreage_calc || data.acreage || data.acres) && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Lot Size</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {parseFloat(data.acreage_calc || data.acreage || data.acres).toFixed(2)} AC
+                    </span>
+                  </div>
+                )}
+                {data.sqft && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Building Size</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {parseFloat(data.sqft).toLocaleString()} SF
+                    </span>
+                  </div>
+                )}
+                {data.year_built && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Year Built</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.year_built}
+                    </span>
+                  </div>
+                )}
+                {data.zoning && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>Zoning</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.zoning}
+                    </span>
+                  </div>
+                )}
+                {data.county && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>County</span>
+                    <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                      {data.county}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Property Details for Deals */}
           {isDeal && (
             <div style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
