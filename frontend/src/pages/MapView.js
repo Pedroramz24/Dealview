@@ -47,46 +47,94 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
-  // Debug logging for street labels with map inspection
+  // Add street labels to map using useEffect and direct map API
   useEffect(() => {
-    console.log('[MapView] Street labels state:', {
-      showStreetLabels,
-      mapStyle,
-      zoom: viewState.zoom,
-      shouldRender: showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13
-    });
+    if (!mapRef.current) return;
     
-    if (showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13) {
-      console.log('[MapView] ✅ Street labels SHOULD be visible now');
+    const map = mapRef.current.getMap();
+    if (!map || !map.isStyleLoaded()) return;
+    
+    const sourceId = 'street-labels-source';
+    const shouldShowLabels = showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13;
+    
+    if (shouldShowLabels) {
+      // Add source if it doesn't exist
+      if (!map.getSource(sourceId)) {
+        map.addSource(sourceId, {
+          type: 'vector',
+          tiles: ['https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf'],
+          minzoom: 0,
+          maxzoom: 14,
+          scheme: 'xyz',
+          tileSize: 512
+        });
+        console.log('[MapView] ✅ Added street labels source');
+      }
       
-      // Inspect map sources and layers after a delay to allow rendering
-      setTimeout(() => {
-        if (mapRef.current) {
-          const map = mapRef.current.getMap();
-          const style = map.getStyle();
-          console.log('[MapView] Current map sources:', Object.keys(style.sources));
-          console.log('[MapView] Current map layers:', style.layers.map(l => l.id));
-          
-          // Check if our street label source exists
-          if (style.sources['street-labels-source']) {
-            console.log('[MapView] ✅ Street labels source EXISTS');
-          } else {
-            console.log('[MapView] ❌ Street labels source NOT FOUND');
+      // Add layers if they don't exist
+      if (!map.getLayer('roads-casing')) {
+        map.addLayer({
+          id: 'roads-casing',
+          type: 'line',
+          source: sourceId,
+          'source-layer': 'transportation',
+          filter: ['==', 'class', 'primary'],
+          paint: {
+            'line-color': '#000000',
+            'line-width': 6,
+            'line-opacity': 0.8
           }
-          
-          // Check if our street label layers exist
-          const streetLayers = style.layers.filter(l => 
-            l.id === 'roads-casing' || l.id === 'roads-primary' || l.id === 'road-labels'
-          );
-          console.log('[MapView] Street label layers found:', streetLayers.length, streetLayers.map(l => l.id));
-        }
-      }, 1000);
+        });
+        console.log('[MapView] ✅ Added roads-casing layer');
+      }
+      
+      if (!map.getLayer('roads-primary')) {
+        map.addLayer({
+          id: 'roads-primary',
+          type: 'line',
+          source: sourceId,
+          'source-layer': 'transportation',
+          filter: ['==', 'class', 'primary'],
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': 3,
+            'line-opacity': 1
+          }
+        });
+        console.log('[MapView] ✅ Added roads-primary layer');
+      }
+      
+      if (!map.getLayer('road-labels')) {
+        map.addLayer({
+          id: 'road-labels',
+          type: 'symbol',
+          source: sourceId,
+          'source-layer': 'transportation_name',
+          layout: {
+            'text-field': ['get', 'name'],
+            'text-size': 13,
+            'text-max-width': 8,
+            'symbol-placement': 'line',
+            'text-rotation-alignment': 'map'
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': '#000000',
+            'text-halo-width': 2
+          }
+        });
+        console.log('[MapView] ✅ Added road-labels layer');
+      }
     } else {
-      console.log('[MapView] ❌ Street labels hidden because:', {
-        labelsEnabled: showStreetLabels,
-        isSatellite: mapStyle === 'satellite',
-        zoomOK: viewState.zoom >= 13
+      // Remove layers when street labels are disabled
+      ['road-labels', 'roads-primary', 'roads-casing'].forEach(layerId => {
+        if (map.getLayer(layerId)) {
+          map.removeLayer(layerId);
+        }
       });
+      if (map.getSource(sourceId)) {
+        map.removeSource(sourceId);
+      }
     }
   }, [showStreetLabels, mapStyle, viewState.zoom]);
   
