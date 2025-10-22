@@ -362,7 +362,16 @@ const MapView = () => {
           type={propertyPanelData?.id ? 'deal' : 'parcel'}
         />
         
-        {/* Layer Manager Panel (MIDDLE) */}
+        {/* Create Deal Panel (LEFT - same slot as Property Panel) */}
+        <CreateDealPanel
+          isOpen={activePanel === 'createDeal'}
+          onClose={closeCreateDealPanel}
+          location={createDealLocation}
+          parcelData={createDealParcelData}
+          onDealCreated={handleDealCreated}
+        />
+        
+        {/* Layer Manager Panel (MIDDLE - next to Property/Create panel) */}
         <LayerManager
           isOpen={activePanel === 'layers'}
           onClose={() => setActivePanel(null)}
@@ -370,7 +379,7 @@ const MapView = () => {
           onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
           mapStyle={mapStyle}
           currentZoom={viewState.zoom}
-          propertyPanelOpen={activePanel === 'property'}
+          propertyPanelOpen={activePanel === 'property' || activePanel === 'createDeal'}
         />
 
         {/* Panel Toggle Buttons - Repositions to hug rightmost panel */}
