@@ -298,7 +298,7 @@ const MapView = () => {
   //   }
   // };
 
-  // Map click handler - queries ReportAll for parcel data
+  // Map click handler - queries ReportAll for parcel data OR opens create deal panel
   const combinedMapClick = async (event) => {
     // Clear previous states
     setIdentifyTooltip(null);
@@ -316,15 +316,30 @@ const MapView = () => {
       
       if (result.success && result.parcel) {
         console.log('[ReportAll] Found parcel:', result.parcel);
-        setReportAllParcel(result.parcel);
-        return; // Don't proceed to old parcel logic
+        // Open create deal panel with parcel data
+        openCreateDealPanel(
+          { lat: event.lngLat.lat, lng: event.lngLat.lng },
+          result.parcel
+        );
+        return;
       } else {
-        console.log('[ReportAll] No parcel found at click location');
+        console.log('[ReportAll] No parcel found - opening create deal panel with location only');
+        // No parcel found, but user clicked map - open create deal with just location
+        openCreateDealPanel(
+          { lat: event.lngLat.lat, lng: event.lngLat.lng },
+          null
+        );
+        return;
       }
     }
     
-    // Fallback to original parcel click logic (if applicable)
-    handleMapClick(event);
+    // If parcels not shown or zoom < 14, open create deal panel with just location
+    if (map && map.getZoom() >= 12) {
+      openCreateDealPanel(
+        { lat: event.lngLat.lat, lng: event.lngLat.lng },
+        null
+      );
+    }
   };
 
 
