@@ -363,6 +363,15 @@ const MapView = () => {
           }}
           data={propertyPanelData}
           type={propertyPanelData?.isParcel ? 'parcel' : 'deal'}
+          onCreateDeal={(parcelData) => {
+            // Close property panel and open create deal panel with parcel data
+            setPropertyPanelOpen(false);
+            setPropertyPanelData(null);
+            openCreateDealPanel(
+              { lat: parcelData.latitude, lng: parcelData.longitude },
+              parcelData
+            );
+          }}
         />
         
         {/* Create Deal Panel (LEFT - same slot as Property Panel) */}
