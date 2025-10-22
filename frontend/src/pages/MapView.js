@@ -24,6 +24,7 @@ const MapView = () => {
   const [layerManagerOpen, setLayerManagerOpen] = useState(false);
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
   const [reportAllParcel, setReportAllParcel] = useState(null);
+  const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
   const { user } = useContext(AuthContext);
   const [viewState, setViewState] = useState({
     longitude: -98.4936,
