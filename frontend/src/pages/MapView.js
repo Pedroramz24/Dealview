@@ -544,11 +544,11 @@ const MapView = () => {
           {/* Street Labels Overlay - Only show when zoomed in (zoom >= 13) */}
           {showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13 && (
             <Source
-              id="osm-vector"
+              id="openmaptiles"
               type="vector"
-              tiles={['https://tile.openstreetmap.org/{z}/{x}/{y}.mvt']}
+              tiles={['https://tiles.openmaptiles.org/data/v3/{z}/{x}/{y}.pbf?key=free']}
               minzoom={13}
-              maxzoom={16}
+              maxzoom={14}
             >
               {/* Major Roads */}
               <Layer
@@ -558,14 +558,15 @@ const MapView = () => {
                 filter={['in', 'class', 'motorway', 'trunk', 'primary']}
                 minzoom={13}
                 layout={{
-                  'text-field': ['get', 'name'],
-                  'text-font': ['Open Sans Regular'],
+                  'text-field': ['get', 'name:latin'],
+                  'text-font': ['Noto Sans Regular'],
                   'text-size': 13,
                   'text-max-width': 8,
                   'text-line-height': 1.1,
                   'symbol-placement': 'line',
                   'text-rotation-alignment': 'map',
-                  'text-pitch-alignment': 'viewport'
+                  'text-pitch-alignment': 'viewport',
+                  visibility: 'visible'
                 }}
                 paint={{
                   'text-color': '#ffffff',
@@ -582,13 +583,14 @@ const MapView = () => {
                 filter={['in', 'class', 'secondary', 'tertiary']}
                 minzoom={14}
                 layout={{
-                  'text-field': ['get', 'name'],
-                  'text-font': ['Open Sans Regular'],
+                  'text-field': ['get', 'name:latin'],
+                  'text-font': ['Noto Sans Regular'],
                   'text-size': 11,
                   'text-max-width': 8,
                   'symbol-placement': 'line',
                   'text-rotation-alignment': 'map',
-                  'text-pitch-alignment': 'viewport'
+                  'text-pitch-alignment': 'viewport',
+                  visibility: 'visible'
                 }}
                 paint={{
                   'text-color': '#ffffff',
@@ -605,13 +607,14 @@ const MapView = () => {
                 filter={['in', 'class', 'minor', 'service']}
                 minzoom={15}
                 layout={{
-                  'text-field': ['get', 'name'],
-                  'text-font': ['Open Sans Regular'],
+                  'text-field': ['get', 'name:latin'],
+                  'text-font': ['Noto Sans Regular'],
                   'text-size': 10,
                   'text-max-width': 6,
                   'symbol-placement': 'line',
                   'text-rotation-alignment': 'map',
-                  'text-pitch-alignment': 'viewport'
+                  'text-pitch-alignment': 'viewport',
+                  visibility: 'visible'
                 }}
                 paint={{
                   'text-color': '#ffffff',
