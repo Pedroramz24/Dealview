@@ -333,6 +333,7 @@ const MapView = () => {
           onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
           mapStyle={mapStyle}
           currentZoom={viewState.zoom}
+          propertyPanelOpen={activePanel === 'property'}
         />
 
         {/* Panel Toggle Buttons - Repositions to hug rightmost panel */}
