@@ -418,6 +418,10 @@ const MapView = () => {
       if (result.success && result.parcel) {
         console.log('[ReportAll] Found parcel:', result.parcel);
         console.log('[ReportAll] Available fields:', Object.keys(result.parcel));
+        
+        // Set selected parcel for highlighting
+        setSelectedParcelId(result.parcel.parcel_id || result.parcel.robust_id);
+        
         // Show parcel information in PropertyIntelligencePanel
         const parcelData = {
           ...result.parcel,
