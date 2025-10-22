@@ -189,24 +189,57 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
         >
           {isDeal ? 'Deal Details' : 'Property Intelligence'}
         </h2>
-        <button
-          onClick={onClose}
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '6px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 150ms ease',
-            color: 'rgba(255, 255, 255, 0.6)',
-          }}
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {/* Create Deal button for parcels */}
+          {!isDeal && onCreateDeal && (
+            <button
+              onClick={() => onCreateDeal(data)}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '6px',
+                background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                border: 'none',
+                color: '#FFFFFF',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 150ms ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <Home className="w-4 h-4" />
+              Create Deal
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '6px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 150ms ease',
+              color: 'rgba(255, 255, 255, 0.6)',
+            }}
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Scrollable content */}
