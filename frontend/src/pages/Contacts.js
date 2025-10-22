@@ -56,6 +56,7 @@ const statusOptions = [
 ];
 
 const Contacts = () => {
+  const [searchParams] = useSearchParams();
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [deals, setDeals] = useState([]);
