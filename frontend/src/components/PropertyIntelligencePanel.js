@@ -28,8 +28,95 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type }) => {
   useEffect(() => {
     if (data) {
       setEditedData({ ...data });
+      if (isDeal && data.id) {
+        fetchLinkedContacts();
+        fetchDocuments();
+      }
     }
   }, [data]);
+
+  const fetchLinkedContacts = async () => {
+    try {
+      const { supabase } = await import('../supabaseClient');
+      const { data: links, error } = await supabase
+        .from('contact_deal_links')
+        .select(`
+          contact_id,
+          contacts:contact_id (id, name, email, phone, company, title)
+        `)
+        .eq('deal_id', data.id);
+      
+      if (error) throw error;
+      const contacts = links?.map(link => link.contacts) || [];
+      setLinkedContacts(contacts);
+    } catch (error) {
+      console.error('Error fetching linked contacts:', error);
+    }
+  };
+
+  const fetchDocuments = async () => {
+    try {
+      const { supabase } = await import('../supabaseClient');
+      const { data: docs, error } = await supabase
+        .from('documents')
+        .select('*')
+        .eq('deal_id', data.id)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setDocuments(docs || []);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+    }
+  };
+
+  const handleDocumentUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploadingDoc(true);
+    try {
+      const { supabase } = await import('../supabaseClient');
+      const { AuthContext } = await import('../App');
+      
+      // Get user from auth context (you'll need to pass this as prop or use context)
+      const userId = data.owner_id; // Fallback to deal owner
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}/${data.id}/${Date.now()}_${file.name}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('deal-documents')
+        .upload(fileName, file);
+      
+      if (uploadError) throw uploadError;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('deal-documents')
+        .getPublicUrl(fileName);
+      
+      const { error: insertError } = await supabase
+        .from('documents')
+        .insert([{
+          owner_id: userId,
+          deal_id: data.id,
+          name: file.name,
+          file_path: fileName,
+          file_type: file.type,
+          file_size: file.size
+        }]);
+      
+      if (insertError) throw insertError;
+      
+      toast.success('Document uploaded successfully');
+      fetchDocuments();
+    } catch (error) {
+      console.error('Error uploading document:', error);
+      toast.error('Failed to upload document');
+    } finally {
+      setIsUploadingDoc(false);
+    }
+  };
 
   if (!data) return null;
 
