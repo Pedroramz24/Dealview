@@ -88,6 +88,25 @@ const MapView = () => {
     }
   };
   
+  const openCreateDealPanel = (location, parcelData = null) => {
+    setActivePanel('createDeal');
+    setCreateDealLocation(location);
+    setCreateDealParcelData(parcelData);
+  };
+  
+  const closeCreateDealPanel = () => {
+    setActivePanel(null);
+    setCreateDealLocation(null);
+    setCreateDealParcelData(null);
+  };
+  
+  const handleDealCreated = async (newDeal) => {
+    // Refresh deals list
+    await fetchDeals();
+    // Open the newly created deal in property panel
+    togglePropertyPanel(newDeal);
+  };
+  
   // Expose panel toggles to window for external access if needed
   useEffect(() => {
     window.toggleLayersPanel = toggleLayersPanel;
