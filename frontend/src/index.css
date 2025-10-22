@@ -232,6 +232,12 @@ input[type="file"]::file-selector-button:hover {
     transform: translate(-50%, -50%) scale(1.1);
 }
 
+/* Sidebar Navigation Tooltip Hover Effect */
+button:hover .nav-tooltip,
+a:hover .nav-tooltip {
+    opacity: 1 !important;
+}
+
 /* React DatePicker Dark Theme */
 .react-datepicker {
     background-color: rgba(15, 23, 42, 0.98) !important;
