@@ -27,6 +27,16 @@ const MapView = () => {
   const [reportAllParcel, setReportAllParcel] = useState(null);
   const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
   
+  // Debug logging for street labels
+  useEffect(() => {
+    console.log('[MapView] Street labels state:', {
+      showStreetLabels,
+      mapStyle,
+      zoom: viewState.zoom,
+      shouldRender: showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 13
+    });
+  }, [showStreetLabels, mapStyle, viewState.zoom]);
+  
   // Panel Management System - Independent panel states
   const [propertyPanelOpen, setPropertyPanelOpen] = useState(false);
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
