@@ -394,23 +394,20 @@ const MapView = () => {
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
         />
 
-        {/* Panel Toggle Buttons - Repositions to hug rightmost panel */}
+        {/* Panel Toggle Buttons - Hugs the leftmost panel */}
         <div 
           className="absolute top-6 z-[900] flex flex-col gap-3"
           style={{
             left: (() => {
               const leftPanelOpen = propertyPanelOpen || createDealPanelOpen;
               
-              if (leftPanelOpen && layersPanelOpen) {
-                // Both panels open: button right of layers panel (tight hug)
-                // Property (500px) + Layers (380px) + tiny gap (8px)
-                return 'calc(500px + 380px + 8px)';
-              } else if (layersPanelOpen && !leftPanelOpen) {
-                // Only layers panel open: button right of layers (tight hug)
-                return 'calc(380px + 8px)';
-              } else if (leftPanelOpen && !layersPanelOpen) {
-                // Only property/create panel open: button right of it (tight hug)
+              if (leftPanelOpen) {
+                // Property or Create panel is open (leftmost panel)
+                // Button hugs right after it, regardless of layer panel state
                 return 'calc(500px + 8px)';
+              } else if (layersPanelOpen && !leftPanelOpen) {
+                // Only layers panel open (it becomes the leftmost)
+                return 'calc(380px + 8px)';
               } else {
                 // No panels open: far left
                 return '24px';
