@@ -356,15 +356,19 @@ const DealDetails = () => {
           role: selectedContacts.length === 0 ? 'primary' : 'secondary'
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Contact link error:', error);
+        throw error;
+      }
       
       setSelectedContacts([...selectedContacts, contactId]);
       await fetchLinkedContacts();
       setContactSearchTerm('');
+      setShowContactDropdown(false);
       toast.success('Contact linked successfully');
     } catch (error) {
       console.error('Error linking contact:', error);
-      toast.error('Failed to link contact');
+      toast.error('Failed to link contact: ' + error.message);
     }
   };
   
