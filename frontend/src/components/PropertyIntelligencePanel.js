@@ -4,6 +4,7 @@ import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calen
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { toast } from 'sonner';
 import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInput';
+import ContactFormPanel from './ContactFormPanel';
 
 // Pipeline stage colors - matching Pipeline.js
 const stageColors = {
