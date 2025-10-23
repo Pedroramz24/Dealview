@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { DollarSign, Home, MapPin, FileText, Download } from 'lucide-react';
+import { MapPin, DollarSign, Home } from 'lucide-react';
+import { getAssetTypeColor } from '../utils/assetTypeColors';
+import { formatNumberWithCommas } from '../utils/numberInput';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+
+// Fix Leaflet default marker icon
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 const PublicShare = () => {
   const { dealId } = useParams();
   const [deal, setDeal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchDeal();
@@ -16,29 +27,26 @@ const PublicShare = () => {
 
   const fetchDeal = async () => {
     try {
-      // Public share should work without authentication
-      // We'll need a special RLS policy for this
-      const { data, error } = await supabase
-        .from('deals')
-        .select('*')
-        .eq('id', dealId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching deal:', error);
-        // If RLS blocks it, we might need to use a public API endpoint
-        // For now, we'll handle the error gracefully
-      } else {
-        setDeal(data);
+      const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      
+      const response = await fetch(`${API_URL}/api/share/${dealId}`);
+      
+      if (!response.ok) {
+        throw new Error('Deal not found');
       }
+      
+      const data = await response.json();
+      setDeal(data);
     } catch (error) {
       console.error('Failed to load deal', error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   const formatPrice = (price) => {
+    if (!price) return 'N/A';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -46,174 +54,310 @@ const PublicShare = () => {
     }).format(price);
   };
 
+  const calculatePricePerSQFT = () => {
+    if (!deal?.lot_size || !deal?.price) return 'N/A';
+    const sqft = deal.lot_size * 43560;
+    const pricePerSqft = deal.price / sqft;
+    return formatPrice(pricePerSqft);
+  };
+
+  const calculatePricePerAC = () => {
+    if (!deal?.lot_size || !deal?.price) return 'N/A';
+    const pricePerAc = deal.price / deal.lot_size;
+    return formatPrice(pricePerAc);
+  };
+
+  const calculatePricePerSQFTBuilding = () => {
+    if (!deal?.size || !deal?.price) return 'N/A';
+    const pricePerSqft = deal.price / deal.size;
+    return formatPrice(pricePerSqft);
+  };
+
+  const hasValidCoordinates = deal?.latitude && deal?.longitude && 
+    !isNaN(parseFloat(deal.latitude)) && !isNaN(parseFloat(deal.longitude));
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--bg-base)' }}>
-        <div className="loading-spinner"></div>
+      <div style={{ minHeight: '100vh', background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ color: '#FFFFFF', fontSize: '16px' }}>Loading property details...</div>
       </div>
     );
   }
 
-  if (!deal) {
+  if (error || !deal) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--bg-base)' }}>
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Deal not found</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>The property you're looking for doesn't exist.</p>
+      <div style={{ minHeight: '100vh', background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <h1 style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '700', marginBottom: '12px' }}>Property Not Found</h1>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>The property listing you're looking for doesn't exist or has been removed.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg-base)' }} data-testid="public-share-page">
+    <div style={{ minHeight: '100vh', background: '#000000' }}>
       {/* Header */}
-      <div className="glass-surface py-4" style={{ borderRadius: 0 }}>
-        <div className="max-w-7xl mx-auto px-8 flex items-center gap-4">
+      <div style={{
+        padding: '20px 40px',
+        background: 'rgba(11, 12, 14, 0.95)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(20px)'
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '16px' }}>
           <img 
             src="/dealview-logo.svg" 
             alt="Dealview"
-            style={{ 
-              height: '60px',
-              width: 'auto',
-              objectFit: 'contain'
-            }}
+            style={{ height: '50px', width: 'auto' }}
           />
-          <p style={{ color: 'var(--text-secondary)' }}>Property Listing</p>
+          <div style={{ borderLeft: '2px solid rgba(255,255,255,0.2)', height: '30px' }}></div>
+          <div>
+            <h1 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: '600', letterSpacing: '-0.02em' }}>
+              Property Listing
+            </h1>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>Shared from Dealview CRM</p>
+          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Hero Image */}
-            <div className="glass-surface overflow-hidden">
-              {deal.primary_image_url ? (
-                <img
-                  src={deal.primary_image_url}
-                  alt={deal.property_address}
-                  className="w-full h-96 object-cover"
-                />
-              ) : (
-                <div className="w-full h-96 flex items-center justify-center" style={{ background: 'var(--bg-elevated)' }}>
-                  <Home className="w-24 h-24" style={{ color: 'var(--text-muted)' }} />
+      {/* Main Content */}
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '32px' }}>
+          
+          {/* Left Column - Main Details */}
+          <div>
+            {/* Property Header */}
+            <div style={{ marginBottom: '32px' }}>
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                {deal.asset_type && (
+                  <span style={{
+                    padding: '6px 14px',
+                    background: getAssetTypeColor(deal.asset_type).bg,
+                    color: getAssetTypeColor(deal.asset_type).color,
+                    border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}>
+                    {deal.asset_type}
+                  </span>
+                )}
+              </div>
+              <h1 style={{ color: '#FFFFFF', fontSize: '32px', fontWeight: '700', marginBottom: '12px', letterSpacing: '-0.02em' }}>
+                {deal.title || deal.address}
+              </h1>
+              {deal.address && (
+                <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <MapPin size={16} style={{ color: '#00b8d4' }} />
+                  {deal.address}
+                  {deal.city && `, ${deal.city}`}
+                  {deal.state && `, ${deal.state}`}
+                  {deal.zip_code && ` ${deal.zip_code}`}
                 </div>
               )}
             </div>
 
-            {/* Property Info */}
-            <div className="glass-surface p-8">
-              <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-                {deal.property_address}
-              </h2>
-              <p className="text-xl mb-6" style={{ color: 'var(--text-secondary)' }}>{deal.asset_type}</p>
-
-              <div>
-                <h3 className="text-xl font-bold mb-3" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Description</h3>
-                <p style={{ color: 'var(--text-secondary)' }} className="leading-relaxed">{deal.description || 'No description available.'}</p>
-              </div>
-            </div>
-
-            {/* Property Facts */}
-            <div className="glass-surface p-8">
-              <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Property Facts</h3>
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Building Size</p>
-                  <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                    {deal.building_size ? `${deal.building_size.toLocaleString()} sq ft` : 'N/A'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Lot Size</p>
-                  <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                    {deal.lot_size ? `${deal.lot_size.toLocaleString()} sq ft` : 'N/A'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Lot Acres</p>
-                  <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                    {deal.lot_acres ? `${deal.lot_acres.toLocaleString()} acres` : 'N/A'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Occupancy</p>
-                  <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{deal.occupancy || 'N/A'}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Documents */}
-            {deal.documents && deal.documents.length > 0 && (
-              <div className="glass-surface p-8">
-                <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Documents</h3>
-                <div className="space-y-3">
-                  {deal.documents.map((doc, index) => (
-                    <a
-                      key={index}
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 border rounded-lg transition-colors"
-                      style={{ borderColor: 'var(--glass-border)', background: 'var(--bg-elevated)' }}
-                    >
-                      <div className="flex items-center">
-                        <FileText className="w-5 h-5 mr-3" style={{ color: 'var(--accent)' }} />
-                        <span style={{ color: 'var(--text-primary)' }} className="font-medium">{doc.name}</span>
-                      </div>
-                      <Download className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
-                    </a>
-                  ))}
-                </div>
+            {/* Property Image */}
+            {deal.image_url && (
+              <div style={{ marginBottom: '32px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <img
+                  src={deal.image_url}
+                  alt="Property"
+                  style={{ width: '100%', height: '400px', objectFit: 'cover' }}
+                />
               </div>
             )}
-          </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Price */}
-            <div className="glass-surface p-6">
-              <div className="flex items-center mb-2">
-                <DollarSign className="w-6 h-6 mr-2" style={{ color: 'var(--accent)' }} />
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Asking Price</p>
+            {/* Property Facts */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Property Facts
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
+                {deal.size && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Building Size (SF)</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {parseFloat(deal.size).toLocaleString()} SF
+                    </p>
+                  </div>
+                )}
+                {deal.lot_size && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Lot Size (acres)</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {parseFloat(deal.lot_size).toLocaleString()} AC
+                    </p>
+                  </div>
+                )}
+                {deal.year_built && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Year Built</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.year_built}</p>
+                  </div>
+                )}
+                {deal.zoning && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Zoning</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.zoning}</p>
+                  </div>
+                )}
+                {deal.occupancy && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Occupancy</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.occupancy}%</p>
+                  </div>
+                )}
+                {deal.parking_spaces && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Parking Spaces</p>
+                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.parking_spaces}</p>
+                  </div>
+                )}
               </div>
-              <p className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{formatPrice(deal.asking_price)}</p>
             </div>
 
-            {/* Location */}
-            <div className="glass-surface p-6">
-              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Location</h3>
-              <div className="h-64 rounded-lg overflow-hidden mb-4">
-                <MapContainer
-                  center={[deal.latitude, deal.longitude]}
-                  zoom={15}
-                  style={{ height: '100%', width: '100%' }}
-                  scrollWheelZoom={false}
-                >
-                  {/* Esri Satellite with Street Names */}
-                  <TileLayer
-                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                    attribution='&copy; Esri'
-                    maxZoom={19}
-                  />
-                  <TileLayer
-                    url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
-                    attribution='&copy; Esri'
-                    maxZoom={19}
-                  />
-                  <TileLayer
-                    url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-                    attribution='&copy; Esri'
-                    maxZoom={19}
-                  />
-                  <Marker position={[deal.latitude, deal.longitude]} />
-                </MapContainer>
+            {/* Description */}
+            {deal.description && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Description
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: '1.8', whiteSpace: 'pre-wrap' }}>
+                  {deal.description}
+                </p>
               </div>
-              <div className="flex items-start">
-                <MapPin className="w-5 h-5 mr-2 mt-0.5" style={{ color: 'var(--text-secondary)' }} />
-                <p style={{ color: 'var(--text-secondary)' }}>{deal.property_address}</p>
+            )}
+
+            {/* Key Features */}
+            {deal.key_features && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Key Features
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: '1.8' }}>
+                  {deal.key_features}
+                </p>
+              </div>
+            )}
+
+            {/* Location Map */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location Map</h3>
+              {hasValidCoordinates ? (
+                <div style={{ height: '350px', borderRadius: '8px', overflow: 'hidden' }}>
+                  <MapContainer
+                    center={[parseFloat(deal.latitude), parseFloat(deal.longitude)]}
+                    zoom={15}
+                    style={{ height: '100%', width: '100%' }}
+                    scrollWheelZoom={false}
+                    dragging={false}
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    />
+                    <Marker position={[parseFloat(deal.latitude), parseFloat(deal.longitude)]} />
+                  </MapContainer>
+                </div>
+              ) : (
+                <div style={{ 
+                  height: '350px', 
+                  borderRadius: '8px', 
+                  background: 'rgba(255,255,255,0.02)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid rgba(255,255,255,0.05)'
+                }}>
+                  <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
+                    <MapPin className="w-12 h-12 mx-auto mb-2" style={{ opacity: 0.3 }} />
+                    <p style={{ fontSize: '14px' }}>No location data available</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column - Financial Summary */}
+          <div>
+            {/* Asking Price Card */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Financial Details
+              </h3>
+              <div style={{ marginBottom: '24px' }}>
+                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Asking Price</p>
+                <p style={{ fontSize: '32px', color: '#00d4aa', fontWeight: '700' }}>
+                  {formatPrice(deal.price)}
+                </p>
+              </div>
+              
+              {/* Price Calculations */}
+              <div style={{ display: 'grid', gap: '16px' }}>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per SQFT (Lot)</p>
+                  <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {calculatePricePerSQFT()}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per AC</p>
+                  <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {calculatePricePerAC()}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Price per SQFT (Building)</p>
+                  <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                    {calculatePricePerSQFTBuilding()}
+                  </p>
+                </div>
+                {deal.cap_rate && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Cap Rate</p>
+                    <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {deal.cap_rate}%
+                    </p>
+                  </div>
+                )}
+                {deal.noi && (
+                  <div>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>NOI</p>
+                    <p style={{ fontSize: '18px', color: '#FFFFFF', fontWeight: '500' }}>
+                      {formatPrice(deal.noi)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Contact CTA */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15) 0%, rgba(0, 212, 170, 0.15) 100%)',
+              border: '1px solid rgba(0, 184, 212, 0.3)',
+              borderRadius: '12px',
+              padding: '24px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '600', marginBottom: '12px' }}>
+                Interested in this property?
+              </h3>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', marginBottom: '20px', lineHeight: '1.6' }}>
+                Contact us for more information, additional details, or to schedule a viewing.
+              </p>
+              <div style={{
+                padding: '16px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.1)'
+              }}>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>Powered by</p>
+                <img 
+                  src="/dealview-logo.svg" 
+                  alt="Dealview"
+                  style={{ height: '35px', width: 'auto', margin: '0 auto', display: 'block' }}
+                />
               </div>
             </div>
           </div>
