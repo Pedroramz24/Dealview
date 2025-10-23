@@ -596,13 +596,143 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <MapPin size={16} style={{ color: '#00b8d4' }} />
               <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                {isDeal ? 'Address' : 'Parcel Address'}
+                {isDeal ? 'Property Details' : 'Parcel Address'}
               </span>
             </div>
-            <h3 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: '600', marginBottom: '12px', lineHeight: '1.3' }}>
-              {data.address || data.property_address || data.addr || 'Address not available'}
-            </h3>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            
+            {isDeal && isEditing ? (
+              <>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    value={editedData.title || ''}
+                    onChange={(e) => setEditedData({ ...editedData, title: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '18px',
+                      fontWeight: '600',
+                      outline: 'none',
+                    }}
+                    onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
+                    onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
+                  />
+                </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    value={editedData.address || ''}
+                    onChange={(e) => setEditedData({ ...editedData, address: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '16px',
+                      outline: 'none',
+                    }}
+                    onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
+                    onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
+                  />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px' }}>
+                  <div>
+                    <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      value={editedData.city || ''}
+                      onChange={(e) => setEditedData({ ...editedData, city: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px',
+                        outline: 'none',
+                      }}
+                      onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
+                      onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      value={editedData.state || ''}
+                      onChange={(e) => setEditedData({ ...editedData, state: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px',
+                        outline: 'none',
+                      }}
+                      onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
+                      onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+                      ZIP
+                    </label>
+                    <input
+                      type="text"
+                      value={editedData.zip_code || ''}
+                      onChange={(e) => setEditedData({ ...editedData, zip_code: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px',
+                        outline: 'none',
+                      }}
+                      onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
+                      onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: '600', marginBottom: '8px', lineHeight: '1.3' }}>
+                  {isDeal ? (data.title || data.address) : (data.address || data.property_address || data.addr || 'Address not available')}
+                </h3>
+                {isDeal && data.address && data.address !== data.title && (
+                  <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', marginBottom: '12px' }}>
+                    {data.address}
+                    {data.city && `, ${data.city}`}
+                    {data.state && `, ${data.state}`}
+                    {data.zip_code && ` ${data.zip_code}`}
+                  </div>
+                )}
+              </>
+            )}
+            
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
               {isDeal && data.asset_type && (
                 <span
                   style={{
