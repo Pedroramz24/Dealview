@@ -142,7 +142,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
 
   if (!data) return null;
 
-  const isDeal = type === 'deal';
   const images = data.image_url ? [data.image_url] : [];
 
   const formatPrice = (price) => {
