@@ -353,12 +353,12 @@ const PublicShare = () => {
               </div>
             )}
 
-            {/* Documents Section */}
-            {documents.length > 0 && (
-              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                  Documents ({documents.length})
-                </h3>
+            {/* Documents Section - Always Visible */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Documents ({documents.length})
+              </h3>
+              {documents.length > 0 ? (
                 <div style={{
                   background: 'rgba(0, 0, 0, 0.3)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -400,7 +400,6 @@ const PublicShare = () => {
                       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                     >
                       <div style={{ color: '#FFFFFF', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        <FileText size={14} style={{ display: 'inline', marginRight: '8px', color: '#00b8d4' }} />
                         {doc.name}
                       </div>
                       <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>
@@ -427,8 +426,20 @@ const PublicShare = () => {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <div style={{
+                  padding: '32px',
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',\n                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  <FileText size={32} style={{ color: 'rgba(255,255,255,0.3)', margin: '0 auto 12px' }} />
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+                    No available documents at this time
+                  </p>
+                </div>
+              )}
+            </div>
 
             {/* Location Map */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
