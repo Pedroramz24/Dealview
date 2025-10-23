@@ -14,6 +14,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInput';
+import ContactFormPanel from '../components/ContactFormPanel';
 
 // Pipeline stage colors - matching Pipeline.js
 const stageColors = {
