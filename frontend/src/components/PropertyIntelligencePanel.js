@@ -19,7 +19,7 @@ const stageColors = {
 const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }) => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState(null);
+  const [editedData, setEditedData] = useState(data || {});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [linkedContacts, setLinkedContacts] = useState([]);
   const [documents, setDocuments] = useState([]);
