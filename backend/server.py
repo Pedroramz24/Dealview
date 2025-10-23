@@ -1014,8 +1014,6 @@ async def identify_feature(
         raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
 
 
-app.include_router(api_router)
-
 # Perplexity AI Chat Models
 class ChatMessage(BaseModel):
     role: str
@@ -1076,6 +1074,9 @@ async def chat_with_ai(request: ChatRequest, current_user: User = Depends(get_cu
             status_code=500,
             detail="Error processing your research query. Please try again."
         )
+
+
+app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
