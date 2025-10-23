@@ -26,7 +26,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
 
   useEffect(() => {
-    if (data) {
+    if (data && !isEditing) {
       setEditedData({ ...data });
       if (isDeal && data.id) {
         fetchLinkedContacts();
@@ -52,7 +52,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
         });
       }
     }
-  }, [data]);
+  }, [data, isEditing]);
 
   const fetchLinkedContacts = async () => {
     try {
