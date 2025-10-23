@@ -378,8 +378,13 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
   };
 
   const handleShare = () => {
-    // TODO: Implement share logic
-    toast.success('Share link copied to clipboard');
+    if (data && data.id) {
+      const shareUrl = `${window.location.origin}/share/${data.id}`;
+      navigator.clipboard.writeText(shareUrl);
+      toast.success('Share link copied to clipboard');
+    } else {
+      toast.error('Cannot share this item');
+    }
   };
 
   const nextImage = () => {
