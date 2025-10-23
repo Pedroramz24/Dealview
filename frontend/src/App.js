@@ -44,6 +44,23 @@ function App() {
       email,
       password,
     });
+    
+    // Handle corrupted localStorage (known Supabase issue)
+    if (error && error.status === 401) {
+      console.log('[Auth] 401 error detected, clearing corrupted localStorage and retrying...');
+      await supabase.auth.signOut(); // Clear corrupted storage
+      
+      // Retry login
+      const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (retryError) throw retryError;
+      setUser(retryData.user);
+      return retryData;
+    }
+    
     if (error) throw error;
     setUser(data.user);
     return data;
