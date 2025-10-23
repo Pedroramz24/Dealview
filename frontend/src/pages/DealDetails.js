@@ -1188,18 +1188,92 @@ const DealDetails = () => {
                   <div>
                     <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Linked Contacts</p>
                     {linkedContacts.length > 0 ? (
-                      <div className="space-y-2">
-                        {linkedContacts.map((contact, idx) => (
-                          <div key={contact.id} style={{ padding: '8px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '6px' }}>
-                            <div style={{ color: '#FFFFFF', fontWeight: '500' }}>
-                              {contact.name} {idx === 0 && <span style={{ color: '#00b8d4', fontSize: '11px' }}>(Primary)</span>}
+                      <>
+                        <div className="space-y-2">
+                          {linkedContacts.map((contact, idx) => (
+                            <div key={contact.id} style={{ padding: '12px', background: 'rgba(0, 0, 0, 0.2)', border: '1px solid rgba(100, 116, 139, 0.2)', borderRadius: '8px' }}>
+                              <div style={{ color: '#FFFFFF', fontWeight: '500', fontSize: '14px', marginBottom: '4px' }}>
+                                {contact.name} {idx === 0 && <span style={{ color: '#00b8d4', fontSize: '11px' }}>(Primary)</span>}
+                              </div>
+                              {contact.company && <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>}
+                              {contact.email && <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginTop: '2px' }}>{contact.email}</div>}
                             </div>
-                            {contact.company && <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>}
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                        {/* Add Another Contact button in view mode */}
+                        <button
+                          onClick={() => setShowContactFormPanel(true)}
+                          style={{
+                            marginTop: '12px',
+                            padding: '10px 16px',
+                            background: 'rgba(0, 184, 212, 0.1)',
+                            border: '1px solid rgba(0, 184, 212, 0.3)',
+                            borderRadius: '8px',
+                            color: '#00b8d4',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            transition: 'all 150ms ease',
+                            width: '100%',
+                            justifyContent: 'center'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          <User size={16} />
+                          Add Another Contact
+                        </button>
+                      </>
                     ) : (
-                      <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>No contacts linked</p>
+                      <div style={{
+                        padding: '20px',
+                        background: 'rgba(0, 184, 212, 0.05)',
+                        border: '1px solid rgba(0, 184, 212, 0.2)',
+                        borderRadius: '8px',
+                        textAlign: 'center'
+                      }}>
+                        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', marginBottom: '16px' }}>
+                          No contacts linked to this deal
+                        </p>
+                        <button
+                          onClick={() => setShowContactFormPanel(true)}
+                          style={{
+                            padding: '12px 24px',
+                            background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                            border: 'none',
+                            borderRadius: '8px',
+                            color: '#FFFFFF',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            transition: 'all 150ms ease',
+                            boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 184, 212, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.3)';
+                          }}
+                        >
+                          <User size={16} />
+                          Create New Contact
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
