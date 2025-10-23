@@ -246,6 +246,10 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
               ref={priceRef}
               type="text"
               placeholder="2,500,000"
+              onChange={(e) => {
+                const formatted = formatNumberWithCommas(e.target.value);
+                e.target.value = formatted;
+              }}
               style={{
                 width: '100%',
                 padding: '10px 12px',
