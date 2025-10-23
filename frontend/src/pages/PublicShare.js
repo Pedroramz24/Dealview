@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { MapPin, DollarSign, Home } from 'lucide-react';
+import { MapPin, Download, FileText } from 'lucide-react';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { formatNumberWithCommas } from '../utils/numberInput';
 import L from 'leaflet';
@@ -18,11 +18,13 @@ L.Icon.Default.mergeOptions({
 const PublicShare = () => {
   const { dealId } = useParams();
   const [deal, setDeal] = useState(null);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchDeal();
+    fetchDocuments();
   }, [dealId]);
 
   const fetchDeal = async () => {
@@ -42,6 +44,26 @@ const PublicShare = () => {
       setError(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDocuments = async () => {
+    try {
+      // Import supabase client
+      const { supabase } = await import('../supabaseClient');
+      
+      // Fetch documents for this deal (public access)
+      const { data: docs, error } = await supabase
+        .from('documents')
+        .select('*')
+        .eq('deal_id', dealId)
+        .order('created_at', { ascending: false });
+      
+      if (!error && docs) {
+        setDocuments(docs);
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
     }
   };
 
@@ -97,26 +119,50 @@ const PublicShare = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: '#000000' }}>
-      {/* Header */}
+      {/* Header with Logo */}
       <div style={{
-        padding: '20px 40px',
+        padding: '16px 40px',
         background: 'rgba(11, 12, 14, 0.95)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(20px)'
       }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <img 
             src="/dealview-logo.svg" 
             alt="Dealview"
-            style={{ height: '50px', width: 'auto' }}
+            style={{ height: '40px', width: 'auto' }}
           />
-          <div style={{ borderLeft: '2px solid rgba(255,255,255,0.2)', height: '30px' }}></div>
-          <div>
-            <h1 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: '600', letterSpacing: '-0.02em' }}>
-              Property Listing
-            </h1>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>Shared from Dealview CRM</p>
-          </div>
+        </div>
+      </div>
+
+      {/* Centered Title Section */}
+      <div style={{ 
+        padding: '48px 40px 32px',
+        textAlign: 'center',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
+      }}>
+        <h1 style={{ 
+          color: '#FFFFFF', 
+          fontSize: '36px', 
+          fontWeight: '700', 
+          marginBottom: '12px', 
+          letterSpacing: '-0.02em' 
+        }}>
+          {deal.title || deal.address}
+        </h1>
+        <div style={{ 
+          color: 'rgba(255,255,255,0.6)', 
+          fontSize: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px'
+        }}>
+          <MapPin size={16} style={{ color: '#00b8d4' }} />
+          {deal.address}
+          {deal.city && `, ${deal.city}`}
+          {deal.state && `, ${deal.state}`}
+          {deal.zip_code && ` ${deal.zip_code}`}
         </div>
       </div>
 
@@ -126,37 +172,6 @@ const PublicShare = () => {
           
           {/* Left Column - Main Details */}
           <div>
-            {/* Property Header */}
-            <div style={{ marginBottom: '32px' }}>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
-                {deal.asset_type && (
-                  <span style={{
-                    padding: '6px 14px',
-                    background: getAssetTypeColor(deal.asset_type).bg,
-                    color: getAssetTypeColor(deal.asset_type).color,
-                    border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    fontWeight: '600'
-                  }}>
-                    {deal.asset_type}
-                  </span>
-                )}
-              </div>
-              <h1 style={{ color: '#FFFFFF', fontSize: '32px', fontWeight: '700', marginBottom: '12px', letterSpacing: '-0.02em' }}>
-                {deal.title || deal.address}
-              </h1>
-              {deal.address && (
-                <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <MapPin size={16} style={{ color: '#00b8d4' }} />
-                  {deal.address}
-                  {deal.city && `, ${deal.city}`}
-                  {deal.state && `, ${deal.state}`}
-                  {deal.zip_code && ` ${deal.zip_code}`}
-                </div>
-              )}
-            </div>
-
             {/* Property Image */}
             {deal.image_url && (
               <div style={{ marginBottom: '32px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -241,6 +256,83 @@ const PublicShare = () => {
               </div>
             )}
 
+            {/* Documents Section */}
+            {documents.length > 0 && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Documents ({documents.length})
+                </h3>
+                <div style={{
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px',
+                  overflow: 'hidden'
+                }}>
+                  {/* Table Header */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 120px 60px',
+                    padding: '8px 12px',
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>
+                      Name
+                    </div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>
+                      Date Uploaded
+                    </div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', textAlign: 'center' }}>
+                      Action
+                    </div>
+                  </div>
+
+                  {/* Table Rows */}
+                  {documents.map((doc) => (
+                    <div
+                      key={doc.id}
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 120px 60px',
+                        padding: '10px 12px',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                        alignItems: 'center',
+                        transition: 'background 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div style={{ color: '#FFFFFF', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <FileText size={14} style={{ display: 'inline', marginRight: '8px', color: '#00b8d4' }} />
+                        {doc.name}
+                      </div>
+                      <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>
+                        {new Date(doc.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <a
+                          href={doc.file_path}
+                          download
+                          style={{
+                            padding: '4px 8px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#00b8d4',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          <Download size={14} />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Location Map */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location Map</h3>
@@ -251,11 +343,25 @@ const PublicShare = () => {
                     zoom={15}
                     style={{ height: '100%', width: '100%' }}
                     scrollWheelZoom={false}
-                    dragging={false}
+                    dragging={true}
+                    zoomControl={true}
                   >
+                    {/* Satellite imagery */}
                     <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                      attribution='&copy; Esri'
+                      maxZoom={19}
+                    />
+                    {/* Street labels overlay */}
+                    <TileLayer
+                      url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
+                      attribution='&copy; Esri'
+                      maxZoom={19}
+                    />
+                    <TileLayer
+                      url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+                      attribution='&copy; Esri'
+                      maxZoom={19}
                     />
                     <Marker position={[parseFloat(deal.latitude), parseFloat(deal.longitude)]} />
                   </MapContainer>
@@ -356,7 +462,7 @@ const PublicShare = () => {
                 <img 
                   src="/dealview-logo.svg" 
                   alt="Dealview"
-                  style={{ height: '35px', width: 'auto', margin: '0 auto', display: 'block' }}
+                  style={{ height: '30px', width: 'auto', margin: '0 auto', display: 'block' }}
                 />
               </div>
             </div>
