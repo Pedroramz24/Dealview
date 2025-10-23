@@ -1166,26 +1166,28 @@ const DealDetails = () => {
                           padding: '10px 16px',
                           background: 'rgba(0, 184, 212, 0.1)',
                           border: '1px solid rgba(0, 184, 212, 0.3)',
-                          borderRadius: '6px',
+                          borderRadius: '8px',
                           color: '#00b8d4',
-                          fontSize: '13px',
+                          fontSize: '14px',
                           fontWeight: '600',
                           cursor: 'pointer',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '6px',
+                          gap: '8px',
                           transition: 'all 150ms ease',
                           width: '100%',
                           justifyContent: 'center'
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                          e.currentTarget.style.transform = 'translateY(0)';
                         }}
                       >
-                        <User size={14} />
+                        <User size={16} />
                         Add Another Contact
                       </button>
                     )}
