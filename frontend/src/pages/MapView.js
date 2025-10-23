@@ -574,6 +574,32 @@ const MapView = () => {
               <polyline points="2 12 12 17 22 12"></polyline>
             </svg>
           </button>
+
+          {/* AI Research Button */}
+          <button
+            onClick={() => setAiResearchPanelOpen(!aiResearchPanelOpen)}
+            className="premium-glass-btn"
+            style={{
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: aiResearchPanelOpen ? '#d946ef' : '#FFFFFF',
+              backgroundColor: aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255,255,255,0.05)',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              border: `1px solid ${aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255,255,255,0.15)'}`,
+              backdropFilter: 'blur(12px)',
+              transition: 'all 0.3s ease',
+              boxShadow: aiResearchPanelOpen ? '0 0 24px rgba(168, 85, 247, 0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
+            }}
+            title="AI Market Research"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
+            </svg>
+          </button>
         </div>
 
         {/* Map Controls - Top Right */}
