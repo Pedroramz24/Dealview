@@ -1064,9 +1064,32 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                 </span>
               </div>
               <div style={{ display: 'grid', gap: '16px' }}>
-                <EditableTextarea label="Description" value={editedData.description} field="description" />
-                <EditableField label="Key Features" value={editedData.key_features} field="key_features" type="text" />
-                <EditableTextarea label="Notes" value={editedData.notes} field="notes" />
+                <EditableTextarea 
+                  label="Description" 
+                  value={editedData.description} 
+                  field="description"
+                  isEditing={isEditing}
+                  editedData={editedData}
+                  setEditedData={setEditedData}
+                />
+                <EditableField 
+                  label="Key Features" 
+                  value={editedData.key_features} 
+                  field="key_features" 
+                  type="text"
+                  isEditing={isEditing}
+                  editedData={editedData}
+                  setEditedData={setEditedData}
+                  formatPrice={formatPrice}
+                />
+                <EditableTextarea 
+                  label="Notes" 
+                  value={editedData.notes} 
+                  field="notes"
+                  isEditing={isEditing}
+                  editedData={editedData}
+                  setEditedData={setEditedData}
+                />
               </div>
             </div>
           )}
