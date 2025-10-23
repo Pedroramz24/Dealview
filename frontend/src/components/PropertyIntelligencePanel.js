@@ -23,6 +23,10 @@ const EditableField = ({ label, value, field, type = 'text', isCurrency = false,
     let displayValue = value;
     if (isCurrency && value) {
       displayValue = formatPrice(value);
+    } else if (type === 'number' && value) {
+      // Display with commas when not editing
+      displayValue = formatNumberWithCommas(value);
+      if (suffix) displayValue = `${displayValue} ${suffix}`;
     } else if (suffix && value) {
       displayValue = `${value} ${suffix}`;
     } else if (!value) {
@@ -44,16 +48,36 @@ const EditableField = ({ label, value, field, type = 'text', isCurrency = false,
   // Safety check for editedData
   if (!editedData) return null;
 
+  const handleChange = (e) => {
+    let newValue = e.target.value;
+    
+    // For number inputs, format with commas as user types
+    if (type === 'number') {
+      // Allow only digits, commas, and decimal points
+      newValue = newValue.replace(/[^\d,.-]/g, '');
+      
+      // Format with commas
+      if (newValue) {
+        const formatted = formatNumberWithCommas(newValue);
+        e.target.value = formatted;
+        newValue = formatted;
+      }
+    }
+    
+    setEditedData({ ...editedData, [field]: newValue });
+  };
+
   return (
     <div>
       <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
         {label}
       </label>
       <input
-        type={type}
+        type="text"
         value={editedData[field] || ''}
-        onChange={(e) => setEditedData({ ...editedData, [field]: e.target.value })}
+        onChange={handleChange}
         className="editable-input"
+        inputMode={type === 'number' ? 'decimal' : 'text'}
         style={{
           width: '100%',
           padding: '8px 12px',
