@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { MapPin, Download, FileText } from 'lucide-react';
+import { MapPin, Download, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { formatNumberWithCommas } from '../utils/numberInput';
 import L from 'leaflet';
