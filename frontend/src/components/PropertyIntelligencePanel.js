@@ -54,7 +54,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
         });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isEditing, isDeal]);
 
   const fetchLinkedContacts = async () => {
