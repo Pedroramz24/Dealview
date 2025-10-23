@@ -99,6 +99,16 @@ const PublicShare = () => {
   const hasValidCoordinates = deal?.latitude && deal?.longitude && 
     !isNaN(parseFloat(deal.latitude)) && !isNaN(parseFloat(deal.longitude));
 
+  const images = deal?.image_url ? [deal.image_url] : [];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
