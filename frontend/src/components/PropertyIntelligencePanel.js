@@ -217,6 +217,12 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     }
   };
 
+  const handleContactCreated = async (newContact) => {
+    // Refresh the linked contacts list
+    await fetchLinkedContacts();
+    setShowContactFormPanel(false);
+  };
+
   const handleDocumentUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
