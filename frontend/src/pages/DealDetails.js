@@ -888,6 +888,10 @@ const DealDetails = () => {
                       type="text"
                       defaultValue={deal.occupancy || ''}
                       placeholder="95.5"
+                      onChange={(e) => {
+                        const formatted = formatNumberWithCommas(e.target.value);
+                        e.target.value = formatted;
+                      }}
                       style={{
                         width: '100%',
                         padding: '8px 12px',
@@ -910,6 +914,10 @@ const DealDetails = () => {
                       type="text"
                       defaultValue={deal.parking_spaces || ''}
                       placeholder="50"
+                      onChange={(e) => {
+                        const formatted = formatNumberWithCommas(e.target.value);
+                        e.target.value = formatted;
+                      }}
                       style={{
                         width: '100%',
                         padding: '8px 12px',
