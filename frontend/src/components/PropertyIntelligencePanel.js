@@ -1490,29 +1490,29 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                 </>
               ) : (
                 <div style={{
-                  padding: '16px',
+                  padding: '20px',
                   background: 'rgba(0, 184, 212, 0.05)',
                   border: '1px solid rgba(0, 184, 212, 0.2)',
                   borderRadius: '8px',
                   textAlign: 'center'
                 }}>
-                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '12px' }}>
-                    No contacts linked yet
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', marginBottom: '16px' }}>
+                    No contacts linked to this deal yet
                   </p>
                   <button
                     onClick={() => setShowContactFormPanel(true)}
                     style={{
-                      padding: '10px 20px',
+                      padding: '12px 24px',
                       background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
                       border: 'none',
-                      borderRadius: '6px',
+                      borderRadius: '8px',
                       color: '#FFFFFF',
-                      fontSize: '13px',
+                      fontSize: '14px',
                       fontWeight: '600',
                       cursor: 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '6px',
+                      gap: '8px',
                       transition: 'all 150ms ease',
                       boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)'
                     }}
@@ -1525,7 +1525,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                       e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.3)';
                     }}
                   >
-                    <Users size={14} />
+                    <Users size={16} />
                     Create New Contact
                   </button>
                 </div>
