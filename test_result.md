@@ -252,6 +252,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "✅ IMPLEMENTED: Created reusable ContactFormPanel component (/app/frontend/src/components/ContactFormPanel.js) that matches the design from Contacts page. Integrated into DealDetails page with the following features: (1) Shows 'Create New Contact' button when no contacts are linked to a deal. (2) Opens side panel (same as Contacts tab/map) for creating new contacts directly from DealDetails. (3) Automatically links newly created contacts to the current deal. (4) Shows 'Add Another Contact' button when contacts already exist. (5) Allows removing linked contacts with 'Remove' button. (6) Refreshes linked contacts list after creation. Panel slides in from right side, matches existing dark glass-morphism UI design. Frontend restarted. Ready for user testing."
+      - working: true
+        agent: "main"
+        comment: "✅ FIXED VISIBILITY ISSUE: Updated BOTH edit mode AND view mode sections to show contact management buttons. Now 'Create New Contact' button with gradient styling appears prominently when no contacts are linked (in both edit and view modes). 'Add Another Contact' button appears when contacts exist (in both modes). Contact cards in view mode now show email addresses. Frontend restarted."
 
 frontend:
   - task: "DealsList Field Name Consistency"
