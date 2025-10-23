@@ -137,17 +137,18 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
       style={{
         position: 'fixed',
         top: 0,
-        right: isOpen ? 0 : '-600px',
-        width: '600px',
+        left: isOpen ? '500px' : '-600px',
+        width: '500px',
         height: '100vh',
         background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%)',
         backdropFilter: 'blur(20px)',
         borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
-        zIndex: 1100,
-        transition: 'right 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+        zIndex: 1000,
+        transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '-10px 0 50px rgba(0, 0, 0, 0.5)',
+        boxShadow: '0 0 50px rgba(0, 0, 0, 0.5)',
       }}
     >
       {/* Header */}
