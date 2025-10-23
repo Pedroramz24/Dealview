@@ -390,6 +390,25 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     
     return User(**user_doc)
 
+async def get_current_user_supabase(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verify Supabase JWT token and return user info"""
+    try:
+        token = credentials.credentials
+        
+        # Verify token with Supabase
+        user_response = supabase.auth.get_user(token)
+        
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+        
+        # Return user info from Supabase
+        return user_response.user
+        
+    except Exception as e:
+        logger.error(f"Supabase auth error: {str(e)}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
+
+
 # Auth endpoints
 @api_router.post("/auth/register", response_model=Token)
 async def register(user_data: UserCreate):
