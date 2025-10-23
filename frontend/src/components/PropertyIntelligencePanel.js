@@ -946,6 +946,31 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             </div>
           </div>
 
+          {/* Additional Details for Deals */}
+          {isDeal && (
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '20px',
+                background: 'rgba(0, 212, 170, 0.05)',
+                border: '1px solid rgba(0, 212, 170, 0.15)',
+                borderRadius: '12px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                <FileText size={16} style={{ color: '#00d4aa' }} />
+                <span style={{ color: '#00d4aa', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Additional Details
+                </span>
+              </div>
+              <div style={{ display: 'grid', gap: '16px' }}>
+                <EditableTextarea label="Description" value={editedData.description} field="description" />
+                <EditableField label="Key Features" value={editedData.key_features} field="key_features" type="text" />
+                <EditableTextarea label="Notes" value={editedData.notes} field="notes" />
+              </div>
+            </div>
+          )}
+
           {/* Property Details for Parcels */}
           {!isDeal && (
             <div style={{ marginBottom: '24px' }}>
