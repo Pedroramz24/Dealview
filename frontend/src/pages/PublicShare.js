@@ -184,16 +184,101 @@ const PublicShare = () => {
           
           {/* Left Column - Main Details */}
           <div>
-            {/* Property Image */}
-            {deal.image_url && (
-              <div style={{ marginBottom: '32px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+            {/* Property Image Carousel */}
+            {images.length > 0 ? (
+              <div style={{ position: 'relative', marginBottom: '32px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <img
-                  src={deal.image_url}
+                  src={images[currentImageIndex]}
                   alt="Property"
                   style={{ width: '100%', height: '400px', objectFit: 'cover' }}
                 />
+                
+                {/* Carousel Controls */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      style={{
+                        position: 'absolute',
+                        left: '16px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '50%',
+                        background: 'rgba(0, 0, 0, 0.7)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        color: '#FFFFFF',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backdropFilter: 'blur(10px)',
+                        transition: 'all 150ms ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.85)';
+                        e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
+                        e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                      }}
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      style={{
+                        position: 'absolute',
+                        right: '16px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '50%',
+                        background: 'rgba(0, 0, 0, 0.7)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        color: '#FFFFFF',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backdropFilter: 'blur(10px)',
+                        transition: 'all 150ms ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.85)';
+                        e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
+                        e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                      }}
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                    
+                    {/* Image Counter */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '16px',
+                      right: '16px',
+                      padding: '6px 12px',
+                      background: 'rgba(0, 0, 0, 0.7)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      color: '#FFFFFF',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      {currentImageIndex + 1} / {images.length}
+                    </div>
+                  </>
+                )}
               </div>
-            )}
+            ) : null}
 
             {/* Property Facts */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
