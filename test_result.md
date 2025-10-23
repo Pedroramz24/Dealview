@@ -255,6 +255,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "✅ FIXED VISIBILITY ISSUE: Updated BOTH edit mode AND view mode sections to show contact management buttons. Now 'Create New Contact' button with gradient styling appears prominently when no contacts are linked (in both edit and view modes). 'Add Another Contact' button appears when contacts exist (in both modes). Contact cards in view mode now show email addresses. Frontend restarted."
+      - working: true
+        agent: "main"
+        comment: "✅ COMPLETE FORM FIELDS ADDED: Completely rewrote ContactFormPanel to include ALL fields from the full Contacts page: (1) Contact Info: Full Name*, Email, Phone. (2) Company Details: Company, Title, Owner Address. (3) Contact Type(s): Multi-select buttons for Buyer, Seller, Broker, Lender, Tenant, Owner. (4) Asset Type Focus: Multi-select buttons for all 9 asset types (Retail Centers, Land, Industrial, Restaurants, Hotels, Medical, Office, Multifamily, Mixed Use). (5) Markets: Multi-select buttons for San Antonio, Austin, Houston, DFW, RGV. (6) Status & Notes: Status dropdown (5 options), Last Follow-up date picker, Next Action date picker, Lead Source input, Notes textarea. Panel now positioned at left: 500px to open next to PropertyIntelligencePanel (width: 500px). Panel is exact replica of full Contacts page create form. Frontend restarted."
 
 frontend:
   - task: "DealsList Field Name Consistency"
