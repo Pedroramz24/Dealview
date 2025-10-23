@@ -467,6 +467,65 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
             </span>
           </div>
           
+          {/* Map Style Toggle (Satellite / Street) */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            marginBottom: '8px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                background: 'rgba(168, 85, 247, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </div>
+              <div>
+                <div style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                  Map Style
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>
+                  {props.mapStyle === 'satellite' ? 'Satellite View' : 'Street View'}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={props.onToggleMapStyle}
+              disabled={!props.onToggleMapStyle}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: props.mapStyle === 'satellite' ? 
+                  'linear-gradient(135deg, #a855f7 0%, #d946ef 100%)' : 
+                  'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                color: '#FFFFFF',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onToggleMapStyle ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                minWidth: '80px'
+              }}
+            >
+              {props.mapStyle === 'satellite' ? 'Satellite' : 'Street'}
+            </button>
+          </div>
+          
           {/* Street Labels Toggle */}
           <div style={{
             display: 'flex',
