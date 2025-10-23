@@ -444,28 +444,15 @@ const PublicShare = () => {
               background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15) 0%, rgba(0, 212, 170, 0.15) 100%)',
               border: '1px solid rgba(0, 184, 212, 0.3)',
               borderRadius: '12px',
-              padding: '24px',
+              padding: '32px',
               textAlign: 'center'
             }}>
-              <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '600', marginBottom: '12px' }}>
+              <h3 style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>
                 Interested in this property?
               </h3>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', marginBottom: '20px', lineHeight: '1.6' }}>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: '1.8' }}>
                 Contact us for more information, additional details, or to schedule a viewing.
               </p>
-              <div style={{
-                padding: '16px',
-                background: 'rgba(0, 0, 0, 0.3)',
-                borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)'
-              }}>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>Powered by</p>
-                <img 
-                  src="/dealview-logo.svg" 
-                  alt="Dealview"
-                  style={{ height: '30px', width: 'auto', margin: '0 auto', display: 'block' }}
-                />
-              </div>
             </div>
           </div>
         </div>
