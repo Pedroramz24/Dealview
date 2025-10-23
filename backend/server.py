@@ -1016,6 +1016,67 @@ async def identify_feature(
 
 app.include_router(api_router)
 
+# Perplexity AI Chat Models
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    query: str
+    messages: List[ChatMessage] = []
+
+class Citation(BaseModel):
+    url: str
+    title: str
+
+class ChatResponse(BaseModel):
+    content: str
+    citations: List[Citation] = []
+    related_questions: List[str] = []
+
+# Import Perplexity service
+from perplexity_service import perplexity_service
+
+@api_router.post("/chat", response_model=ChatResponse)
+async def chat_with_ai(request: ChatRequest, current_user: User = Depends(get_current_user)):
+    """
+    Chat endpoint for commercial real estate market research.
+    Uses Perplexity AI to provide cited, web-grounded answers.
+    """
+    try:
+        # Convert message models to dicts for API
+        message_dicts = [{"role": msg.role, "content": msg.content} for msg in request.messages]
+        
+        # Query Perplexity
+        result = perplexity_service.search_real_estate(request.query, message_dicts)
+        
+        if not result["success"]:
+            logger.error(f"Perplexity query failed: {result.get('error')}")
+            return ChatResponse(
+                content="I'm having trouble accessing market data right now. Please try again in a moment.",
+                citations=[],
+                related_questions=[]
+            )
+        
+        # Format citations
+        citations = [
+            Citation(url=c["url"], title=c["title"])
+            for c in result.get("citations", [])
+        ]
+        
+        return ChatResponse(
+            content=result["content"],
+            citations=citations,
+            related_questions=result.get("related_questions", [])
+        )
+        
+    except Exception as e:
+        logger.error(f"Chat endpoint error: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="Error processing your research query. Please try again."
+        )
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
