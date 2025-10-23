@@ -293,7 +293,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           <h2
             style={{
               color: '#FFFFFF',
-              fontSize: '20px',
+              fontSize: '18px',
               fontWeight: '600',
               letterSpacing: '-0.02em',
             }}
@@ -304,9 +304,9 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         <button
           onClick={onClose}
           style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px',
             background: 'rgba(255, 255, 255, 0.05)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             display: 'flex',
@@ -317,7 +317,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
             color: 'rgba(255, 255, 255, 0.6)',
           }}
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
       </div>
 
@@ -326,15 +326,15 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '24px',
+          padding: '20px',
         }}
         className="custom-scrollbar"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Contact Info Section */}
           <div
             style={{
-              padding: '20px',
+              padding: '16px',
               background: 'rgba(0, 184, 212, 0.05)',
               border: '1px solid rgba(0, 184, 212, 0.15)',
               borderRadius: '12px',
@@ -343,56 +343,34 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
             <h3
               style={{
                 color: '#00b8d4',
-                fontSize: '12px',
+                fontSize: '11px',
                 fontWeight: '600',
                 textTransform: 'uppercase',
                 letterSpacing: '1px',
-                marginBottom: '16px',
+                marginBottom: '12px',
               }}
             >
-              Contact Information
+              Contact Info
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {/* Name */}
               <div>
-                <Label
-                  style={{
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    display: 'block',
-                    marginBottom: '8px',
-                  }}
-                >
+                <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
                   Full Name <span style={{ color: '#ef4444' }}>*</span>
                 </Label>
                 <Input
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                   placeholder="John Doe"
-                  style={{
-                    background: 'rgba(0, 0, 0, 0.4)',
-                    border: '1px solid rgba(100, 116, 139, 0.4)',
-                    color: '#FFFFFF',
-                    padding: '10px 12px',
-                    borderRadius: '6px',
-                  }}
+                  style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(100, 116, 139, 0.4)', color: '#FFFFFF', padding: '8px 10px', borderRadius: '6px' }}
                 />
               </div>
 
               {/* Email and Phone */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
-                  <Label
-                    style={{
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      fontSize: '13px',
-                      fontWeight: '500',
-                      display: 'block',
-                      marginBottom: '8px',
-                    }}
-                  >
+                  <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
                     Email
                   </Label>
                   <Input
@@ -400,25 +378,11 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
                     value={contactForm.email}
                     onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                     placeholder="john@example.com"
-                    style={{
-                      background: 'rgba(0, 0, 0, 0.4)',
-                      border: '1px solid rgba(100, 116, 139, 0.4)',
-                      color: '#FFFFFF',
-                      padding: '10px 12px',
-                      borderRadius: '6px',
-                    }}
+                    style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(100, 116, 139, 0.4)', color: '#FFFFFF', padding: '8px 10px', borderRadius: '6px' }}
                   />
                 </div>
                 <div>
-                  <Label
-                    style={{
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      fontSize: '13px',
-                      fontWeight: '500',
-                      display: 'block',
-                      marginBottom: '8px',
-                    }}
-                  >
+                  <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
                     Phone
                   </Label>
                   <Input
@@ -426,13 +390,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
                     value={contactForm.phone}
                     onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                     placeholder="(512) 555-0100"
-                    style={{
-                      background: 'rgba(0, 0, 0, 0.4)',
-                      border: '1px solid rgba(100, 116, 139, 0.4)',
-                      color: '#FFFFFF',
-                      padding: '10px 12px',
-                      borderRadius: '6px',
-                    }}
+                    style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(100, 116, 139, 0.4)', color: '#FFFFFF', padding: '8px 10px', borderRadius: '6px' }}
                   />
                 </div>
               </div>
@@ -440,121 +398,259 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           </div>
 
           {/* Company Details Section */}
-          <div
-            style={{
-              padding: '20px',
-              background: 'rgba(0, 212, 170, 0.05)',
-              border: '1px solid rgba(0, 212, 170, 0.15)',
-              borderRadius: '12px',
-            }}
-          >
-            <h3
-              style={{
-                color: '#00d4aa',
-                fontSize: '12px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                marginBottom: '16px',
-              }}
-            >
+          <div style={{ padding: '16px', background: 'rgba(0, 212, 170, 0.05)', border: '1px solid rgba(0, 212, 170, 0.15)', borderRadius: '12px' }}>
+            <h3 style={{ color: '#00d4aa', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
               Company Details
             </h3>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div>
-                <Label
-                  style={{
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    display: 'block',
-                    marginBottom: '8px',
-                  }}
-                >
-                  Company
-                </Label>
-                <Input
-                  value={contactForm.company}
-                  onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
-                  placeholder="ABC Realty"
-                  style={{
-                    background: 'rgba(0, 0, 0, 0.4)',
-                    border: '1px solid rgba(100, 116, 139, 0.4)',
-                    color: '#FFFFFF',
-                    padding: '10px 12px',
-                    borderRadius: '6px',
-                  }}
-                />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                    Company
+                  </Label>
+                  <Input
+                    value={contactForm.company}
+                    onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
+                    placeholder="ABC Realty"
+                    style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(100, 116, 139, 0.4)', color: '#FFFFFF', padding: '8px 10px', borderRadius: '6px' }}
+                  />
+                </div>
+                <div>
+                  <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                    Title
+                  </Label>
+                  <Input
+                    value={contactForm.title}
+                    onChange={(e) => setContactForm({ ...contactForm, title: e.target.value })}
+                    placeholder="Principal, Broker"
+                    style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(100, 116, 139, 0.4)', color: '#FFFFFF', padding: '8px 10px', borderRadius: '6px' }}
+                  />
+                </div>
               </div>
               <div>
-                <Label
-                  style={{
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    display: 'block',
-                    marginBottom: '8px',
-                  }}
-                >
-                  Title
+                <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                  Owner Address
                 </Label>
                 <Input
-                  value={contactForm.title}
-                  onChange={(e) => setContactForm({ ...contactForm, title: e.target.value })}
-                  placeholder="Principal, Broker, CFO"
-                  style={{
-                    background: 'rgba(0, 0, 0, 0.4)',
-                    border: '1px solid rgba(100, 116, 139, 0.4)',
-                    color: '#FFFFFF',
-                    padding: '10px 12px',
-                    borderRadius: '6px',
-                  }}
+                  value={contactForm.owner_address}
+                  onChange={(e) => setContactForm({ ...contactForm, owner_address: e.target.value })}
+                  placeholder="123 Main St, Austin, TX 78701"
+                  style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(100, 116, 139, 0.4)', color: '#FFFFFF', padding: '8px 10px', borderRadius: '6px' }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Notes Section */}
-          <div
-            style={{
-              padding: '20px',
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '12px',
-            }}
-          >
-            <h3
-              style={{
-                color: 'rgba(255, 255, 255, 0.8)',
-                fontSize: '12px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                marginBottom: '16px',
-              }}
-            >
-              Notes
+          {/* Contact Type(s) */}
+          <div style={{ padding: '16px', background: 'rgba(100, 116, 139, 0.05)', border: '1px solid rgba(100, 116, 139, 0.15)', borderRadius: '12px' }}>
+            <h3 style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
+              Contact Type(s)
             </h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {contactTypeOptions.map(option => (
+                <button
+                  key={option.value}
+                  onClick={() => handleContactTypeToggle(option.value)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 150ms ease',
+                    background: (contactForm.contact_types || []).includes(option.value) ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (contactForm.contact_types || []).includes(option.value) ? '1px solid rgba(0, 184, 212, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (contactForm.contact_types || []).includes(option.value) ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)'
+                  }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-            <textarea
-              value={contactForm.notes}
-              onChange={(e) => setContactForm({ ...contactForm, notes: e.target.value })}
-              placeholder="Add notes about this contact..."
-              rows={4}
-              style={{
-                width: '100%',
-                background: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid rgba(100, 116, 139, 0.4)',
-                color: '#FFFFFF',
-                padding: '10px 12px',
-                borderRadius: '6px',
-                resize: 'vertical',
-                fontFamily: 'inherit',
-                fontSize: '14px',
-                lineHeight: '1.5',
-              }}
-            />
+          {/* Asset Type Focus */}
+          <div style={{ padding: '16px', background: 'rgba(100, 116, 139, 0.05)', border: '1px solid rgba(100, 116, 139, 0.15)', borderRadius: '12px' }}>
+            <h3 style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
+              Asset Type Focus
+            </h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {assetTypeOptions.map(option => (
+                <button
+                  key={option}
+                  onClick={() => handleAssetTypeToggle(option)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 150ms ease',
+                    background: (contactForm.asset_type_focus || []).includes(option) ? 'rgba(0, 212, 170, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (contactForm.asset_type_focus || []).includes(option) ? '1px solid rgba(0, 212, 170, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (contactForm.asset_type_focus || []).includes(option) ? '#00d4aa' : 'rgba(255, 255, 255, 0.7)'
+                  }}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Markets */}
+          <div style={{ padding: '16px', background: 'rgba(100, 116, 139, 0.05)', border: '1px solid rgba(100, 116, 139, 0.15)', borderRadius: '12px' }}>
+            <h3 style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
+              Markets
+            </h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {marketOptions.map(option => (
+                <button
+                  key={option}
+                  onClick={() => handleMarketToggle(option)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 150ms ease',
+                    background: (contactForm.markets || []).includes(option) ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (contactForm.markets || []).includes(option) ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (contactForm.markets || []).includes(option) ? '#a855f7' : 'rgba(255, 255, 255, 0.7)'
+                  }}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Status & Notes */}
+          <div style={{ padding: '16px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px' }}>
+            <h3 style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
+              Status & Notes
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* Status */}
+              <div>
+                <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                  Status
+                </Label>
+                <select
+                  value={contactForm.status}
+                  onChange={(e) => setContactForm({ ...contactForm, status: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px 10px',
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    border: '1px solid rgba(100, 116, 139, 0.4)',
+                    borderRadius: '6px',
+                    color: '#FFFFFF',
+                    fontSize: '13px'
+                  }}
+                >
+                  {statusOptions.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Date Pickers */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                    Last Follow-up
+                  </Label>
+                  <DatePicker
+                    selected={lastFollowupDate}
+                    onChange={(date) => setLastFollowupDate(date)}
+                    placeholderText="mm/dd/yyyy"
+                    dateFormat="MM/dd/yyyy"
+                    className="custom-datepicker"
+                    wrapperClassName="w-full"
+                    customInput={
+                      <input
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
+                          borderRadius: '6px',
+                          color: '#FFFFFF',
+                          fontSize: '13px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                    }
+                  />
+                </div>
+                <div>
+                  <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                    Next Action
+                  </Label>
+                  <DatePicker
+                    selected={nextActionDate}
+                    onChange={(date) => setNextActionDate(date)}
+                    placeholderText="mm/dd/yyyy"
+                    dateFormat="MM/dd/yyyy"
+                    className="custom-datepicker"
+                    wrapperClassName="w-full"
+                    customInput={
+                      <input
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(100, 116, 139, 0.4)',
+                          borderRadius: '6px',
+                          color: '#FFFFFF',
+                          fontSize: '13px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Lead Source */}
+              <div>
+                <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                  Lead Source
+                </Label>
+                <Input
+                  value={contactForm.lead_source}
+                  onChange={(e) => setContactForm({ ...contactForm, lead_source: e.target.value })}
+                  placeholder="Referral, Website, Event"
+                  style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid rgba(100, 116, 139, 0.4)', color: '#FFFFFF', padding: '8px 10px', borderRadius: '6px' }}
+                />
+              </div>
+
+              {/* Notes */}
+              <div>
+                <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
+                  Notes
+                </Label>
+                <textarea
+                  value={contactForm.notes}
+                  onChange={(e) => setContactForm({ ...contactForm, notes: e.target.value })}
+                  placeholder="Add notes about this contact..."
+                  rows={4}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    border: '1px solid rgba(100, 116, 139, 0.4)',
+                    color: '#FFFFFF',
+                    padding: '8px 10px',
+                    borderRadius: '6px',
+                    resize: 'vertical',
+                    fontFamily: 'inherit',
+                    fontSize: '13px',
+                    lineHeight: '1.5',
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -562,11 +658,11 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
       {/* Footer with Action Buttons */}
       <div
         style={{
-          padding: '20px 24px',
+          padding: '16px 20px',
           borderTop: '1px solid rgba(255, 255, 255, 0.1)',
           background: 'rgba(0, 0, 0, 0.3)',
           display: 'flex',
-          gap: '12px',
+          gap: '10px',
           justifyContent: 'flex-end',
         }}
       >
@@ -574,12 +670,12 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           onClick={onClose}
           disabled={isSaving}
           style={{
-            padding: '12px 24px',
-            borderRadius: '8px',
+            padding: '10px 20px',
+            borderRadius: '6px',
             background: 'rgba(239, 68, 68, 0.1)',
             border: '1px solid rgba(239, 68, 68, 0.3)',
             color: '#ef4444',
-            fontSize: '14px',
+            fontSize: '13px',
             fontWeight: '600',
             cursor: isSaving ? 'not-allowed' : 'pointer',
             opacity: isSaving ? 0.5 : 1,
@@ -592,22 +688,22 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           onClick={handleSaveContact}
           disabled={isSaving}
           style={{
-            padding: '12px 24px',
-            borderRadius: '8px',
+            padding: '10px 20px',
+            borderRadius: '6px',
             background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
             border: 'none',
             color: '#FFFFFF',
-            fontSize: '14px',
+            fontSize: '13px',
             fontWeight: '600',
             cursor: isSaving ? 'not-allowed' : 'pointer',
             opacity: isSaving ? 0.7 : 1,
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            gap: '6px',
             transition: 'all 150ms ease',
           }}
         >
-          <Save size={16} />
+          <Save size={14} />
           {isSaving ? 'Saving...' : (editingContact ? 'Save Changes' : 'Create Contact')}
         </button>
       </div>
