@@ -16,6 +16,105 @@ const stageColors = {
   'overpriced': '#ef4444'
 };
 
+// Helper component for editable fields - defined outside to prevent re-creation on each render
+const EditableField = ({ label, value, field, type = 'text', isCurrency = false, suffix = '', isEditing, editedData, setEditedData, formatPrice }) => {
+  if (!isEditing) {
+    let displayValue = value;
+    if (isCurrency && value) {
+      displayValue = formatPrice(value);
+    } else if (suffix && value) {
+      displayValue = `${value} ${suffix}`;
+    } else if (!value) {
+      displayValue = 'N/A';
+    }
+    
+    return (
+      <div>
+        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+          {label}
+        </div>
+        <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+          {displayValue}
+        </div>
+      </div>
+    );
+  }
+
+  // Safety check for editedData
+  if (!editedData) return null;
+
+  return (
+    <div>
+      <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+        {label}
+      </label>
+      <input
+        type={type}
+        value={editedData[field] || ''}
+        onChange={(e) => setEditedData({ ...editedData, [field]: e.target.value })}
+        className="editable-input"
+        style={{
+          width: '100%',
+          padding: '8px 12px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '6px',
+          color: '#FFFFFF',
+          fontSize: '14px',
+          fontWeight: '500',
+          outline: 'none',
+        }}
+      />
+    </div>
+  );
+};
+
+// Helper component for editable textarea - defined outside to prevent re-creation on each render
+const EditableTextarea = ({ label, value, field, isEditing, editedData, setEditedData }) => {
+  if (!isEditing) {
+    return (
+      <div>
+        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+          {label}
+        </div>
+        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: '1.6' }}>
+          {value || 'N/A'}
+        </div>
+      </div>
+    );
+  }
+
+  // Safety check for editedData
+  if (!editedData) return null;
+
+  return (
+    <div>
+      <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+        {label}
+      </label>
+      <textarea
+        value={editedData[field] || ''}
+        onChange={(e) => setEditedData({ ...editedData, [field]: e.target.value })}
+        rows={4}
+        className="editable-textarea"
+        style={{
+          width: '100%',
+          padding: '8px 12px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '6px',
+          color: '#FFFFFF',
+          fontSize: '14px',
+          lineHeight: '1.6',
+          outline: 'none',
+          resize: 'vertical',
+          fontFamily: 'inherit',
+        }}
+      />
+    </div>
+  );
+};
+
 const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }) => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
