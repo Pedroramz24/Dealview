@@ -1185,10 +1185,16 @@ const DealDetails = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  {/* View Mode - Always show contact management */}
                   <div>
-                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Linked Contacts</p>
+                    <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Contact Management
+                    </p>
                     {linkedContacts.length > 0 ? (
                       <>
+                        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '12px' }}>
+                          {linkedContacts.length} contact{linkedContacts.length !== 1 ? 's' : ''} linked to this deal
+                        </p>
                         <div className="space-y-2">
                           {linkedContacts.map((contact, idx) => (
                             <div key={contact.id} style={{ padding: '12px', background: 'rgba(0, 0, 0, 0.2)', border: '1px solid rgba(100, 116, 139, 0.2)', borderRadius: '8px' }}>
@@ -1242,7 +1248,7 @@ const DealDetails = () => {
                         textAlign: 'center'
                       }}>
                         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', marginBottom: '16px' }}>
-                          No contacts linked to this deal
+                          No contacts linked to this deal yet
                         </p>
                         <button
                           onClick={() => setShowContactFormPanel(true)}
