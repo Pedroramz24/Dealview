@@ -48,70 +48,71 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
-  // Add street labels to map using useEffect and direct map API
+  // Add street labels to map - using proper event listeners
   useEffect(() => {
     if (!mapRef.current) return;
     
     const map = mapRef.current.getMap();
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map) return;
     
     const sourceId = 'osm-street-labels';
     const shouldShowLabels = showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 12;
     
-    if (shouldShowLabels) {
-      // Remove existing layers first to avoid duplicates
-      ['street-labels-text', 'street-lines'].forEach(layerId => {
-        if (map.getLayer(layerId)) {
-          map.removeLayer(layerId);
-          console.log(`[MapView] Removed existing layer: ${layerId}`);
-        }
-      });
-      if (map.getSource(sourceId)) {
-        map.removeSource(sourceId);
-        console.log('[MapView] Removed existing source');
-      }
-
-      // Add OSM vector tile source
+    const addStreetLabels = () => {
       try {
+        // Remove existing layers/source first
+        if (map.getLayer('street-labels-text')) {
+          map.removeLayer('street-labels-text');
+        }
+        if (map.getLayer('street-lines')) {
+          map.removeLayer('street-lines');
+        }
+        if (map.getSource(sourceId)) {
+          map.removeSource(sourceId);
+        }
+
+        if (!shouldShowLabels) return;
+
+        // Add OSM Shortbread vector tile source
         map.addSource(sourceId, {
           type: 'vector',
           tiles: [
-            'https://tiles.openstreetmap.org/vector/{z}/{x}/{y}.pbf'
+            'https://tiles.openstreetmap.org/{z}/{x}/{y}.vector.pbf'
           ],
           minzoom: 0,
           maxzoom: 14,
           attribution: '© OpenStreetMap contributors'
         });
-        console.log('[MapView] ✅ Added OSM vector tile source');
+        console.log('[MapView] ✅ Added OSM Shortbread vector tile source');
         
-        // Add street lines layer
+        // Add street lines layer (subtle white lines)
         map.addLayer({
           id: 'street-lines',
           type: 'line',
           source: sourceId,
-          'source-layer': 'transportation',
-          filter: ['in', 'class', 'primary', 'secondary', 'tertiary', 'motorway', 'trunk'],
+          'source-layer': 'streets',
+          filter: ['in', ['get', 'kind'], ['literal', ['highway', 'major_road', 'minor_road']]],
           paint: {
             'line-color': '#ffffff',
             'line-width': [
               'interpolate',
               ['linear'],
               ['zoom'],
-              12, 1,
-              16, 3,
-              20, 5
+              12, 0.5,
+              16, 2,
+              20, 4
             ],
-            'line-opacity': 0.6
+            'line-opacity': 0.4
           }
         });
         console.log('[MapView] ✅ Added street lines layer');
         
-        // Add street labels layer
+        // Add street labels layer (Shortbread schema)
         map.addLayer({
           id: 'street-labels-text',
           type: 'symbol',
           source: sourceId,
-          'source-layer': 'transportation_name',
+          'source-layer': 'street_labels',
           filter: ['has', 'name'],
           layout: {
             'text-field': ['get', 'name'],
@@ -119,40 +120,51 @@ const MapView = () => {
               'interpolate',
               ['linear'],
               ['zoom'],
-              12, 10,
-              16, 14,
-              20, 18
+              12, 9,
+              16, 12,
+              20, 16
             ],
-            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+            'text-font': ['Noto Sans Regular'],
             'symbol-placement': 'line',
             'text-rotation-alignment': 'map',
             'text-pitch-alignment': 'viewport',
-            'text-max-angle': 30
+            'text-max-angle': 30,
+            'text-padding': 2
           },
           paint: {
             'text-color': '#ffffff',
             'text-halo-color': 'rgba(0, 0, 0, 0.9)',
             'text-halo-width': 2,
-            'text-halo-blur': 1
+            'text-halo-blur': 0.5
           }
         });
-        console.log('[MapView] ✅ Added street labels text layer');
+        console.log('[MapView] ✅ Added street labels layer (Shortbread schema)');
       } catch (error) {
         console.error('[MapView] ❌ Error adding street labels:', error);
       }
-    } else {
-      // Remove layers when street labels are disabled
-      ['street-labels-text', 'street-lines'].forEach(layerId => {
-        if (map.getLayer(layerId)) {
-          map.removeLayer(layerId);
-          console.log(`[MapView] Removed layer: ${layerId}`);
-        }
-      });
-      if (map.getSource(sourceId)) {
-        map.removeSource(sourceId);
-        console.log('[MapView] Removed source');
+    };
+
+    // Use styledata event for reliable layer addition
+    const handleStyleData = () => {
+      if (map.isStyleLoaded()) {
+        addStreetLabels();
       }
+    };
+
+    // Listen for style load completion
+    map.on('styledata', handleStyleData);
+    map.on('idle', handleStyleData);
+    
+    // Initial call if style is already loaded
+    if (map.isStyleLoaded()) {
+      addStreetLabels();
     }
+
+    // Cleanup
+    return () => {
+      map.off('styledata', handleStyleData);
+      map.off('idle', handleStyleData);
+    };
   }, [showStreetLabels, mapStyle, viewState.zoom]);
   
   // Load panel state from session storage
