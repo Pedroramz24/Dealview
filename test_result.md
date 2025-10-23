@@ -295,9 +295,8 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Automatic Comma Formatting for Number Inputs"
     - "PropertyIntelligencePanel Inline Editing"
-    - "DealDetails Complete Inline Editing Overhaul"
-    - "Date Picker Calendar Functionality"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
