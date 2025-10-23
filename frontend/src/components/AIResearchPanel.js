@@ -34,11 +34,10 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
     try {
       const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
       
-      // Get auth token
-      const { supabase } = await import('../supabaseClient');
-      const { data: { session } } = await supabase.auth.getSession();
+      // Get auth token from localStorage (matching other components)
+      const token = localStorage.getItem('token');
       
-      if (!session) {
+      if (!token) {
         toast.error('Please log in to use AI research');
         setLoading(false);
         return;
@@ -49,7 +48,7 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           query: currentQuery,
