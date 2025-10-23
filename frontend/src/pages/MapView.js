@@ -608,29 +608,7 @@ const MapView = () => {
           </button>
         </div>
 
-        {/* Map Controls - Top Right */}
-        <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-3">
-
-          <button
-            onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
-            className="premium-glass-btn"
-            style={{
-              color: '#FFFFFF',
-              backgroundColor: 'rgba(255,255,255,0.05)',
-              fontWeight: 500,
-              cursor: 'pointer',
-              fontSize: '14px',
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(12px)',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-            }}
-          >
-            {mapStyle === 'satellite' ? 'Street' : 'Satellite'}
-          </button>
-        </div>
+        {/* Map Controls - Top Right - Removed Street/Satellite button (moved to Layer Manager) */}
 
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
           <Map
