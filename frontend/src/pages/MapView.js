@@ -34,6 +34,7 @@ const MapView = () => {
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
   const [actionsPanelOpen, setActionsPanelOpen] = useState(false);
   const [createDealPanelOpen, setCreateDealPanelOpen] = useState(false);
+  const [aiResearchPanelOpen, setAiResearchPanelOpen] = useState(false);
   
   const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
