@@ -295,6 +295,13 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     try {
       const { supabase } = await import('../supabaseClient');
       
+      // Parse formatted numbers back to raw numbers before saving
+      const parseNumber = (value) => {
+        if (!value) return null;
+        const parsed = parseFormattedNumber(value);
+        return parsed;
+      };
+      
       // Update deal in Supabase
       const { error } = await supabase
         .from('deals')
@@ -305,18 +312,18 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
           state: editedData.state,
           zip_code: editedData.zip_code,
           asset_type: editedData.asset_type,
-          price: editedData.price,
-          size: editedData.size,
-          lot_size: editedData.lot_size,
-          year_built: editedData.year_built,
+          price: parseNumber(editedData.price),
+          size: parseNumber(editedData.size),
+          lot_size: parseNumber(editedData.lot_size),
+          year_built: parseNumber(editedData.year_built),
           description: editedData.description,
-          cap_rate: editedData.cap_rate,
-          noi: editedData.noi,
-          annual_income: editedData.annual_income,
-          annual_expenses: editedData.annual_expenses,
+          cap_rate: parseNumber(editedData.cap_rate),
+          noi: parseNumber(editedData.noi),
+          annual_income: parseNumber(editedData.annual_income),
+          annual_expenses: parseNumber(editedData.annual_expenses),
           zoning: editedData.zoning,
-          occupancy: editedData.occupancy,
-          parking_spaces: editedData.parking_spaces,
+          occupancy: parseNumber(editedData.occupancy),
+          parking_spaces: parseNumber(editedData.parking_spaces),
           key_features: editedData.key_features,
           lease_type: editedData.lease_type,
           notes: editedData.notes,
