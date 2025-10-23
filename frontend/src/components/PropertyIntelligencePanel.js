@@ -1396,61 +1396,140 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             </div>
           )}
 
-          {/* Linked Contacts */}
-          {isDeal && linkedContacts.length > 0 && (
+          {/* Linked Contacts - ALWAYS VISIBLE */}
+          {isDeal && (
             <div style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                 <Users size={16} style={{ color: '#00b8d4' }} />
                 <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Linked Contacts ({linkedContacts.length})
+                  Linked Contacts {linkedContacts.length > 0 && `(${linkedContacts.length})`}
                 </span>
               </div>
-              <div style={{ display: 'grid', gap: '8px' }}>
-                {linkedContacts.map((contact, idx) => (
-                  <div
-                    key={contact.id}
+              
+              {linkedContacts.length > 0 ? (
+                <>
+                  <div style={{ display: 'grid', gap: '8px' }}>
+                    {linkedContacts.map((contact, idx) => (
+                      <div
+                        key={contact.id}
+                        style={{
+                          padding: '12px',
+                          background: 'rgba(0, 0, 0, 0.3)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <div>
+                          <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
+                            {contact.name} {idx === 0 && <span style={{ color: '#00b8d4', fontSize: '11px' }}>(Primary)</span>}
+                          </div>
+                          {contact.company && (
+                            <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>
+                          )}
+                          {contact.email && (
+                            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>{contact.email}</div>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
+                          style={{
+                            padding: '6px 12px',
+                            background: 'rgba(0, 184, 212, 0.1)',
+                            border: '1px solid rgba(0, 184, 212, 0.3)',
+                            borderRadius: '6px',
+                            color: '#00b8d4',
+                            fontSize: '11px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                          }}
+                        >
+                          <ExternalLink size={12} />
+                          Email
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Add Another Contact button */}
+                  <button
+                    onClick={() => setShowContactFormPanel(true)}
                     style={{
-                      padding: '12px',
-                      background: 'rgba(0, 0, 0, 0.3)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '8px',
+                      marginTop: '12px',
+                      padding: '10px 16px',
+                      background: 'rgba(0, 184, 212, 0.1)',
+                      border: '1px solid rgba(0, 184, 212, 0.3)',
+                      borderRadius: '6px',
+                      color: '#00b8d4',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
                       display: 'flex',
-                      justifyContent: 'space-between',
                       alignItems: 'center',
+                      gap: '8px',
+                      transition: 'all 150ms ease',
+                      width: '100%',
+                      justifyContent: 'center',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
-                    <div>
-                      <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
-                        {contact.name} {idx === 0 && <span style={{ color: '#00b8d4', fontSize: '11px' }}>(Primary)</span>}
-                      </div>
-                      {contact.company && (
-                        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{contact.company}</div>
-                      )}
-                      {contact.email && (
-                        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>{contact.email}</div>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
-                      style={{
-                        padding: '6px 12px',
-                        background: 'rgba(0, 184, 212, 0.1)',
-                        border: '1px solid rgba(0, 184, 212, 0.3)',
-                        borderRadius: '6px',
-                        color: '#00b8d4',
-                        fontSize: '11px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}
-                    >
-                      <ExternalLink size={12} />
-                      Email
-                    </button>
-                  </div>
-                ))}
-              </div>
+                    <Users size={14} />
+                    Add Another Contact
+                  </button>
+                </>
+              ) : (
+                <div style={{
+                  padding: '16px',
+                  background: 'rgba(0, 184, 212, 0.05)',
+                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '12px' }}>
+                    No contacts linked yet
+                  </p>
+                  <button
+                    onClick={() => setShowContactFormPanel(true)}
+                    style={{
+                      padding: '10px 20px',
+                      background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      transition: 'all 150ms ease',
+                      boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 184, 212, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.3)';
+                    }}
+                  >
+                    <Users size={14} />
+                    Create New Contact
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
