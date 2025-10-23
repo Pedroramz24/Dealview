@@ -49,6 +49,12 @@
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  /* Transitions - Smooth */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Editable inputs - optimized for performance */
@@ -66,14 +72,6 @@
 .editable-input:hover,
 .editable-textarea:hover {
   background: rgba(255, 255, 255, 0.07) !important;
-}
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  
-  /* Transitions - Smooth */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
