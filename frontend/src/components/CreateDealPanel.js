@@ -300,6 +300,10 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
               ref={sizeRef}
               type="text"
               placeholder="10,000"
+              onChange={(e) => {
+                const formatted = formatNumberWithCommas(e.target.value);
+                e.target.value = formatted;
+              }}
               style={{
                 width: '100%',
                 padding: '10px 12px',
@@ -322,6 +326,10 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
               type="text"
               defaultValue={parcelData?.lot_size || ''}
               placeholder="1.5"
+              onChange={(e) => {
+                const formatted = formatNumberWithCommas(e.target.value);
+                e.target.value = formatted;
+              }}
               style={{
                 width: '100%',
                 padding: '10px 12px',
