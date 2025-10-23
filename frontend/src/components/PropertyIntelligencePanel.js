@@ -319,12 +319,10 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
       toast.success('✓ Deal updated successfully');
       setIsEditing(false);
       
-      // Trigger a refresh if parent component provides callback
-      if (onClose) {
-        // Close and reopen to refresh data
-        setTimeout(() => {
-          window.location.reload(); // Simple refresh for now
-        }, 500);
+      // Update the local data without reloading the page
+      // This keeps the map position intact
+      if (data && data.id) {
+        Object.assign(data, editedData);
       }
     } catch (error) {
       console.error('Error saving deal:', error);
