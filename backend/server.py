@@ -701,29 +701,46 @@ async def get_team_members(current_user: User = Depends(get_current_user)):
 # Public share endpoint (no auth required)
 @api_router.get("/share/{deal_id}")
 async def get_public_deal(deal_id: str):
-    deal_doc = await db.deals.find_one({"id": deal_id}, {"_id": 0})
-    if not deal_doc:
+    """Public endpoint for sharing deals - no authentication required"""
+    try:
+        # Query Supabase for the deal (public access)
+        response = supabase.table('deals').select('*').eq('id', deal_id).single().execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        deal = response.data
+        
+        # Return only public-safe fields
+        return {
+            "id": deal.get('id'),
+            "title": deal.get('title'),
+            "address": deal.get('address'),
+            "city": deal.get('city'),
+            "state": deal.get('state'),
+            "zip_code": deal.get('zip_code'),
+            "asset_type": deal.get('asset_type'),
+            "description": deal.get('description'),
+            "price": deal.get('price'),
+            "size": deal.get('size'),
+            "lot_size": deal.get('lot_size'),
+            "year_built": deal.get('year_built'),
+            "zoning": deal.get('zoning'),
+            "occupancy": deal.get('occupancy'),
+            "parking_spaces": deal.get('parking_spaces'),
+            "key_features": deal.get('key_features'),
+            "cap_rate": deal.get('cap_rate'),
+            "noi": deal.get('noi'),
+            "image_url": deal.get('image_url'),
+            "latitude": deal.get('latitude'),
+            "longitude": deal.get('longitude'),
+            "created_at": deal.get('created_at'),
+            "updated_at": deal.get('updated_at')
+        }
+    except Exception as e:
+        logger.error(f"Error fetching public deal: {str(e)}")
         raise HTTPException(status_code=404, detail="Deal not found")
-    
-    if isinstance(deal_doc.get('created_at'), str):
-        deal_doc['created_at'] = datetime.fromisoformat(deal_doc['created_at'])
-    if isinstance(deal_doc.get('updated_at'), str):
-        deal_doc['updated_at'] = datetime.fromisoformat(deal_doc['updated_at'])
-    
-    return {
-        "property_address": deal_doc.get('property_address'),
-        "asset_type": deal_doc.get('asset_type'),
-        "description": deal_doc.get('description'),
-        "asking_price": deal_doc.get('asking_price'),
-        "building_size": deal_doc.get('building_size'),
-        "lot_size": deal_doc.get('lot_size'),
-        "lot_acres": deal_doc.get('lot_acres'),
-        "occupancy": deal_doc.get('occupancy'),
-        "primary_image_url": deal_doc.get('primary_image_url'),
-        "latitude": deal_doc.get('latitude'),
-        "longitude": deal_doc.get('longitude'),
-        "documents": deal_doc.get('documents', [])
-    }
+
 
 
 # Regrid API Proxy Endpoints
