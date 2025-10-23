@@ -1741,6 +1741,17 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
           <Share2 size={16} />
         </button>
       </div>
+
+      {/* Contact Form Panel */}
+      {isDeal && (
+        <ContactFormPanel
+          isOpen={showContactFormPanel}
+          onClose={() => setShowContactFormPanel(false)}
+          onContactCreated={handleContactCreated}
+          editingContact={null}
+          dealId={data?.id}
+        />
+      )}
     </div>
   );
 };
