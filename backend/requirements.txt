@@ -10,6 +10,7 @@ charset-normalizer==3.4.3
 click==8.3.0
 cryptography==46.0.2
 deprecation==2.1.0
+distro==1.9.0
 dnspython==2.8.0
 ecdsa==0.19.1
 email-validator==2.3.0
@@ -24,6 +25,7 @@ hyperframe==6.1.0
 idna==3.10
 iniconfig==2.1.0
 isort==6.1.0
+jiter==0.11.1
 jmespath==1.0.1
 jq==1.10.0
 markdown-it-py==4.0.0
@@ -35,6 +37,7 @@ mypy==1.18.2
 mypy_extensions==1.1.0
 numpy==2.3.3
 oauthlib==3.3.1
+openai==2.6.0
 packaging==25.0
 pandas==2.3.3
 passlib==1.7.4
@@ -75,6 +78,7 @@ StrEnum==0.4.15
 supabase==2.22.0
 supabase-auth==2.22.0
 supabase-functions==2.22.0
+tqdm==4.67.1
 typer==0.19.2
 typing-inspection==0.4.2
 typing_extensions==4.15.0
