@@ -280,11 +280,10 @@ metadata:
 
 test_plan:
   current_focus:
+    - "PropertyIntelligencePanel Inline Editing"
     - "DealDetails Complete Inline Editing Overhaul"
     - "Date Picker Calendar Functionality"
-    - "PSF Calculation with Lot Size"
-  stuck_tasks:
-    - "DealDetails Complete Inline Editing Overhaul"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
   backend_testing_notes: |
