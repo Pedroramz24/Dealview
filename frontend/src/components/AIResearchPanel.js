@@ -34,21 +34,22 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
     try {
       const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
       
-      // Get auth token from localStorage (matching other components)
-      const token = localStorage.getItem('token');
+      // Get auth token from Supabase session
+      const { supabase } = await import('../supabaseClient');
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!token) {
+      if (!session) {
         toast.error('Please log in to use AI research');
         setLoading(false);
         return;
       }
 
-      // Call backend API
+      // Call backend API with Supabase token
       const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${session.access_token}`
         },
         body: JSON.stringify({
           query: currentQuery,
