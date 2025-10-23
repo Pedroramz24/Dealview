@@ -25,6 +25,8 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
   const [documents, setDocuments] = useState([]);
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
 
+  const isDeal = type === 'deal';
+
   useEffect(() => {
     if (data && !isEditing) {
       setEditedData({ ...data });
@@ -52,7 +54,8 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
         });
       }
     }
-  }, [data, isEditing]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isEditing, isDeal]);
 
   const fetchLinkedContacts = async () => {
     try {
