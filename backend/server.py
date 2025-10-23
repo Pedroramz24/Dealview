@@ -1055,7 +1055,7 @@ class ChatResponse(BaseModel):
 from perplexity_service import perplexity_service
 
 @api_router.post("/chat", response_model=ChatResponse)
-async def chat_with_ai(request: ChatRequest, current_user: User = Depends(get_current_user)):
+async def chat_with_ai(request: ChatRequest, current_user = Depends(get_current_user_supabase)):
     """
     Chat endpoint for commercial real estate market research.
     Uses Perplexity AI to provide cited, web-grounded answers.
