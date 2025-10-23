@@ -598,6 +598,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                     type="text"
                     value={editedData.title || ''}
                     onChange={(e) => setEditedData({ ...editedData, title: e.target.value })}
+                    className="editable-input"
                     style={{
                       width: '100%',
                       padding: '10px 12px',
@@ -609,8 +610,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                       fontWeight: '600',
                       outline: 'none',
                     }}
-                    onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
-                    onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
                   />
                 </div>
                 <div style={{ marginBottom: '12px' }}>
@@ -621,6 +620,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                     type="text"
                     value={editedData.address || ''}
                     onChange={(e) => setEditedData({ ...editedData, address: e.target.value })}
+                    className="editable-input"
                     style={{
                       width: '100%',
                       padding: '10px 12px',
@@ -631,8 +631,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                       fontSize: '16px',
                       outline: 'none',
                     }}
-                    onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
-                    onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
                   />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px' }}>
@@ -644,6 +642,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                       type="text"
                       value={editedData.city || ''}
                       onChange={(e) => setEditedData({ ...editedData, city: e.target.value })}
+                      className="editable-input"
                       style={{
                         width: '100%',
                         padding: '8px 12px',
@@ -654,8 +653,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                         fontSize: '14px',
                         outline: 'none',
                       }}
-                      onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
-                      onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
                     />
                   </div>
                   <div>
@@ -666,6 +663,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                       type="text"
                       value={editedData.state || ''}
                       onChange={(e) => setEditedData({ ...editedData, state: e.target.value })}
+                      className="editable-input"
                       style={{
                         width: '100%',
                         padding: '8px 12px',
@@ -676,8 +674,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                         fontSize: '14px',
                         outline: 'none',
                       }}
-                      onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
-                      onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
                     />
                   </div>
                   <div>
@@ -688,6 +684,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                       type="text"
                       value={editedData.zip_code || ''}
                       onChange={(e) => setEditedData({ ...editedData, zip_code: e.target.value })}
+                      className="editable-input"
                       style={{
                         width: '100%',
                         padding: '8px 12px',
@@ -698,8 +695,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                         fontSize: '14px',
                         outline: 'none',
                       }}
-                      onFocus={(e) => e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)'}
-                      onBlur={(e) => e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'}
                     />
                   </div>
                 </div>
