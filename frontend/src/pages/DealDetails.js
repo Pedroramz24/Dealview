@@ -1557,6 +1557,15 @@ const DealDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Contact Form Panel */}
+      <ContactFormPanel
+        isOpen={showContactFormPanel}
+        onClose={() => setShowContactFormPanel(false)}
+        onContactCreated={handleContactCreated}
+        editingContact={null}
+        dealId={dealId}
+      />
     </div>
   );
 };
