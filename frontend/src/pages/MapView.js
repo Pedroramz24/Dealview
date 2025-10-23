@@ -526,6 +526,12 @@ const MapView = () => {
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
         />
 
+        {/* AI Research Panel (Opens at 1000px - third panel) */}
+        <AIResearchPanel
+          isOpen={aiResearchPanelOpen}
+          onClose={() => setAiResearchPanelOpen(false)}
+        />
+
         {/* Panel Toggle Buttons - Overlaps panel edge to eliminate gap */}
         <div 
           className="absolute top-6 z-[900] flex flex-col gap-3"
