@@ -137,28 +137,29 @@ const PublicShare = () => {
 
       {/* Centered Title Section */}
       <div style={{ 
-        padding: '48px 40px 32px',
+        padding: '56px 40px 40px',
         textAlign: 'center',
         borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
       }}>
         <h1 style={{ 
           color: '#FFFFFF', 
-          fontSize: '36px', 
+          fontSize: '52px', 
           fontWeight: '700', 
-          marginBottom: '12px', 
-          letterSpacing: '-0.02em' 
+          marginBottom: '16px', 
+          letterSpacing: '-0.03em',
+          lineHeight: '1.1'
         }}>
           {deal.title || deal.address}
         </h1>
         <div style={{ 
-          color: 'rgba(255,255,255,0.6)', 
-          fontSize: '16px',
+          color: 'rgba(255,255,255,0.5)', 
+          fontSize: '14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '8px'
+          gap: '6px'
         }}>
-          <MapPin size={16} style={{ color: '#00b8d4' }} />
+          <MapPin size={14} style={{ color: 'rgba(255,255,255,0.4)' }} />
           {deal.address}
           {deal.city && `, ${deal.city}`}
           {deal.state && `, ${deal.state}`}
