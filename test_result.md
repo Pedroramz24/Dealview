@@ -241,6 +241,18 @@ frontend:
         agent: "main"
         comment: "✅ IMPLEMENTED ACROSS ALL COMPONENTS: Created reusable number formatting utility (/app/frontend/src/utils/numberInput.js) with formatNumberWithCommas() and parseFormattedNumber() functions. Applied to ALL number input fields across the application: (1) PropertyIntelligencePanel - All EditableField components with type='number' now auto-format (price, lot_size, size, cap_rate, noi, annual_income, annual_expenses, year_built, parking_spaces, occupancy). (2) CreateDealPanel - Added onChange handlers to price, building size, and lot size inputs. (3) DealDetails - Added onChange handlers to ALL number inputs (price, size, lot_size, year_built, occupancy, parking_spaces, cap_rate, noi). Numbers display with commas as user types (1,000,000), and are parsed back to raw numbers (1000000) before saving to database. Frontend restarted. Ready for user testing."
 
+  - task: "DealDetails Contact Management Enhancement"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/ContactFormPanel.js, /app/frontend/src/pages/DealDetails.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Created reusable ContactFormPanel component (/app/frontend/src/components/ContactFormPanel.js) that matches the design from Contacts page. Integrated into DealDetails page with the following features: (1) Shows 'Create New Contact' button when no contacts are linked to a deal. (2) Opens side panel (same as Contacts tab/map) for creating new contacts directly from DealDetails. (3) Automatically links newly created contacts to the current deal. (4) Shows 'Add Another Contact' button when contacts already exist. (5) Allows removing linked contacts with 'Remove' button. (6) Refreshes linked contacts list after creation. Panel slides in from right side, matches existing dark glass-morphism UI design. Frontend restarted. Ready for user testing."
+
 frontend:
   - task: "DealsList Field Name Consistency"
     implemented: true
