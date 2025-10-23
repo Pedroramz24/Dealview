@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
+import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInput';
 
 const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated }) => {
   const { user } = useContext(AuthContext);
