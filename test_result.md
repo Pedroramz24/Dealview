@@ -258,6 +258,21 @@ frontend:
       - working: true
         agent: "main"
         comment: "✅ COMPLETE FORM FIELDS ADDED: Completely rewrote ContactFormPanel to include ALL fields from the full Contacts page: (1) Contact Info: Full Name*, Email, Phone. (2) Company Details: Company, Title, Owner Address. (3) Contact Type(s): Multi-select buttons for Buyer, Seller, Broker, Lender, Tenant, Owner. (4) Asset Type Focus: Multi-select buttons for all 9 asset types (Retail Centers, Land, Industrial, Restaurants, Hotels, Medical, Office, Multifamily, Mixed Use). (5) Markets: Multi-select buttons for San Antonio, Austin, Houston, DFW, RGV. (6) Status & Notes: Status dropdown (5 options), Last Follow-up date picker, Next Action date picker, Lead Source input, Notes textarea. Panel now positioned at left: 500px to open next to PropertyIntelligencePanel (width: 500px). Panel is exact replica of full Contacts page create form. Frontend restarted."
+      - working: true
+        agent: "main"
+        comment: "✅ UI CONSISTENCY FIXED: Updated all contact management buttons across PropertyIntelligencePanel and DealDetails to use identical styling. Changed 'Create New Contact' from gradient to cyan border style (rgba(0, 184, 212, 0.1) background, 1px solid border). Updated padding (10px 16px), fontSize (14px), borderRadius (8px), icon size (16), hover effects (translateY(-2px)). All buttons now match throughout the app."
+
+  - task: "AI Market Research with Perplexity"
+    implemented: true
+    working: true
+    file: "/app/backend/perplexity_service.py, /app/backend/server.py, /app/frontend/src/components/AIResearchPanel.js, /app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ PERPLEXITY AI INTEGRATION COMPLETE: Implemented full AI market research assistant with Perplexity API. BACKEND: (1) Created PerplexityService (/app/backend/perplexity_service.py) using OpenAI SDK with Perplexity base_url. (2) Added /api/chat endpoint to server.py with authentication. (3) Uses 'sonar' model with return_citations=True and return_related_questions=True. (4) System prompt optimized for commercial real estate research. (5) Stored API key securely in .env. FRONTEND: (1) Created AIResearchPanel component (/app/frontend/src/components/AIResearchPanel.js) - purple-themed chat interface. (2) Added AI Research button to map (star icon, purple highlight when active). (3) Panel opens at left: 1000px (third panel position after Property and Contact panels). (4) Features: Message history, loading animation, citation display with clickable links, related questions as suggestion buttons, example queries on first load. (5) Width: 500px matching other panels. (6) Added pulse animation to App.css for loading dots. All services restarted. Ready for testing."
 
 frontend:
   - task: "DealsList Field Name Consistency"
