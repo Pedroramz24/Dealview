@@ -880,37 +880,21 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               {isDeal ? (
                 <>
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                      Asking Price
-                    </div>
-                    <div style={{ color: '#00d4aa', fontSize: '20px', fontWeight: '700' }}>
-                      {formatPrice(data.price)}
-                    </div>
+                  <EditableField label="Asking Price" value={editedData.price} field="price" type="number" isCurrency={true} />
+                  <EditableField label="Lot Size" value={editedData.lot_size} field="lot_size" type="number" suffix="AC" />
+                  <EditableField label="Building Size" value={editedData.size} field="size" type="number" suffix="SF" />
+                  <EditableField label="Cap Rate" value={editedData.cap_rate} field="cap_rate" type="number" suffix="%" />
+                  <EditableField label="NOI" value={editedData.noi} field="noi" type="number" isCurrency={true} />
+                  <EditableField label="Annual Income" value={editedData.annual_income} field="annual_income" type="number" isCurrency={true} />
+                  <EditableField label="Annual Expenses" value={editedData.annual_expenses} field="annual_expenses" type="number" isCurrency={true} />
+                  <EditableField label="Year Built" value={editedData.year_built} field="year_built" type="number" />
+                  <EditableField label="Parking Spaces" value={editedData.parking_spaces} field="parking_spaces" type="number" />
+                  <EditableField label="Occupancy" value={editedData.occupancy} field="occupancy" type="number" suffix="%" />
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <EditableField label="Zoning" value={editedData.zoning} field="zoning" type="text" />
                   </div>
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                      Lot Size
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
-                      {data.lot_size ? `${data.lot_size} AC` : 'N/A'}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                      Building Size
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
-                      {data.size ? `${parseFloat(data.size).toLocaleString()} SF` : 'N/A'}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                      Cap Rate
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
-                      {data.cap_rate ? `${data.cap_rate}%` : 'N/A'}
-                    </div>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <EditableField label="Lease Type" value={editedData.lease_type} field="lease_type" type="text" />
                   </div>
                 </>
               ) : (
