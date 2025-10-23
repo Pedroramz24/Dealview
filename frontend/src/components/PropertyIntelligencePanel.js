@@ -864,21 +864,137 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               {isDeal ? (
                 <>
-                  <EditableField label="Asking Price" value={editedData.price} field="price" type="number" isCurrency={true} />
-                  <EditableField label="Lot Size" value={editedData.lot_size} field="lot_size" type="number" suffix="AC" />
-                  <EditableField label="Building Size" value={editedData.size} field="size" type="number" suffix="SF" />
-                  <EditableField label="Cap Rate" value={editedData.cap_rate} field="cap_rate" type="number" suffix="%" />
-                  <EditableField label="NOI" value={editedData.noi} field="noi" type="number" isCurrency={true} />
-                  <EditableField label="Annual Income" value={editedData.annual_income} field="annual_income" type="number" isCurrency={true} />
-                  <EditableField label="Annual Expenses" value={editedData.annual_expenses} field="annual_expenses" type="number" isCurrency={true} />
-                  <EditableField label="Year Built" value={editedData.year_built} field="year_built" type="number" />
-                  <EditableField label="Parking Spaces" value={editedData.parking_spaces} field="parking_spaces" type="number" />
-                  <EditableField label="Occupancy" value={editedData.occupancy} field="occupancy" type="number" suffix="%" />
+                  <EditableField 
+                    label="Asking Price" 
+                    value={editedData.price} 
+                    field="price" 
+                    type="number" 
+                    isCurrency={true}
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Lot Size" 
+                    value={editedData.lot_size} 
+                    field="lot_size" 
+                    type="number" 
+                    suffix="AC"
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Building Size" 
+                    value={editedData.size} 
+                    field="size" 
+                    type="number" 
+                    suffix="SF"
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Cap Rate" 
+                    value={editedData.cap_rate} 
+                    field="cap_rate" 
+                    type="number" 
+                    suffix="%"
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="NOI" 
+                    value={editedData.noi} 
+                    field="noi" 
+                    type="number" 
+                    isCurrency={true}
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Annual Income" 
+                    value={editedData.annual_income} 
+                    field="annual_income" 
+                    type="number" 
+                    isCurrency={true}
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Annual Expenses" 
+                    value={editedData.annual_expenses} 
+                    field="annual_expenses" 
+                    type="number" 
+                    isCurrency={true}
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Year Built" 
+                    value={editedData.year_built} 
+                    field="year_built" 
+                    type="number"
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Parking Spaces" 
+                    value={editedData.parking_spaces} 
+                    field="parking_spaces" 
+                    type="number"
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
+                  <EditableField 
+                    label="Occupancy" 
+                    value={editedData.occupancy} 
+                    field="occupancy" 
+                    type="number" 
+                    suffix="%"
+                    isEditing={isEditing}
+                    editedData={editedData}
+                    setEditedData={setEditedData}
+                    formatPrice={formatPrice}
+                  />
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <EditableField label="Zoning" value={editedData.zoning} field="zoning" type="text" />
+                    <EditableField 
+                      label="Zoning" 
+                      value={editedData.zoning} 
+                      field="zoning" 
+                      type="text"
+                      isEditing={isEditing}
+                      editedData={editedData}
+                      setEditedData={setEditedData}
+                      formatPrice={formatPrice}
+                    />
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <EditableField label="Lease Type" value={editedData.lease_type} field="lease_type" type="text" />
+                    <EditableField 
+                      label="Lease Type" 
+                      value={editedData.lease_type} 
+                      field="lease_type" 
+                      type="text"
+                      isEditing={isEditing}
+                      editedData={editedData}
+                      setEditedData={setEditedData}
+                      formatPrice={formatPrice}
+                    />
                   </div>
                 </>
               ) : (
