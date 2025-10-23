@@ -227,6 +227,9 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
       );
     }
 
+    // Safety check for editedData
+    if (!editedData) return null;
+
     return (
       <div>
         <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
