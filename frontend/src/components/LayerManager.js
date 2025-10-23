@@ -4,7 +4,7 @@ import axios from 'axios';
 import { API } from '../App';
 import { useMapLayerContext } from '../contexts/MapLayerContext';
 
-const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels, mapStyle, currentZoom, propertyPanelOpen, showParcels, onToggleParcels }) => {
+const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels, mapStyle, onToggleMapStyle, currentZoom, propertyPanelOpen, showParcels, onToggleParcels }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({
     administrative: true,
@@ -26,6 +26,7 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
     showParcels,
     onToggleParcels,
     mapStyle: mapStyle || 'satellite',
+    onToggleMapStyle,
     currentZoom: currentZoom || 0
   };
 
