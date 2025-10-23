@@ -1073,11 +1073,12 @@ const DealDetails = () => {
                   </div>
                   
                   {/* Linked Contacts List */}
-                  {linkedContacts.length > 0 && (
-                    <div>
-                      <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
-                        Linked Contacts ({linkedContacts.length})
-                      </Label>
+                  <div>
+                    <Label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                      Linked Contacts ({linkedContacts.length})
+                    </Label>
+                    
+                    {linkedContacts.length > 0 ? (
                       <div className="space-y-2">
                         {linkedContacts.map((contact, idx) => (
                           <div key={contact.id} style={{
@@ -1112,8 +1113,75 @@ const DealDetails = () => {
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div style={{
+                        padding: '16px',
+                        background: 'rgba(0, 184, 212, 0.05)',
+                        border: '1px solid rgba(0, 184, 212, 0.2)',
+                        borderRadius: '8px',
+                        textAlign: 'center'
+                      }}>
+                        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '12px' }}>
+                          No contacts linked to this deal
+                        </p>
+                        <button
+                          onClick={() => setShowContactFormPanel(true)}
+                          style={{
+                            padding: '8px 16px',
+                            background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                            border: 'none',
+                            borderRadius: '6px',
+                            color: '#FFFFFF',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'transform 150ms ease'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                        >
+                          <User size={14} />
+                          Create New Contact
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* Add Contact button when contacts exist */}
+                    {linkedContacts.length > 0 && (
+                      <button
+                        onClick={() => setShowContactFormPanel(true)}
+                        style={{
+                          marginTop: '12px',
+                          padding: '8px 16px',
+                          background: 'rgba(0, 184, 212, 0.1)',
+                          border: '1px solid rgba(0, 184, 212, 0.3)',
+                          borderRadius: '6px',
+                          color: '#00b8d4',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          transition: 'all 150ms ease',
+                          width: '100%',
+                          justifyContent: 'center'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                        }}
+                      >
+                        <User size={14} />
+                        Add Another Contact
+                      </button>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
