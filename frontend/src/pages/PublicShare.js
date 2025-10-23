@@ -430,7 +430,8 @@ const PublicShare = () => {
                 <div style={{
                   padding: '32px',
                   background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',\n                  borderRadius: '8px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px',
                   textAlign: 'center'
                 }}>
                   <FileText size={32} style={{ color: 'rgba(255,255,255,0.3)', margin: '0 auto 12px' }} />
