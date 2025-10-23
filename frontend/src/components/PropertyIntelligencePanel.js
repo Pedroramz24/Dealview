@@ -167,9 +167,54 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
   };
 
   const handleSave = async () => {
-    // TODO: Implement save logic
-    toast.success('Property updated successfully');
-    setIsEditing(false);
+    try {
+      const { supabase } = await import('../supabaseClient');
+      
+      // Update deal in Supabase
+      const { error } = await supabase
+        .from('deals')
+        .update({
+          title: editedData.title,
+          address: editedData.address,
+          city: editedData.city,
+          state: editedData.state,
+          zip_code: editedData.zip_code,
+          asset_type: editedData.asset_type,
+          price: editedData.price,
+          size: editedData.size,
+          lot_size: editedData.lot_size,
+          year_built: editedData.year_built,
+          description: editedData.description,
+          cap_rate: editedData.cap_rate,
+          noi: editedData.noi,
+          annual_income: editedData.annual_income,
+          annual_expenses: editedData.annual_expenses,
+          zoning: editedData.zoning,
+          occupancy: editedData.occupancy,
+          parking_spaces: editedData.parking_spaces,
+          key_features: editedData.key_features,
+          lease_type: editedData.lease_type,
+          notes: editedData.notes,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', data.id);
+      
+      if (error) throw error;
+      
+      toast.success('✓ Deal updated successfully');
+      setIsEditing(false);
+      
+      // Trigger a refresh if parent component provides callback
+      if (onClose) {
+        // Close and reopen to refresh data
+        setTimeout(() => {
+          window.location.reload(); // Simple refresh for now
+        }, 500);
+      }
+    } catch (error) {
+      console.error('Error saving deal:', error);
+      toast.error('Failed to save changes');
+    }
   };
 
   const handleShare = () => {
