@@ -394,6 +394,13 @@ const DealDetails = () => {
     }
   };
 
+  const handleContactCreated = async (newContact) => {
+    // Refresh the linked contacts list
+    await fetchLinkedContacts();
+    await fetchAllContacts();
+    setShowContactFormPanel(false);
+  };
+
   const formatPrice = (price) => {
     if (!price) return 'N/A';
     return new Intl.NumberFormat('en-US', {
