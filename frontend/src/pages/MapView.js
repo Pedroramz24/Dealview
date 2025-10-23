@@ -522,6 +522,7 @@ const MapView = () => {
           showParcels={showReportAllParcels}
           onToggleParcels={() => setShowReportAllParcels(!showReportAllParcels)}
           mapStyle={mapStyle}
+          onToggleMapStyle={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
           currentZoom={viewState.zoom}
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
         />
