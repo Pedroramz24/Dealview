@@ -62,9 +62,7 @@ class PerplexityService:
                 model="sonar",
                 messages=all_messages,
                 max_tokens=2000,
-                temperature=0.2,
-                return_citations=True,
-                return_related_questions=True
+                temperature=0.2
             )
             
             # Extract content
@@ -74,6 +72,14 @@ class PerplexityService:
             citations = []
             if hasattr(response, 'citations') and response.citations:
                 for citation_url in response.citations:
+                    citations.append({
+                        "url": citation_url,
+                        "title": self._extract_title(citation_url)
+                    })
+            
+            # Check if citations are in a different attribute
+            if not citations and hasattr(response.choices[0], 'citations'):
+                for citation_url in response.choices[0].citations:
                     citations.append({
                         "url": citation_url,
                         "title": self._extract_title(citation_url)
