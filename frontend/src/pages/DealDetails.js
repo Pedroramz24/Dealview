@@ -784,6 +784,10 @@ const DealDetails = () => {
                       type="text"
                       defaultValue={deal.size || ''}
                       placeholder="5,000"
+                      onChange={(e) => {
+                        const formatted = formatNumberWithCommas(e.target.value);
+                        e.target.value = formatted;
+                      }}
                       style={{
                         width: '100%',
                         padding: '8px 12px',
@@ -808,6 +812,10 @@ const DealDetails = () => {
                       type="text"
                       defaultValue={deal.lot_size || ''}
                       placeholder="1.5"
+                      onChange={(e) => {
+                        const formatted = formatNumberWithCommas(e.target.value);
+                        e.target.value = formatted;
+                      }}
                       style={{
                         width: '100%',
                         padding: '8px 12px',
