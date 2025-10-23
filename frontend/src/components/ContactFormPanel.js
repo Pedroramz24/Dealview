@@ -6,10 +6,55 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { X, Save, User } from 'lucide-react';
 import { toast } from 'sonner';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
+// Contact types options
+const contactTypeOptions = [
+  { value: 'buyer', label: 'Buyer' },
+  { value: 'seller', label: 'Seller' },
+  { value: 'broker', label: 'Broker' },
+  { value: 'lender', label: 'Lender' },
+  { value: 'tenant', label: 'Tenant' },
+  { value: 'owner', label: 'Owner' }
+];
+
+// Asset type focus options
+const assetTypeOptions = [
+  'Retail Centers',
+  'Land',
+  'Industrial',
+  'Restaurants',
+  'Hotels',
+  'Medical',
+  'Office',
+  'Multifamily',
+  'Mixed Use'
+];
+
+// Markets options
+const marketOptions = [
+  'San Antonio',
+  'Austin',
+  'Houston',
+  'DFW',
+  'RGV'
+];
+
+// Status options
+const statusOptions = [
+  { value: 'active_contact', label: 'Active Contact' },
+  { value: 'no_active_contact', label: 'No Active Contact' },
+  { value: 'need_to_call', label: 'Need to Call' },
+  { value: 'does_not_want_to_sell', label: 'Does Not Want to Sell' },
+  { value: 'need_to_find_contact_number', label: 'Need to Find Contact Number' }
+];
 
 const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = null, dealId = null }) => {
   const { user } = useContext(AuthContext);
   const [isSaving, setIsSaving] = useState(false);
+  const [lastFollowupDate, setLastFollowupDate] = useState(null);
+  const [nextActionDate, setNextActionDate] = useState(null);
 
   const [contactForm, setContactForm] = useState({
     name: '',
@@ -17,6 +62,14 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
     phone: '',
     company: '',
     title: '',
+    owner_address: '',
+    contact_types: [],
+    asset_type_focus: [],
+    markets: [],
+    status: 'active_contact',
+    last_followup_date: '',
+    next_action_date: '',
+    lead_source: '',
     notes: ''
   });
 
@@ -28,8 +81,23 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         phone: editingContact.phone || '',
         company: editingContact.company || '',
         title: editingContact.title || '',
+        owner_address: editingContact.owner_address || '',
+        contact_types: editingContact.contact_types || [],
+        asset_type_focus: editingContact.asset_type_focus || [],
+        markets: editingContact.markets || [],
+        status: editingContact.status || 'active_contact',
+        last_followup_date: editingContact.last_followup_date || '',
+        next_action_date: editingContact.next_action_date || '',
+        lead_source: editingContact.lead_source || '',
         notes: editingContact.notes || ''
       });
+      
+      if (editingContact.last_followup_date) {
+        setLastFollowupDate(new Date(editingContact.last_followup_date));
+      }
+      if (editingContact.next_action_date) {
+        setNextActionDate(new Date(editingContact.next_action_date));
+      }
     } else {
       // Reset form when creating new
       setContactForm({
@@ -38,10 +106,65 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         phone: '',
         company: '',
         title: '',
+        owner_address: '',
+        contact_types: [],
+        asset_type_focus: [],
+        markets: [],
+        status: 'active_contact',
+        last_followup_date: '',
+        next_action_date: '',
+        lead_source: '',
         notes: ''
       });
+      setLastFollowupDate(null);
+      setNextActionDate(null);
     }
   }, [editingContact, isOpen]);
+
+  const handleContactTypeToggle = (value) => {
+    const currentTypes = contactForm.contact_types || [];
+    if (currentTypes.includes(value)) {
+      setContactForm({
+        ...contactForm,
+        contact_types: currentTypes.filter(t => t !== value)
+      });
+    } else {
+      setContactForm({
+        ...contactForm,
+        contact_types: [...currentTypes, value]
+      });
+    }
+  };
+
+  const handleAssetTypeToggle = (value) => {
+    const currentTypes = contactForm.asset_type_focus || [];
+    if (currentTypes.includes(value)) {
+      setContactForm({
+        ...contactForm,
+        asset_type_focus: currentTypes.filter(t => t !== value)
+      });
+    } else {
+      setContactForm({
+        ...contactForm,
+        asset_type_focus: [...currentTypes, value]
+      });
+    }
+  };
+
+  const handleMarketToggle = (value) => {
+    const currentMarkets = contactForm.markets || [];
+    if (currentMarkets.includes(value)) {
+      setContactForm({
+        ...contactForm,
+        markets: currentMarkets.filter(m => m !== value)
+      });
+    } else {
+      setContactForm({
+        ...contactForm,
+        markets: [...currentMarkets, value]
+      });
+    }
+  };
 
   const handleSaveContact = async () => {
     if (!contactForm.name) {
@@ -56,26 +179,36 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
 
     setIsSaving(true);
     try {
+      const contactData = {
+        name: contactForm.name,
+        email: contactForm.email || null,
+        phone: contactForm.phone || null,
+        company: contactForm.company || null,
+        title: contactForm.title || null,
+        owner_address: contactForm.owner_address || null,
+        contact_types: contactForm.contact_types || [],
+        asset_type_focus: contactForm.asset_type_focus || [],
+        markets: contactForm.markets || [],
+        status: contactForm.status || 'active_contact',
+        last_followup_date: lastFollowupDate ? lastFollowupDate.toISOString() : null,
+        next_action_date: nextActionDate ? nextActionDate.toISOString() : null,
+        lead_source: contactForm.lead_source || null,
+        notes: contactForm.notes || null,
+        updated_at: new Date().toISOString()
+      };
+
       if (editingContact) {
         // Update existing contact
         const { error } = await supabase
           .from('contacts')
-          .update({
-            name: contactForm.name,
-            email: contactForm.email || null,
-            phone: contactForm.phone || null,
-            company: contactForm.company || null,
-            title: contactForm.title || null,
-            notes: contactForm.notes || null,
-            updated_at: new Date().toISOString()
-          })
+          .update(contactData)
           .eq('id', editingContact.id);
 
         if (error) throw error;
         toast.success('Contact updated successfully');
         
         if (onContactCreated) {
-          onContactCreated({ ...editingContact, ...contactForm });
+          onContactCreated({ ...editingContact, ...contactData });
         }
       } else {
         // Create new contact
@@ -83,14 +216,8 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           .from('contacts')
           .insert([{
             owner_id: user.id,
-            name: contactForm.name,
-            email: contactForm.email || null,
-            phone: contactForm.phone || null,
-            company: contactForm.company || null,
-            title: contactForm.title || null,
-            notes: contactForm.notes || null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            ...contactData,
+            created_at: new Date().toISOString()
           }])
           .select()
           .single();
