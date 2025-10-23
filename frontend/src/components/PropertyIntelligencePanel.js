@@ -959,6 +959,33 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                     setEditedData={setEditedData}
                     formatPrice={formatPrice}
                   />
+                  
+                  {/* Price per SQFT Calculations - Read Only */}
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Price per SQFT (Lot)
+                    </div>
+                    <div style={{ color: '#00d4aa', fontSize: '16px', fontWeight: '600' }}>
+                      {calculatePricePerSQFT()}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Price per SQFT (Building)
+                    </div>
+                    <div style={{ color: '#00d4aa', fontSize: '16px', fontWeight: '600' }}>
+                      {calculatePricePerSQFTBuilding()}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+                      Price per AC
+                    </div>
+                    <div style={{ color: '#00d4aa', fontSize: '16px', fontWeight: '600' }}>
+                      {calculatePricePerAC()}
+                    </div>
+                  </div>
+                  
                   <EditableField 
                     label="Cap Rate" 
                     value={editedData.cap_rate} 
