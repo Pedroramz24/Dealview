@@ -13,6 +13,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInput';
 
 // Pipeline stage colors - matching Pipeline.js
 const stageColors = {
