@@ -151,6 +151,115 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     }).format(price);
   };
 
+  // Helper component for editable fields
+  const EditableField = ({ label, value, field, type = 'text', isCurrency = false, suffix = '' }) => {
+    if (!isEditing) {
+      let displayValue = value;
+      if (isCurrency && value) {
+        displayValue = formatPrice(value);
+      } else if (suffix && value) {
+        displayValue = `${value} ${suffix}`;
+      } else if (!value) {
+        displayValue = 'N/A';
+      }
+      
+      return (
+        <div>
+          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+            {label}
+          </div>
+          <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+            {displayValue}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+          {label}
+        </label>
+        <input
+          type={type}
+          value={editedData[field] || ''}
+          onChange={(e) => setEditedData({ ...editedData, [field]: e.target.value })}
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '6px',
+            color: '#FFFFFF',
+            fontSize: '14px',
+            fontWeight: '500',
+            outline: 'none',
+            transition: 'all 150ms ease',
+          }}
+          onFocus={(e) => {
+            e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)';
+            e.target.style.background = 'rgba(255, 255, 255, 0.08)';
+          }}
+          onBlur={(e) => {
+            e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+          }}
+        />
+      </div>
+    );
+  };
+
+  // Helper component for editable textarea
+  const EditableTextarea = ({ label, value, field }) => {
+    if (!isEditing) {
+      return (
+        <div>
+          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
+            {label}
+          </div>
+          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: '1.6' }}>
+            {value || 'N/A'}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', display: 'block' }}>
+          {label}
+        </label>
+        <textarea
+          value={editedData[field] || ''}
+          onChange={(e) => setEditedData({ ...editedData, [field]: e.target.value })}
+          rows={4}
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '6px',
+            color: '#FFFFFF',
+            fontSize: '14px',
+            lineHeight: '1.6',
+            outline: 'none',
+            resize: 'vertical',
+            fontFamily: 'inherit',
+            transition: 'all 150ms ease',
+          }}
+          onFocus={(e) => {
+            e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)';
+            e.target.style.background = 'rgba(255, 255, 255, 0.08)';
+          }}
+          onBlur={(e) => {
+            e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+          }}
+        />
+      </div>
+    );
+  };
+
   const formatDate = (dateValue) => {
     if (!dateValue) return 'N/A';
     try {
