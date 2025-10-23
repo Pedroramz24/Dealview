@@ -284,6 +284,28 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     }).format(price);
   };
 
+  const calculatePricePerSQFT = () => {
+    // Price per SQFT (lot) = purchase_price / (lot_size_in_acres * 43560)
+    if (!data?.lot_size || !data?.price) return 'N/A';
+    const sqft = data.lot_size * 43560; // Convert acres to square feet
+    const pricePerSqft = data.price / sqft;
+    return formatPrice(pricePerSqft);
+  };
+
+  const calculatePricePerAC = () => {
+    // Price per AC = purchase_price / lot_size_in_acres
+    if (!data?.lot_size || !data?.price) return 'N/A';
+    const pricePerAc = data.price / data.lot_size;
+    return formatPrice(pricePerAc);
+  };
+
+  const calculatePricePerSQFTBuilding = () => {
+    // Price per SQFT (Building) = purchase_price / building_size
+    if (!data?.size || !data?.price) return 'N/A';
+    const pricePerSqft = data.price / data.size;
+    return formatPrice(pricePerSqft);
+  };
+
   const formatDate = (dateValue) => {
     if (!dateValue) return 'N/A';
     try {
