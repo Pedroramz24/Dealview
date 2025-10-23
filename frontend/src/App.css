@@ -49,6 +49,25 @@
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
+}
+
+/* Editable inputs - optimized for performance */
+.editable-input,
+.editable-textarea {
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.editable-input:focus,
+.editable-textarea:focus {
+  border: 1px solid rgba(0, 184, 212, 0.5) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.editable-input:hover,
+.editable-textarea:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+}
+  --radius-lg: 12px;
   --radius-xl: 16px;
   
   /* Transitions - Smooth */
