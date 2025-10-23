@@ -225,6 +225,21 @@ frontend:
       - working: true
         agent: "main"
         comment: "✅ FIXED: Identified root cause - EditableField and EditableTextarea helper components were defined INSIDE the PropertyIntelligencePanel component. On every state change (keystroke), React re-rendered the parent component and treated the inline function components as NEW components, causing React to unmount and remount them, thus losing focus. SOLUTION: Moved EditableField and EditableTextarea component definitions OUTSIDE of PropertyIntelligencePanel to prevent re-creation on each render. Updated all usages to pass required props (isEditing, editedData, setEditedData, formatPrice). This ensures React maintains component identity across renders and preserves input focus. Frontend restarted. Ready for user testing to confirm smooth typing experience."
+      - working: true
+        agent: "main"
+        comment: "✅ ENHANCEMENT ADDED: Implemented automatic comma formatting for all number inputs as user types. Added utility functions formatNumberWithCommas() and parseFormattedNumber() in /app/frontend/src/utils/numberInput.js. Updated EditableField component to auto-format numbers with commas in real-time (e.g., user types '1000000' → displays '1,000,000'). Modified handleSave to parse formatted numbers back to raw numbers before saving to database. All numeric fields (price, size, lot_size, cap_rate, noi, annual_income, annual_expenses, year_built, parking_spaces, occupancy) now have live comma formatting."
+
+  - task: "Automatic Comma Formatting for Number Inputs"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/utils/numberInput.js, /app/frontend/src/components/PropertyIntelligencePanel.js, /app/frontend/src/components/CreateDealPanel.js, /app/frontend/src/pages/DealDetails.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ IMPLEMENTED ACROSS ALL COMPONENTS: Created reusable number formatting utility (/app/frontend/src/utils/numberInput.js) with formatNumberWithCommas() and parseFormattedNumber() functions. Applied to ALL number input fields across the application: (1) PropertyIntelligencePanel - All EditableField components with type='number' now auto-format (price, lot_size, size, cap_rate, noi, annual_income, annual_expenses, year_built, parking_spaces, occupancy). (2) CreateDealPanel - Added onChange handlers to price, building size, and lot size inputs. (3) DealDetails - Added onChange handlers to ALL number inputs (price, size, lot_size, year_built, occupancy, parking_spaces, cap_rate, noi). Numbers display with commas as user types (1,000,000), and are parsed back to raw numbers (1000000) before saving to database. Frontend restarted. Ready for user testing."
 
 frontend:
   - task: "DealsList Field Name Consistency"
