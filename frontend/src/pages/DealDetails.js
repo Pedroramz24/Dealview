@@ -1297,6 +1297,10 @@ const DealDetails = () => {
                       type="text"
                       defaultValue={deal.price || ''}
                       placeholder="2,500,000"
+                      onChange={(e) => {
+                        const formatted = formatNumberWithCommas(e.target.value);
+                        e.target.value = formatted;
+                      }}
                       style={{
                         width: '100%',
                         padding: '8px 12px',
