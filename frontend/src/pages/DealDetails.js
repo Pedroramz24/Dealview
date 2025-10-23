@@ -1253,11 +1253,11 @@ const DealDetails = () => {
                         <button
                           onClick={() => setShowContactFormPanel(true)}
                           style={{
-                            padding: '12px 24px',
-                            background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
-                            border: 'none',
+                            padding: '10px 16px',
+                            background: 'rgba(0, 184, 212, 0.1)',
+                            border: '1px solid rgba(0, 184, 212, 0.3)',
                             borderRadius: '8px',
-                            color: '#FFFFFF',
+                            color: '#00b8d4',
                             fontSize: '14px',
                             fontWeight: '600',
                             cursor: 'pointer',
@@ -1265,15 +1265,16 @@ const DealDetails = () => {
                             alignItems: 'center',
                             gap: '8px',
                             transition: 'all 150ms ease',
-                            boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)'
+                            width: '100%',
+                            justifyContent: 'center'
                           }}
                           onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
                             e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 184, 212, 0.4)';
                           }}
                           onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
                             e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.3)';
                           }}
                         >
                           <User size={16} />
