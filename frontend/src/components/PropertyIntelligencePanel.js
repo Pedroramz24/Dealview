@@ -231,6 +231,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
           value={editedData[field] || ''}
           onChange={(e) => setEditedData({ ...editedData, [field]: e.target.value })}
           rows={4}
+          className="editable-textarea"
           style={{
             width: '100%',
             padding: '8px 12px',
@@ -243,15 +244,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             outline: 'none',
             resize: 'vertical',
             fontFamily: 'inherit',
-            transition: 'all 150ms ease',
-          }}
-          onFocus={(e) => {
-            e.target.style.border = '1px solid rgba(0, 184, 212, 0.5)';
-            e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-          }}
-          onBlur={(e) => {
-            e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)';
-            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
           }}
         />
       </div>
