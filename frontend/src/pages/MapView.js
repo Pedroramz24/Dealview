@@ -1194,58 +1194,84 @@ const MapView = () => {
                   anchor="center"
                 >
                   <div style={{
-                    width: '12px',
-                    height: '12px',
+                    width: '14px',
+                    height: '14px',
                     borderRadius: '50%',
                     background: '#a855f7',
-                    border: '2px solid #ffffff',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                  }} />
+                    border: '3px solid #ffffff',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
+                    cursor: index === 0 && measurementMode === 'area' ? 'pointer' : 'default',
+                    position: 'relative'
+                  }}>
+                    {index === 0 && measurementMode === 'area' && measurementPoints.length >= 3 && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '-30px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        whiteSpace: 'nowrap',
+                        padding: '4px 8px',
+                        background: 'rgba(168, 85, 247, 0.95)',
+                        color: '#FFFFFF',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        borderRadius: '4px',
+                        pointerEvents: 'none'
+                      }}>
+                        Click here to close
+                      </div>
+                    )}
+                  </div>
                 </Marker>
               ))}
 
-              {/* Measurement Lines/Polygon */}
-              <Source
-                id="measurement-source"
-                type="geojson"
-                data={{
-                  type: 'Feature',
-                  geometry: {
-                    type: measurementMode === 'area' ? 'Polygon' : 'LineString',
-                    coordinates: measurementMode === 'area' ? [measurementPoints] : measurementPoints
-                  }
-                }}
-              >
-                {measurementMode === 'area' ? (
-                  <>
-                    <Layer
-                      id="measurement-fill"
-                      type="fill"
-                      paint={{
-                        'fill-color': '#a855f7',
-                        'fill-opacity': 0.3
-                      }}
-                    />
-                    <Layer
-                      id="measurement-outline"
-                      type="line"
-                      paint={{
-                        'line-color': '#a855f7',
-                        'line-width': 3
-                      }}
-                    />
-                  </>
-                ) : (
+              {/* Measurement Lines - Always show connecting lines */}
+              {measurementPoints.length >= 2 && (
+                <Source
+                  id="measurement-line-source"
+                  type="geojson"
+                  data={{
+                    type: 'Feature',
+                    geometry: {
+                      type: 'LineString',
+                      coordinates: measurementPoints
+                    }
+                  }}
+                >
                   <Layer
-                    id="measurement-line"
+                    id="measurement-connecting-line"
                     type="line"
                     paint={{
                       'line-color': '#a855f7',
                       'line-width': 3
                     }}
                   />
-                )}
-              </Source>
+                </Source>
+              )}
+
+              {/* Filled Polygon - Only show when area is calculated (polygon closed) */}
+              {measurementMode === 'area' && measurementResult && (
+                <Source
+                  id="measurement-polygon-source"
+                  type="geojson"
+                  data={{
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Polygon',
+                      coordinates: [measurementPoints]
+                    }
+                  }}
+                >
+                  <Layer
+                    id="measurement-fill"
+                    type="fill"
+                    paint={{
+                      'fill-color': '#a855f7',
+                      'fill-opacity': 0.4
+                    }}
+                  />
+                </Source>
+              )}
 
               {/* Measurement Result Display */}
               {measurementResult && (
