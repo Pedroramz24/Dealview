@@ -27,6 +27,8 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
     onToggleParcels,
     mapStyle: mapStyle || 'satellite',
     onToggleMapStyle,
+    measurementMode: measurementMode || null,
+    onSetMeasurementMode,
     currentZoom: currentZoom || 0
   };
 
