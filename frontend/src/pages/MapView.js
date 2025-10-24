@@ -38,6 +38,8 @@ const MapView = () => {
   
   // Measurement tools
   const [measurementMode, setMeasurementMode] = useState(null); // 'area' or 'distance' or null
+  const [measurementPoints, setMeasurementPoints] = useState([]);
+  const [measurementResult, setMeasurementResult] = useState(null);
   
   const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
