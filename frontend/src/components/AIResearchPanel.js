@@ -96,7 +96,7 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
       style={{
         position: 'fixed',
         top: 0,
-        left: isOpen ? '1000px' : '-600px',
+        left: isOpen ? '1000px' : '1600px',
         width: '500px',
         height: '100vh',
         background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%)',
