@@ -1207,7 +1207,7 @@ const MapView = () => {
                       type="fill"
                       paint={{
                         'fill-color': '#a855f7',
-                        'fill-opacity': 0.2
+                        'fill-opacity': 0.3
                       }}
                     />
                     <Layer
@@ -1215,8 +1215,7 @@ const MapView = () => {
                       type="line"
                       paint={{
                         'line-color': '#a855f7',
-                        'line-width': 2,
-                        'line-dasharray': [2, 2]
+                        'line-width': 3
                       }}
                     />
                   </>
