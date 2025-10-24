@@ -544,3 +544,15 @@ td {
     transform: scale(1.2);
   }
 }
+
+/* Slide in from right animation */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(600px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
