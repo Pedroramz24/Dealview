@@ -227,11 +227,6 @@ input[type="file"]::file-selector-button:hover {
     background: rgba(0, 184, 212, 0.7);
 }
 
-/* Smooth marker transitions on hover */
-.map-marker:hover > div:nth-child(2) {
-    transform: translate(-50%, -50%) scale(1.1);
-}
-
 /* Sidebar Navigation Tooltip Hover Effect */
 button:hover .nav-tooltip,
 a:hover .nav-tooltip {
