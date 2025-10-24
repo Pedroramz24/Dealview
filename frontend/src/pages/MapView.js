@@ -1307,17 +1307,11 @@ const MapView = () => {
               ))}
 
               {/* Measurement Lines - Always show connecting lines */}
-              {measurementPoints.length >= 2 && (
+              {measurementLineGeoJSON && (
                 <Source
                   id="measurement-line-source"
                   type="geojson"
-                  data={{
-                    type: 'Feature',
-                    geometry: {
-                      type: 'LineString',
-                      coordinates: measurementPoints
-                    }
-                  }}
+                  data={measurementLineGeoJSON}
                 >
                   <Layer
                     id="measurement-connecting-line"
@@ -1331,17 +1325,11 @@ const MapView = () => {
               )}
 
               {/* Filled Polygon - Only show when area is calculated (polygon closed) */}
-              {measurementMode === 'area' && measurementResult && (
+              {measurementPolygonGeoJSON && (
                 <Source
                   id="measurement-polygon-source"
                   type="geojson"
-                  data={{
-                    type: 'Feature',
-                    geometry: {
-                      type: 'Polygon',
-                      coordinates: [measurementPoints]
-                    }
-                  }}
+                  data={measurementPolygonGeoJSON}
                 >
                   <Layer
                     id="measurement-fill"
