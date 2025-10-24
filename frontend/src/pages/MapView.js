@@ -1315,22 +1315,45 @@ const MapView = () => {
 
               {/* Measurement Result Display */}
               {measurementResult && (
-                <div style={{
-                  position: 'absolute',
-                  top: '80px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  padding: '20px 24px',
-                  background: 'rgba(11, 12, 14, 0.97)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(168, 85, 247, 0.5)',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5)',
-                  zIndex: 1000,
-                  minWidth: '280px',
-                  maxWidth: '320px',
-                  textAlign: 'center'
-                }}>
+                <div 
+                  onMouseDown={handlePanelMouseDown}
+                  style={{
+                    position: 'absolute',
+                    top: measurementPanelPosition.x !== null ? `${measurementPanelPosition.y}px` : '80px',
+                    left: measurementPanelPosition.x !== null ? `${measurementPanelPosition.x}px` : '50%',
+                    transform: measurementPanelPosition.x !== null ? 'none' : 'translateX(-50%)',
+                    padding: '20px 24px',
+                    background: 'rgba(11, 12, 14, 0.97)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(168, 85, 247, 0.5)',
+                    borderRadius: '12px',
+                    boxShadow: isDraggingPanel 
+                      ? '0 8px 32px rgba(0, 0, 0, 0.7)' 
+                      : '0 4px 24px rgba(0, 0, 0, 0.5)',
+                    zIndex: 1000,
+                    minWidth: '280px',
+                    maxWidth: '320px',
+                    textAlign: 'center',
+                    cursor: isDraggingPanel ? 'grabbing' : 'grab',
+                    userSelect: 'none',
+                    transition: isDraggingPanel ? 'none' : 'box-shadow 150ms ease'
+                  }}>
+                  
+                  {/* Drag Handle Indicator */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: '8px',
+                    opacity: 0.3
+                  }}>
+                    <div style={{
+                      width: '32px',
+                      height: '4px',
+                      borderRadius: '2px',
+                      background: 'rgba(255,255,255,0.5)'
+                    }}></div>
+                  </div>
+
                   <div style={{
                     display: 'inline-block',
                     padding: '4px 10px',
@@ -1403,11 +1426,13 @@ const MapView = () => {
                   </div>
                   
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setMeasurementMode(null);
                       setMeasurementPoints([]);
                       setMeasurementResult(null);
                     }}
+                    onMouseDown={(e) => e.stopPropagation()}
                     style={{
                       padding: '10px 16px',
                       background: 'rgba(239, 68, 68, 0.15)',
