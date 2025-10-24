@@ -1165,6 +1165,138 @@ const MapView = () => {
               </div>
             </Popup>
           )}
+
+          {/* Measurement Tools Visualization */}
+          {measurementMode && measurementPoints.length > 0 && (
+            <>
+              {/* Measurement Points */}
+              {measurementPoints.map((point, index) => (
+                <Marker
+                  key={`measurement-point-${index}`}
+                  longitude={point[0]}
+                  latitude={point[1]}
+                  anchor="center"
+                >
+                  <div style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    background: '#a855f7',
+                    border: '2px solid #ffffff',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                  }} />
+                </Marker>
+              ))}
+
+              {/* Measurement Lines/Polygon */}
+              <Source
+                id="measurement-source"
+                type="geojson"
+                data={{
+                  type: 'Feature',
+                  geometry: {
+                    type: measurementMode === 'area' ? 'Polygon' : 'LineString',
+                    coordinates: measurementMode === 'area' ? [measurementPoints] : measurementPoints
+                  }
+                }}
+              >
+                {measurementMode === 'area' ? (
+                  <>
+                    <Layer
+                      id="measurement-fill"
+                      type="fill"
+                      paint={{
+                        'fill-color': '#a855f7',
+                        'fill-opacity': 0.2
+                      }}
+                    />
+                    <Layer
+                      id="measurement-outline"
+                      type="line"
+                      paint={{
+                        'line-color': '#a855f7',
+                        'line-width': 2,
+                        'line-dasharray': [2, 2]
+                      }}
+                    />
+                  </>
+                ) : (
+                  <Layer
+                    id="measurement-line"
+                    type="line"
+                    paint={{
+                      'line-color': '#a855f7',
+                      'line-width': 3
+                    }}
+                  />
+                )}
+              </Source>
+
+              {/* Measurement Result Display */}
+              {measurementResult && (
+                <div style={{
+                  position: 'absolute',
+                  top: '80px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  padding: '16px 24px',
+                  background: 'rgba(11, 12, 14, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(168, 85, 247, 0.5)',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5)',
+                  zIndex: 1000,
+                  minWidth: '250px',
+                  textAlign: 'center'
+                }}>
+                  <p style={{ color: '#a855f7', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', marginBottom: '8px' }}>
+                    {measurementMode === 'area' ? 'Area Measurement' : 'Distance Measurement'}
+                  </p>
+                  <div style={{ marginBottom: '8px' }}>
+                    <p style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '700' }}>
+                      {measurementMode === 'area' 
+                        ? measurementResult.sqft.toLocaleString() 
+                        : measurementResult.feet.toLocaleString()}
+                    </p>
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>
+                      {measurementMode === 'area' ? 'Square Feet' : 'Feet'}
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                      {measurementMode === 'area' 
+                        ? measurementResult.acres.toLocaleString() 
+                        : measurementResult.miles.toLocaleString()}
+                    </p>
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>
+                      {measurementMode === 'area' ? 'Acres' : 'Miles'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setMeasurementMode(null);
+                      setMeasurementPoints([]);
+                      setMeasurementResult(null);
+                    }}
+                    style={{
+                      marginTop: '12px',
+                      padding: '8px 16px',
+                      background: 'rgba(239, 68, 68, 0.15)',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      borderRadius: '6px',
+                      color: '#ef4444',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      width: '100%'
+                    }}
+                  >
+                    Clear Measurement
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </Map>
         </div>
 
