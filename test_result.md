@@ -274,6 +274,21 @@ frontend:
         agent: "main"
         comment: "✅ PERPLEXITY AI INTEGRATION COMPLETE: Implemented full AI market research assistant with Perplexity API. BACKEND: (1) Created PerplexityService (/app/backend/perplexity_service.py) using OpenAI SDK with Perplexity base_url. (2) Added /api/chat endpoint to server.py with authentication. (3) Uses 'sonar' model with return_citations=True and return_related_questions=True. (4) System prompt optimized for commercial real estate research. (5) Stored API key securely in .env. FRONTEND: (1) Created AIResearchPanel component (/app/frontend/src/components/AIResearchPanel.js) - purple-themed chat interface. (2) Added AI Research button to map (star icon, purple highlight when active). (3) Panel opens at left: 1000px (third panel position after Property and Contact panels). (4) Features: Message history, loading animation, citation display with clickable links, related questions as suggestion buttons, example queries on first load. (5) Width: 500px matching other panels. (6) Added pulse animation to App.css for loading dots. All services restarted. Ready for testing."
 
+  - task: "Parcel Flickering Fix - Map Drag Issue"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "USER REPORTED: Parcels disappear when dragging/panning the map. Parcels only reappear when user releases mouse and stops moving the map. Need parcels to remain visible and static during map drag operations."
+      - working: "NA"
+        agent: "main"
+        comment: "✅ FIX IMPLEMENTED: Applied same memoization technique used for measurement polygon fix. ROOT CAUSE: Paint properties for parcel layers (reportall-parcels-fill and reportall-parcels-line) were being recreated on every component render, causing MapLibre to unnecessarily re-render layers during map movement. SOLUTION: (1) Created memoized paint objects using useMemo for both parcelFillPaint and parcelLinePaint. (2) Dependencies set to [selectedParcelId] so paint objects only recreate when selection changes, not on every map pan/zoom. (3) Updated Layer components to use memoized paint objects instead of inline paint definitions. This prevents layer re-renders during map drag, keeping parcels visible and stable. Frontend restarted. Ready for testing to verify parcels remain visible during map drag operations."
+
 frontend:
   - task: "DealsList Field Name Consistency"
     implemented: true
