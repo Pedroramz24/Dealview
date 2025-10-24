@@ -1336,6 +1336,7 @@ const MapView = () => {
               {/* Measurement Result Display */}
               {measurementResult && (
                 <div 
+                  ref={measurementPanelRef}
                   onMouseDown={handlePanelMouseDown}
                   style={{
                     position: 'absolute',
@@ -1347,16 +1348,14 @@ const MapView = () => {
                     backdropFilter: 'blur(20px)',
                     border: '1px solid rgba(168, 85, 247, 0.5)',
                     borderRadius: '12px',
-                    boxShadow: isDraggingPanel 
-                      ? '0 8px 32px rgba(0, 0, 0, 0.7)' 
-                      : '0 4px 24px rgba(0, 0, 0, 0.5)',
+                    boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5)',
                     zIndex: 1000,
                     minWidth: '280px',
                     maxWidth: '320px',
                     textAlign: 'center',
-                    cursor: isDraggingPanel ? 'grabbing' : 'grab',
+                    cursor: 'grab',
                     userSelect: 'none',
-                    transition: isDraggingPanel ? 'none' : 'box-shadow 150ms ease'
+                    transition: 'box-shadow 150ms ease'
                   }}>
                   
                   {/* Drag Handle Indicator */}
