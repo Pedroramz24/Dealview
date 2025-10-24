@@ -253,6 +253,14 @@ const MapView = () => {
     };
   }, [layersPanelOpen]);
 
+  // Clear measurements when mode changes
+  useEffect(() => {
+    if (!measurementMode) {
+      setMeasurementPoints([]);
+      setMeasurementResult(null);
+    }
+  }, [measurementMode]);
+
   // Map style configurations
   const mapStyles = {
     satellite: {
