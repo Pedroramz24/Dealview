@@ -291,6 +291,43 @@ const MapView = () => {
     };
   }, [measurementResult, measurementMode, measurementPoints]);
 
+  // Memoize parcel layer paint properties to prevent flickering during map drag
+  const parcelFillPaint = useMemo(() => ({
+    'fill-color': [
+      'case',
+      ['==', ['get', 'robust_id'], selectedParcelId || ''],
+      '#FF0000', // Red for selected parcel
+      REPORTALL_CONFIG.style.parcelFill.color // Default cyan
+    ],
+    'fill-opacity': [
+      'case',
+      ['==', ['get', 'robust_id'], selectedParcelId || ''],
+      0.4, // Higher opacity for selected
+      REPORTALL_CONFIG.style.parcelFill.opacity
+    ],
+  }), [selectedParcelId]);
+
+  const parcelLinePaint = useMemo(() => ({
+    'line-color': [
+      'case',
+      ['==', ['get', 'robust_id'], selectedParcelId || ''],
+      '#FF0000', // Bold red for selected parcel
+      REPORTALL_CONFIG.style.parcelLine.color
+    ],
+    'line-width': [
+      'case',
+      ['==', ['get', 'robust_id'], selectedParcelId || ''],
+      4, // Thicker line for selected (increased from 3)
+      REPORTALL_CONFIG.style.parcelLine.width
+    ],
+    'line-opacity': [
+      'case',
+      ['==', ['get', 'robust_id'], selectedParcelId || ''],
+      1, // Full opacity for selected
+      REPORTALL_CONFIG.style.parcelLine.opacity
+    ],
+  }), [selectedParcelId]);
+
   // Handle measurement panel dragging
   const handlePanelMouseDown = (e) => {
     if (!measurementPanelRef.current) return;
