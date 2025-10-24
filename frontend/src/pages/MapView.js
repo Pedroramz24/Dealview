@@ -449,14 +449,30 @@ const MapView = () => {
     // Handle measurement mode clicks first
     if (measurementMode) {
       const newPoint = [event.lngLat.lng, event.lngLat.lat];
+      
+      // Check if clicking near the first point to close the polygon (for area measurement)
+      if (measurementMode === 'area' && measurementPoints.length >= 3) {
+        const firstPoint = measurementPoints[0];
+        const distance = Math.sqrt(
+          Math.pow(newPoint[0] - firstPoint[0], 2) + 
+          Math.pow(newPoint[1] - firstPoint[1], 2)
+        );
+        
+        // If clicking within ~0.0001 degrees (~11 meters) of first point, close the polygon
+        if (distance < 0.0001) {
+          const closedPoints = [...measurementPoints, firstPoint];
+          const result = calculateArea(closedPoints);
+          setMeasurementResult(result);
+          toast.success('Area measurement complete!');
+          return;
+        }
+      }
+      
       const newPoints = [...measurementPoints, newPoint];
       setMeasurementPoints(newPoints);
       
-      // Calculate and display result
-      if (measurementMode === 'area' && newPoints.length >= 3) {
-        const result = calculateArea(newPoints);
-        setMeasurementResult(result);
-      } else if (measurementMode === 'distance' && newPoints.length >= 2) {
+      // Calculate and display result for distance (always update)
+      if (measurementMode === 'distance' && newPoints.length >= 2) {
         const result = calculateDistance(newPoints);
         setMeasurementResult(result);
       }
