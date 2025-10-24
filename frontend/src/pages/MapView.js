@@ -36,6 +36,9 @@ const MapView = () => {
   const [createDealPanelOpen, setCreateDealPanelOpen] = useState(false);
   const [aiResearchPanelOpen, setAiResearchPanelOpen] = useState(false);
   
+  // Measurement tools
+  const [measurementMode, setMeasurementMode] = useState(null); // 'area' or 'distance' or null
+  
   const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
   const [createDealLocation, setCreateDealLocation] = useState(null); // Location for new deal
