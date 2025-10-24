@@ -646,6 +646,109 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
           </div>
         </div>
 
+        {/* Measurement Tools Section */}
+        <div style={{ padding: '0 24px', marginTop: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+            <Ruler size={14} style={{ color: 'rgba(255,255,255,0.6)', marginRight: '8px' }} />
+            <span style={{
+              color: 'rgba(255,255,255,0.6)',
+              fontSize: '11px',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Measurement Tools
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            {/* Area Measurement Tool */}
+            <button
+              onClick={() => props.onSetMeasurementMode && props.onSetMeasurementMode(
+                props.measurementMode === 'area' ? null : 'area'
+              )}
+              disabled={!props.onSetMeasurementMode}
+              style={{
+                padding: '12px',
+                borderRadius: '8px',
+                border: props.measurementMode === 'area' 
+                  ? '1px solid rgba(168, 85, 247, 0.5)' 
+                  : '1px solid rgba(255, 255, 255, 0.1)',
+                background: props.measurementMode === 'area'
+                  ? 'rgba(168, 85, 247, 0.15)'
+                  : 'rgba(0, 0, 0, 0.2)',
+                color: props.measurementMode === 'area' ? '#a855f7' : 'rgba(255,255,255,0.7)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onSetMeasurementMode ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Square size={20} />
+              <span>Area</span>
+              {props.measurementMode === 'area' && (
+                <span style={{ fontSize: '10px', opacity: 0.8 }}>SQFT • AC</span>
+              )}
+            </button>
+
+            {/* Distance Measurement Tool */}
+            <button
+              onClick={() => props.onSetMeasurementMode && props.onSetMeasurementMode(
+                props.measurementMode === 'distance' ? null : 'distance'
+              )}
+              disabled={!props.onSetMeasurementMode}
+              style={{
+                padding: '12px',
+                borderRadius: '8px',
+                border: props.measurementMode === 'distance' 
+                  ? '1px solid rgba(168, 85, 247, 0.5)' 
+                  : '1px solid rgba(255, 255, 255, 0.1)',
+                background: props.measurementMode === 'distance'
+                  ? 'rgba(168, 85, 247, 0.15)'
+                  : 'rgba(0, 0, 0, 0.2)',
+                color: props.measurementMode === 'distance' ? '#a855f7' : 'rgba(255,255,255,0.7)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onSetMeasurementMode ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Ruler size={20} />
+              <span>Distance</span>
+              {props.measurementMode === 'distance' && (
+                <span style={{ fontSize: '10px', opacity: 0.8 }}>FT • MI</span>
+              )}
+            </button>
+          </div>
+
+          {props.measurementMode && (
+            <div style={{
+              marginTop: '12px',
+              padding: '12px',
+              background: 'rgba(168, 85, 247, 0.1)',
+              border: '1px solid rgba(168, 85, 247, 0.3)',
+              borderRadius: '8px'
+            }}>
+              <p style={{ color: '#a855f7', fontSize: '11px', fontWeight: '600', marginBottom: '4px' }}>
+                {props.measurementMode === 'area' ? 'Area Measurement Active' : 'Distance Measurement Active'}
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '10px', lineHeight: '1.4' }}>
+                {props.measurementMode === 'area' 
+                  ? 'Click on the map to draw a polygon. Double-click to finish.' 
+                  : 'Click on the map to add points. Double-click to finish.'}
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Layer Categories */}
         <div
           style={{
