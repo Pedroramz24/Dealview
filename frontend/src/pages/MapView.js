@@ -290,7 +290,7 @@ const MapView = () => {
         const newX = e.clientX - dragOffsetRef.current.x;
         const newY = e.clientY - dragOffsetRef.current.y;
         
-        // Update position directly via transform (no state update = no re-render)
+        // Update position directly via style (no re-render)
         measurementPanelRef.current.style.left = `${newX}px`;
         measurementPanelRef.current.style.top = `${newY}px`;
         measurementPanelRef.current.style.transform = 'none';
@@ -303,12 +303,8 @@ const MapView = () => {
         measurementPanelRef.current.style.cursor = 'grab';
         measurementPanelRef.current.style.boxShadow = '0 4px 24px rgba(0, 0, 0, 0.5)';
         
-        // Save final position to state for next render
-        const rect = measurementPanelRef.current.getBoundingClientRect();
-        setMeasurementPanelPosition({
-          x: rect.left,
-          y: rect.top
-        });
+        // DON'T update state - keep position via direct DOM manipulation
+        // This prevents the jump on release
       }
     };
 
