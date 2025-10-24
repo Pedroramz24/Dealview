@@ -745,7 +745,10 @@ const MapView = () => {
                 width: '48px',
                 height: '48px',
                 cursor: 'pointer',
-                transition: 'transform 0.3s ease'
+                transition: 'transform 0.3s ease',
+                filter: selectedDeal?.id === deal.id 
+                  ? 'drop-shadow(0 4px 12px rgba(0, 184, 212, 0.6))' 
+                  : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))'
               }}>
                 {/* Pulsing outer ring - brighter when selected */}
                 <div className="marker-pulse" style={{
@@ -773,10 +776,7 @@ const MapView = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   transition: 'all 0.3s ease',
-                  border: selectedDeal?.id === deal.id ? '3px solid #ffffff' : 'none',
-                  boxShadow: selectedDeal?.id === deal.id 
-                    ? '0 0 0 4px rgba(0, 184, 212, 0.4), 0 4px 12px rgba(0, 184, 212, 0.6)' 
-                    : '0 2px 8px rgba(0, 0, 0, 0.3)'
+                  border: selectedDeal?.id === deal.id ? '3px solid #ffffff' : 'none'
                 }}>
                   {/* Center white dot */}
                   <div style={{
