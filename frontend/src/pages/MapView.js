@@ -721,7 +721,7 @@ const MapView = () => {
               key={deal.id}
               longitude={deal.longitude}
               latitude={deal.latitude}
-              anchor="center"
+              anchor="bottom"
               onClick={e => {
                 e.originalEvent.stopPropagation();
                 // Open property panel with deal data
@@ -753,9 +753,8 @@ const MapView = () => {
                 {/* Pulsing outer ring - brighter when selected */}
                 <div className="marker-pulse" style={{
                   position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
+                  top: '0',
+                  left: '0',
                   width: '48px',
                   height: '48px',
                   borderRadius: '50%',
@@ -765,9 +764,8 @@ const MapView = () => {
                 {/* Main marker circle with border for selected state */}
                 <div style={{
                   position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
+                  top: '8px',
+                  left: '8px',
                   width: '32px',
                   height: '32px',
                   borderRadius: '50%',
