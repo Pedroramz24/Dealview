@@ -41,6 +41,9 @@ const MapView = () => {
   const [measurementMode, setMeasurementMode] = useState(null); // 'area' or 'distance' or null
   const [measurementPoints, setMeasurementPoints] = useState([]);
   const [measurementResult, setMeasurementResult] = useState(null);
+  const [measurementPanelPosition, setMeasurementPanelPosition] = useState({ x: null, y: 80 });
+  const [isDraggingPanel, setIsDraggingPanel] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   
   const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
