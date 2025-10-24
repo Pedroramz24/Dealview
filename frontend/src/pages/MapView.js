@@ -266,6 +266,31 @@ const MapView = () => {
     }
   }, [measurementMode]);
 
+  // Memoize GeoJSON data to prevent re-creation during map panning
+  const measurementLineGeoJSON = useMemo(() => {
+    if (measurementPoints.length < 2) return null;
+    return {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: measurementPoints
+      }
+    };
+  }, [measurementPoints]);
+
+  const measurementPolygonGeoJSON = useMemo(() => {
+    if (!measurementResult || measurementMode !== 'area' || measurementPoints.length < 3) return null;
+    return {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'Polygon',
+        coordinates: [measurementPoints]
+      }
+    };
+  }, [measurementResult, measurementMode, measurementPoints]);
+
   // Handle measurement panel dragging
   const handlePanelMouseDown = (e) => {
     if (!measurementPanelRef.current) return;
