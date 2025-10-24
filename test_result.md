@@ -276,7 +276,7 @@ frontend:
 
   - task: "Parcel Flickering Fix - Map Drag Issue"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/frontend/src/pages/MapView.js"
     stuck_count: 0
     priority: "high"
@@ -300,6 +300,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "✅ REAL FIX IMPLEMENTED: Based on troubleshoot agent's deep analysis, implemented comprehensive memoization of Source props: (1) Created parcelTiles = useMemo(() => [REPORTALL_CONFIG.vectorTilesUrl], []) to maintain stable tiles array reference. (2) Created parcelPromoteId = useMemo(() => ({ parcels: 'robust_id' }), []) to maintain stable promoteId reference. (3) Updated Source component to use tiles={parcelTiles} and promoteId={parcelPromoteId} instead of inline literals. This prevents React-Map-GL from unmounting/remounting the Source during map movement by maintaining stable prop references. Frontend restarted. Ready for user testing."
+      - working: "NA"
+        agent: "testing"
+        comment: "✅ CODE IMPLEMENTATION VERIFIED - MANUAL TESTING REQUIRED: Performed comprehensive code review and automated testing attempt. CODE VERIFICATION: (1) Line 333: parcelTiles = useMemo(() => [REPORTALL_CONFIG.vectorTilesUrl], []) ✅ CORRECT - Empty dependency array ensures stable reference. (2) Line 334: parcelPromoteId = useMemo(() => ({ parcels: 'robust_id' }), []) ✅ CORRECT - Empty dependency array ensures stable reference. (3) Line 810: Source uses tiles={parcelTiles} ✅ CORRECT. (4) Line 813: Source uses promoteId={parcelPromoteId} ✅ CORRECT. TECHNICAL ANALYSIS: The fix correctly addresses the root cause identified by troubleshoot agent. By memoizing both tiles array and promoteId object with empty dependency arrays, these props will maintain the SAME reference across all re-renders. This prevents React-Map-GL from treating them as 'changed props' and unmounting/remounting the Source component during map drag operations. AUTOMATED TESTING LIMITATION: Unable to enable Property Parcels toggle via UI automation - all screenshots show parcels disabled (showParcels: false in console logs). Attempted multiple selector strategies but could not locate/activate the toggle. Completed 7 comprehensive drag tests (right, left, down, up, diagonal, quick, slow) but parcels were not visible during any test. CONSOLE LOG ANALYSIS: During drag operations, LayerManager re-renders on every mouse move (expected behavior). With the memoized Source props, the Source component should NOT unmount/remount despite these re-renders. RECOMMENDATION: User MUST manually test by: (1) Opening Layers panel, (2) Enabling 'Property Parcels' toggle, (3) Zooming to level 14+, (4) Dragging map in multiple directions and speeds, (5) Verifying cyan parcel polygons remain visible throughout entire drag operation with no flickering or disappearing. The code implementation is architecturally sound and should resolve the issue."
 
 frontend:
   - task: "DealsList Field Name Consistency"
