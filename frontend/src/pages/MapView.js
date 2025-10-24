@@ -831,7 +831,6 @@ const MapView = () => {
                 type="fill"
                 source-layer="parcels"
                 paint={parcelFillPaint}
-                beforeId="reportall-parcels-line"
               />
               <Layer
                 id="reportall-parcels-line"
