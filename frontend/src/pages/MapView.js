@@ -438,6 +438,24 @@ const MapView = () => {
 
   // Map click handler - queries ReportAll for parcel data OR opens create deal panel
   const combinedMapClick = async (event) => {
+    // Handle measurement mode clicks first
+    if (measurementMode) {
+      const newPoint = [event.lngLat.lng, event.lngLat.lat];
+      const newPoints = [...measurementPoints, newPoint];
+      setMeasurementPoints(newPoints);
+      
+      // Calculate and display result
+      if (measurementMode === 'area' && newPoints.length >= 3) {
+        const result = calculateArea(newPoints);
+        setMeasurementResult(result);
+      } else if (measurementMode === 'distance' && newPoints.length >= 2) {
+        const result = calculateDistance(newPoints);
+        setMeasurementResult(result);
+      }
+      
+      return; // Don't process other click handlers in measurement mode
+    }
+    
     // Clear previous states
     setIdentifyTooltip(null);
     setReportAllParcel(null);
