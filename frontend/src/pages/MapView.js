@@ -1280,39 +1280,88 @@ const MapView = () => {
                   top: '80px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  padding: '16px 24px',
-                  background: 'rgba(11, 12, 14, 0.95)',
+                  padding: '20px 24px',
+                  background: 'rgba(11, 12, 14, 0.97)',
                   backdropFilter: 'blur(20px)',
                   border: '1px solid rgba(168, 85, 247, 0.5)',
                   borderRadius: '12px',
                   boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5)',
                   zIndex: 1000,
-                  minWidth: '250px',
+                  minWidth: '280px',
+                  maxWidth: '320px',
                   textAlign: 'center'
                 }}>
-                  <p style={{ color: '#a855f7', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', marginBottom: '8px' }}>
-                    {measurementMode === 'area' ? 'Area Measurement' : 'Distance Measurement'}
-                  </p>
-                  <div style={{ marginBottom: '8px' }}>
-                    <p style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '700' }}>
+                  <div style={{
+                    display: 'inline-block',
+                    padding: '4px 10px',
+                    background: 'rgba(168, 85, 247, 0.15)',
+                    borderRadius: '6px',
+                    marginBottom: '12px'
+                  }}>
+                    <p style={{ color: '#a855f7', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      {measurementMode === 'area' ? 'Area Measurement' : 'Distance Measurement'}
+                    </p>
+                  </div>
+                  
+                  <div style={{ marginBottom: '12px' }}>
+                    <p style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '700', lineHeight: '1' }}>
                       {measurementMode === 'area' 
                         ? measurementResult.sqft.toLocaleString() 
                         : measurementResult.feet.toLocaleString()}
                     </p>
-                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginTop: '4px', fontWeight: '500' }}>
                       {measurementMode === 'area' ? 'Square Feet' : 'Feet'}
                     </p>
                   </div>
-                  <div>
-                    <p style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                  
+                  <div style={{ marginBottom: '12px' }}>
+                    <p style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: '600' }}>
                       {measurementMode === 'area' 
                         ? measurementResult.acres.toLocaleString() 
                         : measurementResult.miles.toLocaleString()}
                     </p>
-                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px', fontWeight: '500' }}>
                       {measurementMode === 'area' ? 'Acres' : 'Miles'}
                     </p>
                   </div>
+
+                  {/* Accuracy Badge */}
+                  <div style={{
+                    padding: '8px 12px',
+                    background: 'rgba(0, 212, 170, 0.1)',
+                    border: '1px solid rgba(0, 212, 170, 0.3)',
+                    borderRadius: '6px',
+                    marginBottom: '12px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginBottom: '4px' }}>
+                      <div style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: '#00d4aa'
+                      }}></div>
+                      <p style={{ color: '#00d4aa', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase' }}>
+                        Geodesic Calculation
+                      </p>
+                    </div>
+                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '9px', lineHeight: '1.3' }}>
+                      Accuracy: ±0.5-2% • Turf.js GIS-grade
+                    </p>
+                  </div>
+
+                  {/* Disclaimer */}
+                  <div style={{
+                    padding: '8px',
+                    background: 'rgba(245, 158, 11, 0.1)',
+                    border: '1px solid rgba(245, 158, 11, 0.3)',
+                    borderRadius: '6px',
+                    marginBottom: '12px'
+                  }}>
+                    <p style={{ color: 'rgba(245, 158, 11, 0.9)', fontSize: '9px', lineHeight: '1.4', fontWeight: '500' }}>
+                      For reference only. Verify critical measurements with licensed surveyor.
+                    </p>
+                  </div>
+                  
                   <button
                     onClick={() => {
                       setMeasurementMode(null);
@@ -1320,8 +1369,7 @@ const MapView = () => {
                       setMeasurementResult(null);
                     }}
                     style={{
-                      marginTop: '12px',
-                      padding: '8px 16px',
+                      padding: '10px 16px',
                       background: 'rgba(239, 68, 68, 0.15)',
                       border: '1px solid rgba(239, 68, 68, 0.3)',
                       borderRadius: '6px',
@@ -1329,7 +1377,14 @@ const MapView = () => {
                       fontSize: '12px',
                       fontWeight: '600',
                       cursor: 'pointer',
-                      width: '100%'
+                      width: '100%',
+                      transition: 'all 150ms ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.25)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
                     }}
                   >
                     Clear Measurement
