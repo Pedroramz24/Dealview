@@ -328,6 +328,11 @@ const MapView = () => {
     ],
   }), [selectedParcelId]);
 
+  // Memoize Source props to prevent Source unmounting/remounting during map drag
+  // Creating new array/object references causes React-Map-GL to think props changed
+  const parcelTiles = useMemo(() => [REPORTALL_CONFIG.vectorTilesUrl], []);
+  const parcelPromoteId = useMemo(() => ({ parcels: 'robust_id' }), []);
+
   // Handle measurement panel dragging
   const handlePanelMouseDown = (e) => {
     if (!measurementPanelRef.current) return;
