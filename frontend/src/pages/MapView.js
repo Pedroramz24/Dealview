@@ -813,46 +813,14 @@ const MapView = () => {
                 id="reportall-parcels-fill"
                 type="fill"
                 source-layer="parcels"
-                paint={{
-                  'fill-color': [
-                    'case',
-                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
-                    '#FF0000', // Red for selected parcel
-                    REPORTALL_CONFIG.style.parcelFill.color // Default cyan
-                  ],
-                  'fill-opacity': [
-                    'case',
-                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
-                    0.4, // Higher opacity for selected
-                    REPORTALL_CONFIG.style.parcelFill.opacity
-                  ],
-                }}
+                paint={parcelFillPaint}
                 beforeId="reportall-parcels-line"
               />
               <Layer
                 id="reportall-parcels-line"
                 type="line"
                 source-layer="parcels"
-                paint={{
-                  'line-color': [
-                    'case',
-                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
-                    '#FF0000', // Bold red for selected parcel
-                    REPORTALL_CONFIG.style.parcelLine.color
-                  ],
-                  'line-width': [
-                    'case',
-                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
-                    4, // Thicker line for selected (increased from 3)
-                    REPORTALL_CONFIG.style.parcelLine.width
-                  ],
-                  'line-opacity': [
-                    'case',
-                    ['==', ['get', 'robust_id'], selectedParcelId || ''],
-                    1, // Full opacity for selected
-                    REPORTALL_CONFIG.style.parcelLine.opacity
-                  ],
-                }}
+                paint={parcelLinePaint}
               />
             </Source>
           )}
