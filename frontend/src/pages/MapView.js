@@ -807,10 +807,10 @@ const MapView = () => {
             <Source
               id="reportall-parcels"
               type="vector"
-              tiles={[REPORTALL_CONFIG.vectorTilesUrl]}
+              tiles={parcelTiles}
               minzoom={REPORTALL_CONFIG.minZoom}
               maxzoom={REPORTALL_CONFIG.maxZoom}
-              promoteId={{ parcels: 'robust_id' }}
+              promoteId={parcelPromoteId}
               scheme="xyz"
               tileSize={512}
             >
