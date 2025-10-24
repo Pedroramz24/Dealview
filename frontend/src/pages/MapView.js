@@ -5,6 +5,7 @@ import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
+import { calculateArea, calculateDistance, formatMeasurement } from '../utils/measurementUtils';
 import { MapLayerProvider } from '../contexts/MapLayerContext';
 import LayerManager from '../components/LayerManager';
 import PropertyIntelligencePanel from '../components/PropertyIntelligencePanel';
