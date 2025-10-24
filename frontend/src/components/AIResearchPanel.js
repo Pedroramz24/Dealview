@@ -91,12 +91,15 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
     setInputValue(question);
   };
 
+  // Don't render at all when closed
+  if (!isOpen) return null;
+
   return (
     <div
       style={{
         position: 'fixed',
         top: 0,
-        left: isOpen ? '1000px' : '1600px',
+        left: '1000px',
         width: '500px',
         height: '100vh',
         background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%)',
@@ -104,10 +107,10 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
         borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
         borderRight: '1px solid rgba(255, 255, 255, 0.1)',
         zIndex: 999,
-        transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
         boxShadow: '0 0 50px rgba(0, 0, 0, 0.5)',
+        animation: 'slideInFromRight 300ms cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
       {/* Header */}
