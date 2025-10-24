@@ -261,8 +261,45 @@ const MapView = () => {
     if (!measurementMode) {
       setMeasurementPoints([]);
       setMeasurementResult(null);
+      setMeasurementPanelPosition({ x: null, y: 80 });
     }
   }, [measurementMode]);
+
+  // Handle measurement panel dragging
+  const handlePanelMouseDown = (e) => {
+    setIsDraggingPanel(true);
+    const panel = e.currentTarget;
+    const rect = panel.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isDraggingPanel) {
+        setMeasurementPanelPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDraggingPanel(false);
+    };
+
+    if (isDraggingPanel) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDraggingPanel, dragOffset]);
 
   // Map style configurations
   const mapStyles = {
