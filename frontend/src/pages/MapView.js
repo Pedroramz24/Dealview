@@ -528,6 +528,8 @@ const MapView = () => {
           onToggleMapStyle={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
           currentZoom={viewState.zoom}
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
+          measurementMode={measurementMode}
+          onSetMeasurementMode={setMeasurementMode}
         />
 
         {/* AI Research Panel (Opens at 1000px - third panel) */}
