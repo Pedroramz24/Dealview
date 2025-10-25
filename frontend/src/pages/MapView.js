@@ -794,8 +794,8 @@ const MapView = () => {
 
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
           <Map
-            {...viewState}
-            onMove={handleMove}
+            initialViewState={viewState}
+            onMoveEnd={handleMoveEnd}
             onClick={combinedMapClick}
             style={{ width: '100%', height: '100%', willChange: 'transform' }}
             mapStyle={mapStyles[mapStyle]}
@@ -809,6 +809,10 @@ const MapView = () => {
             touchZoomRotate={false}
             dragPan={{ inertia: 500 }}
             maxZoom={19}
+            fadeDuration={0}
+            renderWorldCopies={false}
+            crossSourceCollisions={false}
+            antialias={false}
           >
           <NavigationControl position="top-right" />
           <ScaleControl />
