@@ -370,6 +370,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Parcel Flickering Fix - Map Drag Issue"
     - "DealDetails Contact Management Enhancement"
     - "Automatic Comma Formatting for Number Inputs"
   stuck_tasks: []
