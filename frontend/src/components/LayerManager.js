@@ -49,9 +49,9 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
       hasStreetLabelsCallback: !!onToggleStreetLabels,
       hasParcelsCallback: !!onToggleParcels,
       mapStyle,
-      currentZoom
+      currentZoom: getCurrentZoom()
     });
-  }, [showStreetLabels, showParcels, onToggleStreetLabels, onToggleParcels, mapStyle, currentZoom]);
+  }, [showStreetLabels, showParcels, onToggleStreetLabels, onToggleParcels, mapStyle]);
 
   // Fetch layer registry from backend (only this one, removed duplicate)
   useEffect(() => {
