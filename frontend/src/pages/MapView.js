@@ -60,16 +60,10 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
-  // Memoized move handler to prevent unnecessary re-renders during map interaction
-  // Only update viewState when zoom or position actually changes significantly
-  const handleMove = useCallback((evt) => {
-    const newState = evt.viewState;
-    setViewState(prev => {
-      const zoomChanged = Math.abs(newState.zoom - prev.zoom) > 0.01;
-      const posChanged = Math.abs(newState.longitude - prev.longitude) > 0.0001 ||
-                         Math.abs(newState.latitude - prev.latitude) > 0.0001;
-      return (zoomChanged || posChanged) ? newState : prev;
-    });
+  // Track viewState for conditional rendering (zoom-dependent features)
+  // Updated only on moveend for better performance
+  const handleMoveEnd = useCallback((evt) => {
+    setViewState(evt.viewState);
   }, []);
   
   // Add street labels to map - using proper event listeners
