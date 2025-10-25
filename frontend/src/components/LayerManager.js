@@ -4,7 +4,7 @@ import axios from 'axios';
 import { API } from '../App';
 import { useMapLayerContext } from '../contexts/MapLayerContext';
 
-const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels, mapStyle, onToggleMapStyle, currentZoom, propertyPanelOpen, showParcels, onToggleParcels, measurementMode, onSetMeasurementMode }) => {
+const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels, mapStyle, onToggleMapStyle, mapRef, propertyPanelOpen, showParcels, onToggleParcels, measurementMode, onSetMeasurementMode }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({
     administrative: true,
@@ -15,6 +15,15 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
   });
   const [layerRegistry, setLayerRegistry] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // Get current zoom from map
+  const getCurrentZoom = () => {
+    if (mapRef?.current) {
+      const map = mapRef.current.getMap();
+      return map ? map.getZoom() : 0;
+    }
+    return 0;
+  };
   
   // Get map layer handlers from context if available (MapView only)
   const layerContext = useMapLayerContext();
@@ -29,7 +38,7 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
     onToggleMapStyle,
     measurementMode: measurementMode || null,
     onSetMeasurementMode,
-    currentZoom: currentZoom || 0
+    currentZoom: getCurrentZoom()
   };
 
   // Debug logging
