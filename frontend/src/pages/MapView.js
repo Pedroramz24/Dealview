@@ -52,7 +52,7 @@ const MapView = () => {
   const [createDealParcelData, setCreateDealParcelData] = useState(null); // Parcel data for new deal
   
   const { user } = useContext(AuthContext);
-  const [viewState, setViewState] = useState({
+  const viewStateRef = useRef({
     longitude: -98.4936,
     latitude: 29.4241,
     zoom: 11.5
@@ -60,10 +60,10 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
-  // Track viewState for conditional rendering (zoom-dependent features)
-  // Updated only on moveend for better performance
+  // Track viewState using ref to avoid re-renders during map interaction
   const handleMoveEnd = useCallback((evt) => {
-    setViewState(evt.viewState);
+    viewStateRef.current = evt.viewState;
+    // No setState = no re-render = no flicker
   }, []);
   
   // Add street labels to map - using proper event listeners
