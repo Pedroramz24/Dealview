@@ -456,19 +456,40 @@ const MapView = () => {
   }, []);
 
   useEffect(() => {
-    if (showParcels && viewState.zoom >= 12) {
-      fetchParcels();
-    }
-  }, [viewState.zoom, viewState.latitude, viewState.longitude, showParcels]);
+    if (!showParcels) return;
+    if (!mapRef.current) return;
+    
+    const map = mapRef.current.getMap();
+    if (!map) return;
+    
+    const handleMoveEnd = () => {
+      const zoom = map.getZoom();
+      if (zoom >= 12) {
+        fetchParcels();
+      }
+    };
+    
+    map.on('moveend', handleMoveEnd);
+    handleMoveEnd(); // Initial fetch
+    
+    return () => map.off('moveend', handleMoveEnd);
+  }, [showParcels]);
 
   const fetchParcels = async () => {
-    if (viewState.zoom < 12) return;
+    if (!mapRef.current) return;
+    const map = mapRef.current.getMap();
+    if (!map) return;
+    
+    const zoom = map.getZoom();
+    const center = map.getCenter();
+    
+    if (zoom < 12) return;
     
     try {
       const token = localStorage.getItem('token');
-      const z = Math.floor(viewState.zoom);
-      const x = Math.floor((viewState.longitude + 180) / 360 * Math.pow(2, z));
-      const y = Math.floor((1 - Math.log(Math.tan(viewState.latitude * Math.PI / 180) + 1 / Math.cos(viewState.latitude * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, z));
+      const z = Math.floor(zoom);
+      const x = Math.floor((center.lng + 180) / 360 * Math.pow(2, z));
+      const y = Math.floor((1 - Math.log(Math.tan(center.lat * Math.PI / 180) + 1 / Math.cos(center.lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, z));
       
       const response = await axios.get(`${API}/parcels/tiles/${z}/${x}/${y}.geojson`, {
         headers: { Authorization: `Bearer ${token}` }
