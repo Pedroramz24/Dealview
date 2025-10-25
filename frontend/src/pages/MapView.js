@@ -805,7 +805,10 @@ const MapView = () => {
             mapStyle={mapStyles[mapStyle]}
             data-testid="map-container"
             ref={mapRef}
-            interactiveLayerIds={showParcels ? ['parcels-fill', 'parcels-line'] : []}
+            interactiveLayerIds={[
+              ...(showParcels ? ['parcels-fill', 'parcels-line'] : []),
+              ...(showReportAllParcels ? ['reportall-parcels-fill', 'reportall-parcels-line'] : [])
+            ]}
             dragRotate={false}
             touchZoomRotate={false}
             dragPan={{ inertia: 500 }}
