@@ -74,9 +74,11 @@ const MapView = () => {
     if (!map) return;
     
     const sourceId = 'osm-street-labels';
-    const shouldShowLabels = showStreetLabels && mapStyle === 'satellite' && viewState.zoom >= 12;
     
-    const addStreetLabels = () => {
+    const updateStreetLabels = () => {
+      const currentZoom = map.getZoom();
+      const shouldShowLabels = showStreetLabels && mapStyle === 'satellite' && currentZoom >= 12;
+      
       try {
         // Remove existing layers/source first
         if (map.getLayer('street-labels-text')) {
@@ -161,29 +163,31 @@ const MapView = () => {
         console.error('[MapView] ❌ Error adding street labels:', error);
       }
     };
-
-    // Use styledata event for reliable layer addition
+    
+    // Event handlers
     const handleStyleData = () => {
       if (map.isStyleLoaded()) {
-        addStreetLabels();
+        updateStreetLabels();
       }
     };
-
-    // Listen for style load completion
+    
+    // Listen for style changes and zoom changes
     map.on('styledata', handleStyleData);
     map.on('idle', handleStyleData);
+    map.on('zoomend', updateStreetLabels);
     
     // Initial call if style is already loaded
     if (map.isStyleLoaded()) {
-      addStreetLabels();
+      updateStreetLabels();
     }
 
     // Cleanup
     return () => {
       map.off('styledata', handleStyleData);
       map.off('idle', handleStyleData);
+      map.off('zoomend', updateStreetLabels);
     };
-  }, [showStreetLabels, mapStyle, viewState.zoom]);
+  }, [showStreetLabels, mapStyle]);
   
   // Load panel state from session storage
   useEffect(() => {
