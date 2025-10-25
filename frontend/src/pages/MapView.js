@@ -311,6 +311,7 @@ const MapView = () => {
       0.4, // Higher opacity for selected
       REPORTALL_CONFIG.style.parcelFill.opacity
     ],
+    'fill-opacity-transition': { duration: 0 }, // Disable transitions for instant rendering
   }), [selectedParcelId]);
 
   const parcelLinePaint = useMemo(() => ({
@@ -332,6 +333,7 @@ const MapView = () => {
       1, // Full opacity for selected
       REPORTALL_CONFIG.style.parcelLine.opacity
     ],
+    'line-opacity-transition': { duration: 0 }, // Disable transitions for instant rendering
   }), [selectedParcelId]);
 
   // Memoize Source props to prevent Source unmounting/remounting during map drag
