@@ -815,7 +815,7 @@ const MapView = () => {
           <ScaleControl />
 
           {/* ReportAll Parcel Vector Tiles Layer */}
-          {showReportAllParcels && viewState.zoom >= REPORTALL_CONFIG.minZoom && (
+          {showReportAllParcels && (
             <Source
               id="reportall-parcels"
               type="vector"
