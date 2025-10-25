@@ -842,7 +842,7 @@ const MapView = () => {
           )}
 
           {/* Regrid Parcel Layer */}
-          {showParcels && parcels && viewState.zoom >= 12 && (
+          {showParcels && parcels && (
             <Source
               id="parcels"
               type="geojson"
