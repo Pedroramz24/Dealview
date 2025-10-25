@@ -794,7 +794,7 @@ const MapView = () => {
 
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
           <Map
-            initialViewState={viewState}
+            initialViewState={viewStateRef.current}
             onMoveEnd={handleMoveEnd}
             onClick={combinedMapClick}
             style={{ width: '100%', height: '100%', willChange: 'transform' }}
