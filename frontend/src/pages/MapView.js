@@ -820,6 +820,7 @@ const MapView = () => {
           {/* ReportAll Parcel Vector Tiles Layer */}
           {showReportAllParcels && (
             <Source
+              key="reportall-parcels-source"
               id="reportall-parcels"
               type="vector"
               tiles={parcelTiles}
@@ -827,7 +828,8 @@ const MapView = () => {
               maxzoom={REPORTALL_CONFIG.maxZoom}
               promoteId={parcelPromoteId}
               scheme="xyz"
-              tileSize={512}
+              tileSize={256}
+              buffer={0}
             >
               <Layer
                 id="reportall-parcels-fill"
