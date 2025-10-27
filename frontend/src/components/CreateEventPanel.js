@@ -121,7 +121,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
       event_type: 'task',
       start_date: new Date().toISOString(),
       end_date: null,
-      all_day: true,
+      all_day: false,
       related_deal_id: null,
       related_contact_id: null,
       description: '',
@@ -132,6 +132,10 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
     setEndDate(new Date());
     setSearchDeal('');
     setSearchContact('');
+    setShowDealDropdown(false);
+    setShowContactDropdown(false);
+    setSelectedDeal(null);
+    setSelectedContact(null);
   };
 
   const filteredDeals = deals.filter(d => 
