@@ -307,158 +307,187 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
             <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', fontWeight: '600' }}>All Day Event</span>
           </div>
 
+          {/* Related Deal (Optional) */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Link to Deal (Optional)
             </label>
-            <input
-              type="text"
-              value={searchDeal}
-              onChange={(e) => setSearchDeal(e.target.value)}
-              onFocus={() => setSearchDeal('')}
-              placeholder="Search deals..."
-              className="premium-input"
-            />
-            {searchDeal && filteredDeals.length > 0 && (
+            {selectedDeal ? (
               <div style={{
-                marginTop: '8px',
-                background: 'rgba(15,20,30,0.95)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '12px',
-                maxHeight: '200px',
-                overflowY: 'auto',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
-              }}>
-                {filteredDeals.map(deal => (
-                  <div
-                    key={deal.id}
-                    onClick={() => {
-                      setEventForm({ ...eventForm, related_deal_id: deal.id });
-                      setSearchDeal(deal.address || deal.title);
-                    }}
-                    style={{
-                      padding: '12px 16px',
-                      cursor: 'pointer',
-                      borderBottom: '1px solid rgba(255,255,255,0.04)',
-                      transition: 'background 0.15s ease'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{deal.address || deal.title}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-            {eventForm.related_deal_id && !searchDeal.includes(filteredDeals.find(d => d.id === eventForm.related_deal_id)?.address) && (
-              <div style={{
-                marginTop: '8px',
-                padding: '10px 14px',
+                padding: '14px 16px',
                 background: 'rgba(16,185,129,0.08)',
                 border: '1px solid rgba(16,185,129,0.2)',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between'
               }}>
-                <p style={{ color: '#10b981', fontSize: '13px', fontWeight: '600' }}>
-                  Deal linked
+                <p style={{ color: '#10b981', fontSize: '14px', fontWeight: '600' }}>
+                  {selectedDeal.address || selectedDeal.title}
                 </p>
                 <button
                   onClick={() => {
+                    setSelectedDeal(null);
                     setEventForm({ ...eventForm, related_deal_id: null });
                     setSearchDeal('');
                   }}
                   style={{
-                    padding: '4px',
+                    padding: '6px',
                     background: 'rgba(239,68,68,0.1)',
-                    border: 'none',
-                    borderRadius: '4px',
+                    border: '1px solid rgba(239,68,68,0.2)',
+                    borderRadius: '6px',
                     color: '#ef4444',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
                   }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.2)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  value={searchDeal}
+                  onChange={(e) => {
+                    setSearchDeal(e.target.value);
+                    setShowDealDropdown(true);
+                  }}
+                  onFocus={() => setShowDealDropdown(true)}
+                  placeholder="Search deals..."
+                  className="premium-input"
+                />
+                {showDealDropdown && searchDeal && filteredDeals.length > 0 && (
+                  <div style={{
+                    marginTop: '8px',
+                    background: 'rgba(15,20,30,0.95)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
+                  }}>
+                    {filteredDeals.map(deal => (
+                      <div
+                        key={deal.id}
+                        onClick={() => {
+                          setSelectedDeal(deal);
+                          setEventForm({ ...eventForm, related_deal_id: deal.id });
+                          setSearchDeal('');
+                          setShowDealDropdown(false);
+                        }}
+                        style={{
+                          padding: '12px 16px',
+                          cursor: 'pointer',
+                          borderBottom: '1px solid rgba(255,255,255,0.04)',
+                          transition: 'background 0.15s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{deal.address || deal.title}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
 
+          {/* Related Contact (Optional) */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Link to Contact (Optional)
             </label>
-            <input
-              type="text"
-              value={searchContact}
-              onChange={(e) => setSearchContact(e.target.value)}
-              onFocus={() => setSearchContact('')}
-              placeholder="Search contacts..."
-              className="premium-input"
-            />
-            {searchContact && filteredContacts.length > 0 && (
+            {selectedContact ? (
               <div style={{
-                marginTop: '8px',
-                background: 'rgba(15,20,30,0.95)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '12px',
-                maxHeight: '200px',
-                overflowY: 'auto',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
-              }}>
-                {filteredContacts.map(contact => (
-                  <div
-                    key={contact.id}
-                    onClick={() => {
-                      setEventForm({ ...eventForm, related_contact_id: contact.id });
-                      setSearchContact(contact.full_name);
-                    }}
-                    style={{
-                      padding: '12px 16px',
-                      cursor: 'pointer',
-                      borderBottom: '1px solid rgba(255,255,255,0.04)',
-                      transition: 'background 0.15s ease'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{contact.full_name}</p>
-                    {contact.company && <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{contact.company}</p>}
-                  </div>
-                ))}
-              </div>
-            )}
-            {eventForm.related_contact_id && !searchContact.includes(filteredContacts.find(c => c.id === eventForm.related_contact_id)?.full_name) && (
-              <div style={{
-                marginTop: '8px',
-                padding: '10px 14px',
+                padding: '14px 16px',
                 background: 'rgba(16,185,129,0.08)',
                 border: '1px solid rgba(16,185,129,0.2)',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between'
               }}>
-                <p style={{ color: '#10b981', fontSize: '13px', fontWeight: '600' }}>
-                  Contact linked
-                </p>
+                <div>
+                  <p style={{ color: '#10b981', fontSize: '14px', fontWeight: '600' }}>
+                    {selectedContact.full_name}
+                  </p>
+                  {selectedContact.company && (
+                    <p style={{ color: 'rgba(16,185,129,0.6)', fontSize: '12px' }}>{selectedContact.company}</p>
+                  )}
+                </div>
                 <button
                   onClick={() => {
+                    setSelectedContact(null);
                     setEventForm({ ...eventForm, related_contact_id: null });
                     setSearchContact('');
                   }}
                   style={{
-                    padding: '4px',
+                    padding: '6px',
                     background: 'rgba(239,68,68,0.1)',
-                    border: 'none',
-                    borderRadius: '4px',
+                    border: '1px solid rgba(239,68,68,0.2)',
+                    borderRadius: '6px',
                     color: '#ef4444',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
                   }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.2)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  value={searchContact}
+                  onChange={(e) => {
+                    setSearchContact(e.target.value);
+                    setShowContactDropdown(true);
+                  }}
+                  onFocus={() => setShowContactDropdown(true)}
+                  placeholder="Search contacts..."
+                  className="premium-input"
+                />
+                {showContactDropdown && searchContact && filteredContacts.length > 0 && (
+                  <div style={{
+                    marginTop: '8px',
+                    background: 'rgba(15,20,30,0.95)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
+                  }}>
+                    {filteredContacts.map(contact => (
+                      <div
+                        key={contact.id}
+                        onClick={() => {
+                          setSelectedContact(contact);
+                          setEventForm({ ...eventForm, related_contact_id: contact.id });
+                          setSearchContact('');
+                          setShowContactDropdown(false);
+                        }}
+                        style={{
+                          padding: '12px 16px',
+                          cursor: 'pointer',
+                          borderBottom: '1px solid rgba(255,255,255,0.04)',
+                          transition: 'background 0.15s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{contact.full_name}</p>
+                        {contact.company && <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{contact.company}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
 
