@@ -803,3 +803,305 @@ td {
     opacity: 1;
   }
 }
+
+/* Modern Dark Calendar Theme - Matching Reference Design */
+.modern-dark-calendar {
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: #ffffff;
+}
+
+/* Toolbar - Clean minimal design */
+.modern-dark-calendar .rbc-toolbar {
+  padding: 20px 24px;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  margin-bottom: 0;
+}
+
+.modern-dark-calendar .rbc-toolbar button {
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.modern-dark-calendar .rbc-toolbar button:hover {
+  background: rgba(0, 184, 212, 0.1);
+  border-color: rgba(0, 184, 212, 0.3);
+  color: #00b8d4;
+}
+
+.modern-dark-calendar .rbc-toolbar button.rbc-active {
+  background: rgba(0, 184, 212, 0.15);
+  border-color: rgba(0, 184, 212, 0.4);
+  color: #00d4ff;
+}
+
+.modern-dark-calendar .rbc-toolbar-label {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Month view header */
+.modern-dark-calendar .rbc-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.modern-dark-calendar .rbc-header + .rbc-header {
+  border-left: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+/* Day cells - subtle grid lines (2-3% contrast) */
+.modern-dark-calendar .rbc-day-bg {
+  border-left: 1px solid rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.modern-dark-calendar .rbc-day-bg:hover {
+  background: rgba(0, 184, 212, 0.02);
+}
+
+.modern-dark-calendar .rbc-off-range-bg {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modern-dark-calendar .rbc-today {
+  background: rgba(0, 184, 212, 0.04);
+}
+
+/* Date numbers */
+.modern-dark-calendar .rbc-date-cell {
+  padding: 12px;
+  text-align: right;
+}
+
+.modern-dark-calendar .rbc-date-cell > a {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.modern-dark-calendar .rbc-off-range .rbc-date-cell > a {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.modern-dark-calendar .rbc-today .rbc-date-cell > a {
+  color: #00d4ff;
+  font-weight: 700;
+  background: rgba(0, 184, 212, 0.15);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 184, 212, 0.3);
+}
+
+/* Month row */
+.modern-dark-calendar .rbc-month-row {
+  border: none;
+  overflow: visible;
+  min-height: 120px;
+}
+
+/* Event cells container */
+.modern-dark-calendar .rbc-row-content {
+  z-index: 4;
+}
+
+/* Individual events - glass-morphic style */
+.modern-dark-calendar .rbc-event {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(12px);
+  margin-bottom: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.modern-dark-calendar .rbc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.15);
+}
+
+.modern-dark-calendar .rbc-event-label {
+  display: none;
+}
+
+.modern-dark-calendar .rbc-event-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+/* Selected event */
+.modern-dark-calendar .rbc-selected {
+  box-shadow: 0 0 0 2px #00b8d4, 0 4px 16px rgba(0, 184, 212, 0.4);
+  filter: brightness(1.2);
+}
+
+/* Show more link */
+.modern-dark-calendar .rbc-show-more {
+  background: rgba(0, 184, 212, 0.08);
+  color: #00b8d4;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid rgba(0, 184, 212, 0.2);
+  transition: all 0.2s ease;
+  margin: 4px 2px;
+}
+
+.modern-dark-calendar .rbc-show-more:hover {
+  background: rgba(0, 184, 212, 0.15);
+  border-color: rgba(0, 184, 212, 0.4);
+}
+
+/* Week/Day view time slots */
+.modern-dark-calendar .rbc-time-slot {
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  min-height: 40px;
+}
+
+.modern-dark-calendar .rbc-time-header-content {
+  border-left: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.modern-dark-calendar .rbc-time-column {
+  border-left: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.modern-dark-calendar .rbc-day-slot .rbc-time-slot {
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.modern-dark-calendar .rbc-timeslot-group {
+  border-left: 1px solid rgba(255, 255, 255, 0.02);
+  min-height: 80px;
+}
+
+.modern-dark-calendar .rbc-label {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  padding: 0 8px;
+  font-weight: 500;
+}
+
+/* Current time indicator */
+.modern-dark-calendar .rbc-current-time-indicator {
+  background-color: #00b8d4;
+  height: 2px;
+  box-shadow: 0 0 12px rgba(0, 184, 212, 0.6);
+}
+
+.modern-dark-calendar .rbc-current-time-indicator::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: -5px;
+  width: 12px;
+  height: 12px;
+  background: #00b8d4;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(0, 184, 212, 0.8);
+}
+
+/* Agenda view */
+.modern-dark-calendar .rbc-agenda-view {
+  border: none;
+}
+
+.modern-dark-calendar .rbc-agenda-table {
+  border: none;
+}
+
+.modern-dark-calendar .rbc-agenda-date-cell,
+.modern-dark-calendar .rbc-agenda-time-cell {
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 16px;
+  font-weight: 500;
+  vertical-align: top;
+}
+
+.modern-dark-calendar .rbc-agenda-event-cell {
+  background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  color: #ffffff;
+}
+
+.modern-dark-calendar .rbc-agenda-event-cell .rbc-event-content {
+  white-space: normal;
+}
+
+/* Overlay popup */
+.modern-dark-calendar .rbc-overlay {
+  background: rgba(10, 15, 30, 0.98);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  padding: 0;
+  min-width: 280px;
+}
+
+.modern-dark-calendar .rbc-overlay-header {
+  background: linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(59, 130, 246, 0.15));
+  border-bottom: 1px solid rgba(0, 184, 212, 0.2);
+  padding: 12px 16px;
+  color: #00d4ff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 16px 16px 0 0;
+}
+
+.modern-dark-calendar .rbc-overlay-event {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.15s ease;
+}
+
+.modern-dark-calendar .rbc-overlay-event:hover {
+  background: rgba(0, 184, 212, 0.05);
+}
+
+.modern-dark-calendar .rbc-overlay-event:last-child {
+  border-bottom: none;
+}
+
+/* Animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
