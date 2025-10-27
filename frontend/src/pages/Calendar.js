@@ -43,185 +43,169 @@ const CalendarView = () => {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('[Calendar] No user found');
+        setLoading(false);
+        return;
+      }
 
-      // Fetch standalone calendar events
-      const { data: calendarEvents, error: calendarError } = await supabase
-        .from('calendar_events')
-        .select('*')
-        .eq('owner_id', user.id);
-
-      if (calendarError) throw calendarError;
-
-      // Fetch deals with date fields
-      const { data: deals, error: dealsError } = await supabase
-        .from('deals')
-        .select('*, documents(*)')
-        .eq('owner_id', user.id);
-
-      if (dealsError) throw dealsError;
-
-      // Fetch contacts with follow-up dates
-      const { data: contacts, error: contactsError } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('owner_id', user.id);
-
-      if (contactsError) throw contactsError;
-
-      // Aggregate all events
+      console.log('[Calendar] Fetching events for user:', user.id);
       const aggregatedEvents = [];
 
-      // Process standalone calendar events
-      if (calendarEvents) {
-        calendarEvents.forEach(event => {
-          aggregatedEvents.push({
-            id: event.id,
-            title: event.title,
-            start: new Date(event.start_date),
-            end: event.end_date ? new Date(event.end_date) : new Date(event.start_date),
-            allDay: event.all_day,
-            type: event.event_type,
-            color: event.color || EVENT_COLORS[event.event_type] || EVENT_COLORS.general,
-            description: event.description,
-            status: event.status,
-            relatedDealId: event.related_deal_id,
-            relatedContactId: event.related_contact_id,
-            source: 'calendar_events',
-            sourceData: event
+      // Fetch standalone calendar events (if table exists)
+      try {
+        const { data: calendarEvents, error: calendarError } = await supabase
+          .from('calendar_events')
+          .select('*')
+          .eq('owner_id', user.id);
+
+        if (!calendarError && calendarEvents) {
+          console.log('[Calendar] Loaded', calendarEvents.length, 'calendar events');
+          calendarEvents.forEach(event => {
+            aggregatedEvents.push({
+              id: event.id,
+              title: event.title,
+              start: new Date(event.start_date),
+              end: event.end_date ? new Date(event.end_date) : new Date(event.start_date),
+              allDay: event.all_day || false,
+              type: event.event_type,
+              color: event.color || EVENT_COLORS[event.event_type] || EVENT_COLORS.general,
+              description: event.description,
+              status: event.status,
+              relatedDealId: event.related_deal_id,
+              relatedContactId: event.related_contact_id,
+              source: 'calendar_events',
+              sourceData: event
+            });
           });
-        });
+        } else if (calendarError) {
+          console.warn('[Calendar] Calendar events table might not exist yet:', calendarError.message);
+        }
+      } catch (err) {
+        console.warn('[Calendar] Error fetching calendar events:', err.message);
       }
 
-      // Process deal milestone events
-      if (deals) {
-        deals.forEach(deal => {
-          // Earnest Money Deadline
-          if (deal.earnest_money_deadline) {
-            aggregatedEvents.push({
-              id: `deal-earnest-${deal.id}`,
-              title: `💰 Earnest Money Due - ${deal.property_address || deal.title}`,
-              start: new Date(deal.earnest_money_deadline),
-              end: new Date(deal.earnest_money_deadline),
-              allDay: true,
-              type: 'milestone',
-              color: EVENT_COLORS.milestone,
-              dealId: deal.id,
-              dealData: deal,
-              source: 'deal',
-              milestoneType: 'earnest_money'
-            });
-          }
+      // Fetch deals with date fields
+      try {
+        const { data: deals, error: dealsError } = await supabase
+          .from('deals')
+          .select('*')
+          .eq('owner_id', user.id);
 
-          // Feasibility Period End
-          if (deal.feasibility_end_date) {
-            aggregatedEvents.push({
-              id: `deal-feasibility-${deal.id}`,
-              title: `🔍 Feasibility Period Ends - ${deal.property_address || deal.title}`,
-              start: new Date(deal.feasibility_end_date),
-              end: new Date(deal.feasibility_end_date),
-              allDay: true,
-              type: 'milestone',
-              color: EVENT_COLORS.milestone,
-              dealId: deal.id,
-              dealData: deal,
-              source: 'deal',
-              milestoneType: 'feasibility'
-            });
-          }
+        if (!dealsError && deals) {
+          console.log('[Calendar] Processing', deals.length, 'deals for calendar events');
+          
+          deals.forEach(deal => {
+            // Closing Date
+            if (deal.target_close_date) {
+              aggregatedEvents.push({
+                id: `deal-closing-${deal.id}`,
+                title: `🏁 Closing: ${deal.address || deal.title}`,
+                start: new Date(deal.target_close_date),
+                end: new Date(deal.target_close_date),
+                allDay: true,
+                type: 'closing',
+                color: EVENT_COLORS.closing,
+                dealId: deal.id,
+                dealData: deal,
+                source: 'deal',
+                milestoneType: 'closing'
+              });
+            }
 
-          // Title Commitment Due
-          if (deal.title_commitment_due_date) {
-            aggregatedEvents.push({
-              id: `deal-title-${deal.id}`,
-              title: `📋 Title Commitment Due - ${deal.property_address || deal.title}`,
-              start: new Date(deal.title_commitment_due_date),
-              end: new Date(deal.title_commitment_due_date),
-              allDay: true,
-              type: 'milestone',
-              color: EVENT_COLORS.milestone,
-              dealId: deal.id,
-              dealData: deal,
-              source: 'deal',
-              milestoneType: 'title'
-            });
-          }
+            // Next Action Date
+            if (deal.next_action_date) {
+              aggregatedEvents.push({
+                id: `deal-action-${deal.id}`,
+                title: `📋 ${deal.next_action || 'Follow-up'}: ${deal.address || deal.title}`,
+                start: new Date(deal.next_action_date),
+                end: new Date(deal.next_action_date),
+                allDay: true,
+                type: 'follow_up',
+                color: EVENT_COLORS.follow_up,
+                dealId: deal.id,
+                dealData: deal,
+                source: 'deal'
+              });
+            }
 
-          // Appraisal Due
-          if (deal.appraisal_due_date) {
-            aggregatedEvents.push({
-              id: `deal-appraisal-${deal.id}`,
-              title: `🏠 Appraisal Due - ${deal.property_address || deal.title}`,
-              start: new Date(deal.appraisal_due_date),
-              end: new Date(deal.appraisal_due_date),
-              allDay: true,
-              type: 'milestone',
-              color: EVENT_COLORS.milestone,
-              dealId: deal.id,
-              dealData: deal,
-              source: 'deal',
-              milestoneType: 'appraisal'
-            });
-          }
+            // Earnest Money (if new field exists)
+            if (deal.earnest_money_deadline) {
+              aggregatedEvents.push({
+                id: `deal-earnest-${deal.id}`,
+                title: `💰 Earnest Money Due: ${deal.address || deal.title}`,
+                start: new Date(deal.earnest_money_deadline),
+                end: new Date(deal.earnest_money_deadline),
+                allDay: true,
+                type: 'earnest',
+                color: EVENT_COLORS.earnest,
+                dealId: deal.id,
+                dealData: deal,
+                source: 'deal',
+                milestoneType: 'earnest_money'
+              });
+            }
 
-          // Closing Date
-          if (deal.target_close_date) {
-            aggregatedEvents.push({
-              id: `deal-closing-${deal.id}`,
-              title: `✅ Closing - ${deal.property_address || deal.title}`,
-              start: new Date(deal.target_close_date),
-              end: new Date(deal.target_close_date),
-              allDay: true,
-              type: 'milestone',
-              color: EVENT_COLORS.milestone,
-              dealId: deal.id,
-              dealData: deal,
-              source: 'deal',
-              milestoneType: 'closing'
-            });
-          }
-
-          // Next Action Date
-          if (deal.next_action_date) {
-            aggregatedEvents.push({
-              id: `deal-action-${deal.id}`,
-              title: `📌 ${deal.next_action || 'Follow-up'} - ${deal.property_address || deal.title}`,
-              start: new Date(deal.next_action_date),
-              end: new Date(deal.next_action_date),
-              allDay: true,
-              type: 'follow_up',
-              color: EVENT_COLORS.follow_up,
-              dealId: deal.id,
-              dealData: deal,
-              source: 'deal'
-            });
-          }
-        });
+            // Other milestones (if new fields exist)
+            if (deal.feasibility_end_date) {
+              aggregatedEvents.push({
+                id: `deal-feasibility-${deal.id}`,
+                title: `🔍 Feasibility Ends: ${deal.address || deal.title}`,
+                start: new Date(deal.feasibility_end_date),
+                end: new Date(deal.feasibility_end_date),
+                allDay: true,
+                type: 'milestone',
+                color: EVENT_COLORS.milestone,
+                dealId: deal.id,
+                dealData: deal,
+                source: 'deal'
+              });
+            }
+          });
+        }
+      } catch (err) {
+        console.error('[Calendar] Error fetching deals:', err);
       }
 
-      // Process contact follow-ups
-      if (contacts) {
-        contacts.forEach(contact => {
-          if (contact.next_action) {
-            aggregatedEvents.push({
-              id: `contact-followup-${contact.id}`,
-              title: `📞 Follow-up: ${contact.full_name}`,
-              start: new Date(contact.next_action),
-              end: new Date(contact.next_action),
-              allDay: true,
-              type: 'follow_up',
-              color: EVENT_COLORS.follow_up,
-              contactId: contact.id,
-              contactData: contact,
-              source: 'contact'
-            });
-          }
-        });
+      // Fetch contacts with follow-up dates
+      try {
+        const { data: contacts, error: contactsError } = await supabase
+          .from('contacts')
+          .select('*')
+          .eq('owner_id', user.id);
+
+        if (!contactsError && contacts) {
+          console.log('[Calendar] Processing', contacts.length, 'contacts for follow-ups');
+          
+          contacts.forEach(contact => {
+            if (contact.next_action) {
+              aggregatedEvents.push({
+                id: `contact-followup-${contact.id}`,
+                title: `📞 Follow-up: ${contact.full_name}`,
+                start: new Date(contact.next_action),
+                end: new Date(contact.next_action),
+                allDay: true,
+                type: 'follow_up',
+                color: EVENT_COLORS.follow_up,
+                contactId: contact.id,
+                contactData: contact,
+                source: 'contact'
+              });
+            }
+          });
+        }
+      } catch (err) {
+        console.error('[Calendar] Error fetching contacts:', err);
       }
 
+      console.log('[Calendar] Total events loaded:', aggregatedEvents.length);
       setEvents(aggregatedEvents);
+      
+      if (aggregatedEvents.length === 0) {
+        toast.info('No calendar events found. Create some deals or contacts with dates!');
+      }
     } catch (error) {
-      console.error('Error fetching calendar events:', error);
+      console.error('[Calendar] Error fetching calendar events:', error);
       toast.error('Failed to load calendar events');
     } finally {
       setLoading(false);
