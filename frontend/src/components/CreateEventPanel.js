@@ -23,6 +23,10 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
   const [contacts, setContacts] = useState([]);
   const [searchDeal, setSearchDeal] = useState('');
   const [searchContact, setSearchContact] = useState('');
+  const [showDealDropdown, setShowDealDropdown] = useState(false);
+  const [showContactDropdown, setShowContactDropdown] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState(null);
+  const [selectedContact, setSelectedContact] = useState(null);
 
   const [eventForm, setEventForm] = useState({
     title: '',
