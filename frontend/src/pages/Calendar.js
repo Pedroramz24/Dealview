@@ -312,7 +312,7 @@ const CalendarView = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#0f1629] to-[#0a0f1e] border-b border-white/10">
         <div className="flex items-center gap-3">
-          <Calendar className="w-6 h-6 text-cyan-400" />
+          <CalendarIcon className="w-6 h-6 text-cyan-400" />
           <h1 className="text-2xl font-bold text-white">Calendar</h1>
         </div>
 
