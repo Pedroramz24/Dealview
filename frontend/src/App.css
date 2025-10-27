@@ -1,3 +1,250 @@
+
+/* Dark Calendar Theme for react-big-calendar */
+.dark-calendar {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Calendar toolbar */
+.dark-calendar .rbc-toolbar {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-calendar .rbc-toolbar button {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.dark-calendar .rbc-toolbar button:hover {
+  background: rgba(0, 184, 212, 0.1);
+  border-color: rgba(0, 184, 212, 0.3);
+  color: #00b8d4;
+}
+
+.dark-calendar .rbc-toolbar button.rbc-active {
+  background: rgba(0, 184, 212, 0.2);
+  border-color: rgba(0, 184, 212, 0.4);
+  color: #00b8d4;
+  box-shadow: 0 0 12px rgba(0, 184, 212, 0.2);
+}
+
+.dark-calendar .rbc-toolbar-label {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Calendar grid */
+.dark-calendar .rbc-month-view,
+.dark-calendar .rbc-time-view,
+.dark-calendar .rbc-agenda-view {
+  background: transparent;
+  border: none;
+}
+
+.dark-calendar .rbc-header {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dark-calendar .rbc-header + .rbc-header {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Day cells */
+.dark-calendar .rbc-day-bg {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.dark-calendar .rbc-day-bg:hover {
+  background: rgba(0, 184, 212, 0.03);
+}
+
+.dark-calendar .rbc-off-range-bg {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.dark-calendar .rbc-today {
+  background: rgba(0, 184, 212, 0.05);
+  border: 1px solid rgba(0, 184, 212, 0.2);
+}
+
+.dark-calendar .rbc-date-cell {
+  padding: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dark-calendar .rbc-off-range {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.dark-calendar .rbc-current {
+  color: #00b8d4;
+  font-weight: 700;
+}
+
+/* Event styling */
+.dark-calendar .rbc-event {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.dark-calendar .rbc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
+.dark-calendar .rbc-event-label {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.dark-calendar .rbc-event-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Selected event */
+.dark-calendar .rbc-selected {
+  background-color: rgba(0, 184, 212, 0.3) !important;
+  border-color: #00b8d4 !important;
+  box-shadow: 0 0 16px rgba(0, 184, 212, 0.4);
+}
+
+/* More link */
+.dark-calendar .rbc-show-more {
+  background: rgba(0, 184, 212, 0.1);
+  color: #00b8d4;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(0, 184, 212, 0.3);
+  transition: all 0.2s ease;
+}
+
+.dark-calendar .rbc-show-more:hover {
+  background: rgba(0, 184, 212, 0.2);
+  border-color: rgba(0, 184, 212, 0.5);
+}
+
+/* Agenda view */
+.dark-calendar .rbc-agenda-table {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dark-calendar .rbc-agenda-date-cell,
+.dark-calendar .rbc-agenda-time-cell {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 12px;
+  font-weight: 500;
+}
+
+.dark-calendar .rbc-agenda-event-cell {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  padding: 12px;
+}
+
+/* Week/Day view */
+.dark-calendar .rbc-time-content {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-calendar .rbc-time-slot {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dark-calendar .rbc-time-header-content {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-calendar .rbc-time-header-gutter {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dark-calendar .rbc-time-column {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-calendar .rbc-current-time-indicator {
+  background-color: #00b8d4;
+  height: 2px;
+  box-shadow: 0 0 8px rgba(0, 184, 212, 0.6);
+}
+
+/* Overlay popup */
+.dark-calendar .rbc-overlay {
+  background: rgba(15, 22, 41, 0.98);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  padding: 12px;
+}
+
+.dark-calendar .rbc-overlay-header {
+  background: rgba(0, 184, 212, 0.1);
+  border-bottom: 1px solid rgba(0, 184, 212, 0.3);
+  padding: 8px 12px;
+  color: #00b8d4;
+  font-weight: 600;
+  border-radius: 8px 8px 0 0;
+  margin: -12px -12px 12px -12px;
+}
+
+/* Scrollbar styling for calendar */
+.dark-calendar ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark-calendar ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.dark-calendar ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.dark-calendar ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 184, 212, 0.3);
+}
+
+
 /* Premium Black Design System with Depth */
 :root {
   /* Fonts */
