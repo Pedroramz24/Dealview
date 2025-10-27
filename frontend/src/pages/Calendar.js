@@ -139,24 +139,18 @@ const CalendarView = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: '#000000', padding: '32px' }}>
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: '#ffffff', letterSpacing: '-0.02em' }}>Calendar</h1>
-        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px' }}>Your unified timeline for deals and contacts</p>
-      </div>
-
-      {/* Calendar Container with Elevated Depth */}
+      {/* Calendar Container with Elevated Depth - Full Height */}
       <div style={{
         background: '#0f1419',
         borderRadius: '20px',
         padding: '36px',
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.04)',
-        minHeight: 'calc(100vh - 180px)',
+        minHeight: 'calc(100vh - 64px)',
         position: 'relative'
       }}>
         {loading ? (
-          <div className="flex items-center justify-center" style={{ height: '600px' }}>
+          <div className="flex items-center justify-center" style={{ height: '800px' }}>
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
               <p style={{ color: 'rgba(255,255,255,0.5)' }}>Loading calendar...</p>
@@ -168,13 +162,13 @@ const CalendarView = () => {
             plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
             initialView="dayGridMonth"
             headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+              left: 'title',
+              center: '',
+              right: 'prev,next today dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             }}
             events={events}
             eventClick={handleEventClick}
-            height="calc(100vh - 300px)"
+            height="calc(100vh - 160px)"
             editable={false}
             selectable={true}
             selectMirror={true}
