@@ -5,17 +5,17 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { supabase } from '../supabaseClient';
-import { Plus, X, CheckCircle, Edit2, ExternalLink, MapPin, DollarSign, FileText, Clock, Calendar as CalendarIcon, User, Phone } from 'lucide-react';
+import { Plus, X, CheckCircle, Edit2, ExternalLink, MapPin, DollarSign, FileText, Clock, User, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import CreateEventPanel from '../components/CreateEventPanel';
 
 const EVENT_COLORS = {
-  deal: { primary: '#10b981', glow: 'rgba(16, 185, 129, 0.3)' }, // Green
-  followup: { primary: '#3b82f6', glow: 'rgba(59, 130, 246, 0.3)' }, // Blue  
-  deadline: { primary: '#ef4444', glow: 'rgba(239, 68, 68, 0.3)' }, // Red
-  meeting: { primary: '#f97316', glow: 'rgba(249, 115, 22, 0.3)' }, // Orange
-  task: { primary: '#a855f7', glow: 'rgba(168, 85, 247, 0.3)' } // Purple
+  deal: { primary: '#10b981', glow: 'rgba(16, 185, 129, 0.4)', shadow: 'rgba(16, 185, 129, 0.3)' },
+  followup: { primary: '#3b82f6', glow: 'rgba(59, 130, 246, 0.4)', shadow: 'rgba(59, 130, 246, 0.3)' },
+  deadline: { primary: '#ef4444', glow: 'rgba(239, 68, 68, 0.4)', shadow: 'rgba(239, 68, 68, 0.3)' },
+  meeting: { primary: '#f97316', glow: 'rgba(249, 115, 22, 0.4)', shadow: 'rgba(249, 115, 22, 0.3)' },
+  task: { primary: '#a855f7', glow: 'rgba(168, 85, 247, 0.4)', shadow: 'rgba(168, 85, 247, 0.3)' }
 };
 
 const CalendarView = () => {
@@ -52,14 +52,15 @@ const CalendarView = () => {
               start: deal.target_close_date,
               allDay: true,
               backgroundColor: EVENT_COLORS.deal.primary,
-              borderColor: EVENT_COLORS.deal.primary,
-              classNames: ['event-deal'],
+              borderColor: 'transparent',
+              classNames: ['event-deal', 'premium-event'],
               extendedProps: {
                 type: 'deal',
                 dealId: deal.id,
                 dealData: deal,
                 category: 'Closing',
-                icon: '🏁'
+                icon: '🏁',
+                colorScheme: EVENT_COLORS.deal
               }
             });
           }
@@ -71,14 +72,15 @@ const CalendarView = () => {
               start: deal.next_action_date,
               allDay: true,
               backgroundColor: EVENT_COLORS.followup.primary,
-              borderColor: EVENT_COLORS.followup.primary,
-              classNames: ['event-followup'],
+              borderColor: 'transparent',
+              classNames: ['event-followup', 'premium-event'],
               extendedProps: {
                 type: 'followup',
                 dealId: deal.id,
                 dealData: deal,
                 category: 'Follow-up',
-                icon: '📋'
+                icon: '📋',
+                colorScheme: EVENT_COLORS.followup
               }
             });
           }
@@ -99,14 +101,15 @@ const CalendarView = () => {
               start: contact.next_action,
               allDay: true,
               backgroundColor: EVENT_COLORS.followup.primary,
-              borderColor: EVENT_COLORS.followup.primary,
-              classNames: ['event-followup'],
+              borderColor: 'transparent',
+              classNames: ['event-followup', 'premium-event'],
               extendedProps: {
                 type: 'followup',
                 contactId: contact.id,
                 contactData: contact,
                 category: 'Call',
-                icon: '📞'
+                icon: '📞',
+                colorScheme: EVENT_COLORS.followup
               }
             });
           }
@@ -147,278 +150,394 @@ const CalendarView = () => {
   const handleEventCreated = () => {
     fetchCalendarEvents();
     setShowCreatePanel(false);
+    toast.success('Event created successfully!');
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#000000', position: 'relative' }}>
-      {/* Ultra-Premium Calendar Container */}
+    <div style={{ height: '100vh', background: '#000000', position: 'relative', overflow: 'hidden' }}>
+      {/* Animated background gradients */}
       <div style={{
-        height: '100vh',
-        background: 'radial-gradient(circle at 20% 20%, rgba(0, 184, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.02) 0%, transparent 50%), #000000',
-        padding: '24px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        {/* Floating action button */}
-        <button
-          onClick={() => setShowCreatePanel(true)}
-          style={{
-            position: 'absolute',
-            top: '32px',
-            right: '32px',
-            padding: '14px 24px',
-            background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(59, 130, 246, 0.2))',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
-            borderRadius: '12px',
-            color: '#00d4ff',
-            fontWeight: '700',
-            fontSize: '14px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: '0 8px 32px rgba(0, 184, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-            zIndex: 100,
-            backdropFilter: 'blur(16px)'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(59, 130, 246, 0.3))';
-            e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-            e.currentTarget.style.boxShadow = '0 12px 48px rgba(0, 184, 212, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(59, 130, 246, 0.2))';
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 184, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          }}
-        >
-          <Plus className="w-5 h-5" />
-          Create Event
-        </button>
+        position: 'absolute',
+        top: '-50%',
+        left: '-50%',
+        width: '200%',
+        height: '200%',
+        background: 'radial-gradient(circle at 30% 30%, rgba(0, 184, 212, 0.08) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.06) 0%, transparent 40%)',
+        animation: 'float-gradient 15s ease-in-out infinite',
+        pointerEvents: 'none',
+        opacity: 0.6
+      }} />
 
+      {/* Main Container */}
+      <div style={{ height: '100%', position: 'relative', zIndex: 1, padding: '20px' }}>
         {/* Premium Elevated Calendar Card */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(15, 20, 26, 0.95) 0%, rgba(10, 15, 20, 0.95) 100%)',
-          borderRadius: '24px',
-          padding: '40px',
-          height: 'calc(100vh - 48px)',
-          boxShadow: '0 30px 90px rgba(0, 0, 0, 0.8), 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
+          height: '100%',
+          background: 'linear-gradient(145deg, rgba(12, 16, 22, 0.96) 0%, rgba(8, 12, 18, 0.96) 100%)',
+          borderRadius: '28px',
+          padding: '0',
+          boxShadow: '0 40px 100px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.04), inset 0 2px 0 rgba(255, 255, 255, 0.04)',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
           position: 'relative',
           overflow: 'hidden',
-          backdropFilter: 'blur(20px)'
+          backdropFilter: 'blur(30px)'
         }}>
-          {/* Subtle glow effect overlay */}
+          {/* Glowing top edge */}
           <div style={{
             position: 'absolute',
-            top: '-50%',
-            left: '-50%',
-            width: '200%',
-            height: '200%',
-            background: 'radial-gradient(circle, rgba(0, 184, 212, 0.03) 0%, transparent 70%)',
-            pointerEvents: 'none',
-            animation: 'pulse-glow 8s ease-in-out infinite'
+            top: 0,
+            left: '0',
+            right: '0',
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(0, 184, 212, 0.5) 50%, transparent 100%)',
+            boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)',
+            pointerEvents: 'none'
           }} />
 
+          {/* Custom Toolbar */}
+          <div style={{
+            padding: '28px 40px 24px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+            background: 'linear-gradient(180deg, rgba(0, 184, 212, 0.02) 0%, transparent 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div className="flex items-center gap-4">
+              <div style={{
+                width: '48px',
+                height: '48px',
+                background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(0,184,212,0.1))',
+                borderRadius: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid rgba(0,184,212,0.3)',
+                boxShadow: '0 8px 24px rgba(0,184,212,0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
+              }}>
+                <Sparkles className="w-6 h-6" style={{ color: '#00d4ff' }} />
+              </div>
+              <div>
+                <h1 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', letterSpacing: '-0.03em', marginBottom: '2px' }}>Calendar</h1>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', fontWeight: '600', letterSpacing: '0.02em' }}>Your unified command center</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* View Toggles */}
+              <div style={{
+                display: 'flex',
+                gap: '6px',
+                background: 'rgba(255,255,255,0.03)',
+                padding: '4px',
+                borderRadius: '12px',
+                border: '1px solid rgba(255,255,255,0.06)'
+              }}>
+                {[
+                  { view: 'dayGridMonth', label: 'Month' },
+                  { view: 'timeGridWeek', label: 'Week' },
+                  { view: 'timeGridDay', label: 'Day' },
+                  { view: 'listWeek', label: 'List' }
+                ].map(({ view: viewName, label }) => (
+                  <button
+                    key={viewName}
+                    onClick={() => calendarRef.current?.getApi().changeView(viewName)}
+                    style={{
+                      padding: '10px 18px',
+                      background: 'transparent',
+                      border: 'none',
+                      borderRadius: '10px',
+                      color: 'rgba(255,255,255,0.6)',
+                      fontSize: '13px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(0,184,212,0.1)';
+                      e.currentTarget.style.color = '#00b8d4';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Create Event Button */}
+              <button
+                onClick={() => setShowCreatePanel(true)}
+                style={{
+                  padding: '12px 24px',
+                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
+                  border: '1px solid rgba(0, 184, 212, 0.4)',
+                  borderRadius: '12px',
+                  color: '#00d4ff',
+                  fontWeight: '800',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.35), rgba(59, 130, 246, 0.35))';
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 16px 48px rgba(0, 184, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))';
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
+                }}
+              >
+                <Plus className="w-5 h-5" />
+                Create Event
+              </button>
+            </div>
+          </div>
+
+          {/* Calendar - Full Height */}
           {loading ? (
-            <div className="flex items-center justify-center" style={{ height: '100%', position: 'relative', zIndex: 1 }}>
+            <div className="flex items-center justify-center" style={{ height: 'calc(100% - 110px)' }}>
               <div className="text-center">
                 <div style={{
-                  width: '60px',
-                  height: '60px',
-                  border: '3px solid rgba(0, 184, 212, 0.1)',
-                  borderTop: '3px solid #00b8d4',
+                  width: '70px',
+                  height: '70px',
+                  border: '4px solid rgba(0, 184, 212, 0.1)',
+                  borderTop: '4px solid #00b8d4',
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite',
-                  margin: '0 auto 20px'
+                  margin: '0 auto 24px',
+                  boxShadow: '0 0 40px rgba(0, 184, 212, 0.3)'
                 }} />
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px', fontWeight: '500' }}>Loading your schedule...</p>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '16px', fontWeight: '600' }}>Loading your schedule...</p>
               </div>
             </div>
           ) : (
-            <div style={{ height: 'calc(100% - 80px)', position: 'relative', zIndex: 1 }}>
+            <div style={{ height: 'calc(100% - 110px)', padding: '0 40px 40px' }}>
               <FullCalendar
                 ref={calendarRef}
                 plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
-                headerToolbar={{
-                  left: 'title',
-                  center: '',
-                  right: 'prev,next today dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                }}
+                headerToolbar={false}
                 events={events}
                 eventClick={handleEventClick}
                 height="100%"
-                editable={false}
-                selectable={true}
-                dayMaxEvents={3}
+                expandRows={true}
+                handleWindowResize={true}
+                dayMaxEvents={false}
+                moreLinkClick="popover"
                 weekends={true}
-                eventDisplay="block"
+                fixedWeekCount={false}
+                showNonCurrentDates={true}
               />
             </div>
           )}
         </div>
       </div>
 
-      {/* Premium Event Details Panel - Right Side */}
+      {/* Ultra-Premium Event Details Panel */}
       {showEventPanel && selectedEvent && (
         <div
           style={{
             position: 'fixed',
             top: 0,
             right: showEventPanel ? '0' : '-600px',
-            width: '500px',
+            width: '520px',
             height: '100vh',
-            background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.98) 0%, rgba(18, 20, 24, 0.98) 100%)',
-            backdropFilter: 'blur(30px)',
+            background: 'linear-gradient(145deg, rgba(8, 10, 14, 0.98) 0%, rgba(12, 15, 20, 0.98) 100%)',
+            backdropFilter: 'blur(40px)',
             borderLeft: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '-30px 0 80px rgba(0, 0, 0, 0.7), inset 1px 0 0 rgba(255, 255, 255, 0.03)',
+            boxShadow: '-40px 0 100px rgba(0, 0, 0, 0.9), inset 1px 0 0 rgba(255, 255, 255, 0.04)',
             zIndex: 2000,
-            transition: 'right 400ms cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: 'right 500ms cubic-bezier(0.4, 0, 0.2, 1)',
             display: 'flex',
             flexDirection: 'column'
           }}
         >
-          {/* Panel Header with Glow */}
+          {/* Animated gradient overlay */}
           <div style={{
-            padding: '28px 32px 24px',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '300px',
+            background: `radial-gradient(circle at 50% 0%, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.15)'} 0%, transparent 70%)`,
+            pointerEvents: 'none',
+            opacity: 0.6
+          }} />
+
+          {/* Panel Header */}
+          <div style={{
+            padding: '32px 36px 28px',
             borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-            background: 'linear-gradient(180deg, rgba(0, 184, 212, 0.04) 0%, transparent 100%)'
+            position: 'relative',
+            zIndex: 1
           }}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 style={{ color: '#ffffff', fontSize: '24px', fontWeight: '800', letterSpacing: '-0.02em' }}>Event Details</h2>
+            <div className="flex items-center justify-between mb-5">
+              <h2 style={{ color: '#ffffff', fontSize: '26px', fontWeight: '900', letterSpacing: '-0.03em' }}>Event Details</h2>
               <button
                 onClick={() => setShowEventPanel(false)}
                 style={{
-                  padding: '10px',
+                  width: '44px',
+                  height: '44px',
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '10px',
+                  borderRadius: '12px',
                   color: 'rgba(255,255,255,0.6)',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.15))';
                   e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)';
                   e.currentTarget.style.color = '#ef4444';
+                  e.currentTarget.style.transform = 'rotate(90deg) scale(1.05)';
+                  e.currentTarget.style.boxShadow = '0 0 30px rgba(239,68,68,0.3)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
                   e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                  e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }}
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
+            
+            {/* Glowing category badge */}
             {selectedEvent.category && (
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
-                padding: '6px 14px',
-                borderRadius: '8px',
-                fontSize: '12px',
-                fontWeight: '700',
-                background: `${EVENT_COLORS[selectedEvent.type]?.primary || '#a855f7'}15`,
-                color: EVENT_COLORS[selectedEvent.type]?.primary || '#a855f7',
-                border: `1px solid ${EVENT_COLORS[selectedEvent.type]?.primary || '#a855f7'}30`,
-                boxShadow: `0 0 20px ${EVENT_COLORS[selectedEvent.type]?.glow || 'rgba(168,85,247,0.2)'}`
+                gap: '8px',
+                padding: '8px 18px',
+                borderRadius: '10px',
+                fontSize: '13px',
+                fontWeight: '800',
+                background: `linear-gradient(135deg, ${selectedEvent.colorScheme?.primary || '#a855f7'}20, ${selectedEvent.colorScheme?.primary || '#a855f7'}10)`,
+                color: selectedEvent.colorScheme?.primary || '#a855f7',
+                border: `1px solid ${selectedEvent.colorScheme?.primary || '#a855f7'}35`,
+                boxShadow: `0 0 30px ${selectedEvent.colorScheme?.glow || 'rgba(168,85,247,0.3)'}, inset 0 1px 0 rgba(255,255,255,0.1)`,
+                animation: 'pulse-glow-badge 3s ease-in-out infinite'
               }}>
-                <span>{selectedEvent.icon}</span>
+                <span style={{ fontSize: '18px' }}>{selectedEvent.icon}</span>
                 <span>{selectedEvent.category}</span>
               </div>
             )}
           </div>
 
-          {/* Panel Content - Scrollable */}
-          <div className="flex-1 overflow-y-auto" style={{ padding: '32px' }}>
+          {/* Panel Content */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ padding: '36px', position: 'relative', zIndex: 1 }}>
             {/* Event Title & Date */}
-            <div style={{ marginBottom: '32px' }}>
-              <h3 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '800', letterSpacing: '-0.02em', lineHeight: '1.2', marginBottom: '16px' }}>
+            <div style={{ marginBottom: '40px' }}>
+              <h3 style={{ color: '#ffffff', fontSize: '32px', fontWeight: '900', letterSpacing: '-0.03em', lineHeight: '1.2', marginBottom: '20px' }}>
                 {selectedEvent.title}
               </h3>
-              <div className="flex items-center gap-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 <div style={{
-                  width: '36px',
-                  height: '36px',
-                  background: 'rgba(0,184,212,0.1)',
-                  borderRadius: '10px',
+                  width: '42px',
+                  height: '42px',
+                  background: 'linear-gradient(135deg, rgba(0,184,212,0.15), rgba(0,184,212,0.08))',
+                  borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: '1px solid rgba(0,184,212,0.2)'
+                  border: '1px solid rgba(0,184,212,0.25)',
+                  boxShadow: '0 4px 20px rgba(0,184,212,0.2)'
                 }}>
-                  <Clock className="w-4 h-4" style={{ color: '#00b8d4' }} />
+                  <Clock className="w-5 h-5" style={{ color: '#00b8d4' }} />
                 </div>
-                <span style={{ fontSize: '14px', fontWeight: '600' }}>
-                  {new Date(selectedEvent.start).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-                </span>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Scheduled</p>
+                  <p style={{ fontSize: '15px', fontWeight: '700', color: '#ffffff' }}>
+                    {new Date(selectedEvent.start).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Deal Information - Premium Card */}
+            {/* Deal Card - Ultra Premium */}
             {selectedEvent.dealData && (
               <div style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '16px',
-                padding: '28px',
-                marginBottom: '28px',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '20px',
+                padding: '32px',
+                marginBottom: '32px',
+                boxShadow: `0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03), inset 0 2px 0 rgba(255,255,255,0.06)`,
                 position: 'relative',
                 overflow: 'hidden'
               }}>
-                {/* Glow effect */}
+                {/* Glowing corner effect */}
                 <div style={{
                   position: 'absolute',
-                  top: '-100%',
-                  right: '-50%',
-                  width: '200%',
-                  height: '200%',
-                  background: `radial-gradient(circle, ${EVENT_COLORS[selectedEvent.type]?.glow || 'rgba(168,85,247,0.1)'} 0%, transparent 70%)`,
-                  pointerEvents: 'none'
+                  top: '-100px',
+                  right: '-100px',
+                  width: '250px',
+                  height: '250px',
+                  background: `radial-gradient(circle, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.15)'} 0%, transparent 70%)`,
+                  pointerEvents: 'none',
+                  animation: 'rotate-glow 10s linear infinite'
                 }} />
 
                 {selectedEvent.dealData.image_url && (
-                  <img
-                    src={selectedEvent.dealData.image_url}
-                    alt="Property"
-                    style={{
-                      width: '100%',
-                      height: '240px',
-                      objectFit: 'cover',
-                      borderRadius: '12px',
-                      marginBottom: '24px',
-                      boxShadow: '0 12px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05)',
-                      position: 'relative',
-                      zIndex: 1
-                    }}
-                  />
+                  <div style={{ position: 'relative', zIndex: 1, marginBottom: '28px' }}>
+                    <img
+                      src={selectedEvent.dealData.image_url}
+                      alt="Property"
+                      style={{
+                        width: '100%',
+                        height: '260px',
+                        objectFit: 'cover',
+                        borderRadius: '16px',
+                        boxShadow: '0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05)'
+                      }}
+                    />
+                    {/* Image overlay glow */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '50%',
+                      background: 'linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%)',
+                      borderRadius: '0 0 16px 16px'
+                    }} />
+                  </div>
                 )}
                 
-                <div className="space-y-5" style={{ position: 'relative', zIndex: 1 }}>
+                <div className="space-y-6" style={{ position: 'relative', zIndex: 1 }}>
                   {selectedEvent.dealData.address && (
                     <div className="flex items-start gap-4">
                       <div style={{
-                        width: '40px',
-                        height: '40px',
-                        background: 'linear-gradient(135deg, rgba(0,184,212,0.15), rgba(0,184,212,0.08))',
-                        borderRadius: '12px',
+                        width: '48px',
+                        height: '48px',
+                        background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(0,184,212,0.1))',
+                        borderRadius: '14px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
-                        border: '1px solid rgba(0,184,212,0.2)',
-                        boxShadow: '0 4px 16px rgba(0,184,212,0.15)'
+                        border: '1px solid rgba(0,184,212,0.3)',
+                        boxShadow: '0 8px 24px rgba(0,184,212,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                       }}>
                         <MapPin className="w-5 h-5" style={{ color: '#00d4ff' }} />
                       </div>
                       <div className="flex-1">
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '700', marginBottom: '6px' }}>Address</p>
-                        <p style={{ color: '#ffffff', fontSize: '15px', fontWeight: '600', lineHeight: '1.5' }}>
+                        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '8px' }}>Property Address</p>
+                        <p style={{ color: '#ffffff', fontSize: '16px', fontWeight: '700', lineHeight: '1.5' }}>
                           {selectedEvent.dealData.address}
                         </p>
                       </div>
@@ -428,22 +547,22 @@ const CalendarView = () => {
                   {selectedEvent.dealData.price && (
                     <div className="flex items-start gap-4">
                       <div style={{
-                        width: '40px',
-                        height: '40px',
-                        background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.08))',
-                        borderRadius: '12px',
+                        width: '48px',
+                        height: '48px',
+                        background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1))',
+                        borderRadius: '14px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
-                        border: '1px solid rgba(16,185,129,0.2)',
-                        boxShadow: '0 4px 16px rgba(16,185,129,0.15)'
+                        border: '1px solid rgba(16,185,129,0.3)',
+                        boxShadow: '0 8px 24px rgba(16,185,129,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                       }}>
                         <DollarSign className="w-5 h-5" style={{ color: '#10b981' }} />
                       </div>
                       <div className="flex-1">
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '700', marginBottom: '6px' }}>Deal Value</p>
-                        <p style={{ color: '#ffffff', fontSize: '22px', fontWeight: '800', letterSpacing: '-0.02em' }}>
+                        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '8px' }}>Deal Value</p>
+                        <p style={{ color: '#ffffff', fontSize: '26px', fontWeight: '900', letterSpacing: '-0.03em' }}>
                           ${parseInt(selectedEvent.dealData.price || 0).toLocaleString()}
                         </p>
                       </div>
@@ -453,22 +572,22 @@ const CalendarView = () => {
                   {selectedEvent.dealData.stage && (
                     <div className="flex items-start gap-4">
                       <div style={{
-                        width: '40px',
-                        height: '40px',
-                        background: 'linear-gradient(135deg, rgba(168,85,247,0.15), rgba(168,85,247,0.08))',
-                        borderRadius: '12px',
+                        width: '48px',
+                        height: '48px',
+                        background: 'linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.1))',
+                        borderRadius: '14px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
-                        border: '1px solid rgba(168,85,247,0.2)',
-                        boxShadow: '0 4px 16px rgba(168,85,247,0.15)'
+                        border: '1px solid rgba(168,85,247,0.3)',
+                        boxShadow: '0 8px 24px rgba(168,85,247,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                       }}>
                         <FileText className="w-5 h-5" style={{ color: '#a855f7' }} />
                       </div>
                       <div className="flex-1">
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '700', marginBottom: '6px' }}>Pipeline Stage</p>
-                        <p style={{ color: '#ffffff', fontSize: '15px', fontWeight: '700' }}>
+                        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '8px' }}>Pipeline Stage</p>
+                        <p style={{ color: '#ffffff', fontSize: '16px', fontWeight: '800' }}>
                           {selectedEvent.dealData.stage}
                         </p>
                       </div>
@@ -478,155 +597,93 @@ const CalendarView = () => {
               </div>
             )}
 
-            {/* Contact Info Card */}
+            {/* Contact Card */}
             {selectedEvent.contactData && (
               <div style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '28px',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '20px',
+                padding: '28px',
+                marginBottom: '32px',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.4)'
               }}>
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-4 mb-3">
                   <div style={{
-                    width: '36px',
-                    height: '36px',
-                    background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.08))',
-                    borderRadius: '10px',
+                    width: '44px',
+                    height: '44px',
+                    background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.1))',
+                    borderRadius: '12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: '1px solid rgba(59,130,246,0.2)'
+                    border: '1px solid rgba(59,130,246,0.3)',
+                    boxShadow: '0 6px 20px rgba(59,130,246,0.2)'
                   }}>
-                    <User className="w-4 h-4" style={{ color: '#3b82f6' }} />
+                    <User className="w-5 h-5" style={{ color: '#3b82f6' }} />
                   </div>
-                  <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '700' }}>Contact</p>
+                  <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800' }}>Contact</p>
                 </div>
-                <p style={{ color: '#ffffff', fontSize: '20px', fontWeight: '800', marginBottom: '6px' }}>
+                <p style={{ color: '#ffffff', fontSize: '22px', fontWeight: '900', marginBottom: '8px' }}>
                   {selectedEvent.contactData.full_name}
                 </p>
                 {selectedEvent.contactData.company && (
-                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', fontWeight: '500' }}>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px', fontWeight: '600' }}>
                     {selectedEvent.contactData.company}
                   </p>
                 )}
               </div>
             )}
 
-            {/* Premium Action Buttons */}
-            <div className="space-y-3">
-              <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px' }}>
+            {/* Ultra-Premium Action Buttons */}
+            <div className="space-y-4">
+              <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '20px' }}>
                 Quick Actions
               </p>
               
-              <button
-                style={{
-                  width: '100%',
-                  padding: '16px 24px',
-                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%)',
-                  border: '1px solid rgba(16, 185, 129, 0.2)',
-                  borderRadius: '14px',
-                  color: '#10b981',
-                  fontWeight: '700',
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '12px',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 4px 16px rgba(16,185,129,0.12), inset 0 1px 0 rgba(255,255,255,0.08)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0.12) 100%)';
-                  e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.35)';
-                  e.currentTarget.style.transform = 'translateY(-3px)';
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(16,185,129,0.25), inset 0 1px 0 rgba(255,255,255,0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%)';
-                  e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.2)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(16,185,129,0.12), inset 0 1px 0 rgba(255,255,255,0.08)';
-                }}
-              >
-                <CheckCircle className="w-5 h-5" />
-                Mark Complete
-              </button>
-
-              <button
-                style={{
-                  width: '100%',
-                  padding: '16px 24px',
-                  background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)',
-                  border: '1px solid rgba(59, 130, 246, 0.2)',
-                  borderRadius: '14px',
-                  color: '#3b82f6',
-                  fontWeight: '700',
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '12px',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 4px 16px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.08)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0.12) 100%)';
-                  e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.35)';
-                  e.currentTarget.style.transform = 'translateY(-3px)';
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)';
-                  e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.2)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.08)';
-                }}
-              >
-                <Edit2 className="w-5 h-5" />
-                Reschedule
-              </button>
-
-              {selectedEvent.dealId && (
+              {[
+                { icon: CheckCircle, label: 'Mark Complete', color: EVENT_COLORS.deal },
+                { icon: Edit2, label: 'Reschedule Event', color: EVENT_COLORS.followup },
+                ...(selectedEvent.dealId ? [{ icon: ExternalLink, label: 'View Full Deal', color: { primary: '#00b8d4', glow: 'rgba(0,184,212,0.4)' }, action: handleViewDeal }] : [])
+              ].map((btn, idx) => (
                 <button
-                  onClick={handleViewDeal}
+                  key={idx}
+                  onClick={btn.action}
                   style={{
                     width: '100%',
-                    padding: '16px 24px',
-                    background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.12) 0%, rgba(0, 184, 212, 0.08) 100%)',
-                    border: '1px solid rgba(0, 184, 212, 0.2)',
-                    borderRadius: '14px',
-                    color: '#00b8d4',
-                    fontWeight: '700',
+                    padding: '18px 28px',
+                    background: `linear-gradient(135deg, ${btn.color.primary}15, ${btn.color.primary}08)`,
+                    border: `1px solid ${btn.color.primary}25`,
+                    borderRadius: '16px',
+                    color: btn.color.primary,
+                    fontWeight: '800',
                     fontSize: '15px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '12px',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: '0 4px 16px rgba(0,184,212,0.12), inset 0 1px 0 rgba(255,255,255,0.08)'
+                    gap: '14px',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: `0 6px 24px ${btn.color.primary}10, inset 0 1px 0 rgba(255,255,255,0.08)`,
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.18) 0%, rgba(0, 184, 212, 0.12) 100%)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.35)';
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,184,212,0.3), inset 0 1px 0 rgba(255,255,255,0.12)';
+                    e.currentTarget.style.background = `linear-gradient(135deg, ${btn.color.primary}25, ${btn.color.primary}15)`;
+                    e.currentTarget.style.borderColor = `${btn.color.primary}40`;
+                    e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)';
+                    e.currentTarget.style.boxShadow = `0 16px 48px ${btn.color.glow}, inset 0 1px 0 rgba(255,255,255,0.15)`;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.12) 0%, rgba(0, 184, 212, 0.08) 100%)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,184,212,0.12), inset 0 1px 0 rgba(255,255,255,0.08)';
+                    e.currentTarget.style.background = `linear-gradient(135deg, ${btn.color.primary}15, ${btn.color.primary}08)`;
+                    e.currentTarget.style.borderColor = `${btn.color.primary}25`;
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.boxShadow = `0 6px 24px ${btn.color.primary}10, inset 0 1px 0 rgba(255,255,255,0.08)`;
                   }}
                 >
-                  <ExternalLink className="w-5 h-5" />
-                  View Full Deal
+                  <btn.icon className="w-5 h-5" />
+                  {btn.label}
                 </button>
-              )}
+              ))}
             </div>
           </div>
         </div>
