@@ -10,7 +10,7 @@ import DealDetails from './pages/DealDetails';
 import Contacts from './pages/Contacts';
 import Pipeline from './pages/Pipeline';
 import Team from './pages/Team';
-import Calendar from './pages/Calendar';
+import CalendarView from './pages/Calendar';
 import PublicShare from './pages/PublicShare';
 import MainLayout from './components/MainLayout';
 
