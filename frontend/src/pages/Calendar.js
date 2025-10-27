@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
+import React, { useState, useEffect, useCallback } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
 import { supabase } from '../supabaseClient';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, X, CheckCircle, Edit2, ExternalLink, MapPin, DollarSign, FileText, Clock, ChevronDown } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, X, CheckCircle, Edit2, ExternalLink, MapPin, DollarSign, FileText, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-
-const localizer = momentLocalizer(moment);
 
 const EVENT_COLORS = {
   milestone: '#10b981',
@@ -22,10 +22,9 @@ const CalendarView = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('month');
-  const [date, setDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventPanel, setShowEventPanel] = useState(false);
+  const calendarRef = React.useRef(null);
 
   const fetchCalendarEvents = useCallback(async () => {
     setLoading(true);
@@ -48,30 +47,34 @@ const CalendarView = () => {
           if (deal.target_close_date) {
             aggregatedEvents.push({
               id: `closing-${deal.id}`,
-              title: deal.address || deal.title,
-              start: new Date(deal.target_close_date),
-              end: new Date(deal.target_close_date),
+              title: `🏁 ${deal.address || deal.title}`,
+              start: deal.target_close_date,
               allDay: true,
-              type: 'closing',
-              color: EVENT_COLORS.closing,
-              dealId: deal.id,
-              dealData: deal,
-              category: 'Closing'
+              backgroundColor: EVENT_COLORS.closing,
+              borderColor: EVENT_COLORS.closing,
+              extendedProps: {
+                type: 'closing',
+                dealId: deal.id,
+                dealData: deal,
+                category: 'Closing'
+              }
             });
           }
 
           if (deal.next_action_date) {
             aggregatedEvents.push({
               id: `action-${deal.id}`,
-              title: `${deal.next_action || 'Follow-up'} - ${deal.address || deal.title}`,
-              start: new Date(deal.next_action_date),
-              end: new Date(deal.next_action_date),
+              title: `📋 ${deal.next_action || 'Follow-up'} - ${deal.address || deal.title}`,
+              start: deal.next_action_date,
               allDay: true,
-              type: 'follow_up',
-              color: EVENT_COLORS.follow_up,
-              dealId: deal.id,
-              dealData: deal,
-              category: 'Follow-up'
+              backgroundColor: EVENT_COLORS.follow_up,
+              borderColor: EVENT_COLORS.follow_up,
+              extendedProps: {
+                type: 'follow_up',
+                dealId: deal.id,
+                dealData: deal,
+                category: 'Follow-up'
+              }
             });
           }
         });
@@ -87,15 +90,17 @@ const CalendarView = () => {
           if (contact.next_action) {
             aggregatedEvents.push({
               id: `contact-${contact.id}`,
-              title: `Call ${contact.full_name}`,
-              start: new Date(contact.next_action),
-              end: new Date(contact.next_action),
+              title: `📞 ${contact.full_name}`,
+              start: contact.next_action,
               allDay: true,
-              type: 'follow_up',
-              color: EVENT_COLORS.follow_up,
-              contactId: contact.id,
-              contactData: contact,
-              category: 'Follow-up'
+              backgroundColor: EVENT_COLORS.follow_up,
+              borderColor: EVENT_COLORS.follow_up,
+              extendedProps: {
+                type: 'follow_up',
+                contactId: contact.id,
+                contactData: contact,
+                category: 'Contact Follow-up'
+              }
             });
           }
         });
@@ -114,28 +119,16 @@ const CalendarView = () => {
     fetchCalendarEvents();
   }, [fetchCalendarEvents]);
 
-  const eventStyleGetter = useCallback((event) => {
-    const now = new Date();
-    const isOverdue = event.start < now;
-
-    return {
-      style: {
-        backgroundColor: event.color,
-        borderRadius: '6px',
-        border: 'none',
-        color: '#ffffff',
-        padding: '5px 9px',
-        fontSize: '12px',
-        fontWeight: '500',
-        opacity: isOverdue ? 0.6 : 0.95
-      }
+  const handleEventClick = (info) => {
+    const event = {
+      title: info.event.title,
+      start: info.event.start,
+      allDay: info.event.allDay,
+      ...info.event.extendedProps
     };
-  }, []);
-
-  const handleSelectEvent = useCallback((event) => {
     setSelectedEvent(event);
     setShowEventPanel(true);
-  }, []);
+  };
 
   const handleViewDeal = () => {
     if (selectedEvent?.dealId) {
@@ -152,13 +145,13 @@ const CalendarView = () => {
         <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px' }}>Your unified timeline for deals and contacts</p>
       </div>
 
-      {/* Calendar Container with Depth */}
+      {/* Calendar Container with Elevated Depth */}
       <div style={{
         background: '#0f1419',
         borderRadius: '20px',
-        padding: '32px',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.05)',
-        border: '1px solid rgba(255, 255, 255, 0.03)',
+        padding: '36px',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.03)',
+        border: '1px solid rgba(255, 255, 255, 0.04)',
         minHeight: 'calc(100vh - 180px)',
         position: 'relative'
       }}>
@@ -170,24 +163,25 @@ const CalendarView = () => {
             </div>
           </div>
         ) : (
-          <div style={{ height: 'calc(100vh - 300px)' }}>
-            <BigCalendar
-              localizer={localizer}
-              events={events}
-              startAccessor="start"
-              endAccessor="end"
-              style={{ height: '100%' }}
-              view={view}
-              onView={setView}
-              date={date}
-              onNavigate={setDate}
-              onSelectEvent={handleSelectEvent}
-              eventPropGetter={eventStyleGetter}
-              views={['month', 'week', 'day', 'agenda']}
-              popup
-              className="premium-dark-calendar"
-            />
-          </div>
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            }}
+            events={events}
+            eventClick={handleEventClick}
+            height="calc(100vh - 300px)"
+            editable={false}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
+            weekends={true}
+            themeSystem="standard"
+          />
         )}
       </div>
 
@@ -198,12 +192,12 @@ const CalendarView = () => {
             position: 'fixed',
             top: 0,
             right: 0,
-            width: '480px',
+            width: '500px',
             height: '100vh',
             background: 'rgba(10, 15, 25, 0.98)',
-            backdropFilter: 'blur(24px)',
+            backdropFilter: 'blur(30px)',
             borderLeft: '1px solid rgba(255,255,255,0.06)',
-            boxShadow: '-20px 0 60px rgba(0,0,0,0.6)',
+            boxShadow: '-24px 0 60px rgba(0,0,0,0.7)',
             zIndex: 1000,
             animation: 'slideInFromRight 0.3s ease-out'
           }}
@@ -239,20 +233,22 @@ const CalendarView = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div
-                style={{
-                  display: 'inline-block',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  background: `${selectedEvent.color}20`,
-                  color: selectedEvent.color,
-                  border: `1px solid ${selectedEvent.color}30`
-                }}
-              >
-                {selectedEvent.category || selectedEvent.type}
-              </div>
+              {selectedEvent.category && (
+                <div
+                  style={{
+                    display: 'inline-block',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    background: `${EVENT_COLORS[selectedEvent.type] || '#a855f7'}20`,
+                    color: EVENT_COLORS[selectedEvent.type] || '#a855f7',
+                    border: `1px solid ${EVENT_COLORS[selectedEvent.type] || '#a855f7'}30`
+                  }}
+                >
+                  {selectedEvent.category}
+                </div>
+              )}
             </div>
 
             {/* Panel Content */}
@@ -265,8 +261,7 @@ const CalendarView = () => {
                 <div className="flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   <Clock className="w-4 h-4" />
                   <span className="text-sm">
-                    {moment(selectedEvent.start).format('MMMM D, YYYY')}
-                    {!selectedEvent.allDay && ` • ${moment(selectedEvent.start).format('h:mm A')}`}
+                    {new Date(selectedEvent.start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
               </div>
@@ -413,19 +408,19 @@ const CalendarView = () => {
                     justifyContent: 'center',
                     gap: '10px',
                     transition: 'all 0.2s ease',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = 'rgba(16, 185, 129, 0.12)';
                     e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.25)';
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(16, 185, 129, 0.15)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.2)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'rgba(16, 185, 129, 0.08)';
                     e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.15)';
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
                   }}
                 >
                   <CheckCircle className="w-5 h-5" />
@@ -449,19 +444,19 @@ const CalendarView = () => {
                     justifyContent: 'center',
                     gap: '10px',
                     transition: 'all 0.2s ease',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = 'rgba(59, 130, 246, 0.12)';
                     e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.25)';
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(59, 130, 246, 0.15)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.2)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'rgba(59, 130, 246, 0.08)';
                     e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.15)';
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
                   }}
                 >
                   <Edit2 className="w-5 h-5" />
@@ -487,19 +482,19 @@ const CalendarView = () => {
                       justifyContent: 'center',
                       gap: '10px',
                       transition: 'all 0.2s ease',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(0, 184, 212, 0.12)';
                       e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.25)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 184, 212, 0.2)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 184, 212, 0.25)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
                       e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.15)';
                       e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
                     }}
                   >
                     <ExternalLink className="w-5 h-5" />
