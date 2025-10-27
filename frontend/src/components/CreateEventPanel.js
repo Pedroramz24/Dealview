@@ -293,6 +293,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
               type="text"
               value={searchDeal}
               onChange={(e) => setSearchDeal(e.target.value)}
+              onFocus={() => setSearchDeal('')}
               placeholder="Search deals..."
               className="premium-input"
             />
@@ -327,6 +328,38 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                 ))}
               </div>
             )}
+            {eventForm.related_deal_id && !searchDeal.includes(filteredDeals.find(d => d.id === eventForm.related_deal_id)?.address) && (
+              <div style={{
+                marginTop: '8px',
+                padding: '10px 14px',
+                background: 'rgba(16,185,129,0.08)',
+                border: '1px solid rgba(16,185,129,0.2)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <p style={{ color: '#10b981', fontSize: '13px', fontWeight: '600' }}>
+                  Deal linked
+                </p>
+                <button
+                  onClick={() => {
+                    setEventForm({ ...eventForm, related_deal_id: null });
+                    setSearchDeal('');
+                  }}
+                  style={{
+                    padding: '4px',
+                    background: 'rgba(239,68,68,0.1)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#ef4444',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
@@ -337,6 +370,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
               type="text"
               value={searchContact}
               onChange={(e) => setSearchContact(e.target.value)}
+              onFocus={() => setSearchContact('')}
               placeholder="Search contacts..."
               className="premium-input"
             />
@@ -370,6 +404,38 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                     {contact.company && <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{contact.company}</p>}
                   </div>
                 ))}
+              </div>
+            )}
+            {eventForm.related_contact_id && !searchContact.includes(filteredContacts.find(c => c.id === eventForm.related_contact_id)?.full_name) && (
+              <div style={{
+                marginTop: '8px',
+                padding: '10px 14px',
+                background: 'rgba(16,185,129,0.08)',
+                border: '1px solid rgba(16,185,129,0.2)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <p style={{ color: '#10b981', fontSize: '13px', fontWeight: '600' }}>
+                  Contact linked
+                </p>
+                <button
+                  onClick={() => {
+                    setEventForm({ ...eventForm, related_contact_id: null });
+                    setSearchContact('');
+                  }}
+                  style={{
+                    padding: '4px',
+                    background: 'rgba(239,68,68,0.1)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#ef4444',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <X className="w-3 h-3" />
+                </button>
               </div>
             )}
           </div>
