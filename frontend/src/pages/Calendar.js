@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { supabase } from '../supabaseClient';
-import { Calendar, List, Clock, Filter, Plus, X, CheckCircle, Edit2, ExternalLink } from 'lucide-react';
+import { Calendar as CalendarIcon, List, Clock, Filter, Plus, X, CheckCircle, Edit2, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -17,7 +17,7 @@ const EVENT_COLORS = {
   reminder: '#a855f7'   // Purple - Reminders
 };
 
-const Calendar = () => {
+const CalendarView = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('month'); // 'month', 'week', 'day', 'list', 'timeline'
