@@ -73,10 +73,17 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
     setIsSaving(true);
     try {
       const eventData = {
-        ...eventForm,
-        owner_id: user.id,
+        title: eventForm.title,
+        event_type: eventForm.event_type,
         start_date: startDate.toISOString(),
         end_date: endDate ? endDate.toISOString() : startDate.toISOString(),
+        all_day: eventForm.all_day,
+        related_deal_id: eventForm.related_deal_id,
+        related_contact_id: eventForm.related_contact_id,
+        description: eventForm.description,
+        reminder_enabled: eventForm.reminder_enabled,
+        reminder_minutes_before: eventForm.reminder_minutes_before,
+        owner_id: user.id,
         status: 'pending'
       };
 
@@ -84,14 +91,21 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
         .from('calendar_events')
         .insert([eventData]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        if (error.message.includes('relation') || error.message.includes('does not exist')) {
+          toast.error('Calendar table not set up yet. Please run the migration in Supabase SQL Editor.');
+        } else {
+          toast.error(`Failed to create event: ${error.message}`);
+        }
+        throw error;
+      }
 
       toast.success('Event created successfully!');
       onEventCreated();
       resetForm();
     } catch (error) {
       console.error('Error creating event:', error);
-      toast.error('Failed to create event');
     } finally {
       setIsSaving(false);
     }
