@@ -2,25 +2,29 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { supabase } from '../supabaseClient';
-import { Calendar as CalendarIcon, List, Clock, Filter, Plus, X, CheckCircle, Edit2, ExternalLink } from 'lucide-react';
+import { Calendar as CalendarIcon, List, Clock, Filter, Plus, X, CheckCircle, Edit2, ExternalLink, ChevronLeft, ChevronRight, MapPin, DollarSign, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
 
-// Event type colors matching the design requirements
+// Event type colors matching the design requirements - vibrant colors for dark theme
 const EVENT_COLORS = {
   milestone: '#10b981', // Green - Deal milestones
   follow_up: '#3b82f6', // Blue - Contact follow-ups
   general: '#a855f7',   // Purple - General tasks
   meeting: '#f97316',   // Orange - Team/meeting events
-  reminder: '#a855f7'   // Purple - Reminders
+  reminder: '#8b5cf6',  // Purple - Reminders
+  closing: '#10b981',   // Green - Closings
+  earnest: '#f59e0b'    // Yellow - Earnest money
 };
 
 const CalendarView = () => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('month'); // 'month', 'week', 'day', 'list', 'timeline'
+  const [view, setView] = useState('month'); // 'month', 'week', 'day', 'agenda'
   const [date, setDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventPanel, setShowEventPanel] = useState(false);
@@ -28,8 +32,7 @@ const CalendarView = () => {
   
   // Filters
   const [activeFilters, setActiveFilters] = useState({
-    myDeals: true,
-    teamDeals: false,
+    allEvents: true,
     closingsThisMonth: false,
     followUpsDueToday: false,
     earnestMoneyDeadlines: false
