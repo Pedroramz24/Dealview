@@ -602,3 +602,63 @@ td {
 .fc .fc-list-event:hover td {
   background: rgba(0, 184, 212, 0.04);
 }
+
+/* Premium Input Styles for Calendar Forms */
+.premium-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  borderRadius: 12px;
+  color: #FFFFFF;
+  fontSize: 15px;
+  fontWeight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.premium-input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(0, 184, 212, 0.4);
+  box-shadow: 0 0 24px rgba(0, 184, 212, 0.15);
+}
+
+.premium-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.premium-date-input input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #FFFFFF;
+  fontSize: 15px;
+  fontWeight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.premium-date-input input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(0, 184, 212, 0.4);
+  box-shadow: 0 0 24px rgba(0, 184, 212, 0.15);
+}
+
+/* Pulse glow animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1) rotate(180deg);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
