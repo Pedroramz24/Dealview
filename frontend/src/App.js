@@ -109,6 +109,7 @@ function App() {
             <Route path="deals/:dealId" element={<DealDetails />} />
             <Route path="contacts" element={<Contacts />} />
             <Route path="pipeline" element={<Pipeline />} />
+            <Route path="calendar" element={<Calendar />} />
             <Route path="team" element={<Team />} />
           </Route>
         </Routes>
