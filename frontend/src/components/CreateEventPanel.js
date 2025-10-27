@@ -270,8 +270,10 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(date)}
-              showTimeSelect={!eventForm.all_day}
-              dateFormat={eventForm.all_day ? 'MMMM d, yyyy' : 'MMMM d, yyyy h:mm aa'}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              dateFormat="MMMM d, yyyy h:mm aa"
               className="premium-date-input"
               wrapperClassName="w-full"
             />
