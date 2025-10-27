@@ -485,4 +485,4 @@ const CalendarView = () => {
   );
 };
 
-export default Calendar;
+export default CalendarView;
