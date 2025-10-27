@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../App';
-import { Map, LayoutDashboard, FileText, Users, Trello, UsersRound, LogOut, Inbox, Settings } from 'lucide-react';
+import { Map, LayoutDashboard, FileText, Users, Trello, UsersRound, LogOut, Inbox, Settings, Calendar } from 'lucide-react';
 
 const MainLayout = () => {
   const { user, logout } = useContext(AuthContext);
@@ -18,6 +18,7 @@ const MainLayout = () => {
     { path: '/deals', label: 'Deals', icon: FileText },
     { path: '/pipeline', label: 'Pipeline', icon: Trello },
     { path: '/contacts', label: 'Contacts', icon: Users },
+    { path: '/calendar', label: 'Calendar', icon: Calendar },
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/team', label: 'Team', icon: UsersRound },
   ];
