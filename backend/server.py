@@ -47,6 +47,15 @@ security = HTTPBearer()
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
+
+# News feed cache
+news_cache = {
+    'articles': [],
+    'last_updated': 0,
+    'cache_duration': 3600  # 1 hour in seconds
+}
+
+
 # Models
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
