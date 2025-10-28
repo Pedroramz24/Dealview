@@ -841,32 +841,47 @@ td {
   box-shadow: 0 2px 8px rgba(0,184,212,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-/* Event cards - refined unified shadows with consistent spacing */
-.fc .fc-daygrid-event {
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 2px 0 0 rgba(255, 255, 255, 0.12) !important;
-}
-
+/* Event cards - smooth hover with subtle lift */
 .fc .fc-daygrid-event:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 2px 0 0 rgba(255, 255, 255, 0.2) !important;
-  transform: translateY(-1px);
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-1px) translateZ(0) !important;
+  filter: brightness(1.05) !important;
 }
 
+/* Event type specific styling - clean and solid */
 .fc .event-deal {
-  box-shadow: 0 1px 6px rgba(16, 185, 129, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 2px 0 0 rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 
 .fc .event-deal:hover {
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 2px 0 0 rgba(16, 185, 129, 0.5) !important;
-  transform: translateY(-1px);
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-1px) translateZ(0) !important;
+  filter: brightness(1.05) !important;
 }
 
 .fc .event-followup {
-  box-shadow: 0 1px 6px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 2px 0 0 rgba(59, 130, 246, 0.4) !important;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 
 .fc .event-followup:hover {
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 2px 0 0 rgba(59, 130, 246, 0.5) !important;
-  transform: translateY(-1px);
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-1px) translateZ(0) !important;
+  filter: brightness(1.05) !important;
 }
 
 .fc .fc-more-link {
