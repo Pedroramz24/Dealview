@@ -22,6 +22,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (user) {
       fetchDashboardData();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
