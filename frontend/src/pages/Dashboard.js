@@ -447,15 +447,28 @@ const MetricCard = ({ icon: Icon, label, value, color, bgColor, isLarge }) => (
 // Timeline Module Component
 const TimelineModule = ({ events }) => (
   <div style={{
-    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
+    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
     borderRadius: '20px',
     padding: '28px',
     marginBottom: '32px',
-    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
+    transition: 'all 0.3s ease'
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-      <Calendar style={{ color: '#00b8d4', width: '24px', height: '24px' }} />
+      <div style={{
+        width: '36px',
+        height: '36px',
+        background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+        borderRadius: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '1px solid rgba(0, 184, 212, 0.2)',
+        boxShadow: '0 2px 8px rgba(0, 184, 212, 0.1)'
+      }}>
+        <Calendar style={{ color: '#00b8d4', width: '18px', height: '18px' }} />
+      </div>
       <h2 style={{
         color: '#ffffff',
         fontSize: '20px',
@@ -467,13 +480,13 @@ const TimelineModule = ({ events }) => (
     </div>
 
     {events.length === 0 ? (
-      <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', textAlign: 'center', padding: '20px' }}>
+      <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '14px', textAlign: 'center', padding: '20px' }}>
         No upcoming events scheduled
       </p>
     ) : (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {events.map((event, idx) => (
-          <EventItem key={idx} event={event} />
+          <EventItem key={idx} event={event} index={idx} />
         ))}
       </div>
     )}
