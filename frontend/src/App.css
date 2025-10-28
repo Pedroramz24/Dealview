@@ -791,6 +791,9 @@ td {
   -moz-osx-font-smoothing: grayscale !important;
   backface-visibility: hidden !important;
   transform: translateZ(0) !important;
+
+  will-change: transform !important;
+  isolation: isolate !important;
 }
 
 /* Remove pseudo-elements that cause jagged edges */
