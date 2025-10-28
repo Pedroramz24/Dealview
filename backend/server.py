@@ -1140,23 +1140,27 @@ async def get_market_news(current_user: User = Depends(get_current_user)):
         
         logger.info("Fetching fresh news from RSS feeds")
         
-        # Define CRE RSS feeds
+        # Define CRE RSS feeds with working URLs
         rss_feeds = [
             {
                 'url': 'https://commercialobserver.com/feed/',
                 'source': 'Commercial Observer'
             },
             {
-                'url': 'https://www.bisnow.com/feed',
-                'source': 'Bisnow'
-            },
-            {
-                'url': 'https://www.globest.com/feed/',
+                'url': 'https://www.globest.com/rss/',
                 'source': 'GlobeSt'
             },
             {
-                'url': 'https://www.cpexecutive.com/feed/',
-                'source': 'CPExecutive'
+                'url': 'https://commercialsearch.com/news/feed',
+                'source': 'Commercial Property Executive'
+            },
+            {
+                'url': 'https://commercialobserver.com/finance/feed',
+                'source': 'CO Finance'
+            },
+            {
+                'url': 'https://commercialobserver.com/sales/feed',
+                'source': 'CO Sales'
             }
         ]
         
