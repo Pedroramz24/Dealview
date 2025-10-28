@@ -679,7 +679,7 @@ const CalendarView = () => {
                 background: `linear-gradient(135deg, ${selectedEvent.colorScheme?.primary || '#a855f7'}18, ${selectedEvent.colorScheme?.primary || '#a855f7'}08)`,
                 color: selectedEvent.colorScheme?.primary || '#a855f7',
                 border: `1px solid ${selectedEvent.colorScheme?.primary || '#a855f7'}30`,
-                boxShadow: `0 0 20px ${selectedEvent.colorScheme?.glow || 'rgba(168,85,247,0.15)'}, inset 0 1px 0 rgba(255,255,255,0.08)`
+                boxShadow: `0 0 10px ${selectedEvent.colorScheme?.glow || 'rgba(168,85,247,0.12)'}, inset 0 1px 0 rgba(255,255,255,0.08)`
               }}>
                 <span style={{ fontSize: '18px' }}>{selectedEvent.icon}</span>
                 <span>{selectedEvent.category}</span>
