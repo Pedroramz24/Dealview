@@ -150,6 +150,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
   const [documents, setDocuments] = useState([]);
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const [showContactFormPanel, setShowContactFormPanel] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const isDeal = type === 'deal';
 
