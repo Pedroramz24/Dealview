@@ -943,7 +943,7 @@ const CalendarView = () => {
                     e.currentTarget.style.background = `linear-gradient(135deg, ${btn.color.primary}15, ${btn.color.primary}08)`;
                     e.currentTarget.style.borderColor = `${btn.color.primary}25`;
                     e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    e.currentTarget.style.boxShadow = `0 4px 16px ${btn.color.primary}08, inset 0 1px 0 rgba(255,255,255,0.08)`;
+                    e.currentTarget.style.boxShadow = `0 3px 12px ${btn.color.primary}06, inset 0 1px 0 rgba(255,255,255,0.06)`;
                   }}
                 >
                   <btn.icon className="w-5 h-5" />
