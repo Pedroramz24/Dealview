@@ -25,6 +25,7 @@ const CalendarView = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventPanel, setShowEventPanel] = useState(false);
   const [showCreatePanel, setShowCreatePanel] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
   const calendarRef = React.useRef(null);
 
   const fetchCalendarEvents = useCallback(async () => {
