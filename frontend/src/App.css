@@ -892,12 +892,14 @@ td {
   box-shadow: 0 2px 8px rgba(0, 184, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Event title and content alignment */
+/* Event title and content - perfectly centered */
 .fc .fc-event-main {
   display: flex !important;
   align-items: center !important;
   width: 100% !important;
-  padding-left: 2px !important;
+  padding-left: 4px !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 .fc .fc-event-title {
@@ -907,12 +909,17 @@ td {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   flex: 1 !important;
+  vertical-align: middle !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 .fc .fc-event-time {
   display: inline !important;
   margin-right: 6px !important;
-  font-weight: 600 !important;
-  opacity: 0.8 !important;
+  font-weight: 700 !important;
+  opacity: 0.9 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
