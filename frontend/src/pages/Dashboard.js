@@ -1,69 +1,190 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
-import { DollarSign, TrendingUp, FileText, PieChart } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RePieChart, Pie, Cell } from 'recharts';
+import { 
+  Sparkles, TrendingUp, Users, Calendar, AlertCircle, 
+  CheckCircle2, Clock, DollarSign, FileText, Target,
+  Zap, ArrowRight, Bell, Newspaper, Activity
+} from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [aiInsights, setAiInsights] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      fetchStats();
+      fetchDashboardData();
     }
   }, [user]);
 
-  const fetchStats = async () => {
+  const fetchDashboardData = async () => {
     if (!user) {
       setLoading(false);
       return;
     }
 
     try {
-      // Fetch all deals for current user
-      const { data: deals, error } = await supabase
+      // Fetch deals
+      const { data: deals, error: dealsError } = await supabase
         .from('deals')
-        .select('*');
+        .select('*')
+        .eq('owner_id', user.id);
 
-      if (error) throw error;
+      if (dealsError) throw dealsError;
+
+      // Fetch contacts
+      const { data: contactsData, error: contactsError } = await supabase
+        .from('contacts')
+        .select('*')
+        .eq('owner_id', user.id);
+
+      if (contactsError) throw contactsError;
+      setContacts(contactsData || []);
+
+      // Fetch calendar events
+      const { data: calendarEvents } = await supabase
+        .from('calendar_events')
+        .select('*')
+        .eq('owner_id', user.id)
+        .gte('start_date', new Date().toISOString())
+        .order('start_date', { ascending: true })
+        .limit(5);
 
       // Calculate statistics
       const totalValue = deals.reduce((sum, deal) => sum + (parseFloat(deal.price) || 0), 0);
-      const activeDeals = deals.filter(d => d.status === 'active').length;
+      const activeDeals = deals.filter(d => d.stage !== 'closed_won' && d.stage !== 'overpriced').length;
+      const underContract = deals.filter(d => d.stage === 'under_contract').length;
       
-      // Asset type distribution
-      const assetTypeDistribution = {};
-      deals.forEach(deal => {
-        const type = deal.asset_type || 'Unknown';
-        assetTypeDistribution[type] = (assetTypeDistribution[type] || 0) + 1;
-      });
-
-      // Stage counts
-      const stageCounts = {};
-      deals.forEach(deal => {
-        const stage = deal.stage || 'Unknown';
-        stageCounts[stage] = (stageCounts[stage] || 0) + 1;
-      });
+      // New contacts this week
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const newContactsThisWeek = contactsData.filter(c => 
+        new Date(c.created_at) >= oneWeekAgo
+      ).length;
 
       setStats({
-        total_deals: deals.length,
-        active_deals: activeDeals,
-        total_value: totalValue,
-        total_pipeline_value: totalValue,
-        average_deal_size: deals.length > 0 ? totalValue / deals.length : 0,
-        avg_deal_size: deals.length > 0 ? totalValue / deals.length : 0,
-        asset_type_distribution: assetTypeDistribution,
-        stage_counts: stageCounts,
+        totalDeals: deals.length,
+        activeDeals,
+        underContract,
+        totalValue,
+        avgDealSize: deals.length > 0 ? totalValue / deals.length : 0,
+        newContactsThisWeek,
+        deals
       });
+
+      // Process upcoming events
+      const eventsWithDeals = await Promise.all((calendarEvents || []).map(async (event) => {
+        if (event.related_deal_id) {
+          const { data: dealData } = await supabase
+            .from('deals')
+            .select('address, price')
+            .eq('id', event.related_deal_id)
+            .single();
+          return { ...event, dealData };
+        }
+        return event;
+      }));
+
+      setUpcomingEvents(eventsWithDeals);
+
+      // Generate AI insights
+      generateAIInsights(deals, contactsData, calendarEvents || []);
+
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateAIInsights = (deals, contacts, events) => {
+    const insights = [];
+
+    // Check for overdue follow-ups
+    const today = new Date();
+    contacts.forEach(contact => {
+      if (contact.next_action) {
+        const nextAction = new Date(contact.next_action);
+        const daysDiff = Math.floor((today - nextAction) / (1000 * 60 * 60 * 24));
+        if (daysDiff > 0) {
+          insights.push({
+            type: 'warning',
+            icon: AlertCircle,
+            color: '#f59e0b',
+            message: `You haven't followed up with ${contact.full_name} in ${daysDiff} days.`,
+            action: () => navigate('/contacts'),
+            actionLabel: 'View Contact'
+          });
+        }
+      }
+    });
+
+    // Check for upcoming deadlines
+    events.forEach(event => {
+      const eventDate = new Date(event.start_date);
+      const daysDiff = Math.floor((eventDate - today) / (1000 * 60 * 60 * 24));
+      if (daysDiff === 1 && event.event_type === 'deadline') {
+        insights.push({
+          type: 'urgent',
+          icon: Clock,
+          color: '#ef4444',
+          message: `${event.title} is due tomorrow.`,
+          action: () => navigate('/calendar'),
+          actionLabel: 'View Calendar'
+        });
+      }
+    });
+
+    // Check for untouched leads
+    const untouchedLeads = deals.filter(d => 
+      d.stage === 'need_to_contact' || 
+      (d.stage === 'prospect' && !d.last_contact_date)
+    );
+    if (untouchedLeads.length > 0) {
+      insights.push({
+        type: 'info',
+        icon: Target,
+        color: '#3b82f6',
+        message: `${untouchedLeads.length} leads in your pipeline haven't been contacted.`,
+        action: () => navigate('/pipeline'),
+        actionLabel: 'View Pipeline'
+      });
+    }
+
+    // Check for deals under contract
+    const underContractDeals = deals.filter(d => d.stage === 'under_contract');
+    if (underContractDeals.length > 0) {
+      insights.push({
+        type: 'success',
+        icon: CheckCircle2,
+        color: '#10b981',
+        message: `You have ${underContractDeals.length} deal${underContractDeals.length > 1 ? 's' : ''} under contract. Keep the momentum!`,
+        action: () => navigate('/pipeline'),
+        actionLabel: 'Track Progress'
+      });
+    }
+
+    // Performance insight (placeholder for now - could calculate from historical data)
+    if (deals.length > 5) {
+      insights.push({
+        type: 'insight',
+        icon: Activity,
+        color: '#8b5cf6',
+        message: `Your pipeline value is ${formatCurrency(deals.reduce((sum, d) => sum + (d.price || 0), 0))}. ${deals.length} active opportunities.`,
+        action: () => navigate('/deals'),
+        actionLabel: 'View Deals'
+      });
+    }
+
+    setAiInsights(insights.slice(0, 6)); // Limit to 6 insights
   };
 
   const formatCurrency = (value) => {
@@ -71,134 +192,507 @@ const Dashboard = () => {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(value);
   };
 
-  const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+  const getTimeOfDay = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'morning';
+    if (hour < 18) return 'afternoon';
+    return 'evening';
+  };
+
+  const getUserFirstName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name.split(' ')[0];
+    }
+    return 'there';
+  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="loading-spinner"></div>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        height: '100vh',
+        background: '#000000'
+      }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          border: '3px solid rgba(0, 184, 212, 0.2)',
+          borderTop: '3px solid #00b8d4',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
       </div>
     );
   }
 
-  const assetTypeData = Object.entries(stats?.asset_type_distribution || {}).map(([name, value]) => ({
-    name,
-    value,
-  }));
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: '#000000',
+      padding: '32px',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Animated background gradients */}
+      <div style={{
+        position: 'absolute',
+        top: '-50%',
+        left: '-50%',
+        width: '200%',
+        height: '200%',
+        background: 'radial-gradient(circle at 20% 20%, rgba(0, 184, 212, 0.04) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 50%)',
+        animation: 'float-gradient 20s ease-in-out infinite',
+        pointerEvents: 'none',
+        opacity: 0.6
+      }} />
 
-  const stageData = Object.entries(stats?.stage_counts || {}).map(([name, value]) => ({
-    name,
-    value,
-  }));
+      <div style={{ position: 'relative', zIndex: 1, maxWidth: '1800px', margin: '0 auto' }}>
+        {/* AI Greeting Header */}
+        <div style={{
+          background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.08), rgba(59, 130, 246, 0.06))',
+          border: '1px solid rgba(0, 184, 212, 0.2)',
+          borderRadius: '20px',
+          padding: '32px 40px',
+          marginBottom: '32px',
+          boxShadow: '0 8px 32px rgba(0, 184, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Glow effect */}
+          <div style={{
+            position: 'absolute',
+            top: '-100px',
+            right: '-100px',
+            width: '300px',
+            height: '300px',
+            background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+            pointerEvents: 'none'
+          }} />
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 1 }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 20px rgba(0, 184, 212, 0.3)',
+              animation: 'pulse 3s ease-in-out infinite'
+            }}>
+              <Sparkles style={{ color: '#00d4ff', width: '28px', height: '28px' }} />
+            </div>
+            <div>
+              <h1 style={{
+                color: '#ffffff',
+                fontSize: '28px',
+                fontWeight: '700',
+                marginBottom: '8px',
+                letterSpacing: '-0.02em'
+              }}>
+                Good {getTimeOfDay()}, {getUserFirstName()} — here's what's on your radar today
+              </h1>
+              <p style={{
+                color: 'rgba(255, 255, 255, 0.6)',
+                fontSize: '15px',
+                fontWeight: '500'
+              }}>
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: '32px' }}>
+          {/* Left Column */}
+          <div>
+            {/* Key Metrics */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '20px',
+              marginBottom: '32px'
+            }}>
+              <MetricCard
+                icon={Target}
+                label="Active Deals"
+                value={stats?.activeDeals || 0}
+                color="#3b82f6"
+                bgColor="rgba(59, 130, 246, 0.1)"
+              />
+              <MetricCard
+                icon={CheckCircle2}
+                label="Under Contract"
+                value={stats?.underContract || 0}
+                color="#10b981"
+                bgColor="rgba(16, 185, 129, 0.1)"
+              />
+              <MetricCard
+                icon={DollarSign}
+                label="Pipeline Value"
+                value={formatCurrency(stats?.totalValue || 0)}
+                isLarge
+                color="#f59e0b"
+                bgColor="rgba(245, 158, 11, 0.1)"
+              />
+              <MetricCard
+                icon={Users}
+                label="New Contacts This Week"
+                value={stats?.newContactsThisWeek || 0}
+                color="#8b5cf6"
+                bgColor="rgba(139, 92, 246, 0.1)"
+              />
+            </div>
+
+            {/* Timeline Module */}
+            <TimelineModule events={upcomingEvents} />
+
+            {/* Market News Feed (Placeholder) */}
+            <NewsModule />
+          </div>
+
+          {/* Right Column - AI Assistant Panel */}
+          <AIAssistantPanel insights={aiInsights} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Metric Card Component
+const MetricCard = ({ icon: Icon, label, value, color, bgColor, isLarge }) => (
+  <div style={{
+    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '16px',
+    padding: '24px',
+    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    position: 'relative',
+    overflow: 'hidden'
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.transform = 'translateY(-4px)';
+    e.currentTarget.style.boxShadow = `0 8px 24px ${color}30, inset 0 1px 0 rgba(255, 255, 255, 0.1)`;
+    e.currentTarget.style.borderColor = `${color}40`;
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = 'translateY(0)';
+    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)';
+    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+  }}
+  >
+    {/* Glow accent */}
+    <div style={{
+      position: 'absolute',
+      top: '-50%',
+      right: '-50%',
+      width: '100%',
+      height: '100%',
+      background: `radial-gradient(circle, ${color}20 0%, transparent 70%)`,
+      pointerEvents: 'none'
+    }} />
+    
+    <div style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        background: bgColor,
+        borderRadius: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: '16px',
+        border: `1px solid ${color}30`
+      }}>
+        <Icon style={{ color, width: '20px', height: '20px' }} />
+      </div>
+      <p style={{
+        color: 'rgba(255, 255, 255, 0.6)',
+        fontSize: '13px',
+        fontWeight: '600',
+        marginBottom: '8px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+      }}>
+        {label}
+      </p>
+      <p style={{
+        color: '#ffffff',
+        fontSize: isLarge ? '18px' : '28px',
+        fontWeight: '700',
+        letterSpacing: '-0.02em'
+      }}>
+        {value}
+      </p>
+    </div>
+  </div>
+);
+
+// Timeline Module Component
+const TimelineModule = ({ events }) => (
+  <div style={{
+    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '20px',
+    padding: '28px',
+    marginBottom: '32px',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+      <Calendar style={{ color: '#00b8d4', width: '24px', height: '24px' }} />
+      <h2 style={{
+        color: '#ffffff',
+        fontSize: '20px',
+        fontWeight: '700',
+        letterSpacing: '-0.01em'
+      }}>
+        Upcoming Events & Milestones
+      </h2>
+    </div>
+
+    {events.length === 0 ? (
+      <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', textAlign: 'center', padding: '20px' }}>
+        No upcoming events scheduled
+      </p>
+    ) : (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {events.map((event, idx) => (
+          <EventItem key={idx} event={event} />
+        ))}
+      </div>
+    )}
+  </div>
+);
+
+// Event Item Component
+const EventItem = ({ event }) => {
+  const eventColors = {
+    deal: { primary: '#10b981', bg: 'rgba(16, 185, 129, 0.15)' },
+    followup: { primary: '#3b82f6', bg: 'rgba(59, 130, 246, 0.15)' },
+    deadline: { primary: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)' },
+    meeting: { primary: '#f97316', bg: 'rgba(249, 115, 22, 0.15)' },
+    task: { primary: '#a855f7', bg: 'rgba(168, 85, 247, 0.15)' }
+  };
+
+  const color = eventColors[event.event_type] || eventColors.task;
+  const eventDate = new Date(event.start_date);
 
   return (
-    <div className="p-8" data-testid="dashboard-page">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Dashboard</h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Overview of your pipeline and deals</p>
+    <div style={{
+      background: 'rgba(255, 255, 255, 0.03)',
+      border: `1px solid ${color.primary}30`,
+      borderRadius: '12px',
+      padding: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '16px',
+      transition: 'all 0.2s ease',
+      cursor: 'pointer'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.background = color.bg;
+      e.currentTarget.style.borderColor = `${color.primary}50`;
+      e.currentTarget.style.transform = 'translateX(4px)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+      e.currentTarget.style.borderColor = `${color.primary}30`;
+      e.currentTarget.style.transform = 'translateX(0)';
+    }}
+    >
+      <div style={{
+        width: '8px',
+        height: '8px',
+        borderRadius: '50%',
+        background: color.primary,
+        boxShadow: `0 0 12px ${color.primary}`
+      }} />
+      <div style={{ flex: 1 }}>
+        <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
+          {event.title}
+        </p>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
+          {eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at {eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+        </p>
       </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.12)' }}>
-              <DollarSign className="w-6 h-6" style={{ color: 'var(--accent)' }} />
-            </div>
-          </div>
-          <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Total Pipeline Value</p>
-          <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }} data-testid="total-pipeline-value">{formatCurrency(stats?.total_pipeline_value || 0)}</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.12)' }}>
-              <FileText className="w-6 h-6" style={{ color: 'var(--accent)' }} />
-            </div>
-          </div>
-          <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Total Deals</p>
-          <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }} data-testid="total-deals">{stats?.total_deals || 0}</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.12)' }}>
-              <TrendingUp className="w-6 h-6" style={{ color: 'var(--accent)' }} />
-            </div>
-          </div>
-          <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Avg Deal Size</p>
-          <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }} data-testid="avg-deal-size">{formatCurrency(stats?.avg_deal_size || 0)}</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.12)' }}>
-              <PieChart className="w-6 h-6" style={{ color: 'var(--accent)' }} />
-            </div>
-          </div>
-          <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Asset Types</p>
-          <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{Object.keys(stats?.asset_type_distribution || {}).length}</p>
-        </div>
+      <div style={{
+        padding: '6px 12px',
+        background: color.bg,
+        borderRadius: '8px',
+        fontSize: '11px',
+        fontWeight: '700',
+        color: color.primary,
+        textTransform: 'uppercase'
+      }}>
+        {event.event_type}
       </div>
+    </div>
+  );
+};
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Stage Distribution */}
-        <div className="glass-surface p-6">
-          <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Deals by Stage</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={stageData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.08)" />
-              <XAxis dataKey="name" stroke="var(--text-secondary)" style={{ fontSize: '13px' }} />
-              <YAxis stroke="var(--text-secondary)" style={{ fontSize: '13px' }} />
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'var(--glass-bg)', 
-                  border: '1px solid var(--glass-border)',
-                  borderRadius: '8px',
-                  backdropFilter: 'blur(16px)',
-                  color: 'var(--text-primary)'
-                }}
-              />
-              <Bar dataKey="value" fill="var(--accent)" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+// News Module Component (Placeholder)
+const NewsModule = () => (
+  <div style={{
+    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '20px',
+    padding: '28px',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+      <Newspaper style={{ color: '#00b8d4', width: '24px', height: '24px' }} />
+      <h2 style={{
+        color: '#ffffff',
+        fontSize: '20px',
+        fontWeight: '700',
+        letterSpacing: '-0.01em'
+      }}>
+        Market Updates
+      </h2>
+    </div>
+    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', textAlign: 'center', padding: '20px' }}>
+      Market news integration coming soon
+    </p>
+  </div>
+);
+
+// AI Assistant Panel Component
+const AIAssistantPanel = ({ insights }) => (
+  <div style={{
+    background: 'linear-gradient(145deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.06))',
+    border: '1px solid rgba(139, 92, 246, 0.2)',
+    borderRadius: '20px',
+    padding: '28px',
+    boxShadow: '0 12px 40px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+    height: 'fit-content',
+    position: 'sticky',
+    top: '32px'
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3))',
+        borderRadius: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+        animation: 'pulse 2s ease-in-out infinite'
+      }}>
+        <Zap style={{ color: '#a78bfa', width: '20px', height: '20px' }} />
+      </div>
+      <div>
+        <h2 style={{
+          color: '#ffffff',
+          fontSize: '18px',
+          fontWeight: '700',
+          letterSpacing: '-0.01em'
+        }}>
+          AI Assistant
+        </h2>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
+          Intelligent insights & actions
+        </p>
+      </div>
+    </div>
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {insights.length === 0 ? (
+        <div style={{
+          padding: '24px',
+          textAlign: 'center',
+          color: 'rgba(255, 255, 255, 0.5)',
+          fontSize: '14px'
+        }}>
+          <Sparkles style={{ width: '32px', height: '32px', margin: '0 auto 12px', opacity: 0.5 }} />
+          Everything's looking good! Check back later for new insights.
         </div>
+      ) : (
+        insights.map((insight, idx) => (
+          <InsightCard key={idx} insight={insight} />
+        ))
+      )}
+    </div>
+  </div>
+);
 
-        {/* Asset Type Distribution */}
-        <div className="glass-surface p-6">
-          <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Asset Type Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <RePieChart>
-              <Pie
-                data={assetTypeData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-                style={{ fontSize: '13px' }}
-              >
-                {assetTypeData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'var(--glass-bg)', 
-                  border: '1px solid var(--glass-border)',
-                  borderRadius: '8px',
-                  backdropFilter: 'blur(16px)',
-                  color: 'var(--text-primary)'
-                }}
-              />
-            </RePieChart>
-          </ResponsiveContainer>
+// Insight Card Component
+const InsightCard = ({ insight }) => {
+  const Icon = insight.icon;
+  
+  return (
+    <div style={{
+      background: 'rgba(255, 255, 255, 0.04)',
+      border: `1px solid ${insight.color}30`,
+      borderRadius: '14px',
+      padding: '18px',
+      transition: 'all 0.3s ease',
+      cursor: 'pointer'
+    }}
+    onClick={insight.action}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.background = `${insight.color}15`;
+      e.currentTarget.style.borderColor = `${insight.color}50`;
+      e.currentTarget.style.transform = 'translateX(4px)';
+      e.currentTarget.style.boxShadow = `0 4px 16px ${insight.color}20`;
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+      e.currentTarget.style.borderColor = `${insight.color}30`;
+      e.currentTarget.style.transform = 'translateX(0)';
+      e.currentTarget.style.boxShadow = 'none';
+    }}
+    >
+      <div style={{ display: 'flex', gap: '14px' }}>
+        <div style={{
+          width: '36px',
+          height: '36px',
+          background: `${insight.color}20`,
+          borderRadius: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          border: `1px solid ${insight.color}30`
+        }}>
+          <Icon style={{ color: insight.color, width: '18px', height: '18px' }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <p style={{
+            color: '#ffffff',
+            fontSize: '13px',
+            fontWeight: '500',
+            lineHeight: '1.5',
+            marginBottom: '8px'
+          }}>
+            {insight.message}
+          </p>
+          <button style={{
+            background: 'transparent',
+            border: 'none',
+            color: insight.color,
+            fontSize: '12px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: 0
+          }}>
+            {insight.actionLabel}
+            <ArrowRight style={{ width: '14px', height: '14px' }} />
+          </button>
         </div>
       </div>
     </div>
