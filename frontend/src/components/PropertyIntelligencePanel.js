@@ -388,6 +388,39 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     }
   };
 
+  const handleDelete = async () => {
+    if (!data || !data.id) {
+      toast.error('Cannot delete this property');
+      return;
+    }
+
+    try {
+      const { supabase } = await import('../supabaseClient');
+      
+      // Delete from deals table
+      const { error } = await supabase
+        .from('deals')
+        .delete()
+        .eq('id', data.id);
+
+      if (error) throw error;
+
+      toast.success('Property deleted successfully');
+      setShowDeleteConfirm(false);
+      onClose();
+      
+      // Refresh the page or navigate away
+      if (window.location.pathname.includes('/deals/')) {
+        navigate('/deals');
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      toast.error('Failed to delete property');
+    }
+  };
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
