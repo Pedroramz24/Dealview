@@ -168,7 +168,7 @@ const CalendarView = () => {
     fetchCalendarEvents();
   }, [fetchCalendarEvents]);
 
-  const handleEventClick = (info) => {
+  const handleEventClick = async (info) => {
     const event = {
       id: info.event.id,
       title: info.event.title,
@@ -177,6 +177,41 @@ const CalendarView = () => {
       backgroundColor: info.event.backgroundColor,
       ...info.event.extendedProps
     };
+
+    // Fetch related deal if linked
+    if (event.relatedDealId && !event.dealData) {
+      try {
+        const { data: dealData } = await supabase
+          .from('deals')
+          .select('*')
+          .eq('id', event.relatedDealId)
+          .single();
+        
+        if (dealData) {
+          event.dealData = dealData;
+        }
+      } catch (err) {
+        console.error('Error fetching related deal:', err);
+      }
+    }
+
+    // Fetch related contact if linked
+    if (event.relatedContactId && !event.contactData) {
+      try {
+        const { data: contactData } = await supabase
+          .from('contacts')
+          .select('*')
+          .eq('id', event.relatedContactId)
+          .single();
+        
+        if (contactData) {
+          event.contactData = contactData;
+        }
+      } catch (err) {
+        console.error('Error fetching related contact:', err);
+      }
+    }
+
     setSelectedEvent(event);
     setShowEventPanel(true);
   };
