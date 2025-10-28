@@ -717,6 +717,19 @@ td {
     transform: translate(30px, -30px) rotate(120deg);
   }
   66% {
+
+
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
     transform: translate(-20px, 20px) rotate(240deg);
   }
 }
