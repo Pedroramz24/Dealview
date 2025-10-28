@@ -803,14 +803,14 @@ td {
   opacity: 0.8;
 }
 
-/* Toned Down Glow Effects - Cleaner Look */
+/* Refined Glow Effects - Unified & Subtle */
 .fc .fc-day-today .fc-daygrid-day-number {
-  background: linear-gradient(135deg, rgba(0, 184, 212, 0.18), rgba(0, 184, 212, 0.1));
+  background: linear-gradient(135deg, rgba(0, 184, 212, 0.12), rgba(0, 184, 212, 0.06));
   color: #00d4ff;
   font-weight: 900;
-  box-shadow: 0 0 8px rgba(0, 184, 212, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(0, 184, 212, 0.3);
-  animation: none; /* Removed pulsing */
+  box-shadow: 0 0 4px rgba(0, 184, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 184, 212, 0.25);
+  animation: none;
 }
 
 /* Subtle glow on Create Event button */
