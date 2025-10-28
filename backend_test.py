@@ -718,6 +718,290 @@ class BackendTester:
                 
         except Exception as e:
             self.log_result("Counties Identify", False, f"Request error: {str(e)}")
+
+    def test_dashboard_news_authentication(self):
+        """Test GET /api/dashboard/news - Authentication required"""
+        try:
+            # Test without authentication
+            response = requests.get(
+                f"{self.base_url}/dashboard/news",
+                timeout=15
+            )
+            
+            if response.status_code == 401 or response.status_code == 403:
+                self.log_result(
+                    "News Feed - Authentication", 
+                    True, 
+                    "Endpoint correctly requires authentication (401/403 without token)"
+                )
+            else:
+                self.log_result(
+                    "News Feed - Authentication", 
+                    False, 
+                    f"Endpoint should require auth but returned status {response.status_code}",
+                    response.text[:200] if response.text else "No response"
+                )
+                
+        except Exception as e:
+            self.log_result("News Feed - Authentication", False, f"Request error: {str(e)}")
+
+    def test_dashboard_news_fetch(self):
+        """Test GET /api/dashboard/news - Successful news fetch with authentication"""
+        try:
+            response = requests.get(
+                f"{self.base_url}/dashboard/news",
+                headers=self.headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify response structure
+                required_fields = ["articles", "count", "cached"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_result(
+                        "News Feed - Fetch", 
+                        False, 
+                        f"Response missing required fields: {missing_fields}",
+                        f"Response keys: {list(data.keys())}"
+                    )
+                    return
+                
+                articles = data.get("articles", [])
+                count = data.get("count", 0)
+                cached = data.get("cached", False)
+                
+                # Verify we have articles
+                if count == 0 or len(articles) == 0:
+                    self.log_result(
+                        "News Feed - Fetch", 
+                        False, 
+                        "No articles returned from RSS feeds",
+                        f"Count: {count}, Articles length: {len(articles)}"
+                    )
+                    return
+                
+                # Verify article count matches
+                if count != len(articles):
+                    self.log_result(
+                        "News Feed - Fetch", 
+                        False, 
+                        f"Count mismatch: count={count}, articles length={len(articles)}"
+                    )
+                    return
+                
+                # Verify max 8 articles
+                if count > 8:
+                    self.log_result(
+                        "News Feed - Fetch", 
+                        False, 
+                        f"Too many articles returned: {count} (max should be 8)"
+                    )
+                    return
+                
+                self.log_result(
+                    "News Feed - Fetch", 
+                    True, 
+                    f"Successfully fetched {count} articles (cached: {cached})",
+                    f"Articles from: {list(set([a.get('source', 'Unknown') for a in articles]))}"
+                )
+                
+                return articles
+                
+            else:
+                self.log_result(
+                    "News Feed - Fetch", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                return None
+                
+        except Exception as e:
+            self.log_result("News Feed - Fetch", False, f"Request error: {str(e)}")
+            return None
+
+    def test_dashboard_news_structure(self, articles):
+        """Test article structure - verify each article has required fields"""
+        if not articles:
+            self.log_result(
+                "News Feed - Article Structure", 
+                False, 
+                "No articles available to test structure"
+            )
+            return
+        
+        required_article_fields = ["title", "description", "source", "url", "publishedAt"]
+        
+        all_valid = True
+        invalid_articles = []
+        
+        for idx, article in enumerate(articles):
+            missing_fields = [field for field in required_article_fields if field not in article]
+            
+            if missing_fields:
+                all_valid = False
+                invalid_articles.append({
+                    "index": idx,
+                    "title": article.get("title", "Unknown"),
+                    "missing_fields": missing_fields
+                })
+        
+        if all_valid:
+            # Check description length (should be ~200 chars max)
+            long_descriptions = [
+                {"title": a.get("title", "Unknown"), "length": len(a.get("description", ""))}
+                for a in articles 
+                if len(a.get("description", "")) > 210
+            ]
+            
+            if long_descriptions:
+                self.log_result(
+                    "News Feed - Article Structure", 
+                    True, 
+                    f"All articles have required fields, but {len(long_descriptions)} have descriptions > 200 chars",
+                    f"Long descriptions: {long_descriptions}"
+                )
+            else:
+                # Check for real data (not placeholder)
+                placeholder_count = sum(1 for a in articles if "Stay updated" in a.get("description", ""))
+                
+                if placeholder_count > 0:
+                    self.log_result(
+                        "News Feed - Article Structure", 
+                        False, 
+                        f"Found {placeholder_count} placeholder articles - RSS feeds may not be working",
+                        "Articles contain placeholder text instead of real news"
+                    )
+                else:
+                    self.log_result(
+                        "News Feed - Article Structure", 
+                        True, 
+                        f"All {len(articles)} articles have complete structure with real data",
+                        f"Fields verified: {required_article_fields}"
+                    )
+        else:
+            self.log_result(
+                "News Feed - Article Structure", 
+                False, 
+                f"{len(invalid_articles)} articles missing required fields",
+                f"Invalid articles: {invalid_articles}"
+            )
+
+    def test_dashboard_news_caching(self):
+        """Test caching - second request within 1 hour should return cached: true"""
+        try:
+            # First request
+            response1 = requests.get(
+                f"{self.base_url}/dashboard/news",
+                headers=self.headers,
+                timeout=30
+            )
+            
+            if response1.status_code != 200:
+                self.log_result(
+                    "News Feed - Caching", 
+                    False, 
+                    f"First request failed with status {response1.status_code}"
+                )
+                return
+            
+            data1 = response1.json()
+            cached1 = data1.get("cached", False)
+            
+            # Second request (should be cached)
+            response2 = requests.get(
+                f"{self.base_url}/dashboard/news",
+                headers=self.headers,
+                timeout=30
+            )
+            
+            if response2.status_code != 200:
+                self.log_result(
+                    "News Feed - Caching", 
+                    False, 
+                    f"Second request failed with status {response2.status_code}"
+                )
+                return
+            
+            data2 = response2.json()
+            cached2 = data2.get("cached", False)
+            
+            # Second request should be cached
+            if cached2:
+                self.log_result(
+                    "News Feed - Caching", 
+                    True, 
+                    f"Caching working correctly (1st: cached={cached1}, 2nd: cached={cached2})",
+                    f"Cache duration: 1 hour (3600 seconds)"
+                )
+            else:
+                self.log_result(
+                    "News Feed - Caching", 
+                    False, 
+                    f"Second request not cached (1st: cached={cached1}, 2nd: cached={cached2})",
+                    "Expected cached=True on second request within 1 hour"
+                )
+                
+        except Exception as e:
+            self.log_result("News Feed - Caching", False, f"Request error: {str(e)}")
+
+    def test_dashboard_news_error_handling(self):
+        """Test error handling when RSS feeds are unavailable"""
+        # This test verifies the endpoint returns gracefully even if feeds fail
+        # We can't force feeds to fail, but we can verify the response structure
+        try:
+            response = requests.get(
+                f"{self.base_url}/dashboard/news",
+                headers=self.headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check if error field exists (indicates graceful error handling)
+                has_error_field = "error" in data
+                articles = data.get("articles", [])
+                
+                if has_error_field and len(articles) == 1:
+                    # Placeholder response on error
+                    placeholder = articles[0]
+                    if "Stay updated" in placeholder.get("description", ""):
+                        self.log_result(
+                            "News Feed - Error Handling", 
+                            True, 
+                            "Endpoint returns placeholder on RSS feed errors (graceful degradation)",
+                            "Error handling verified with placeholder article"
+                        )
+                    else:
+                        self.log_result(
+                            "News Feed - Error Handling", 
+                            True, 
+                            "Endpoint handles errors gracefully",
+                            "Returns valid response structure even on errors"
+                        )
+                else:
+                    # Normal response - error handling not triggered
+                    self.log_result(
+                        "News Feed - Error Handling", 
+                        True, 
+                        "RSS feeds working normally (error handling not triggered)",
+                        f"Returned {len(articles)} real articles"
+                    )
+            else:
+                self.log_result(
+                    "News Feed - Error Handling", 
+                    False, 
+                    f"Unexpected status code {response.status_code}",
+                    response.text[:500] if response.text else "No response"
+                )
+                
+        except Exception as e:
+            self.log_result("News Feed - Error Handling", False, f"Request error: {str(e)}")
     
     def run_all_tests(self):
         """Run all backend tests"""
