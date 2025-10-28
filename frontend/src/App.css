@@ -856,9 +856,9 @@ td {
 }
 
 .fc .fc-more-link {
-  box-shadow: 0 1px 6px rgba(0, 184, 212, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 1px 4px rgba(0, 184, 212, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
 }
 
 .fc .fc-more-link:hover {
-  box-shadow: 0 3px 12px rgba(0, 184, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(0, 184, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
