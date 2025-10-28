@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calendar, ChevronLeft, ChevronRight, Upload, Download, ExternalLink } from 'lucide-react';
+import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calendar, ChevronLeft, ChevronRight, Upload, Download, ExternalLink, Trash2 } from 'lucide-react';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { toast } from 'sonner';
 import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInput';
