@@ -973,6 +973,167 @@ const CalendarView = () => {
                 </button>
               ))}
             </div>
+
+            {/* Reschedule Section - Collapsible */}
+            {showReschedule && (
+              <div style={{
+                marginTop: '24px',
+                padding: '24px',
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04))',
+                border: '1px solid rgba(59, 130, 246, 0.2)',
+                borderRadius: '16px',
+                animation: 'slideDown 0.3s ease-out'
+              }}>
+                <p style={{ 
+                  color: 'rgba(255,255,255,0.3)', 
+                  fontSize: '11px', 
+                  fontWeight: '900', 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '0.12em', 
+                  marginBottom: '16px' 
+                }}>
+                  Reschedule Event
+                </p>
+
+                {/* Date Input */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ 
+                    display: 'block', 
+                    color: 'rgba(255,255,255,0.6)', 
+                    fontSize: '13px', 
+                    fontWeight: '600', 
+                    marginBottom: '8px' 
+                  }}>
+                    Date *
+                  </label>
+                  <input
+                    type="date"
+                    value={rescheduleDate}
+                    onChange={(e) => setRescheduleDate(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      outline: 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.06)';
+                      e.target.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.04)';
+                      e.target.style.borderColor = 'rgba(255,255,255,0.1)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {/* Time Input */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ 
+                    display: 'block', 
+                    color: 'rgba(255,255,255,0.6)', 
+                    fontSize: '13px', 
+                    fontWeight: '600', 
+                    marginBottom: '8px' 
+                  }}>
+                    Time (optional)
+                  </label>
+                  <input
+                    type="time"
+                    value={rescheduleTime}
+                    onChange={(e) => setRescheduleTime(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      outline: 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.06)';
+                      e.target.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.04)';
+                      e.target.style.borderColor = 'rgba(255,255,255,0.1)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button
+                    onClick={handleSaveReschedule}
+                    style={{
+                      flex: 1,
+                      padding: '14px',
+                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15))',
+                      border: '1px solid rgba(59, 130, 246, 0.4)',
+                      borderRadius: '12px',
+                      color: '#3b82f6',
+                      fontWeight: '800',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.25))';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15))';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => setShowReschedule(false)}
+                    style={{
+                      flex: 1,
+                      padding: '14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '12px',
+                      color: 'rgba(255,255,255,0.6)',
+                      fontWeight: '800',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
