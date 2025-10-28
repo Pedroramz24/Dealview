@@ -666,7 +666,7 @@ const CalendarView = () => {
               </button>
             </div>
             
-            {/* Glowing category badge */}
+            {/* Glowing category badge - TONED DOWN */}
             {selectedEvent.category && (
               <div style={{
                 display: 'inline-flex',
@@ -676,11 +676,10 @@ const CalendarView = () => {
                 borderRadius: '10px',
                 fontSize: '13px',
                 fontWeight: '800',
-                background: `linear-gradient(135deg, ${selectedEvent.colorScheme?.primary || '#a855f7'}20, ${selectedEvent.colorScheme?.primary || '#a855f7'}10)`,
+                background: `linear-gradient(135deg, ${selectedEvent.colorScheme?.primary || '#a855f7'}18, ${selectedEvent.colorScheme?.primary || '#a855f7'}08)`,
                 color: selectedEvent.colorScheme?.primary || '#a855f7',
-                border: `1px solid ${selectedEvent.colorScheme?.primary || '#a855f7'}35`,
-                boxShadow: `0 0 30px ${selectedEvent.colorScheme?.glow || 'rgba(168,85,247,0.3)'}, inset 0 1px 0 rgba(255,255,255,0.1)`,
-                animation: 'pulse-glow-badge 3s ease-in-out infinite'
+                border: `1px solid ${selectedEvent.colorScheme?.primary || '#a855f7'}30`,
+                boxShadow: `0 0 20px ${selectedEvent.colorScheme?.glow || 'rgba(168,85,247,0.15)'}, inset 0 1px 0 rgba(255,255,255,0.08)`
               }}>
                 <span style={{ fontSize: '18px' }}>{selectedEvent.icon}</span>
                 <span>{selectedEvent.category}</span>
