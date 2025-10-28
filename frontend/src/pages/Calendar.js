@@ -929,7 +929,7 @@ const CalendarView = () => {
                     justifyContent: 'center',
                     gap: '14px',
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: `0 6px 24px ${btn.color.primary}10, inset 0 1px 0 rgba(255,255,255,0.08)`,
+                    boxShadow: `0 4px 16px ${btn.color.primary}08, inset 0 1px 0 rgba(255,255,255,0.08)`,
                     position: 'relative',
                     overflow: 'hidden'
                   }}
