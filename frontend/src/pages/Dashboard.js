@@ -40,6 +40,9 @@ const Dashboard = () => {
 
       if (dealsError) throw dealsError;
 
+      // Ensure deals is an array
+      const dealsArray = deals || [];
+
       // Fetch contacts
       const { data: contactsData, error: contactsError } = await supabase
         .from('contacts')
@@ -59,25 +62,25 @@ const Dashboard = () => {
         .limit(5);
 
       // Calculate statistics
-      const totalValue = deals.reduce((sum, deal) => sum + (parseFloat(deal.price) || 0), 0);
-      const activeDeals = deals.filter(d => d.stage !== 'closed_won' && d.stage !== 'overpriced').length;
-      const underContract = deals.filter(d => d.stage === 'under_contract').length;
+      const totalValue = dealsArray.reduce((sum, deal) => sum + (parseFloat(deal.price) || 0), 0);
+      const activeDeals = dealsArray.filter(d => d.stage !== 'closed_won' && d.stage !== 'overpriced').length;
+      const underContract = dealsArray.filter(d => d.stage === 'under_contract').length;
       
       // New contacts this week
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      const newContactsThisWeek = contactsData.filter(c => 
+      const newContactsThisWeek = (contactsData || []).filter(c => 
         new Date(c.created_at) >= oneWeekAgo
       ).length;
 
       setStats({
-        totalDeals: deals.length,
+        totalDeals: dealsArray.length,
         activeDeals,
         underContract,
         totalValue,
-        avgDealSize: deals.length > 0 ? totalValue / deals.length : 0,
+        avgDealSize: dealsArray.length > 0 ? totalValue / dealsArray.length : 0,
         newContactsThisWeek,
-        deals
+        deals: dealsArray
       });
 
       // Process upcoming events
