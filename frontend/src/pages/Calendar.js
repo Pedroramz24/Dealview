@@ -661,7 +661,7 @@ const CalendarView = () => {
               <h3 style={{ color: '#ffffff', fontSize: '32px', fontWeight: '900', letterSpacing: '-0.03em', lineHeight: '1.2', marginBottom: '20px' }}>
                 {selectedEvent.title}
               </h3>
-              <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '20px' }}>
                 <div style={{
                   width: '42px',
                   height: '42px',
@@ -679,9 +679,26 @@ const CalendarView = () => {
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Scheduled</p>
                   <p style={{ fontSize: '15px', fontWeight: '700', color: '#ffffff' }}>
                     {new Date(selectedEvent.start).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                    {!selectedEvent.allDay && ` • ${new Date(selectedEvent.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`}
                   </p>
                 </div>
               </div>
+
+              {/* Event Description/Notes */}
+              {selectedEvent.description && (
+                <div style={{
+                  padding: '20px',
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: '12px',
+                  marginTop: '20px'
+                }}>
+                  <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '12px' }}>Notes</p>
+                  <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: '1.6', fontWeight: '500' }}>
+                    {selectedEvent.description}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Deal Card - Ultra Premium */}
