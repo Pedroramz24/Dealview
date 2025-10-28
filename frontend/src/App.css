@@ -782,7 +782,7 @@ td {
   width: 4px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 100%);
   border-radius: 10px 0 0 10px;
-  box-shadow: 0 0 20px currentColor;
+  box-shadow: 0 0 10px currentColor;
 }
 
 .fc .fc-daygrid-event::after {
