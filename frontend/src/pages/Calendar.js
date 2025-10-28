@@ -307,7 +307,7 @@ const CalendarView = () => {
                   textAlign: 'center',
                   letterSpacing: '-0.01em'
                 }}>
-                  {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  {currentMonth}
                 </span>
                 <button
                   onClick={() => calendarRef.current?.getApi().next()}
