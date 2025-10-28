@@ -441,6 +441,10 @@ const CalendarView = () => {
                 headerToolbar={false}
                 events={events}
                 eventClick={handleEventClick}
+                datesSet={(dateInfo) => {
+                  const monthYear = dateInfo.start.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                  setCurrentMonth(monthYear);
+                }}
                 height="100%"
                 expandRows={true}
                 handleWindowResize={true}
