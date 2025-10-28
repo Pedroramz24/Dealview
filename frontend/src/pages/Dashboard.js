@@ -98,6 +98,9 @@ const Dashboard = () => {
       // Generate AI insights
       generateAIInsights(deals, contactsData, calendarEvents || []);
 
+      // Fetch market news
+      fetchMarketNews();
+
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
