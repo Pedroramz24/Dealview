@@ -564,6 +564,19 @@ td {
   isolation: isolate !important;
 }
 
+
+
+/* Ensure solid, crisp background colors */
+.fc .fc-event-main-frame {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.fc .fc-event .fc-event-main {
+  background: inherit !important;
+  border-radius: inherit !important;
+}
+
 .fc .fc-event:hover {
   transform: translateY(-1px) translateZ(0) !important;
   box-shadow: 
