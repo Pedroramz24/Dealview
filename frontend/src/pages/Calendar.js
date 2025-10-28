@@ -937,7 +937,7 @@ const CalendarView = () => {
                     e.currentTarget.style.background = `linear-gradient(135deg, ${btn.color.primary}25, ${btn.color.primary}15)`;
                     e.currentTarget.style.borderColor = `${btn.color.primary}40`;
                     e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)';
-                    e.currentTarget.style.boxShadow = `0 10px 32px ${btn.color.glow}, inset 0 1px 0 rgba(255,255,255,0.15)`;
+                    e.currentTarget.style.boxShadow = `0 8px 24px ${btn.color.glow}, inset 0 1px 0 rgba(255,255,255,0.12)`;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = `linear-gradient(135deg, ${btn.color.primary}15, ${btn.color.primary}08)`;
