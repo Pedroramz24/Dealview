@@ -873,7 +873,8 @@ const CalendarView = () => {
                 Quick Actions
               </p>
               
-              {[\n                { icon: CheckCircle, label: 'Mark Complete', color: EVENT_COLORS.deal, action: handleMarkComplete },
+              {[
+                { icon: CheckCircle, label: 'Mark Complete', color: EVENT_COLORS.deal, action: handleMarkComplete },
                 { icon: Edit2, label: 'Reschedule Event', color: EVENT_COLORS.followup, action: handleReschedule },
                 ...(selectedEvent.dealId ? [{ icon: ExternalLink, label: 'View Full Deal', color: { primary: '#00b8d4', glow: 'rgba(0,184,212,0.4)' }, action: handleViewDeal }] : [])
               ].map((btn, idx) => (
