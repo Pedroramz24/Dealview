@@ -1,34 +1,38 @@
 <analysis>
-The AI engineer's work involved an iterative process of bug fixing and feature development for a map-first CRM. Key issues addressed included: resolving input responsiveness in  by refactoring components, implementing automatic number formatting across various input fields, and integrating comprehensive contact management into both  and , ensuring UI consistency. A significant feature addition was the Perplexity AI research panel, which required extensive backend integration, authentication debugging, and API parameter adjustments. Further improvements involved relocating map controls, fixing and redesigning the public deal sharing page with a carousel and dynamic document section, and resolving numerous UI glitches related to panel animations, marker positioning, and hover effects. Most recently, the engineer added advanced measurement tools with Turf.js for accuracy and addressed flickering issues in the measurement panel and drawn polygons using React's  hook.
+The AI engineer's work involved two primary development thrusts: resolving persistent map parcel flickering issues and building a comprehensive Calendar tab. The parcel flickering bug proved complex, requiring several iterative fixes. Initially,  was applied to parcel paint properties, then to the  array, followed by migrating  management to  and leveraging MapLibre's native camera system to prevent re-renders conflicting with map interactions. Critical fixes included correcting  to 512 for vector tiles, updating  references to , and decoupling the street labels  from  dependencies.
+
+Simultaneously, the Calendar tab's development was iterative, beginning with database migrations and . Unsatisfied with the UI, the engineer migrated to , undertaking multiple UI redesigns to achieve a dark, glass-morphism aesthetic inspired by Notion and Cure.AI, featuring depth, animations, and color-coded events. A  was developed, mirroring the . Recurring issues included CSS syntax errors, FullCalendar module resolution problems, / reference errors, an initial  table creation failure, frozen dropdowns for linked items, incorrect time formats, and event display issues. The most recent efforts focused on making Mark Complete and Reschedule Event functional for all event types and refining the calendar's glowing effects for a cleaner, more subtle appearance, ensuring UI consistency across the application.
 </analysis>
 
 <product_requirements>
-The Pedro Armando CRM is a dark AI startup glass-morphism UI map-first commercial real estate platform. It features a MapLibre GL map with specific asset type colors, Create New Deal, Transaction Timeline, and Layer Manager. Functionality includes a Kanban Pipeline, rich inline deal editing, Contacts, geocoding, and data synchronization.
+The Pedro Armando CRM is a map-first commercial real estate platform with a dark, AI-startup, glass-morphism UI. It uses MapLibre GL for map interactions, supporting specific asset type colors, deal creation, transaction timelines, and a layer manager. Core features include a Kanban Pipeline, rich inline deal editing, Contacts management, geocoding, and data synchronization.
 
-Key user requests and product goals addressed and ongoing:
-- Resolve  drag-and-drop issues.
-- Implement automated PSF calculation with number formatting.
-- Ensure functional contact linking.
-- Add a Negotiations stage to the pipeline.
-- Synchronize property details and provide a smooth inline editing experience.
-- Redesign for a compact, icon-only sidebar and dynamic three-panel map architecture.
-- Overlay visible street labels on MapLibre.
-- Add a parcel toggle button to the Layer Manager.
-- Ensure visual alignment of UI elements.
-- Display parcel information in  on click, including owner mailing address and County ID, and remove Land/Crop Cover.
-- Highlight the currently selected parcel.
-- Add automatic comma formatting for all number inputs website-wide.
-- Enable editing/creating linked contacts from  and map panel, ensuring visibility and comprehensive input fields.
-- Implement a Perplexity AI research assistant panel on the map for real estate queries with citations.
-- Move the Street/Satellite toggle button into the .
-- Fix public deal sharing, redesign  page as a read-only  replica with specific UI adjustments, image carousel, and an always-visible documents section.
-- Implement area (SQFT/AC) and distance (Feet/Miles) measurement tools with Turf.js for accuracy.
-- Make the measurement panel draggable and resolve any associated flickering.
+Key requests and ongoing product goals include:
+- Resolving  drag-and-drop issues and implementing automated PSF calculation.
+- Ensuring functional contact linking and adding a Negotiations pipeline stage.
+- Synchronizing property details for a smooth inline editing experience.
+- Redesigning the UI for a compact, icon-only sidebar and a dynamic three-panel map architecture.
+- Overlaying visible street labels and adding a parcel toggle to the Layer Manager.
+- Displaying detailed parcel information (owner mailing address, County ID) in  on click, removing Land/Crop Cover, and highlighting selected parcels.
+- Implementing automatic comma formatting for all number inputs website-wide.
+- Enabling editing/creating linked contacts from  and map panel, ensuring comprehensive input fields.
+- Integrating a Perplexity AI research assistant panel on the map for real estate queries with citations.
+- Relocating the Street/Satellite toggle button to the .
+- Fixing public deal sharing by redesigning the  page as a read-only  replica with specific UI adjustments, image carousel, and always-visible documents section.
+- Implementing accurate area (SQFT/AC) and distance (Feet/Miles) measurement tools using Turf.js, making the measurement panel draggable, and resolving associated flickering.
+- **Developing an integrated Calendar tab**: a unified timeline-style calendar displaying events from deals, contacts, and tasks, with a dark UI, togglable grid/list views, color-coded events (green for deal milestones, blue for contact follow-ups, purple for general tasks, orange for team/meeting events), and a side panel for event details (property image, address, summary, links to documents/contacts).
+- The Calendar should feature filters (e.g., My Deals, Team Deals, Closings This Month) and dynamically pull data from deals, contacts, and pipeline for automatic event creation and two-way sync.
+- Users can create events manually or automatically from linked deals/contacts, with fields for title, date/time, description, related deal/contact, type, reminders, and repeat options.
+- Event panel quick-action buttons: Mark Complete, Reschedule, View Deal.
+- Visual flags for upcoming/overdue deadlines (red for overdue, yellow for due soon, green for completed).
+- Notifications and reminders (future dashboard integration).
+- The calendar UI should be premium, world-class, with depth, texture, visual hierarchy, dark glass-morphism, glowing edges, and smooth interactions, with a Create New Event panel sliding from the right, identical to the Create New Contact panel.
 </product_requirements>
 
 <key_technical_concepts>
-- React (18+), React Context, Custom Hooks, 
+- React (18+), React Context, Custom Hooks, , , 
 - MapLibre GL JS, ,  (GIS)
+- FullCalendar (premium calendar library)
 - FastAPI (Python), Supabase (PostgreSQL), JWT, Perplexity AI (LLM API)
 - Tailwind CSS, Controlled Components, Component Refactoring
 </key_technical_concepts>
@@ -37,52 +41,29 @@ Key user requests and product goals addressed and ongoing:
 
 
 - :
-    - Summary: Core map interaction component, managing layers, panels, and user interactions.
-    - Changes: Refactored panel states, moved Street/Satellite toggle, integrated AI Research panel state/rendering, added measurement tool states (, , , ), implemented map click handlers for drawing, added  for clearing measurements, and included / components for measurement visualization. Fixed marker shadow offsets and flickering polygons using .
-
-- :
-    - Summary: Panel displaying detailed property/deal information.
-    - Changes: Resolved inline editing input focus issues by moving  and  definitions outside. Implemented number formatting, integrated  (always visible linked contacts, Create New Contact button), added PSF calculations, and ensured UI consistency for buttons.
-
+    - Summary: Core map interaction, managing layers, panels.
+    - Changes: Extensively refactored to resolve parcel flickering. Implemented  for , , , and . Switched from controlled  to  with . Replaced  with  and  for map state. Corrected  for vector tiles to 512. Removed redundant zoom conditionals. Decoupled street labels  from  dependency. Fixed  with .
 - :
     - Summary: Manages map layer visibility controls.
-    - Changes: Now accepts  and  props to host the Street/Satellite toggle. Added a Measurement Tools UI section.
-
+    - Changes: Updated to use  instead of a  prop to resolve a  error.
 - :
-    - Summary: Full details page for a specific deal.
-    - Changes: Integrated number input formatting with  handlers for various fields. Ensured the Linked Contacts section and Create New Contact button are always visible in both edit and view modes, and standardized button styling.
-
-- :
-    - Summary: Reusable component for contact creation/editing.
-    - Changes: Initially created based on  logic. Adjusted positioning to open adjacent to . Fully rewritten to include all contact information fields present on the main Contacts page.
-
-- :
-    - Summary: FastAPI backend, exposing API endpoints.
-    - Changes: Moved the  endpoint definition to be correctly included in . Implemented a Supabase authentication dependency for the chat endpoint. Updated the  endpoint to use Supabase for data retrieval.
-
-- :
-    - Summary: Handles communication with the Perplexity AI API.
-    - Changes: Created this file to centralize Perplexity API calls. Modified the API call to remove unsupported  and  parameters.
-
-- :
-    - Summary: New map panel for AI-powered real estate research.
-    - Changes: Created as a chat interface. Fixed authentication by passing Supabase access tokens. Adjusted panel positioning to slide in from the right and implemented conditional rendering to prevent automatic opening.
-
-- :
-    - Summary: Read-only page for sharing deal details.
-    - Changes: Completely redesigned multiple times to match  in read-only mode, with specific UI tweaks: smaller logo, centered title/address, black map style, always-visible documents section, and an image carousel. Corrected a syntax error involving an erroneous  character.
-
-- :
-    - Summary: Utility for consistent number formatting.
-    - Changes: Created this file to house  function.
-
-- :
-    - Summary: Utility for performing geometric calculations for map measurement tools.
-    - Changes: Created this file. Subsequently, completely rewritten to integrate  for professional-grade accuracy in distance and area calculations.
-
+    - Summary: Main application router.
+    - Changes: Added the new  route with  component.
 - :
     - Summary: Global CSS file.
-    - Changes: Removed a  transform on marker hover to prevent position shifts.
+    - Changes: Suffered significant unintended deletions and restorations during calendar styling iterations. Ultimately, the original core CSS was restored, and calendar-specific CSS (for both  and ) was carefully appended, with multiple fixes for syntax errors ( characters) and glow effect tuning.
+- :
+    - Summary: NEW - Implements the integrated calendar view.
+    - Changes: Initially created using , then completely rebuilt using  for a premium aesthetic. UI was iteratively redesigned to match Notion/Cure.AI styles, incorporating glass-morphism, depth, and color-coded events. Includes state for events, view, filters, selected event, and month navigation. Integrated Supabase for fetching deals, contacts, and calendar events. Implemented event filtering, side panel for details, and quick action buttons. Handled 12-hour time format, contact linking, and event display logic.
+- :
+    - Summary: Defines the main application layout and sidebar navigation.
+    - Changes: Added a new navigation link for the Calendar tab in the sidebar.
+- :
+    - Summary: NEW - Reusable panel for creating new calendar events.
+    - Changes: Created, mimicking the styling and structure of . Includes form fields for event title, type, dates, related deal/contact, description. Implements Supabase integration for saving events to  table and fetching related deals/contacts. Fixed literal  character syntax errors. Fixed dropdown issues (not closing, not displaying options). Added time selection to date picker.
+- :
+    - Summary: NEW - Database migration script.
+    - Changes: Created to define the  table and add date-related fields to existing deal tables for milestone tracking, essential for the Calendar feature's functionality.
 </code_architecture>
 
 <pending_tasks>
@@ -94,24 +75,20 @@ Key user requests and product goals addressed and ongoing:
 - Conduct a thorough security audit as indicated by .
 - Implement advanced graphical enhancements for Contacts page.
 - Complete the Email Inbox Integration.
-- Implement a date picker calendar for all date inputs.
+- Implement a date picker calendar for all date inputs (partially done in CreateEventPanel, but still pending for *all* date inputs).
 - Resolve the persistent issue with street labels not appearing on the map (currently paused).
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was focused on resolving a flickering issue with the area measurement polygon on the map. The user reported that the area that we highlighted and measured through the area measure tool is still disappearing when I move across the map, it needs to stay static and not flicker.
+Immediately before this summary request, the AI engineer was engaged in refining the newly developed Calendar tab. The user had reported that Only standalone calendar events can be rescheduled and requested to clean up the glowing effect around certain sections... and tone it down just a little.
 
-The AI engineer's actions involved:
-1.  **Diagnosing the Flickering Polygon**: It was identified that the GeoJSON data object, which defines the drawn measurement polygon, was being recreated on every re-render of the  component, particularly during map movement. This caused the associated MapLibre  and  components to re-render unnecessarily, leading to the reported flickering effect.
-2.  **Implementing Memoization**: To address this, the  React hook was introduced to memoize the GeoJSON data for the measurement layers. This approach ensures that the GeoJSON object is only recomputed when its specific dependencies change, thereby preventing superfluous re-renders of the map  and  components during frequent map interactions like panning or zooming.
-3.  **Code Changes**:
-    *   The necessary  was added to .
-    *   The creation of the GeoJSON data objects for  (lines/points) and  (polygon fill) within  were wrapped inside  calls.
-    *   The  components ( and ) were updated to utilize these newly memoized data objects.
+The AI engineer addressed these specific requests by:
+1.  **Enabling Rescheduling/Completion for All Event Types**: The logic for the Mark Complete and Reschedule Event buttons was updated to ensure that these actions can be performed on *all* calendar events, not just those created directly within the Calendar tab (standalone events). This broadens the utility and consistency of the calendar's interactive features.
+2.  **Toning Down Glowing Effects**: The CSS associated with the calendar's UI, particularly the glow effects previously implemented to match the glass-morphism aesthetic, was refined. This involved making the glows cleaner and more subtle, aligning with the user's feedback for a less pronounced, yet still premium, visual style. Multiple edits were performed on  and potentially other relevant stylesheet sections to achieve this.
 
-The  service was restarted after these modifications. The current state is that the flickering polygon issue, caused by excessive re-renders, is believed to be resolved by optimizing the data flow using .
+The  service was restarted to apply these CSS and logic changes. The current state is that the calendar's action buttons are now universally applicable, and its aesthetic has been adjusted to a cleaner, more toned-down glowing style.
 </current_work>
 
 <optional_next_step>
-Verify the fix for the flickering area measurement polygon on the map.
+Verify that all event types can be rescheduled/marked complete and that the toned-down glowing effects meet the desired aesthetic.
 </optional_next_step>
