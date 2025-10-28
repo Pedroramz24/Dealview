@@ -597,7 +597,9 @@ const CalendarView = () => {
                 events={events}
                 eventClick={handleEventClick}
                 datesSet={(dateInfo) => {
-                  const monthYear = dateInfo.start.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                  // Get the actual month being displayed from the view's currentStart
+                  const displayedDate = dateInfo.view.currentStart;
+                  const monthYear = displayedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                   setCurrentMonth(monthYear);
                 }}
                 height="100%"
