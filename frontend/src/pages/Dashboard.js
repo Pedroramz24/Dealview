@@ -494,13 +494,13 @@ const TimelineModule = ({ events }) => (
 );
 
 // Event Item Component
-const EventItem = ({ event }) => {
+const EventItem = ({ event, index }) => {
   const eventColors = {
-    deal: { primary: '#10b981', bg: 'rgba(16, 185, 129, 0.15)' },
-    followup: { primary: '#3b82f6', bg: 'rgba(59, 130, 246, 0.15)' },
-    deadline: { primary: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)' },
-    meeting: { primary: '#f97316', bg: 'rgba(249, 115, 22, 0.15)' },
-    task: { primary: '#a855f7', bg: 'rgba(168, 85, 247, 0.15)' }
+    deal: { primary: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+    followup: { primary: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+    deadline: { primary: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+    meeting: { primary: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+    task: { primary: '#a855f7', bg: 'rgba(168, 85, 247, 0.1)' }
   };
 
   const color = eventColors[event.event_type] || eventColors.task;
@@ -508,33 +508,38 @@ const EventItem = ({ event }) => {
 
   return (
     <div style={{
-      background: 'rgba(255, 255, 255, 0.03)',
-      border: `1px solid ${color.primary}30`,
+      background: 'rgba(255, 255, 255, 0.02)',
+      border: `1px solid ${color.primary}15`,
       borderRadius: '12px',
       padding: '16px',
       display: 'flex',
       alignItems: 'center',
       gap: '16px',
-      transition: 'all 0.2s ease',
-      cursor: 'pointer'
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      cursor: 'pointer',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
+      animation: `fadeSlideIn 0.4s ease-out ${index * 0.1}s both`,
+      transform: 'translateZ(0)'
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.background = color.bg;
-      e.currentTarget.style.borderColor = `${color.primary}50`;
-      e.currentTarget.style.transform = 'translateX(4px)';
+      e.currentTarget.style.borderColor = `${color.primary}30`;
+      e.currentTarget.style.transform = 'translateX(6px) translateZ(0)';
+      e.currentTarget.style.boxShadow = `0 2px 8px ${color.primary}10, 0 6px 16px rgba(0, 0, 0, 0.2)`;
     }}
     onMouseLeave={(e) => {
-      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-      e.currentTarget.style.borderColor = `${color.primary}30`;
-      e.currentTarget.style.transform = 'translateX(0)';
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+      e.currentTarget.style.borderColor = `${color.primary}15`;
+      e.currentTarget.style.transform = 'translateX(0) translateZ(0)';
+      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.2)';
     }}
     >
       <div style={{
-        width: '8px',
-        height: '8px',
+        width: '6px',
+        height: '6px',
         borderRadius: '50%',
         background: color.primary,
-        boxShadow: `0 0 12px ${color.primary}`
+        boxShadow: `0 0 8px ${color.primary}80, 0 0 3px ${color.primary}`
       }} />
       <div style={{ flex: 1 }}>
         <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
@@ -551,7 +556,8 @@ const EventItem = ({ event }) => {
         fontSize: '11px',
         fontWeight: '700',
         color: color.primary,
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        border: `1px solid ${color.primary}20`
       }}>
         {event.event_type}
       </div>
