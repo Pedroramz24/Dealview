@@ -378,8 +378,8 @@ const Dashboard = () => {
             {/* Timeline Module */}
             <TimelineModule events={upcomingEvents} />
 
-            {/* Market News Feed (Placeholder) */}
-            <NewsModule />
+            {/* Market News Feed */}
+            <NewsModule articles={newsArticles} />
           </div>
 
           {/* Right Column - AI Assistant Panel */}
