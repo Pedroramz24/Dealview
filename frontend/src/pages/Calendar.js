@@ -170,13 +170,77 @@ const CalendarView = () => {
 
   const handleEventClick = (info) => {
     const event = {
+      id: info.event.id,
       title: info.event.title,
       start: info.event.start,
       allDay: info.event.allDay,
+      backgroundColor: info.event.backgroundColor,
       ...info.event.extendedProps
     };
     setSelectedEvent(event);
     setShowEventPanel(true);
+  };
+
+  const handleMarkComplete = async () => {
+    if (!selectedEvent?.id || !selectedEvent.id.includes('calendar_events')) {
+      toast.info('Only standalone calendar events can be marked complete');
+      return;
+    }
+
+    try {
+      const eventId = selectedEvent.id;
+      const { error } = await supabase
+        .from('calendar_events')
+        .update({ 
+          status: 'completed',
+          completed_at: new Date().toISOString()
+        })
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      toast.success('Event marked as complete!');
+      setShowEventPanel(false);
+      fetchCalendarEvents(); // Refresh events
+    } catch (error) {
+      console.error('Error marking complete:', error);
+      toast.error('Failed to mark event complete');
+    }
+  };
+
+  const handleReschedule = async () => {
+    if (!selectedEvent?.id || !selectedEvent.id.includes('calendar_events')) {
+      toast.info('Only standalone calendar events can be rescheduled');
+      return;
+    }
+
+    const newDate = prompt('Enter new date and time (e.g., October 27, 2025 3:30 PM):');
+    if (!newDate) return;
+
+    try {
+      const parsedDate = new Date(newDate);
+      if (isNaN(parsedDate.getTime())) {
+        toast.error('Invalid date format');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('calendar_events')
+        .update({ 
+          start_date: parsedDate.toISOString(),
+          end_date: parsedDate.toISOString()
+        })
+        .eq('id', selectedEvent.id);
+
+      if (error) throw error;
+
+      toast.success('Event rescheduled successfully!');
+      setShowEventPanel(false);
+      fetchCalendarEvents(); // Refresh events
+    } catch (error) {
+      console.error('Error rescheduling:', error);
+      toast.error('Failed to reschedule event');
+    }
   };
 
   const handleViewDeal = () => {
