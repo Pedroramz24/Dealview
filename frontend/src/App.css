@@ -565,7 +565,8 @@ td {
 }
 
 .fc .fc-daygrid-event-harness {
-  margin-bottom: 2px;
+  margin: 2px 0;
+  padding: 0 4px;
 }
 
 .fc .fc-more-link {
