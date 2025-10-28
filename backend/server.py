@@ -1126,10 +1126,11 @@ async def chat_with_ai(request: ChatRequest, current_user = Depends(get_current_
 
 
 @api_router.get("/dashboard/news")
-async def get_market_news(current_user: User = Depends(get_current_user)):
+async def get_market_news():
     """
     Fetch latest commercial real estate market news from RSS feeds.
     Caches results for 1 hour to minimize requests.
+    No authentication required - public news data.
     """
     try:
         # Check cache first
