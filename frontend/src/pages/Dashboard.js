@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [aiInsights, setAiInsights] = useState([]);
   const [contacts, setContacts] = useState([]);
+  const [newsArticles, setNewsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
