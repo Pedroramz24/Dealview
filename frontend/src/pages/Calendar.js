@@ -11,11 +11,11 @@ import { useNavigate } from 'react-router-dom';
 import CreateEventPanel from '../components/CreateEventPanel';
 
 const EVENT_COLORS = {
-  deal: { primary: '#10b981', glow: 'rgba(16, 185, 129, 0.4)', shadow: 'rgba(16, 185, 129, 0.3)' },
-  followup: { primary: '#3b82f6', glow: 'rgba(59, 130, 246, 0.4)', shadow: 'rgba(59, 130, 246, 0.3)' },
-  deadline: { primary: '#ef4444', glow: 'rgba(239, 68, 68, 0.4)', shadow: 'rgba(239, 68, 68, 0.3)' },
-  meeting: { primary: '#f97316', glow: 'rgba(249, 115, 22, 0.4)', shadow: 'rgba(249, 115, 22, 0.3)' },
-  task: { primary: '#a855f7', glow: 'rgba(168, 85, 247, 0.4)', shadow: 'rgba(168, 85, 247, 0.3)' }
+  deal: { primary: '#10b981', glow: 'rgba(16, 185, 129, 0.25)', shadow: 'rgba(16, 185, 129, 0.2)' },
+  followup: { primary: '#3b82f6', glow: 'rgba(59, 130, 246, 0.25)', shadow: 'rgba(59, 130, 246, 0.2)' },
+  deadline: { primary: '#ef4444', glow: 'rgba(239, 68, 68, 0.25)', shadow: 'rgba(239, 68, 68, 0.2)' },
+  meeting: { primary: '#f97316', glow: 'rgba(249, 115, 22, 0.25)', shadow: 'rgba(249, 115, 22, 0.2)' },
+  task: { primary: '#a855f7', glow: 'rgba(168, 85, 247, 0.25)', shadow: 'rgba(168, 85, 247, 0.2)' }
 };
 
 const CalendarView = () => {
