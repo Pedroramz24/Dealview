@@ -10,6 +10,7 @@ from pathlib import Path
 import os
 import uuid
 import logging
+import re
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from supabase import create_client, Client
