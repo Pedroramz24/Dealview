@@ -609,7 +609,11 @@ const CalendarView = () => {
                 moreLinkClick="popover"
                 weekends={true}
                 fixedWeekCount={false}
-                showNonCurrentDates={true}
+                showNonCurrentDates={false}
+                validRange={{
+                  start: '2020-01-01',
+                  end: '2030-12-31'
+                }}
               />
             </div>
           )}
