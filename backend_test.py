@@ -1006,7 +1006,7 @@ class BackendTester:
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
-        print("BACKEND API TESTING - Layer Management APIs")
+        print("BACKEND API TESTING - RSS News Feed & Layer Management")
         print("=" * 60)
         print(f"Testing against: {self.base_url}")
         print(f"Test credentials: {TEST_CREDENTIALS['email']}")
@@ -1019,27 +1019,51 @@ class BackendTester:
         
         print()
         
+        # RSS News Feed API Tests (NEW - HIGH PRIORITY)
+        print("RSS NEWS FEED API TESTS (NEW)")
+        print("-" * 40)
+        
+        # Test 1: Authentication required
+        self.test_dashboard_news_authentication()
+        print()
+        
+        # Test 2: Successful news fetch
+        articles = self.test_dashboard_news_fetch()
+        print()
+        
+        # Test 3: Article structure validation
+        self.test_dashboard_news_structure(articles)
+        print()
+        
+        # Test 4: Caching verification
+        self.test_dashboard_news_caching()
+        print()
+        
+        # Test 5: Error handling
+        self.test_dashboard_news_error_handling()
+        print()
+        
         # Layer Management API Tests
         print("LAYER MANAGEMENT API TESTS")
         print("-" * 40)
         
-        # Test 1: Layer Registry
+        # Test 6: Layer Registry
         self.test_layer_registry()
         print()
         
-        # Test 2: Counties Query
+        # Test 7: Counties Query
         self.test_counties_query()
         print()
         
-        # Test 3: FEMA Floodplain Query
+        # Test 8: FEMA Floodplain Query
         self.test_fema_floodplain_query()
         print()
         
-        # Test 4: San Antonio Zoning Query
+        # Test 9: San Antonio Zoning Query
         self.test_sa_zoning_query()
         print()
         
-        # Test 5: Counties Identify
+        # Test 10: Counties Identify
         self.test_counties_identify()
         print()
         
