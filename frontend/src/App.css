@@ -862,3 +862,28 @@ td {
 .fc .fc-more-link:hover {
   box-shadow: 0 2px 8px rgba(0, 184, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
+
+/* Event title and content alignment */
+.fc .fc-event-main {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding-left: 2px !important;
+}
+
+.fc .fc-event-title {
+  text-align: left !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1 !important;
+}
+
+.fc .fc-event-time {
+  display: inline !important;
+  margin-right: 6px !important;
+  font-weight: 600 !important;
+  opacity: 0.8 !important;
+}
+
