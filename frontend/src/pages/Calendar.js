@@ -255,12 +255,30 @@ const CalendarView = () => {
     }
   };
 
-  const handleReschedule = async () => {
-    const newDate = prompt('Enter new date and time (e.g., October 27, 2025 3:30 PM):');
-    if (!newDate) return;
+  const handleReschedule = () => {
+    // Extract current date and time from selected event
+    const eventDate = new Date(selectedEvent.start);
+    const dateStr = eventDate.toISOString().split('T')[0];
+    const timeStr = eventDate.toTimeString().slice(0, 5);
+    
+    setRescheduleDate(dateStr);
+    setRescheduleTime(timeStr);
+    setShowReschedule(true);
+  };
+
+  const handleSaveReschedule = async () => {
+    if (!rescheduleDate) {
+      toast.error('Please select a date');
+      return;
+    }
 
     try {
-      const parsedDate = new Date(newDate);
+      // Combine date and time
+      const dateTimeStr = rescheduleTime 
+        ? `${rescheduleDate}T${rescheduleTime}:00`
+        : `${rescheduleDate}T00:00:00`;
+      const parsedDate = new Date(dateTimeStr);
+
       if (isNaN(parsedDate.getTime())) {
         toast.error('Invalid date format');
         return;
@@ -307,6 +325,7 @@ const CalendarView = () => {
       }
 
       toast.success('Event rescheduled successfully!');
+      setShowReschedule(false);
       setShowEventPanel(false);
       fetchCalendarEvents();
     } catch (error) {
