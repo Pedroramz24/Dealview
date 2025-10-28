@@ -1127,52 +1127,110 @@ async def chat_with_ai(request: ChatRequest, current_user = Depends(get_current_
 @api_router.get("/dashboard/news")
 async def get_market_news(current_user = Depends(get_current_user_supabase)):
     """
-    Fetch latest commercial real estate market news.
-    Uses web search to find recent articles from major sources.
+    Fetch latest commercial real estate market news from RSS feeds.
+    Caches results for 1 hour to minimize requests.
     """
     try:
-        # For now, return curated placeholder news
-        # In production, this would use NewsAPI, RSS feeds, or web scraping
-        news_articles = [
+        # Check cache first
+        current_time = time.time()
+        if news_cache['articles'] and (current_time - news_cache['last_updated']) < news_cache['cache_duration']:
+            logger.info("Returning cached news articles")
+            return {"articles": news_cache['articles'], "count": len(news_cache['articles']), "cached": True}
+        
+        logger.info("Fetching fresh news from RSS feeds")
+        
+        # Define CRE RSS feeds
+        rss_feeds = [
             {
-                "title": "Commercial Real Estate Investment Trends in Q4 2025",
-                "description": "Institutional investors are increasing allocations to industrial and multifamily assets amid economic uncertainty.",
-                "source": "CoStar",
-                "url": "https://www.costar.com",
-                "publishedAt": "2 hours ago"
+                'url': 'https://commercialobserver.com/feed/',
+                'source': 'Commercial Observer'
             },
             {
-                "title": "Office Vacancy Rates Show Signs of Stabilization",
-                "description": "Major metro areas report slowing vacancy growth as companies finalize return-to-office policies.",
-                "source": "Bloomberg Real Estate",
-                "url": "https://www.bloomberg.com",
-                "publishedAt": "5 hours ago"
+                'url': 'https://www.bisnow.com/feed',
+                'source': 'Bisnow'
             },
             {
-                "title": "Industrial Property Demand Remains Strong Despite Rate Hikes",
-                "description": "E-commerce and logistics sectors continue to drive demand for warehouse and distribution centers.",
-                "source": "Commercial Observer",
-                "url": "https://commercialobserver.com",
-                "publishedAt": "1 day ago"
+                'url': 'https://www.globest.com/feed/',
+                'source': 'GlobeSt'
             },
             {
-                "title": "Multifamily Cap Rates Expected to Compress in 2025",
-                "description": "Analysts predict cap rate compression as interest rates stabilize and demand for rental housing increases.",
-                "source": "Real Capital Analytics",
-                "url": "https://www.rcanalytics.com",
-                "publishedAt": "1 day ago"
-            },
-            {
-                "title": "Retail Centers See Renewed Interest from Investors",
-                "description": "Mixed-use developments and experiential retail formats attract capital after years of underperformance.",
-                "source": "CBRE Research",
-                "url": "https://www.cbre.com",
-                "publishedAt": "2 days ago"
+                'url': 'https://www.cpexecutive.com/feed/',
+                'source': 'CPExecutive'
             }
         ]
         
-        return {"articles": news_articles, "count": len(news_articles)}
+        articles = []
         
+        # Fetch from each feed
+        for feed_info in rss_feeds:
+            try:
+                feed = feedparser.parse(feed_info['url'])
+                
+                # Get top 3 articles from each source
+                for entry in feed.entries[:3]:
+                    # Calculate time ago
+                    published_time = entry.get('published_parsed') or entry.get('updated_parsed')
+                    if published_time:
+                        pub_datetime = datetime(*published_time[:6])
+                        time_diff = datetime.now() - pub_datetime
+                        
+                        if time_diff.days > 0:
+                            time_ago = f"{time_diff.days} day{'s' if time_diff.days > 1 else ''} ago"
+                        elif time_diff.seconds >= 3600:
+                            hours = time_diff.seconds // 3600
+                            time_ago = f"{hours} hour{'s' if hours > 1 else ''} ago"
+                        else:
+                            minutes = time_diff.seconds // 60
+                            time_ago = f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+                    else:
+                        time_ago = "Recently"
+                    
+                    # Get description (try summary, then content)
+                    description = entry.get('summary', '')
+                    if not description and 'content' in entry:
+                        description = entry.content[0].get('value', '')
+                    
+                    # Clean HTML tags from description
+                    import re
+                    description = re.sub(r'<[^>]+>', '', description)
+                    description = description[:200] + '...' if len(description) > 200 else description
+                    
+                    articles.append({
+                        'title': entry.get('title', 'Untitled'),
+                        'description': description,
+                        'source': feed_info['source'],
+                        'url': entry.get('link', ''),
+                        'publishedAt': time_ago
+                    })
+                    
+            except Exception as feed_error:
+                logger.warning(f"Error parsing feed {feed_info['source']}: {str(feed_error)}")
+                continue
+        
+        # Sort by most recent and limit to 8 articles
+        articles = articles[:8]
+        
+        # Update cache
+        news_cache['articles'] = articles
+        news_cache['last_updated'] = current_time
+        
+        logger.info(f"Successfully fetched {len(articles)} news articles")
+        return {"articles": articles, "count": len(articles), "cached": False}
+        
+    except Exception as e:
+        logger.error(f"News endpoint error: {str(e)}")
+        # Return placeholder on error
+        return {
+            "articles": [{
+                "title": "Commercial Real Estate News",
+                "description": "Stay updated with the latest market trends and investment opportunities.",
+                "source": "CRE Updates",
+                "url": "#",
+                "publishedAt": "Recently"
+            }],
+            "count": 1,
+            "error": True
+        }
     except Exception as e:
         logger.error(f"News endpoint error: {str(e)}")
         return {"articles": [], "count": 0}
