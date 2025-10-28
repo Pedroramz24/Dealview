@@ -813,13 +813,13 @@ td {
   animation: none;
 }
 
-/* Subtle glow on Create Event button */
+/* Subtle unified glow on Create Event button */
 .create-event-btn-glow {
-  box-shadow: 0 4px 16px rgba(0, 184, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 3px 12px rgba(0, 184, 212, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .create-event-btn-glow:hover {
-  box-shadow: 0 6px 24px rgba(0, 184, 212, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: 0 5px 18px rgba(0, 184, 212, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* Icon badges - reduced glow */
