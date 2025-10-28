@@ -492,6 +492,32 @@ const CalendarView = () => {
                 </button>
               </div>
 
+              {/* Today Button */}
+              <button
+                onClick={() => calendarRef.current?.getApi().today()}
+                style={{
+                  padding: '10px 20px',
+                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+                  border: '1px solid rgba(0, 184, 212, 0.25)',
+                  borderRadius: '10px',
+                  color: '#00b8d4',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(0, 184, 212, 0.15))';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                Today
+              </button>
+
               {/* View Toggles */}
               <div style={{
                 display: 'flex',
