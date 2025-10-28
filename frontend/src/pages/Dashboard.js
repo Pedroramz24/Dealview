@@ -99,7 +99,7 @@ const Dashboard = () => {
       setUpcomingEvents(eventsWithDeals);
 
       // Generate AI insights
-      generateAIInsights(deals, contactsData, calendarEvents || []);
+      generateAIInsights(dealsArray, contactsData || [], calendarEvents || []);
 
       // Fetch market news
       fetchMarketNews();
@@ -107,6 +107,17 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
+      
+      // Set empty state to prevent rendering errors
+      setStats({
+        totalDeals: 0,
+        activeDeals: 0,
+        underContract: 0,
+        totalValue: 0,
+        avgDealSize: 0,
+        newContactsThisWeek: 0,
+        deals: []
+      });
     } finally {
       setLoading(false);
     }
