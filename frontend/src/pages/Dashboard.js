@@ -655,43 +655,47 @@ const AIAssistantPanel = ({ insights }) => (
 );
 
 // Insight Card Component
-const InsightCard = ({ insight }) => {
+const InsightCard = ({ insight, index }) => {
   const Icon = insight.icon;
   
   return (
     <div style={{
-      background: 'rgba(255, 255, 255, 0.04)',
-      border: `1px solid ${insight.color}30`,
+      background: 'rgba(255, 255, 255, 0.03)',
+      border: `1px solid ${insight.color}15`,
       borderRadius: '14px',
       padding: '18px',
-      transition: 'all 0.3s ease',
-      cursor: 'pointer'
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      cursor: 'pointer',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
+      animation: `fadeSlideIn 0.4s ease-out ${index * 0.1}s both`,
+      transform: 'translateZ(0)'
     }}
     onClick={insight.action}
     onMouseEnter={(e) => {
-      e.currentTarget.style.background = `${insight.color}15`;
-      e.currentTarget.style.borderColor = `${insight.color}50`;
-      e.currentTarget.style.transform = 'translateX(4px)';
-      e.currentTarget.style.boxShadow = `0 4px 16px ${insight.color}20`;
+      e.currentTarget.style.background = `${insight.color}08`;
+      e.currentTarget.style.borderColor = `${insight.color}30`;
+      e.currentTarget.style.transform = 'translateX(4px) translateZ(0)';
+      e.currentTarget.style.boxShadow = `0 2px 8px ${insight.color}15, 0 6px 16px rgba(0, 0, 0, 0.2)`;
     }}
     onMouseLeave={(e) => {
-      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-      e.currentTarget.style.borderColor = `${insight.color}30`;
-      e.currentTarget.style.transform = 'translateX(0)';
-      e.currentTarget.style.boxShadow = 'none';
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+      e.currentTarget.style.borderColor = `${insight.color}15`;
+      e.currentTarget.style.transform = 'translateX(0) translateZ(0)';
+      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.2)';
     }}
     >
       <div style={{ display: 'flex', gap: '14px' }}>
         <div style={{
           width: '36px',
           height: '36px',
-          background: `${insight.color}20`,
+          background: `${insight.color}10`,
           borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          border: `1px solid ${insight.color}30`
+          border: `1px solid ${insight.color}20`,
+          boxShadow: `0 2px 6px ${insight.color}08`
         }}>
           <Icon style={{ color: insight.color, width: '18px', height: '18px' }} />
         </div>
@@ -715,8 +719,16 @@ const InsightCard = ({ insight }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            padding: 0
-          }}>
+            padding: 0,
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.gap = '8px';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.gap = '6px';
+          }}
+          >
             {insight.actionLabel}
             <ArrowRight style={{ width: '14px', height: '14px' }} />
           </button>
