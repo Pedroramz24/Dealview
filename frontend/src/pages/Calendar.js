@@ -747,16 +747,16 @@ const CalendarView = () => {
                 position: 'relative',
                 overflow: 'hidden'
               }}>
-                {/* Glowing corner effect */}
+              {/* Glowing corner effect - SUBTLE */}
                 <div style={{
                   position: 'absolute',
                   top: '-100px',
                   right: '-100px',
                   width: '250px',
                   height: '250px',
-                  background: `radial-gradient(circle, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.15)'} 0%, transparent 70%)`,
+                  background: `radial-gradient(circle, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.06)'} 0%, transparent 70%)`,
                   pointerEvents: 'none',
-                  animation: 'rotate-glow 10s linear infinite'
+                  opacity: 0.4
                 }} />
 
                 {selectedEvent.dealData.image_url && (
