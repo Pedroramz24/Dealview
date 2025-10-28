@@ -594,26 +594,28 @@ const NewsModule = () => (
 // AI Assistant Panel Component
 const AIAssistantPanel = ({ insights }) => (
   <div style={{
-    background: 'linear-gradient(145deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.06))',
-    border: '1px solid rgba(139, 92, 246, 0.2)',
+    background: 'linear-gradient(145deg, rgba(139, 92, 246, 0.06), rgba(59, 130, 246, 0.04))',
+    border: '1px solid rgba(139, 92, 246, 0.15)',
     borderRadius: '20px',
     padding: '28px',
-    boxShadow: '0 12px 40px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(139, 92, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
     height: 'fit-content',
     position: 'sticky',
-    top: '32px'
+    top: '32px',
+    transition: 'all 0.3s ease'
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
       <div style={{
         width: '40px',
         height: '40px',
-        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3))',
+        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))',
         borderRadius: '12px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
-        animation: 'pulse 2s ease-in-out infinite'
+        boxShadow: '0 2px 8px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+        animation: 'pulse 2s ease-in-out infinite',
+        border: '1px solid rgba(139, 92, 246, 0.3)'
       }}>
         <Zap style={{ color: '#a78bfa', width: '20px', height: '20px' }} />
       </div>
@@ -637,7 +639,7 @@ const AIAssistantPanel = ({ insights }) => (
         <div style={{
           padding: '24px',
           textAlign: 'center',
-          color: 'rgba(255, 255, 255, 0.5)',
+          color: 'rgba(255, 255, 255, 0.4)',
           fontSize: '14px'
         }}>
           <Sparkles style={{ width: '32px', height: '32px', margin: '0 auto 12px', opacity: 0.5 }} />
@@ -645,7 +647,7 @@ const AIAssistantPanel = ({ insights }) => (
         </div>
       ) : (
         insights.map((insight, idx) => (
-          <InsightCard key={idx} insight={insight} />
+          <InsightCard key={idx} insight={insight} index={idx} />
         ))
       )}
     </div>
