@@ -704,7 +704,7 @@ const CalendarView = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   border: '1px solid rgba(0,184,212,0.25)',
-                  boxShadow: '0 2px 12px rgba(0,184,212,0.12)'
+                  boxShadow: '0 2px 10px rgba(0,184,212,0.1)'
                 }}>
                   <Clock className="w-5 h-5" style={{ color: '#00b8d4' }} />
                 </div>
