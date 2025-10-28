@@ -327,17 +327,17 @@ const CalendarView = () => {
 
   return (
     <div style={{ height: '100vh', background: '#000000', position: 'relative', overflow: 'hidden' }}>
-      {/* Animated background gradients */}
+      {/* Animated background gradients - TONED DOWN */}
       <div style={{
         position: 'absolute',
         top: '-50%',
         left: '-50%',
         width: '200%',
         height: '200%',
-        background: 'radial-gradient(circle at 30% 30%, rgba(0, 184, 212, 0.08) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.06) 0%, transparent 40%)',
+        background: 'radial-gradient(circle at 30% 30%, rgba(0, 184, 212, 0.03) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.02) 0%, transparent 40%)',
         animation: 'float-gradient 15s ease-in-out infinite',
         pointerEvents: 'none',
-        opacity: 0.6
+        opacity: 0.4
       }} />
 
       {/* Main Container */}
