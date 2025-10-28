@@ -303,13 +303,14 @@ const Dashboard = () => {
             <div style={{
               width: '56px',
               height: '56px',
-              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
+              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(59, 130, 246, 0.2))',
               borderRadius: '16px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(0, 184, 212, 0.3)',
-              animation: 'pulse 3s ease-in-out infinite'
+              boxShadow: '0 2px 10px rgba(0, 184, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+              animation: 'pulse 3s ease-in-out infinite',
+              border: '1px solid rgba(0, 184, 212, 0.25)'
             }}>
               <Sparkles style={{ color: '#00d4ff', width: '28px', height: '28px' }} />
             </div>
