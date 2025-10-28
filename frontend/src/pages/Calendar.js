@@ -652,7 +652,7 @@ const CalendarView = () => {
                   e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)';
                   e.currentTarget.style.color = '#ef4444';
                   e.currentTarget.style.transform = 'rotate(90deg) scale(1.05)';
-                  e.currentTarget.style.boxShadow = '0 0 30px rgba(239,68,68,0.3)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(239,68,68,0.15)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
