@@ -588,17 +588,29 @@ const EventItem = ({ event, index }) => {
   );
 };
 
-// News Module Component (Placeholder)
-const NewsModule = () => (
+// News Module Component
+const NewsModule = ({ articles }) => (
   <div style={{
-    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
+    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
     borderRadius: '20px',
     padding: '28px',
-    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04)'
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-      <Newspaper style={{ color: '#00b8d4', width: '24px', height: '24px' }} />
+      <div style={{
+        width: '36px',
+        height: '36px',
+        background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08))',
+        borderRadius: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '1px solid rgba(249, 115, 22, 0.2)',
+        boxShadow: '0 2px 8px rgba(249, 115, 22, 0.1)'
+      }}>
+        <Newspaper style={{ color: '#f97316', width: '18px', height: '18px' }} />
+      </div>
       <h2 style={{
         color: '#ffffff',
         fontSize: '20px',
@@ -608,10 +620,103 @@ const NewsModule = () => (
         Market Updates
       </h2>
     </div>
-    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', textAlign: 'center', padding: '20px' }}>
-      Market news integration coming soon
-    </p>
+    
+    {articles.length === 0 ? (
+      <div style={{
+        padding: '20px',
+        textAlign: 'center',
+        background: 'rgba(249, 115, 22, 0.04)',
+        border: '1px solid rgba(249, 115, 22, 0.1)',
+        borderRadius: '12px'
+      }}>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '12px' }}>
+          Market news feed coming soon
+        </p>
+        <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px' }}>
+          Connect a news API to display commercial real estate updates from CoStar, Bloomberg, and industry sources
+        </p>
+      </div>
+    ) : (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        {articles.slice(0, 5).map((article, idx) => (
+          <NewsArticle key={idx} article={article} index={idx} />
+        ))}
+      </div>
+    )}
   </div>
+);
+
+// News Article Component
+const NewsArticle = ({ article, index }) => (
+  <a
+    href={article.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      display: 'block',
+      background: 'rgba(255, 255, 255, 0.02)',
+      border: '1px solid rgba(249, 115, 22, 0.1)',
+      borderRadius: '12px',
+      padding: '16px',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      cursor: 'pointer',
+      textDecoration: 'none',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
+      animation: `fadeSlideIn 0.4s ease-out ${index * 0.1}s both`,
+      transform: 'translateZ(0)'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.background = 'rgba(249, 115, 22, 0.06)';
+      e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.25)';
+      e.currentTarget.style.transform = 'translateX(6px) translateZ(0)';
+      e.currentTarget.style.boxShadow = '0 2px 8px rgba(249, 115, 22, 0.1), 0 6px 16px rgba(0, 0, 0, 0.2)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+      e.currentTarget.style.borderColor = 'rgba(249, 115, 22, 0.1)';
+      e.currentTarget.style.transform = 'translateX(0) translateZ(0)';
+      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.2)';
+    }}
+  >
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '12px' }}>
+      <div style={{ flex: 1 }}>
+        <h3 style={{
+          color: '#ffffff',
+          fontSize: '14px',
+          fontWeight: '600',
+          marginBottom: '6px',
+          lineHeight: '1.4'
+        }}>
+          {article.title}
+        </h3>
+        <p style={{
+          color: 'rgba(255, 255, 255, 0.5)',
+          fontSize: '12px',
+          marginBottom: '8px',
+          lineHeight: '1.4'
+        }}>
+          {article.description}
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{
+            color: '#f97316',
+            fontSize: '11px',
+            fontWeight: '700',
+            textTransform: 'uppercase'
+          }}>
+            {article.source}
+          </span>
+          <span style={{
+            color: 'rgba(255, 255, 255, 0.3)',
+            fontSize: '11px'
+          }}>
+            {article.publishedAt}
+          </span>
+        </div>
+      </div>
+      <ExternalLink style={{ color: 'rgba(249, 115, 22, 0.5)', width: '16px', height: '16px', flexShrink: 0 }} />
+    </div>
+  </a>
 );
 
 // AI Assistant Panel Component
