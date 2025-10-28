@@ -217,26 +217,35 @@ const CalendarView = () => {
   };
 
   const handleMarkComplete = async () => {
-    if (!selectedEvent?.id || !selectedEvent.id.includes('calendar_events')) {
-      toast.info('Only standalone calendar events can be marked complete');
-      return;
-    }
-
     try {
-      const eventId = selectedEvent.id;
-      const { error } = await supabase
-        .from('calendar_events')
-        .update({ 
-          status: 'completed',
-          completed_at: new Date().toISOString()
-        })
-        .eq('id', eventId);
+      // For standalone calendar events
+      if (selectedEvent?.id && typeof selectedEvent.id === 'string' && !selectedEvent.id.includes('closing-') && !selectedEvent.id.includes('action-') && !selectedEvent.id.includes('contact-')) {
+        const { error } = await supabase
+          .from('calendar_events')
+          .update({ 
+            status: 'completed',
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', selectedEvent.id);
 
-      if (error) throw error;
+        if (error) throw error;
+      } 
+      // For deal-based events - mark the deal's next action as complete
+      else if (selectedEvent?.dealId && selectedEvent.id.includes('action-')) {
+        const { error } = await supabase
+          .from('deals')
+          .update({ 
+            next_action_date: null,
+            last_contact_date: new Date().toISOString().split('T')[0]
+          })
+          .eq('id', selectedEvent.dealId);
+
+        if (error) throw error;
+      }
 
       toast.success('Event marked as complete!');
       setShowEventPanel(false);
-      fetchCalendarEvents(); // Refresh events
+      fetchCalendarEvents();
     } catch (error) {
       console.error('Error marking complete:', error);
       toast.error('Failed to mark event complete');
@@ -244,11 +253,6 @@ const CalendarView = () => {
   };
 
   const handleReschedule = async () => {
-    if (!selectedEvent?.id || !selectedEvent.id.includes('calendar_events')) {
-      toast.info('Only standalone calendar events can be rescheduled');
-      return;
-    }
-
     const newDate = prompt('Enter new date and time (e.g., October 27, 2025 3:30 PM):');
     if (!newDate) return;
 
@@ -259,19 +263,49 @@ const CalendarView = () => {
         return;
       }
 
-      const { error } = await supabase
-        .from('calendar_events')
-        .update({ 
-          start_date: parsedDate.toISOString(),
-          end_date: parsedDate.toISOString()
-        })
-        .eq('id', selectedEvent.id);
+      // For standalone calendar events
+      if (selectedEvent?.id && typeof selectedEvent.id === 'string' && !selectedEvent.id.includes('closing-') && !selectedEvent.id.includes('action-') && !selectedEvent.id.includes('contact-')) {
+        const { error } = await supabase
+          .from('calendar_events')
+          .update({ 
+            start_date: parsedDate.toISOString(),
+            end_date: parsedDate.toISOString()
+          })
+          .eq('id', selectedEvent.id);
 
-      if (error) throw error;
+        if (error) throw error;
+      }
+      // For deal closing dates
+      else if (selectedEvent?.dealId && selectedEvent.id.includes('closing-')) {
+        const { error } = await supabase
+          .from('deals')
+          .update({ target_close_date: parsedDate.toISOString().split('T')[0] })
+          .eq('id', selectedEvent.dealId);
+
+        if (error) throw error;
+      }
+      // For deal follow-up dates
+      else if (selectedEvent?.dealId && selectedEvent.id.includes('action-')) {
+        const { error } = await supabase
+          .from('deals')
+          .update({ next_action_date: parsedDate.toISOString().split('T')[0] })
+          .eq('id', selectedEvent.dealId);
+
+        if (error) throw error;
+      }
+      // For contact follow-ups
+      else if (selectedEvent?.contactId) {
+        const { error } = await supabase
+          .from('contacts')
+          .update({ next_action: parsedDate.toISOString().split('T')[0] })
+          .eq('id', selectedEvent.contactId);
+
+        if (error) throw error;
+      }
 
       toast.success('Event rescheduled successfully!');
       setShowEventPanel(false);
-      fetchCalendarEvents(); // Refresh events
+      fetchCalendarEvents();
     } catch (error) {
       console.error('Error rescheduling:', error);
       toast.error('Failed to reschedule event');
