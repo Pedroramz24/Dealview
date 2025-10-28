@@ -5,7 +5,7 @@ import { AuthContext } from '../App';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { ArrowLeft, Upload, Edit, Save, X, Home, User, MapPin } from 'lucide-react';
+import { ArrowLeft, Upload, Edit, Save, X, Home, User, MapPin, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import DealTimeline from '../components/DealTimeline';
