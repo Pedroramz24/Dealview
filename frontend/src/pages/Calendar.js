@@ -751,11 +751,11 @@ const CalendarView = () => {
                   position: 'absolute',
                   top: '-100px',
                   right: '-100px',
-                  width: '250px',
-                  height: '250px',
-                  background: `radial-gradient(circle, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.06)'} 0%, transparent 70%)`,
+                  width: '200px',
+                  height: '200px',
+                  background: `radial-gradient(circle, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.03)'} 0%, transparent 70%)`,
                   pointerEvents: 'none',
-                  opacity: 0.4
+                  opacity: 0.2
                 }} />
 
                 {selectedEvent.dealData.image_url && (
