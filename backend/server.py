@@ -1192,7 +1192,6 @@ async def get_market_news(current_user = Depends(get_current_user_supabase)):
                         description = entry.content[0].get('value', '')
                     
                     # Clean HTML tags from description
-                    import re
                     description = re.sub(r'<[^>]+>', '', description)
                     description = description[:200] + '...' if len(description) > 200 else description
                     
