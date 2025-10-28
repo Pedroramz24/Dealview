@@ -354,15 +354,15 @@ const CalendarView = () => {
           overflow: 'hidden',
           backdropFilter: 'blur(30px)'
         }}>
-          {/* Glowing top edge */}
+          {/* Glowing top edge - TONED DOWN */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: '0',
             right: '0',
-            height: '2px',
-            background: 'linear-gradient(90deg, transparent 0%, rgba(0, 184, 212, 0.5) 50%, transparent 100%)',
-            boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)',
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(0, 184, 212, 0.3) 50%, transparent 100%)',
+            boxShadow: '0 0 15px rgba(0, 184, 212, 0.2)',
             pointerEvents: 'none'
           }} />
 
