@@ -38,6 +38,42 @@ const CalendarView = () => {
 
       const aggregatedEvents = [];
 
+      // Fetch standalone calendar events
+      try {
+        const { data: calendarEvents } = await supabase
+          .from('calendar_events')
+          .select('*')
+          .eq('owner_id', user.id);
+
+        if (calendarEvents) {
+          calendarEvents.forEach(event => {
+            const eventColor = EVENT_COLORS[event.event_type] || EVENT_COLORS.task;
+            aggregatedEvents.push({
+              id: event.id,
+              title: event.title,
+              start: event.start_date,
+              end: event.end_date || event.start_date,
+              allDay: event.all_day,
+              backgroundColor: eventColor.primary,
+              borderColor: 'transparent',
+              classNames: [`event-${event.event_type}`, 'premium-event'],
+              extendedProps: {
+                type: event.event_type,
+                category: event.event_type.charAt(0).toUpperCase() + event.event_type.slice(1),
+                description: event.description,
+                relatedDealId: event.related_deal_id,
+                relatedContactId: event.related_contact_id,
+                colorScheme: eventColor,
+                icon: '📅'
+              }
+            });
+          });
+        }
+      } catch (err) {
+        console.warn('Calendar events table may not exist yet:', err);
+      }
+
+      // Fetch deals
       const { data: deals } = await supabase
         .from('deals')
         .select('*')
@@ -87,6 +123,7 @@ const CalendarView = () => {
         });
       }
 
+      // Fetch contacts
       const { data: contacts } = await supabase
         .from('contacts')
         .select('*')
@@ -116,6 +153,7 @@ const CalendarView = () => {
         });
       }
 
+      console.log('[Calendar] Loaded', aggregatedEvents.length, 'total events');
       setEvents(aggregatedEvents);
     } catch (error) {
       console.error('Error loading calendar:', error);
