@@ -402,6 +402,30 @@ const DealDetails = () => {
     setShowContactFormPanel(false);
   };
 
+
+  const handleDelete = async () => {
+    if (!deal || !deal.id) {
+      toast.error('Cannot delete this property');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('deals')
+        .delete()
+        .eq('id', deal.id);
+
+      if (error) throw error;
+
+      toast.success('Property deleted successfully');
+      navigate('/deals');
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      toast.error('Failed to delete property');
+    }
+  };
+
+
   const formatPrice = (price) => {
     if (!price) return 'N/A';
     return new Intl.NumberFormat('en-US', {
