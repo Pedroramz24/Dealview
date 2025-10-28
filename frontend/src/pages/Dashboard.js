@@ -278,24 +278,25 @@ const Dashboard = () => {
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '1800px', margin: '0 auto' }}>
         {/* AI Greeting Header */}
         <div style={{
-          background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.08), rgba(59, 130, 246, 0.06))',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
+          background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.06), rgba(59, 130, 246, 0.04))',
+          border: '1px solid rgba(0, 184, 212, 0.15)',
           borderRadius: '20px',
           padding: '32px 40px',
           marginBottom: '32px',
-          boxShadow: '0 8px 32px rgba(0, 184, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 184, 212, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* Glow effect */}
+          {/* Subtle glow effect */}
           <div style={{
             position: 'absolute',
-            top: '-100px',
-            right: '-100px',
-            width: '300px',
-            height: '300px',
-            background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
-            pointerEvents: 'none'
+            top: '-80px',
+            right: '-80px',
+            width: '200px',
+            height: '200px',
+            background: 'radial-gradient(circle, rgba(0, 184, 212, 0.08) 0%, transparent 70%)',
+            pointerEvents: 'none',
+            opacity: 0.5
           }} />
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 1 }}>
