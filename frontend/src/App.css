@@ -823,27 +823,27 @@ td {
 
 /* Event cards - cleaner shadows */
 .fc .fc-daygrid-event {
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 3px 0 0 rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 3px 0 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 .fc .fc-daygrid-event:hover {
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.18), inset 3px 0 0 rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.18), inset 3px 0 0 rgba(255, 255, 255, 0.3) !important;
 }
 
 .fc .event-deal {
-  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 3px 0 0 rgba(16, 185, 129, 0.5) !important;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 3px 0 0 rgba(16, 185, 129, 0.5) !important;
 }
 
 .fc .event-deal:hover {
-  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.18), inset 3px 0 0 rgba(16, 185, 129, 0.6) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.18), inset 3px 0 0 rgba(16, 185, 129, 0.6) !important;
 }
 
 .fc .event-followup {
-  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 3px 0 0 rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 3px 0 0 rgba(59, 130, 246, 0.5) !important;
 }
 
 .fc .event-followup:hover {
-  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.18), inset 3px 0 0 rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.18), inset 3px 0 0 rgba(59, 130, 246, 0.6) !important;
 }
 
 .fc .fc-more-link {
