@@ -611,16 +611,16 @@ const CalendarView = () => {
             flexDirection: 'column'
           }}
         >
-          {/* Animated gradient overlay */}
+          {/* Animated gradient overlay - SUBTLE */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
             height: '300px',
-            background: `radial-gradient(circle at 50% 0%, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.15)'} 0%, transparent 70%)`,
+            background: `radial-gradient(circle at 50% 0%, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.08)'} 0%, transparent 70%)`,
             pointerEvents: 'none',
-            opacity: 0.6
+            opacity: 0.3
           }} />
 
           {/* Panel Header */}
