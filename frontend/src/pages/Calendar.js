@@ -262,6 +262,80 @@ const CalendarView = () => {
             </div>
 
             <div className="flex items-center gap-3">
+              {/* Month Navigation */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                background: 'rgba(255,255,255,0.03)',
+                padding: '8px 16px',
+                borderRadius: '12px',
+                border: '1px solid rgba(255,255,255,0.06)'
+              }}>
+                <button
+                  onClick={() => calendarRef.current?.getApi().prev()}
+                  style={{
+                    padding: '8px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'rgba(255,255,255,0.6)',
+                    cursor: 'pointer',
+                    borderRadius: '6px',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0,184,212,0.1)';
+                    e.currentTarget.style.color = '#00b8d4';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <span id="calendar-month-label" style={{ 
+                  color: '#ffffff', 
+                  fontSize: '16px', 
+                  fontWeight: '800', 
+                  minWidth: '140px', 
+                  textAlign: 'center',
+                  letterSpacing: '-0.01em'
+                }}>
+                  {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                </span>
+                <button
+                  onClick={() => calendarRef.current?.getApi().next()}
+                  style={{
+                    padding: '8px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'rgba(255,255,255,0.6)',
+                    cursor: 'pointer',
+                    borderRadius: '6px',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0,184,212,0.1)';
+                    e.currentTarget.style.color = '#00b8d4';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+
               {/* View Toggles */}
               <div style={{
                 display: 'flex',
