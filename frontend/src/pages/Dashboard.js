@@ -370,36 +370,40 @@ const Dashboard = () => {
 // Metric Card Component
 const MetricCard = ({ icon: Icon, label, value, color, bgColor, isLarge }) => (
   <div style={{
-    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
+    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
     borderRadius: '16px',
     padding: '24px',
-    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.03)',
+    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
     cursor: 'pointer',
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    transform: 'translateZ(0)'
   }}
   onMouseEnter={(e) => {
-    e.currentTarget.style.transform = 'translateY(-4px)';
-    e.currentTarget.style.boxShadow = `0 8px 24px ${color}30, inset 0 1px 0 rgba(255, 255, 255, 0.1)`;
-    e.currentTarget.style.borderColor = `${color}40`;
+    e.currentTarget.style.transform = 'translateY(-2px) translateZ(0)';
+    e.currentTarget.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px ${color}15, inset 0 1px 0 rgba(255, 255, 255, 0.08)`;
+    e.currentTarget.style.borderColor = `${color}20`;
+    e.currentTarget.style.background = 'linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03))';
   }}
   onMouseLeave={(e) => {
-    e.currentTarget.style.transform = 'translateY(0)';
-    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)';
-    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+    e.currentTarget.style.transform = 'translateY(0) translateZ(0)';
+    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.03)';
+    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.06)';
+    e.currentTarget.style.background = 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))';
   }}
   >
-    {/* Glow accent */}
+    {/* Subtle glow accent */}
     <div style={{
       position: 'absolute',
-      top: '-50%',
-      right: '-50%',
-      width: '100%',
-      height: '100%',
-      background: `radial-gradient(circle, ${color}20 0%, transparent 70%)`,
-      pointerEvents: 'none'
+      top: '-30%',
+      right: '-30%',
+      width: '60%',
+      height: '60%',
+      background: `radial-gradient(circle, ${color}08 0%, transparent 70%)`,
+      pointerEvents: 'none',
+      opacity: 0.6
     }} />
     
     <div style={{ position: 'relative', zIndex: 1 }}>
@@ -412,7 +416,8 @@ const MetricCard = ({ icon: Icon, label, value, color, bgColor, isLarge }) => (
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: '16px',
-        border: `1px solid ${color}30`
+        border: `1px solid ${color}20`,
+        boxShadow: `0 2px 8px ${color}10, inset 0 1px 0 rgba(255, 255, 255, 0.05)`
       }}>
         <Icon style={{ color, width: '20px', height: '20px' }} />
       </div>
@@ -430,7 +435,8 @@ const MetricCard = ({ icon: Icon, label, value, color, bgColor, isLarge }) => (
         color: '#ffffff',
         fontSize: isLarge ? '18px' : '28px',
         fontWeight: '700',
-        letterSpacing: '-0.02em'
+        letterSpacing: '-0.02em',
+        transition: 'all 0.3s ease'
       }}>
         {value}
       </p>
