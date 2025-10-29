@@ -845,9 +845,14 @@ const NewsArticle = ({ article, index }) => (
         </h3>
         <p style={{
           color: 'rgba(255, 255, 255, 0.5)',
-          fontSize: '12px',
-          marginBottom: '8px',
-          lineHeight: '1.4'
+          fontSize: '13px',
+          marginBottom: '10px',
+          lineHeight: '1.5',
+          display: '-webkit-box',
+          WebkitLineClamp: '3',
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
         }}>
           {article.description}
         </p>
