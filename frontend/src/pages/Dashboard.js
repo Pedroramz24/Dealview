@@ -87,6 +87,7 @@ const Dashboard = () => {
 
       console.log('Calendar events fetched:', calendarEvents?.length || 0);
 
+      console.log('Calculating statistics...');
       // Calculate statistics
       const totalValue = dealsArray.reduce((sum, deal) => sum + (parseFloat(deal.price) || 0), 0);
       const activeDeals = dealsArray.filter(d => d.stage !== 'closed_won' && d.stage !== 'overpriced').length;
@@ -96,8 +97,10 @@ const Dashboard = () => {
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
       const newContactsThisWeek = (contactsData || []).filter(c => 
-        new Date(c.created_at) >= oneWeekAgo
+        c.created_at && new Date(c.created_at) >= oneWeekAgo
       ).length;
+
+      console.log('Stats calculated:', { totalDeals: dealsArray.length, activeDeals, underContract, totalValue });
 
       setStats({
         totalDeals: dealsArray.length,
@@ -110,6 +113,7 @@ const Dashboard = () => {
       });
 
       // Process upcoming events
+      console.log('Processing events...');
       const eventsWithDeals = await Promise.all((calendarEvents || []).map(async (event) => {
         if (event.related_deal_id) {
           const { data: dealData } = await supabase
@@ -123,16 +127,22 @@ const Dashboard = () => {
       }));
 
       setUpcomingEvents(eventsWithDeals);
+      console.log('Events processed:', eventsWithDeals.length);
 
       // Generate AI insights
+      console.log('Generating AI insights...');
       generateAIInsights(dealsArray, contactsData || [], calendarEvents || []);
 
       // Fetch market news
+      console.log('Fetching market news...');
       fetchMarketNews();
+
+      console.log('Dashboard data loaded successfully!');
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+      console.error('Error details:', error.message, error.stack);
+      toast.error(`Failed to load dashboard data: ${error.message}`);
       
       // Set empty state to prevent rendering errors
       setStats({
