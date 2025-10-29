@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from '../App';
+import { supabase } from '../supabaseClient';
 import { 
   Mail, Plus, Send, Users, BarChart3, Settings, CheckCircle2,
   Eye, Edit3, Trash2, Play, Pause, Calendar, TrendingUp, Loader2
@@ -7,8 +8,9 @@ import {
 import { toast } from 'sonner';
 
 const Campaigns = () => {
-  const { token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const [token, setToken] = useState(null);
 
   // State management
   const [emailSettingsConfigured, setEmailSettingsConfigured] = useState(false);
