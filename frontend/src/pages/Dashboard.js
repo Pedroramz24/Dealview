@@ -763,7 +763,6 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
               }
             }}
           >
-            <span>{category.icon}</span>
             <span>{category.label}</span>
           </button>
         ))}
