@@ -1236,13 +1236,25 @@ async def get_market_news():
                     # Clean HTML tags from description
                     description = re.sub(r'<[^>]+>', '', description)
                     
-                    # Check if article is relevant (location-based or general CRE)
+                    # Check if article is relevant (Texas-based or macro-economic)
                     article_text = (entry.get('title', '') + ' ' + description).lower()
                     
                     is_relevant = False
                     relevance_type = None
                     
-                    # Check for local/regional relevance
+                    # FIRST: Check if it's about another specific city (EXCLUDE)
+                    is_other_city = False
+                    for exclude_city in exclude_cities:
+                        if exclude_city in article_text:
+                            is_other_city = True
+                            break
+                    
+                    if is_other_city:
+                        # Skip this article - it's about another city
+                        logger.debug(f"⏭️  EXCLUDED (other city): {entry.get('title', 'Untitled')[:60]}...")
+                        continue
+                    
+                    # SECOND: Check for Texas/San Antonio relevance (HIGH PRIORITY)
                     for keyword in location_keywords:
                         if keyword in article_text:
                             is_relevant = True
@@ -1250,12 +1262,12 @@ async def get_market_news():
                             local_articles += 1
                             break
                     
-                    # If not local, check if it's important general CRE news
+                    # THIRD: If not local, check if it's macro-economic news (INCLUDE)
                     if not is_relevant:
-                        for keyword in general_keywords:
+                        for keyword in macro_economic_keywords:
                             if keyword in article_text:
                                 is_relevant = True
-                                relevance_type = 'general'
+                                relevance_type = 'macro'
                                 general_articles += 1
                                 break
                     
