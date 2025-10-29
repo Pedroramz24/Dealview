@@ -34,15 +34,16 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const { data: { user: fetchedUser } } = await supabase.auth.getUser();
       
-      if (!currentUser) {
+      if (!fetchedUser) {
         console.log('No user authenticated');
         setLoading(false);
         return;
       }
 
-      console.log('Fetching dashboard data for user:', currentUser.id);
+      console.log('Fetching dashboard data for user:', fetchedUser.id);
+      setCurrentUser(fetchedUser);
 
     try {
       // Fetch deals
