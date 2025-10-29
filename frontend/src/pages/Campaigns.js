@@ -38,13 +38,26 @@ const Campaigns = () => {
 
   const editorRef = useRef(null);
 
+  // Get Supabase session token
+  useEffect(() => {
+    const getToken = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setToken(session.access_token);
+      }
+    };
+    getToken();
+  }, [user]);
+
   // Check if email settings are configured
   useEffect(() => {
-    checkEmailSettings();
-    if (emailSettingsConfigured) {
-      fetchCampaigns();
+    if (token) {
+      checkEmailSettings();
+      if (emailSettingsConfigured) {
+        fetchCampaigns();
+      }
     }
-  }, [emailSettingsConfigured]);
+  }, [token, emailSettingsConfigured]);
 
   const checkEmailSettings = async () => {
     try {
