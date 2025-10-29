@@ -634,7 +634,10 @@ const EventItem = ({ event, index }) => {
 };
 
 // News Module Component
-const NewsModule = ({ articles }) => (
+const NewsModule = ({ articles }) => {
+  console.log('NewsModule rendering with articles:', articles?.length || 0, articles);
+  
+  return (
   <div style={{
     background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
     border: '1px solid rgba(255, 255, 255, 0.06)',
