@@ -30,16 +30,24 @@ const Dashboard = () => {
 
   const fetchMarketNews = async () => {
     try {
+      console.log('Fetching market news from backend...');
       // Fetch news from backend API
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      console.log('Backend URL:', backendUrl);
       const response = await fetch(`${backendUrl}/api/dashboard/news`);
       
+      console.log('News response status:', response.status);
       if (response.ok) {
         const data = await response.json();
+        console.log('News data received:', data);
+        console.log('Articles count:', data.articles?.length);
         setNewsArticles(data.articles || []);
+      } else {
+        console.error('News fetch failed with status:', response.status);
+        setNewsArticles([]);
       }
     } catch (error) {
-      console.log('News feed not available yet:', error);
+      console.error('News feed error:', error);
       // Set placeholder news
       setNewsArticles([]);
     }
