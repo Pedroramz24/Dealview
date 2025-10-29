@@ -908,7 +908,30 @@ const NewsArticle = ({ article, index }) => (
         }}>
           {article.description}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          {/* Local/National Badge */}
+          {article.relevanceType === 'local' && (
+            <div style={{
+              padding: '4px 8px',
+              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+              border: '1px solid rgba(0, 184, 212, 0.3)',
+              borderRadius: '5px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <MapPin style={{ color: '#00b8d4', width: '10px', height: '10px' }} />
+              <span style={{
+                color: '#00d4ff',
+                fontSize: '10px',
+                fontWeight: '700',
+                textTransform: 'uppercase'
+              }}>
+                Local
+              </span>
+            </div>
+          )}
+          
           <span style={{
             color: '#f97316',
             fontSize: '11px',
