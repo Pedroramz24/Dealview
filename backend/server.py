@@ -1191,22 +1191,21 @@ async def get_market_news():
         ]
         
         # EXCLUDE these - other city-specific news we don't care about
+        # Note: We only exclude if these appear AND Texas keywords don't also appear
         exclude_cities = [
-            'new york', 'manhattan', 'brooklyn', 'nyc',
-            'los angeles', 'california', 'san francisco', 'oakland', 'san diego', 'san jose',
-            'miami', 'florida', 'orlando', 'tampa',
-            'chicago', 'illinois',
+            'new york city', 'manhattan', 'brooklyn', 'nyc ',
+            'los angeles', ' la ', 'san francisco', 'oakland', 'san diego', 'san jose', 'california ',
+            'miami', 'florida ', 'orlando', 'tampa',
+            'chicago', 'illinois ',
             'boston', 'massachusetts',
-            'washington dc', 'dc metro',
-            'seattle', 'portland',
-            'denver', 'colorado',
-            'atlanta', 'georgia',
-            'phoenix', 'arizona',
-            'las vegas', 'nevada',
+            'washington dc', ' dc ',
+            'seattle', 'portland, or',
+            'denver', 'colorado ',
+            'atlanta', 'georgia ',
+            'phoenix', 'arizona ',
+            'las vegas', 'nevada ',
             'philadelphia', 'pennsylvania',
-            'detroit', 'michigan',
-            'nashville', 'tennessee',
-            'charlotte', 'north carolina'
+            'detroit', 'michigan '
         ]
         
         articles = []
