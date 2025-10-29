@@ -497,6 +497,21 @@ const Campaigns = () => {
     );
   }
 
+  // Render campaign details
+  if (currentView === 'details' && selectedCampaign) {
+    return (
+      <CampaignDetails
+        campaignId={selectedCampaign.id}
+        onBack={() => {
+          setCurrentView('list');
+          setSelectedCampaign(null);
+        }}
+        token={token}
+        BACKEND_URL={BACKEND_URL}
+      />
+    );
+  }
+
   // Render campaigns list
   if (currentView === 'list') {
     return (
