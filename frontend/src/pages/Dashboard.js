@@ -28,21 +28,20 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      fetchDashboardData();
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
+    fetchDashboardData();
+  }, []);
 
   const fetchDashboardData = async () => {
-    if (!user) {
-      console.log('No user found, skipping data fetch');
-      setLoading(false);
-      return;
-    }
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (!currentUser) {
+        console.log('No user authenticated');
+        setLoading(false);
+        return;
+      }
 
-    console.log('Fetching dashboard data for user:', user.id);
+      console.log('Fetching dashboard data for user:', currentUser.id);
 
     try {
       // Fetch deals
