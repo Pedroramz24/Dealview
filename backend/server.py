@@ -809,7 +809,6 @@ async def get_parcel_details(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
     """Get detailed parcel information"""
-    verify_token(credentials.credentials)
     
     if not REGRID_API_TOKEN:
         raise HTTPException(status_code=500, detail="Regrid API token not configured")
