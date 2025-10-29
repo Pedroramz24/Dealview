@@ -43,15 +43,14 @@ class SendGridService:
         try:
             sg = SendGridAPIClient(api_key)
             
-            # Test by fetching sender identities
-            response = sg.client.verified_senders.get()
+            # Test by fetching API key scopes (simplest endpoint, requires minimal permissions)
+            # This just validates the key is valid and active
+            response = sg.client.api_keys._(api_key.split('.')[-1] if '.' in api_key else api_key).get()
             
             if response.status_code == 200:
-                senders = json.loads(response.body)
                 return {
                     "valid": True,
-                    "message": "SendGrid API key is valid",
-                    "senders": senders.get('results', [])
+                    "message": "SendGrid API key is valid and active"
                 }
             else:
                 return {
@@ -59,10 +58,24 @@ class SendGridService:
                     "message": f"Invalid API key or insufficient permissions"
                 }
         except Exception as e:
-            return {
-                "valid": False,
-                "message": f"Connection test failed: {str(e)}"
-            }
+            error_msg = str(e)
+            
+            # Provide helpful error messages based on common issues
+            if '403' in error_msg or 'Forbidden' in error_msg:
+                return {
+                    "valid": False,
+                    "message": "API key permissions error. Please ensure your API key has 'Mail Send' permissions. Go to SendGrid → Settings → API Keys → Edit your key → Grant 'Full Access' or at minimum 'Mail Send'."
+                }
+            elif '401' in error_msg or 'Unauthorized' in error_msg:
+                return {
+                    "valid": False,
+                    "message": "Invalid API key. Please double-check you copied the entire key (starts with SG.)."
+                }
+            else:
+                return {
+                    "valid": False,
+                    "message": f"Connection test failed. Please verify your API key is correct and has 'Mail Send' permissions. Error: {error_msg}"
+                }
     
     async def send_transactional_email(
         self,
