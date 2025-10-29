@@ -10,7 +10,15 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState({
+    totalDeals: 0,
+    activeDeals: 0,
+    underContract: 0,
+    totalValue: 0,
+    avgDealSize: 0,
+    newContactsThisWeek: 0,
+    deals: []
+  });
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [aiInsights, setAiInsights] = useState([]);
   const [contacts, setContacts] = useState([]);
