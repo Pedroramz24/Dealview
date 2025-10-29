@@ -60,6 +60,8 @@ const Campaigns = () => {
   }, [token, emailSettingsConfigured]);
 
   const checkEmailSettings = async () => {
+    if (!token) return;
+    
     try {
       const response = await fetch(`${BACKEND_URL}/api/email/settings`, {
         headers: {
@@ -76,6 +78,8 @@ const Campaigns = () => {
   };
 
   const fetchCampaigns = async () => {
+    if (!token) return;
+    
     try {
       const response = await fetch(`${BACKEND_URL}/api/email/campaigns?limit=100`, {
         headers: {
