@@ -692,7 +692,8 @@ const NewsModule = ({ articles }) => {
       </div>
     )}
   </div>
-);
+  );
+};
 
 // News Article Component
 const NewsArticle = ({ article, index }) => (
