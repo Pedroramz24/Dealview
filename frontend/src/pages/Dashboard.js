@@ -24,7 +24,7 @@ const Dashboard = () => {
   const [contacts, setContacts] = useState([]);
   const [newsArticles, setNewsArticles] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
-  const [activeNewsCategory, setActiveNewsCategory] = useState('all');
+  const [activeNewsCategory, setActiveNewsCategory] = useState('local');
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
