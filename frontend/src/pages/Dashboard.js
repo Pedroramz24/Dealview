@@ -251,21 +251,8 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        height: '100vh',
-        background: '#000000'
-      }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          border: '3px solid rgba(0, 184, 212, 0.2)',
-          borderTop: '3px solid #00b8d4',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
-        }} />
+      <div className="flex items-center justify-center h-full" style={{ background: 'var(--bg-base)' }}>
+        <div className="loading-spinner"></div>
       </div>
     );
   }
