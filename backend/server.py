@@ -1300,8 +1300,8 @@ async def get_market_news():
         news_cache['articles'] = articles
         news_cache['last_updated'] = current_time
         
-        logger.info(f"📊 NEWS FILTERING RESULTS: Checked {total_checked} articles | Local: {local_articles} | General CRE: {general_articles} | Returned: {len(articles)}")
-        return {"articles": articles, "count": len(articles), "cached": False, "stats": {"local": local_articles, "general": general_articles, "total_checked": total_checked}}
+        logger.info(f"📊 NEWS FILTERING RESULTS: Checked {total_checked} articles | Texas/Local: {local_articles} | Macro-Economic: {general_articles} | Returned: {len(articles)}")
+        return {"articles": articles, "count": len(articles), "cached": False, "stats": {"local": local_articles, "macro": general_articles, "total_checked": total_checked}}
         
     except Exception as e:
         logger.error(f"News endpoint error: {str(e)}")
