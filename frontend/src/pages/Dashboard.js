@@ -643,15 +643,12 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
   console.log('NewsModule rendering with articles:', articles?.length || 0, articles);
   
   const categories = [
+    { id: 'local', label: 'San Antonio & Texas' },
     { id: 'all', label: 'All News' },
-    { id: 'market', label: 'Market & Economic' },
-    { id: 'transactions', label: 'Transactions & Capital' },
-    { id: 'development', label: 'Development & Construction' },
-    { id: 'policy', label: 'Policy, Taxes & Zoning' },
-    { id: 'sector', label: 'Sector Intelligence' },
-    { id: 'regional', label: 'Regional & Local' },
-    { id: 'financial', label: 'Financial & Lending' },
-    { id: 'technology', label: 'Technology & Innovation' }
+    { id: 'market', label: 'Market Trends' },
+    { id: 'deals', label: 'Deals & Capital' },
+    { id: 'development', label: 'Development & Policy' },
+    { id: 'sector', label: 'Sector Focus' }
   ];
 
   // Filter articles by category (for now, show all in each category - AI categorization can be added later)
