@@ -1137,29 +1137,48 @@ async def get_market_news():
             logger.info("Returning cached news articles")
             return {"articles": news_cache['articles'], "count": len(news_cache['articles']), "cached": True}
         
-        logger.info("Fetching fresh news from RSS feeds with San Antonio/Texas filter")
+        logger.info("Fetching fresh news from RSS feeds with Texas + Macro filter")
         
-        # Define CRE RSS feeds with working URLs
-        rss_feeds = [
+        # Define Texas-specific RSS feeds (PRIORITY - most relevant)
+        texas_rss_feeds = [
+            {
+                'url': 'https://www.bizjournals.com/sanantonio/news/commercial-real-estate/feed',
+                'source': 'San Antonio Business Journal',
+                'type': 'local'
+            },
+            {
+                'url': 'https://www.bizjournals.com/austin/news/commercial-real-estate/feed',
+                'source': 'Austin Business Journal',
+                'type': 'local'
+            },
+            {
+                'url': 'https://www.bizjournals.com/houston/news/commercial-real-estate/feed',
+                'source': 'Houston Business Journal',
+                'type': 'local'
+            },
+            {
+                'url': 'https://www.bizjournals.com/dallas/news/commercial-real-estate/feed',
+                'source': 'Dallas Business Journal',
+                'type': 'local'
+            }
+        ]
+        
+        # Define National CRE RSS feeds (for macro-economic news only)
+        national_rss_feeds = [
             {
                 'url': 'https://commercialobserver.com/feed/',
-                'source': 'Commercial Observer'
+                'source': 'Commercial Observer',
+                'type': 'national'
             },
             {
                 'url': 'https://www.globest.com/rss/',
-                'source': 'GlobeSt'
+                'source': 'GlobeSt',
+                'type': 'national'
             },
             {
                 'url': 'https://commercialsearch.com/news/feed',
-                'source': 'Commercial Property Executive'
-            },
-            {
-                'url': 'https://commercialobserver.com/finance/feed',
-                'source': 'CO Finance'
-            },
-            {
-                'url': 'https://commercialobserver.com/sales/feed',
-                'source': 'CO Sales'
+                'source': 'Commercial Property Executive',
+                'type': 'national'
             }
         ]
         
