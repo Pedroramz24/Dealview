@@ -1180,6 +1180,9 @@ async def get_market_news():
         ]
         
         articles = []
+        total_checked = 0
+        local_articles = 0
+        general_articles = 0
         
         # Fetch from each feed
         for feed_info in rss_feeds:
@@ -1188,6 +1191,8 @@ async def get_market_news():
                 
                 # Get articles and filter for relevance
                 for entry in feed.entries[:10]:  # Check more entries to find relevant ones
+                    total_checked += 1
+                    
                     # Calculate time ago
                     published_time = entry.get('published_parsed') or entry.get('updated_parsed')
                     if published_time:
@@ -1217,11 +1222,14 @@ async def get_market_news():
                     article_text = (entry.get('title', '') + ' ' + description).lower()
                     
                     is_relevant = False
+                    relevance_type = None
                     
                     # Check for local/regional relevance
                     for keyword in location_keywords:
                         if keyword in article_text:
                             is_relevant = True
+                            relevance_type = 'local'
+                            local_articles += 1
                             break
                     
                     # If not local, check if it's important general CRE news
@@ -1229,19 +1237,27 @@ async def get_market_news():
                         for keyword in general_keywords:
                             if keyword in article_text:
                                 is_relevant = True
+                                relevance_type = 'general'
+                                general_articles += 1
                                 break
                     
                     # Only include relevant articles
                     if is_relevant:
                         description = description[:250] + '...' if len(description) > 250 else description
                         
-                        articles.append({
+                        article = {
                             'title': entry.get('title', 'Untitled'),
                             'description': description,
                             'source': feed_info['source'],
                             'url': entry.get('link', ''),
-                            'publishedAt': time_ago
-                        })
+                            'publishedAt': time_ago,
+                            'relevanceType': relevance_type  # Track if local or general
+                        }
+                        
+                        articles.append(article)
+                        logger.info(f"✅ [{relevance_type.upper()}] {entry.get('title', 'Untitled')[:60]}...")
+                    else:
+                        logger.debug(f"⏭️  FILTERED OUT: {entry.get('title', 'Untitled')[:60]}...")
                     
             except Exception as feed_error:
                 logger.warning(f"Error parsing feed {feed_info['source']}: {str(feed_error)}")
@@ -1254,8 +1270,8 @@ async def get_market_news():
         news_cache['articles'] = articles
         news_cache['last_updated'] = current_time
         
-        logger.info(f"Successfully fetched {len(articles)} relevant news articles for San Antonio/Texas")
-        return {"articles": articles, "count": len(articles), "cached": False}
+        logger.info(f"📊 NEWS FILTERING RESULTS: Checked {total_checked} articles | Local: {local_articles} | General CRE: {general_articles} | Returned: {len(articles)}")
+        return {"articles": articles, "count": len(articles), "cached": False, "stats": {"local": local_articles, "general": general_articles, "total_checked": total_checked}}
         
     except Exception as e:
         logger.error(f"News endpoint error: {str(e)}")
