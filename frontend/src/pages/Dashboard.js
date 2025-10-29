@@ -261,25 +261,14 @@ const Dashboard = () => {
   const formatCurrency = (value) => {
 
 
-  const fetchMarketNews = async () => {
-    try {
-      // Fetch news from backend API
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      const response = await fetch(`${backendUrl}/api/dashboard/news`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        setNewsArticles(data.articles || []);
-      }
-    } catch (error) {
-      console.log('News feed not available yet:', error);
-      // Set placeholder news
-      setNewsArticles([]);
-    }
-  };
-
+  const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
