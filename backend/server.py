@@ -787,7 +787,6 @@ async def search_parcels(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
     """Search for parcel at specific lat/lon"""
-    verify_token(credentials.credentials)
     
     if not REGRID_API_TOKEN:
         raise HTTPException(status_code=500, detail="Regrid API token not configured")
