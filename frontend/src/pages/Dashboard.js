@@ -660,8 +660,9 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
         
         switch(activeCategory) {
           case 'local':
-            // Show only Texas articles (already filtered by backend)
-            return article.relevanceType === 'local';
+            // Show Texas articles AND macro-economic (both are relevant to Texas users)
+            // Backend already filtered for relevance
+            return article.relevanceType === 'local' || article.relevanceType === 'macro';
           
           case 'market':
             // Market Trends: Economics + Cap Rates + Forecasts
