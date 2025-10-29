@@ -49,7 +49,7 @@ const Dashboard = () => {
       const { data: deals, error: dealsError } = await supabase
         .from('deals')
         .select('*')
-        .eq('owner_id', user.id);
+        .eq('owner_id', currentUser.id);
 
       if (dealsError) {
         console.error('Deals error:', dealsError);
@@ -65,7 +65,7 @@ const Dashboard = () => {
       const { data: contactsData, error: contactsError } = await supabase
         .from('contacts')
         .select('*')
-        .eq('owner_id', user.id);
+        .eq('owner_id', currentUser.id);
 
       if (contactsError) {
         console.error('Contacts error:', contactsError);
@@ -79,7 +79,7 @@ const Dashboard = () => {
       const { data: calendarEvents } = await supabase
         .from('calendar_events')
         .select('*')
-        .eq('owner_id', user.id)
+        .eq('owner_id', currentUser.id)
         .gte('start_date', new Date().toISOString())
         .order('start_date', { ascending: true })
         .limit(5);
