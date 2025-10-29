@@ -45,7 +45,6 @@ const Dashboard = () => {
       console.log('Fetching dashboard data for user:', fetchedUser.id);
       setCurrentUser(fetchedUser);
 
-    try {
       // Fetch deals
       console.log('Fetching deals...');
       const { data: deals, error: dealsError } = await supabase
