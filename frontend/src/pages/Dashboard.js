@@ -692,28 +692,81 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04)'
     }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-        <div style={{
-          width: '36px',
-          height: '36px',
-          background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08))',
-          borderRadius: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          border: '1px solid rgba(249, 115, 22, 0.2)',
-          boxShadow: '0 2px 8px rgba(249, 115, 22, 0.1)'
-        }}>
-          <Newspaper style={{ color: '#f97316', width: '18px', height: '18px' }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '36px',
+            height: '36px',
+            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08))',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1px solid rgba(249, 115, 22, 0.2)',
+            boxShadow: '0 2px 8px rgba(249, 115, 22, 0.1)'
+          }}>
+            <Newspaper style={{ color: '#f97316', width: '18px', height: '18px' }} />
+          </div>
+          <div>
+            <h2 style={{
+              color: '#ffffff',
+              fontSize: '20px',
+              fontWeight: '700',
+              letterSpacing: '-0.01em',
+              marginBottom: '4px'
+            }}>
+              Market Intelligence
+            </h2>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <div style={{
+                padding: '4px 10px',
+                background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+                border: '1px solid rgba(0, 184, 212, 0.25)',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <MapPin style={{ color: '#00b8d4', width: '12px', height: '12px' }} />
+                <span style={{
+                  color: '#00d4ff',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}>
+                  San Antonio, TX
+                </span>
+              </div>
+              <span style={{
+                color: 'rgba(255, 255, 255, 0.3)',
+                fontSize: '11px',
+                fontWeight: '500'
+              }}>
+                + Relevant National Trends
+              </span>
+            </div>
+          </div>
         </div>
-        <h2 style={{
-          color: '#ffffff',
-          fontSize: '20px',
-          fontWeight: '700',
-          letterSpacing: '-0.01em'
-        }}>
-          Market Intelligence
-        </h2>
+        
+        {/* Article Count Badge */}
+        {articles.length > 0 && (
+          <div style={{
+            padding: '8px 14px',
+            background: 'rgba(249, 115, 22, 0.1)',
+            border: '1px solid rgba(249, 115, 22, 0.2)',
+            borderRadius: '8px',
+            color: '#f97316',
+            fontSize: '12px',
+            fontWeight: '700'
+          }}>
+            {filteredArticles.length} {activeCategory === 'all' ? 'Articles' : 'in Category'}
+          </div>
+        )}
       </div>
 
       {/* Category Tabs */}
