@@ -425,7 +425,11 @@ const Dashboard = () => {
             <TimelineModule events={upcomingEvents} />
 
             {/* Market News Feed */}
-            <NewsModule articles={newsArticles} />
+            <NewsModule 
+              articles={newsArticles} 
+              activeCategory={activeNewsCategory}
+              setActiveCategory={setActiveNewsCategory}
+            />
           </div>
 
           {/* Right Column - AI Assistant Panel */}
