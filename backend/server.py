@@ -1246,14 +1246,16 @@ async def get_market_news():
                     
                     # FIRST: Check if it's about another specific city (EXCLUDE)
                     is_other_city = False
+                    matched_exclude = None
                     for exclude_city in exclude_cities:
                         if exclude_city in article_text:
                             is_other_city = True
+                            matched_exclude = exclude_city
                             break
                     
                     if is_other_city:
                         # Skip this article - it's about another city
-                        logger.debug(f"⏭️  EXCLUDED (other city): {entry.get('title', 'Untitled')[:60]}...")
+                        logger.info(f"⏭️  EXCLUDED ({matched_exclude}): {entry.get('title', 'Untitled')[:80]}")
                         continue
                     
                     # SECOND: Check for Texas/San Antonio relevance (HIGH PRIORITY)
