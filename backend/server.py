@@ -1232,13 +1232,15 @@ async def get_market_news():
         local_articles = 0
         general_articles = 0
         
-        # Fetch from each feed
-        for feed_info in rss_feeds:
+        # PHASE 1: Fetch from Texas-specific feeds first (highest priority)
+        logger.info("📍 PHASE 1: Fetching Texas-specific RSS feeds...")
+        for feed_info in texas_rss_feeds:
             try:
                 feed = feedparser.parse(feed_info['url'])
+                logger.info(f"  Checking {feed_info['source']}: {len(feed.entries)} entries found")
                 
-                # Get articles and filter for relevance
-                for entry in feed.entries[:10]:  # Check more entries to find relevant ones
+                # Get top 5 articles from each Texas feed (no filtering needed - all Texas content)
+                for entry in feed.entries[:5]:
                     total_checked += 1
                     
                     # Calculate time ago
