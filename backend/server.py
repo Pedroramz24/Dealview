@@ -22,6 +22,7 @@ from datetime import datetime, timedelta
 from layer_registry import LAYER_REGISTRY, CACHE_TTL, MAX_CACHE_SIZE, RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW
 import feedparser
 import time
+from sendgrid_service import sendgrid_service
 
 
 ROOT_DIR = Path(__file__).parent
