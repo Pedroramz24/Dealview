@@ -845,16 +845,56 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
           border: '1px solid rgba(249, 115, 22, 0.1)',
           borderRadius: '12px'
         }}>
-          <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '8px' }}>
-            {articles.length === 0 
-              ? 'Loading market intelligence...' 
-              : `No articles found in ${categories.find(c => c.id === activeCategory)?.label}`}
-          </p>
-          <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px' }}>
-            {articles.length === 0 
-              ? 'Fetching latest CRE news from Commercial Observer, GlobeSt, and industry sources'
-              : 'Try selecting a different category'}
-          </p>
+          {articles.length === 0 ? (
+            <>
+              <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '8px' }}>
+                Loading market intelligence...
+              </p>
+              <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px' }}>
+                Fetching latest CRE news from Commercial Observer, GlobeSt, and industry sources
+              </p>
+            </>
+          ) : activeCategory === 'local' ? (
+            <>
+              <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '8px' }}>
+                No Texas articles in current feed
+              </p>
+              <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px', marginBottom: '16px' }}>
+                RSS feeds update hourly. Try "All News" to see national CRE trends.
+              </p>
+              <button
+                onClick={() => setActiveCategory('all')}
+                style={{
+                  padding: '10px 20px',
+                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(0, 184, 212, 0.1))',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  borderRadius: '8px',
+                  color: '#00d4ff',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(0, 184, 212, 0.2))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(0, 184, 212, 0.1))';
+                }}
+              >
+                View All News
+              </button>
+            </>
+          ) : (
+            <>
+              <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '8px' }}>
+                No articles in {categories.find(c => c.id === activeCategory)?.label}
+              </p>
+              <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px' }}>
+                Try selecting "All News" or a different category
+              </p>
+            </>
+          )}
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
