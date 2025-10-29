@@ -18,6 +18,7 @@ const MainLayout = () => {
     { path: '/deals', label: 'Deals', icon: FileText },
     { path: '/pipeline', label: 'Pipeline', icon: Trello },
     { path: '/contacts', label: 'Contacts', icon: Users },
+    { path: '/campaigns', label: 'Campaigns', icon: Mail },
     { path: '/calendar', label: 'Calendar', icon: Calendar },
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/team', label: 'Team', icon: UsersRound },
