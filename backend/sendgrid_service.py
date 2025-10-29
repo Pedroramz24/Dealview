@@ -33,48 +33,84 @@ class SendGridService:
     
     async def test_connection(self, api_key: str) -> Dict[str, Any]:
         """
-        Test SendGrid API key validity
+        Test SendGrid API key validity by checking if it can access the API
         Returns: {
             "valid": bool,
-            "message": str,
-            "sender_email": str (if valid)
+            "message": str
         }
         """
         try:
-            sg = SendGridAPIClient(api_key)
+            import httpx
             
-            # Test by fetching API key scopes (simplest endpoint, requires minimal permissions)
-            # This just validates the key is valid and active
-            response = sg.client.api_keys._(api_key.split('.')[-1] if '.' in api_key else api_key).get()
+            # Simple GET request to validate API key
+            # Using the scopes endpoint which just checks if key is valid
+            headers = {
+                'Authorization': f'Bearer {api_key}',
+                'Content-Type': 'application/json'
+            }
             
-            if response.status_code == 200:
-                return {
-                    "valid": True,
-                    "message": "SendGrid API key is valid and active"
-                }
-            else:
-                return {
-                    "valid": False,
-                    "message": f"Invalid API key or insufficient permissions"
-                }
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    'https://api.sendgrid.com/v3/scopes',
+                    headers=headers,
+                    timeout=10.0
+                )
+                
+                if response.status_code == 200:
+                    scopes = response.json().get('scopes', [])
+                    
+                    # Check if it has mail send permission
+                    has_mail_send = any('mail.send' in scope for scope in scopes)
+                    
+                    if has_mail_send or 'admin' in str(scopes).lower():
+                        return {
+                            "valid": True,
+                            "message": "✅ SendGrid API key is valid and has email sending permissions!"
+                        }
+                    else:
+                        return {
+                            "valid": False,
+                            "message": "API key is valid but lacks 'Mail Send' permissions. Please edit your API key in SendGrid and grant 'Full Access' or 'Mail Send' permission."
+                        }
+                elif response.status_code == 401:
+                    return {
+                        "valid": False,
+                        "message": "Invalid API key. Please verify you copied the complete key (it should start with 'SG.')."
+                    }
+                elif response.status_code == 403:
+                    return {
+                        "valid": False,
+                        "message": "API key doesn't have sufficient permissions. In SendGrid, edit your API key and select 'Full Access' or grant 'Mail Send' permission."
+                    }
+                else:
+                    return {
+                        "valid": False,
+                        "message": f"Unexpected response from SendGrid (Status {response.status_code}). Please verify your API key."
+                    }
+                    
+        except httpx.TimeoutException:
+            return {
+                "valid": False,
+                "message": "Connection timeout. Please check your internet connection and try again."
+            }
         except Exception as e:
             error_msg = str(e)
             
-            # Provide helpful error messages based on common issues
-            if '403' in error_msg or 'Forbidden' in error_msg:
+            # Provide helpful error messages
+            if 'forbidden' in error_msg.lower() or '403' in error_msg:
                 return {
                     "valid": False,
-                    "message": "API key permissions error. Please ensure your API key has 'Mail Send' permissions. Go to SendGrid → Settings → API Keys → Edit your key → Grant 'Full Access' or at minimum 'Mail Send'."
+                    "message": "Permission denied. Your API key needs 'Full Access' or 'Mail Send' permissions. Edit the key in SendGrid → Settings → API Keys."
                 }
-            elif '401' in error_msg or 'Unauthorized' in error_msg:
+            elif 'unauthorized' in error_msg.lower() or '401' in error_msg:
                 return {
                     "valid": False,
-                    "message": "Invalid API key. Please double-check you copied the entire key (starts with SG.)."
+                    "message": "Invalid API key. Please copy the complete key from SendGrid (starts with 'SG.')."
                 }
             else:
                 return {
                     "valid": False,
-                    "message": f"Connection test failed. Please verify your API key is correct and has 'Mail Send' permissions. Error: {error_msg}"
+                    "message": f"Connection failed: {error_msg}"
                 }
     
     async def send_transactional_email(
