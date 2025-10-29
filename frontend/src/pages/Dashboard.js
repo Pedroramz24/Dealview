@@ -28,6 +28,23 @@ const Dashboard = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const fetchMarketNews = async () => {
+    try {
+      // Fetch news from backend API
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/dashboard/news`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setNewsArticles(data.articles || []);
+      }
+    } catch (error) {
+      console.log('News feed not available yet:', error);
+      // Set placeholder news
+      setNewsArticles([]);
+    }
+  };
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
