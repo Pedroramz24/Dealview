@@ -1384,6 +1384,597 @@ async def get_market_news():
         }
 
 
+# =====================================================
+# EMAIL CAMPAIGNS & TRANSACTIONAL EMAIL ENDPOINTS
+# =====================================================
+
+# Pydantic Models for Email System
+class EmailSettingsCreate(BaseModel):
+    sendgrid_api_key: str
+    sender_email: EmailStr
+    sender_name: str
+
+class EmailSettingsResponse(BaseModel):
+    id: str
+    sender_email: str
+    sender_name: str
+    is_verified: bool
+    last_tested_at: Optional[datetime]
+
+class TestEmailConnection(BaseModel):
+    api_key: str
+
+class SendTransactionalEmail(BaseModel):
+    contact_id: Optional[str] = None
+    deal_id: Optional[str] = None
+    to_email: EmailStr
+    to_name: Optional[str] = None
+    subject: str
+    html_content: str
+    plain_text_content: Optional[str] = None
+    cc_emails: Optional[List[str]] = None
+    bcc_emails: Optional[List[str]] = None
+
+class CreateCampaign(BaseModel):
+    name: str
+    subject: str
+    html_content: str
+    plain_text_content: Optional[str] = None
+    template_id: Optional[str] = None
+    segment_filters: Optional[Dict[str, Any]] = None
+
+class SendCampaign(BaseModel):
+    campaign_id: str
+    contact_ids: List[str]
+
+
+# Email Settings Endpoints
+@api_router.post("/email/settings", status_code=status.HTTP_201_CREATED)
+async def save_email_settings(
+    settings: EmailSettingsCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Save or update user's SendGrid settings"""
+    try:
+        # Get user from Supabase auth
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Test the API key first
+        test_result = await sendgrid_service.test_connection(settings.sendgrid_api_key)
+        if not test_result['valid']:
+            raise HTTPException(status_code=400, detail=test_result['message'])
+        
+        # Encrypt the API key
+        encrypted_key = sendgrid_service.encrypt_api_key(settings.sendgrid_api_key)
+        
+        # Check if settings already exist
+        existing = supabase.table('email_settings').select('id').eq('user_id', user_id).execute()
+        
+        settings_data = {
+            'user_id': user_id,
+            'sendgrid_api_key': encrypted_key,
+            'sender_email': settings.sender_email,
+            'sender_name': settings.sender_name,
+            'is_verified': True,
+            'last_tested_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        if existing.data and len(existing.data) > 0:
+            # Update existing
+            result = supabase.table('email_settings').update(settings_data).eq('user_id', user_id).execute()
+        else:
+            # Create new
+            result = supabase.table('email_settings').insert(settings_data).execute()
+        
+        if result.data and len(result.data) > 0:
+            return {
+                "success": True,
+                "message": "Email settings saved successfully",
+                "settings": {
+                    "id": result.data[0]['id'],
+                    "sender_email": result.data[0]['sender_email'],
+                    "sender_name": result.data[0]['sender_name'],
+                    "is_verified": result.data[0]['is_verified']
+                }
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to save email settings")
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving email settings: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/email/settings")
+async def get_email_settings(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get user's email settings (without API key)"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        result = supabase.table('email_settings').select('id, sender_email, sender_name, is_verified, last_tested_at').eq('user_id', user_id).execute()
+        
+        if result.data and len(result.data) > 0:
+            return {
+                "configured": True,
+                "settings": result.data[0]
+            }
+        else:
+            return {
+                "configured": False,
+                "settings": None
+            }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching email settings: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/email/test-connection")
+async def test_email_connection(
+    test_data: TestEmailConnection
+):
+    """Test SendGrid API key validity (no auth required for setup)"""
+    try:
+        result = await sendgrid_service.test_connection(test_data.api_key)
+        return result
+    except Exception as e:
+        logger.error(f"Error testing connection: {str(e)}")
+        return {
+            "valid": False,
+            "message": str(e)
+        }
+
+
+@api_router.delete("/email/settings")
+async def delete_email_settings(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete user's email settings"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        result = supabase.table('email_settings').delete().eq('user_id', user_id).execute()
+        
+        return {
+            "success": True,
+            "message": "Email settings deleted successfully"
+        }
+    
+    except Exception as e:
+        logger.error(f"Error deleting email settings: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Transactional Email Endpoints
+@api_router.post("/email/send")
+async def send_transactional_email(
+    email_data: SendTransactionalEmail,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Send a transactional email (1-to-1 communication)"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Get user's email settings
+        settings_result = supabase.table('email_settings').select('*').eq('user_id', user_id).execute()
+        if not settings_result.data or len(settings_result.data) == 0:
+            raise HTTPException(status_code=400, detail="SendGrid not configured. Please set up your email settings first.")
+        
+        settings = settings_result.data[0]
+        api_key = sendgrid_service.decrypt_api_key(settings['sendgrid_api_key'])
+        
+        # Send email
+        send_result = await sendgrid_service.send_transactional_email(
+            api_key=api_key,
+            from_email=settings['sender_email'],
+            from_name=settings['sender_name'],
+            to_email=email_data.to_email,
+            to_name=email_data.to_name,
+            subject=email_data.subject,
+            html_content=email_data.html_content,
+            plain_text_content=email_data.plain_text_content,
+            cc_emails=email_data.cc_emails,
+            bcc_emails=email_data.bcc_emails,
+            custom_args={
+                "user_id": user_id,
+                "contact_id": email_data.contact_id or "",
+                "deal_id": email_data.deal_id or "",
+                "type": "transactional"
+            }
+        )
+        
+        if not send_result['success']:
+            raise HTTPException(status_code=500, detail=send_result.get('error', 'Failed to send email'))
+        
+        # Log email activity in database
+        activity_data = {
+            'user_id': user_id,
+            'contact_id': email_data.contact_id,
+            'deal_id': email_data.deal_id,
+            'to_email': email_data.to_email,
+            'to_name': email_data.to_name,
+            'subject': email_data.subject,
+            'html_content': email_data.html_content,
+            'plain_text_content': email_data.plain_text_content,
+            'cc_emails': email_data.cc_emails,
+            'bcc_emails': email_data.bcc_emails,
+            'sendgrid_message_id': send_result.get('message_id'),
+            'status': 'sent',
+            'sent_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        supabase.table('email_activities').insert(activity_data).execute()
+        
+        return {
+            "success": True,
+            "message": "Email sent successfully",
+            "message_id": send_result.get('message_id')
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error sending transactional email: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/email/activities")
+async def get_email_activities(
+    contact_id: Optional[str] = None,
+    deal_id: Optional[str] = None,
+    limit: int = 50,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get email activities for a contact or deal"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Build query
+        query = supabase.table('email_activities').select('*').eq('user_id', user_id)
+        
+        if contact_id:
+            query = query.eq('contact_id', contact_id)
+        if deal_id:
+            query = query.eq('deal_id', deal_id)
+        
+        query = query.order('created_at', desc=True).limit(limit)
+        
+        result = query.execute()
+        
+        return {
+            "activities": result.data,
+            "count": len(result.data)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching email activities: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Campaign Endpoints
+@api_router.get("/email/templates")
+async def get_email_templates(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get email templates (default + user's custom)"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Get default templates and user's custom templates
+        result = supabase.table('email_templates').select('*').or_(f'user_id.eq.{user_id},is_default.eq.true').execute()
+        
+        return {
+            "templates": result.data,
+            "count": len(result.data)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching templates: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/email/campaigns", status_code=status.HTTP_201_CREATED)
+async def create_campaign(
+    campaign: CreateCampaign,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Create a new email campaign"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        campaign_data = {
+            'user_id': user_id,
+            'name': campaign.name,
+            'subject': campaign.subject,
+            'html_content': campaign.html_content,
+            'plain_text_content': campaign.plain_text_content,
+            'template_id': campaign.template_id,
+            'segment_filters': campaign.segment_filters,
+            'status': 'draft'
+        }
+        
+        result = supabase.table('email_campaigns').insert(campaign_data).execute()
+        
+        if result.data and len(result.data) > 0:
+            return {
+                "success": True,
+                "campaign": result.data[0]
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to create campaign")
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating campaign: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/email/campaigns")
+async def get_campaigns(
+    status_filter: Optional[str] = None,
+    limit: int = 50,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get user's email campaigns"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        query = supabase.table('email_campaigns').select('*').eq('user_id', user_id)
+        
+        if status_filter:
+            query = query.eq('status', status_filter)
+        
+        query = query.order('created_at', desc=True).limit(limit)
+        
+        result = query.execute()
+        
+        return {
+            "campaigns": result.data,
+            "count": len(result.data)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching campaigns: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/email/campaigns/{campaign_id}")
+async def get_campaign_details(
+    campaign_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get campaign details with send statistics"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Get campaign
+        campaign_result = supabase.table('email_campaigns').select('*').eq('id', campaign_id).eq('user_id', user_id).execute()
+        
+        if not campaign_result.data or len(campaign_result.data) == 0:
+            raise HTTPException(status_code=404, detail="Campaign not found")
+        
+        campaign = campaign_result.data[0]
+        
+        # Get send details
+        sends_result = supabase.table('email_campaign_sends').select('*').eq('campaign_id', campaign_id).execute()
+        
+        return {
+            "campaign": campaign,
+            "sends": sends_result.data,
+            "sends_count": len(sends_result.data)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching campaign details: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/email/campaigns/send")
+async def send_campaign(
+    send_data: SendCampaign,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Send campaign to selected contacts"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Get campaign
+        campaign_result = supabase.table('email_campaigns').select('*').eq('id', send_data.campaign_id).eq('user_id', user_id).execute()
+        
+        if not campaign_result.data or len(campaign_result.data) == 0:
+            raise HTTPException(status_code=404, detail="Campaign not found")
+        
+        campaign = campaign_result.data[0]
+        
+        # Get user's email settings
+        settings_result = supabase.table('email_settings').select('*').eq('user_id', user_id).execute()
+        if not settings_result.data or len(settings_result.data) == 0:
+            raise HTTPException(status_code=400, detail="SendGrid not configured")
+        
+        settings = settings_result.data[0]
+        api_key = sendgrid_service.decrypt_api_key(settings['sendgrid_api_key'])
+        
+        # Get contacts
+        contacts_result = supabase.table('contacts').select('id, email, full_name').in_('id', send_data.contact_ids).eq('owner_id', user_id).execute()
+        
+        if not contacts_result.data or len(contacts_result.data) == 0:
+            raise HTTPException(status_code=400, detail="No valid contacts found")
+        
+        # Prepare recipients
+        recipients = [
+            {
+                "email": contact['email'],
+                "name": contact['full_name'],
+                "id": contact['id']
+            }
+            for contact in contacts_result.data if contact.get('email')
+        ]
+        
+        if len(recipients) == 0:
+            raise HTTPException(status_code=400, detail="No contacts with valid email addresses")
+        
+        # Send campaign
+        send_result = await sendgrid_service.send_campaign_email(
+            api_key=api_key,
+            from_email=settings['sender_email'],
+            from_name=settings['sender_name'],
+            recipients=recipients,
+            subject=campaign['subject'],
+            html_content=campaign['html_content'],
+            plain_text_content=campaign.get('plain_text_content'),
+            campaign_id=campaign['id']
+        )
+        
+        # Record sends in database
+        for result in send_result['results']:
+            send_record = {
+                'campaign_id': campaign['id'],
+                'contact_id': result['contact_id'],
+                'sendgrid_message_id': result.get('message_id'),
+                'status': 'sent' if result['success'] else 'failed',
+                'sent_at': datetime.now(timezone.utc).isoformat() if result['success'] else None,
+                'error_message': result.get('error')
+            }
+            supabase.table('email_campaign_sends').insert(send_record).execute()
+        
+        # Update campaign status and stats
+        update_data = {
+            'status': 'sent',
+            'sent_at': datetime.now(timezone.utc).isoformat(),
+            'total_recipients': len(recipients),
+            'total_sent': send_result['total_sent'],
+            'total_failed': send_result['total_failed']
+        }
+        supabase.table('email_campaigns').update(update_data).eq('id', campaign['id']).execute()
+        
+        return {
+            "success": True,
+            "message": f"Campaign sent to {send_result['total_sent']} recipients",
+            "results": {
+                "total_sent": send_result['total_sent'],
+                "total_failed": send_result['total_failed']
+            }
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error sending campaign: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/email/webhook")
+async def sendgrid_webhook(request: Dict[str, Any]):
+    """Handle SendGrid webhook events (open, click, bounce, etc.)"""
+    try:
+        # Process each event in the batch
+        events = request if isinstance(request, list) else [request]
+        
+        for event_data in events:
+            processed_event = sendgrid_service.process_webhook_event(event_data)
+            
+            if 'error' in processed_event:
+                logger.error(f"Error processing webhook event: {processed_event['error']}")
+                continue
+            
+            # Update email activity or campaign send based on custom args
+            custom_args = processed_event.get('custom_args', {})
+            message_id = processed_event.get('message_id')
+            status = processed_event.get('status')
+            timestamp = processed_event.get('timestamp')
+            
+            if custom_args.get('type') == 'campaign' and custom_args.get('campaign_id'):
+                # Update campaign send
+                update_data = {'status': status}
+                
+                if status == 'delivered':
+                    update_data['delivered_at'] = timestamp.isoformat()
+                elif status == 'opened':
+                    update_data['opened_at'] = timestamp.isoformat()
+                elif status == 'clicked':
+                    update_data['clicked_at'] = timestamp.isoformat()
+                elif status == 'bounced':
+                    update_data['bounced_at'] = timestamp.isoformat()
+                
+                supabase.table('email_campaign_sends').update(update_data).eq('sendgrid_message_id', message_id).execute()
+            
+            elif custom_args.get('type') == 'transactional':
+                # Update email activity
+                update_data = {'status': status}
+                
+                if status == 'delivered':
+                    update_data['delivered_at'] = timestamp.isoformat()
+                elif status == 'opened':
+                    update_data['opened_at'] = timestamp.isoformat()
+                elif status == 'clicked':
+                    update_data['clicked_at'] = timestamp.isoformat()
+                elif status == 'bounced':
+                    update_data['bounced_at'] = timestamp.isoformat()
+                
+                supabase.table('email_activities').update(update_data).eq('sendgrid_message_id', message_id).execute()
+        
+        return {"success": True}
+    
+    except Exception as e:
+        logger.error(f"Error processing webhook: {str(e)}")
+        return {"success": False, "error": str(e)}
+
 
 app.include_router(api_router)
 
