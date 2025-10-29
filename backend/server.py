@@ -1289,39 +1289,24 @@ async def get_market_news():
         # PHASE 2: Fetch from national feeds (WITH FILTERING for macro-economic only)
         logger.info("🌎 PHASE 2: Fetching national macro-economic news...")
         for feed_info in national_rss_feeds:
+            try:
+                feed = feedparser.parse(feed_info['url'])
+                logger.info(f"  ✅ {feed_info['source']}: {len(feed.entries)} entries found")
+                
+                # National feeds: Filter for macro-economic relevance only
+                for entry in feed.entries[:10]:
+                    total_checked += 1
                     
-                    # Calculate time ago
-                    published_time = entry.get('published_parsed') or entry.get('updated_parsed')
-                    if published_time:
-                        pub_datetime = datetime(*published_time[:6])
-                        time_diff = datetime.now() - pub_datetime
-                        
-                        if time_diff.days > 0:
-                            time_ago = f"{time_diff.days} day{'s' if time_diff.days > 1 else ''} ago"
-                        elif time_diff.seconds >= 3600:
-                            hours = time_diff.seconds // 3600
-                            time_ago = f"{hours} hour{'s' if hours > 1 else ''} ago"
-                        else:
-                            minutes = time_diff.seconds // 60
-                            time_ago = f"{minutes} minute{'s' if minutes > 1 else ''} ago"
-                    else:
-                        time_ago = "Recently"
-                    
-                    # Get description (try summary, then content)
+                    title = entry.get('title', 'Untitled')
                     description = entry.get('summary', '')
                     if not description and 'content' in entry:
                         description = entry.content[0].get('value', '')
                     
-                    # Clean HTML tags from description
+                    # Clean HTML
                     description = re.sub(r'<[^>]+>', '', description)
+                    article_text = (title + ' ' + description).lower()
                     
-                    # Check if article is relevant (Texas-based or macro-economic)
-                    article_text = (entry.get('title', '') + ' ' + description).lower()
-                    
-                    is_relevant = False
-                    relevance_type = None
-                    
-                    # FIRST: Check if it's about another specific city (EXCLUDE)
+                    # Check if it's about another city (EXCLUDE)
                     is_other_city = False
                     matched_exclude = None
                     for exclude_city in exclude_cities:
@@ -1331,76 +1316,71 @@ async def get_market_news():
                             break
                     
                     if is_other_city:
-                        # Skip this article - it's about another city
-                        logger.info(f"⏭️  EXCLUDED ({matched_exclude}): {entry.get('title', 'Untitled')[:80]}")
+                        logger.info(f"    ⏭️  EXCLUDED ({matched_exclude}): {title[:70]}")
                         continue
                     
-                    # SECOND: Check for Texas/San Antonio relevance (HIGH PRIORITY)
-                    for keyword in location_keywords:
+                    # Check if macro-economic news
+                    is_macro = False
+                    for keyword in macro_economic_keywords:
                         if keyword in article_text:
-                            is_relevant = True
-                            relevance_type = 'local'
-                            local_articles += 1
+                            is_macro = True
                             break
                     
-                    # THIRD: If not local, check if it's macro-economic news (INCLUDE)
-                    if not is_relevant:
-                        for keyword in macro_economic_keywords:
-                            if keyword in article_text:
-                                is_relevant = True
-                                relevance_type = 'macro'
-                                general_articles += 1
-                                break
-                    
-                    # Only include relevant articles
-                    if is_relevant:
+                    if is_macro:
+                        # Format time
+                        published_time = entry.get('published_parsed') or entry.get('updated_parsed')
+                        if published_time:
+                            pub_datetime = datetime(*published_time[:6])
+                            time_diff = datetime.now() - pub_datetime
+                            if time_diff.days > 0:
+                                time_ago = f"{time_diff.days} day{'s' if time_diff.days > 1 else ''} ago"
+                            elif time_diff.seconds >= 3600:
+                                hours = time_diff.seconds // 3600
+                                time_ago = f"{hours} hour{'s' if hours > 1 else ''} ago"
+                            else:
+                                minutes = time_diff.seconds // 60
+                                time_ago = f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+                        else:
+                            time_ago = "Recently"
+                        
                         description = description[:250] + '...' if len(description) > 250 else description
                         
-                        article = {
-                            'title': entry.get('title', 'Untitled'),
+                        articles.append({
+                            'title': title,
                             'description': description,
                             'source': feed_info['source'],
                             'url': entry.get('link', ''),
                             'publishedAt': time_ago,
-                            'relevanceType': relevance_type  # Track if local or general
-                        }
+                            'relevanceType': 'macro'
+                        })
                         
-                        articles.append(article)
-                        logger.info(f"✅ [{relevance_type.upper()}] {entry.get('title', 'Untitled')[:60]}...")
-                    else:
-                        logger.debug(f"⏭️  FILTERED OUT: {entry.get('title', 'Untitled')[:60]}...")
+                        macro_articles += 1
+                        logger.info(f"    ✅ [MACRO] {title[:70]}...")
                     
             except Exception as feed_error:
-                logger.warning(f"Error parsing feed {feed_info['source']}: {str(feed_error)}")
+                logger.warning(f"  ⚠️  {feed_info['source']} failed: {str(feed_error)}")
                 continue
         
-        # Sort by most recent and limit to 12 articles
-        articles = articles[:12]
+        logger.info(f"🌎 Phase 2 Complete: {macro_articles} macro-economic articles collected")
+        
+        # Sort by most recent and limit to 15 articles
+        articles = articles[:15]
         
         # Update cache
         news_cache['articles'] = articles
         news_cache['last_updated'] = current_time
         
-        logger.info(f"📊 NEWS FILTERING RESULTS: Checked {total_checked} articles | Texas/Local: {local_articles} | Macro-Economic: {general_articles} | Returned: {len(articles)}")
-        return {"articles": articles, "count": len(articles), "cached": False, "stats": {"local": local_articles, "macro": general_articles, "total_checked": total_checked}}
+        logger.info(f"📊 FINAL RESULTS: Texas: {local_articles} | Macro: {macro_articles} | Total Returned: {len(articles)}")
+        return {"articles": articles, "count": len(articles), "cached": False, "stats": {"local": local_articles, "macro": macro_articles, "total_checked": total_checked}}
         
     except Exception as e:
         logger.error(f"News endpoint error: {str(e)}")
         # Return placeholder on error
         return {
-            "articles": [{
-                "title": "Commercial Real Estate News",
-                "description": "Stay updated with the latest market trends and investment opportunities.",
-                "source": "CRE Updates",
-                "url": "#",
-                "publishedAt": "Recently"
-            }],
-            "count": 1,
+            "articles": [],
+            "count": 0,
             "error": True
         }
-    except Exception as e:
-        logger.error(f"News endpoint error: {str(e)}")
-        return {"articles": [], "count": 0}
 
 
 
