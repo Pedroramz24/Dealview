@@ -379,9 +379,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: '32px' }}>
-          {/* Left Column */}
+        {/* Main Content Grid - Metrics and AI Assistant */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: '32px', marginBottom: '32px' }}>
+          {/* Left Column - Metrics & Timeline */}
           <div>
             {/* Key Metrics */}
             <div style={{
@@ -423,18 +423,18 @@ const Dashboard = () => {
 
             {/* Timeline Module */}
             <TimelineModule events={upcomingEvents} />
-
-            {/* Market News Feed */}
-            <NewsModule 
-              articles={newsArticles} 
-              activeCategory={activeNewsCategory}
-              setActiveCategory={setActiveNewsCategory}
-            />
           </div>
 
           {/* Right Column - AI Assistant Panel */}
           <AIAssistantPanel insights={aiInsights} />
         </div>
+
+        {/* Market News Feed - Full Width */}
+        <NewsModule 
+          articles={newsArticles} 
+          activeCategory={activeNewsCategory}
+          setActiveCategory={setActiveNewsCategory}
+        />
       </div>
     </div>
   );
