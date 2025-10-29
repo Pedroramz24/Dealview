@@ -598,20 +598,8 @@ const CalendarView = () => {
 
           {/* Calendar - Full Height */}
           {loading ? (
-            <div className="flex items-center justify-center" style={{ height: 'calc(100% - 110px)' }}>
-              <div className="text-center">
-                <div style={{
-                  width: '70px',
-                  height: '70px',
-                  border: '4px solid rgba(0, 184, 212, 0.1)',
-                  borderTop: '4px solid #00b8d4',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite',
-                  margin: '0 auto 24px',
-                  boxShadow: '0 0 40px rgba(0, 184, 212, 0.3)'
-                }} />
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '16px', fontWeight: '600' }}>Loading your schedule...</p>
-              </div>
+            <div className="flex items-center justify-center h-full" style={{ background: 'var(--bg-base)' }}>
+              <div className="loading-spinner"></div>
             </div>
           ) : (
             <div style={{ height: 'calc(100% - 110px)', padding: '0 40px 40px' }}>
