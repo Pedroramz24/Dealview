@@ -4,7 +4,7 @@ import { AuthContext } from '../App';
 import { 
   Sparkles, TrendingUp, Users, Calendar, AlertCircle, 
   CheckCircle2, Clock, DollarSign, FileText, Target,
-  Zap, ArrowRight, Bell, Newspaper, Activity, ExternalLink
+  Zap, ArrowRight, Bell, Newspaper, Activity, ExternalLink, MapPin
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
