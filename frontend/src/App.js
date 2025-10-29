@@ -11,6 +11,7 @@ import Contacts from './pages/Contacts';
 import Pipeline from './pages/Pipeline';
 import Team from './pages/Team';
 import CalendarView from './pages/Calendar';
+import Campaigns from './pages/Campaigns';
 import PublicShare from './pages/PublicShare';
 import MainLayout from './components/MainLayout';
 
