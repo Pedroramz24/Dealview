@@ -660,11 +660,8 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
         
         switch(activeCategory) {
           case 'local':
-            // Show only San Antonio and Texas articles
-            return article.relevanceType === 'local' || 
-                   text.includes('san antonio') || text.includes('texas') || 
-                   text.includes('austin') || text.includes('houston') || 
-                   text.includes('dallas') || text.includes('tx');
+            // Show only Texas articles (already filtered by backend)
+            return article.relevanceType === 'local';
           
           case 'market':
             // Market Trends: Economics + Cap Rates + Forecasts
