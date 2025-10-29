@@ -1166,14 +1166,35 @@ async def get_market_news():
         # Location keywords for filtering (San Antonio and broader Texas/Southwest region)
         location_keywords = [
             'san antonio', 'texas', 'austin', 'houston', 'dallas', 'fort worth',
-            'tx', 'southwest', 'south texas', 'bexar county', 'alamo city'
+            'tx', 'southwest', 'south texas', 'bexar county', 'alamo city',
+            'san marcos', 'new braunfels', 'el paso', 'corpus christi', 'waco',
+            'lubbock', 'arlington', 'plano', 'irving'
         ]
         
-        # National/general keywords that are always relevant
-        general_keywords = [
-            'multifamily', 'industrial', 'office', 'retail', 'cap rate', 'investment',
-            'market trend', 'vacancy', 'lease', 'financing', 'commercial real estate',
-            'cre market', 'property market', 'real estate investment'
+        # National MACRO-ECONOMIC keywords (affects all CRE regardless of location)
+        macro_economic_keywords = [
+            'federal reserve', 'fed rate', 'interest rate', 'jerome powell',
+            'basis point', 'monetary policy', 'inflation', 'fed meeting',
+            'treasury yield', 'economic outlook', 'gdp', 'unemployment rate',
+            'national housing', 'fannie mae', 'freddie mac', 'cmbs',
+            'national rent', 'national vacancy', 'national cap rate'
+        ]
+        
+        # EXCLUDE these - other city-specific news we don't care about
+        exclude_cities = [
+            'new york', 'manhattan', 'brooklyn', 'nyc',
+            'los angeles', 'california', 'san francisco', 'oakland',
+            'miami', 'florida', 'orlando', 'tampa',
+            'chicago', 'illinois',
+            'boston', 'massachusetts',
+            'washington dc', 'dc metro',
+            'seattle', 'portland',
+            'denver', 'colorado',
+            'atlanta', 'georgia',
+            'phoenix', 'arizona',
+            'las vegas', 'nevada',
+            'philadelphia', 'pennsylvania',
+            'detroit', 'michigan'
         ]
         
         articles = []
