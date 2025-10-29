@@ -1168,16 +1168,26 @@ async def get_market_news():
             'san antonio', 'texas', 'austin', 'houston', 'dallas', 'fort worth',
             'tx', 'southwest', 'south texas', 'bexar county', 'alamo city',
             'san marcos', 'new braunfels', 'el paso', 'corpus christi', 'waco',
-            'lubbock', 'arlington', 'plano', 'irving'
+            'lubbock', 'arlington', 'plano', 'irving', 'lone star', 'dfw'
         ]
         
         # National MACRO-ECONOMIC keywords (affects all CRE regardless of location)
+        # Keep this broad to capture important national trends
         macro_economic_keywords = [
+            # Fed and monetary policy
             'federal reserve', 'fed rate', 'interest rate', 'jerome powell',
             'basis point', 'monetary policy', 'inflation', 'fed meeting',
-            'treasury yield', 'economic outlook', 'gdp', 'unemployment rate',
-            'national housing', 'fannie mae', 'freddie mac', 'cmbs',
-            'national rent', 'national vacancy', 'national cap rate'
+            'treasury yield', 'economic outlook', 'gdp', 'unemployment',
+            # National CRE trends
+            'national', 'nationwide', 'u.s.', 'united states', 'across america',
+            'cap rate', 'capitalization rate', 'investment trend',
+            'market outlook', 'economic forecast', 'recession',
+            # Lending and financing
+            'cmbs', 'commercial mortgage', 'fannie mae', 'freddie mac',
+            'lending standard', 'loan origination', 'debt market',
+            # Broad market indicators
+            'vacancy rate', 'absorption', 'construction start',
+            'supply and demand', 'market cycle', 'real estate cycle'
         ]
         
         # EXCLUDE these - other city-specific news we don't care about
