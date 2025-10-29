@@ -638,65 +638,165 @@ const EventItem = ({ event, index }) => {
   );
 };
 
-// News Module Component
-const NewsModule = ({ articles }) => {
+// News Module Component with Categories
+const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
   console.log('NewsModule rendering with articles:', articles?.length || 0, articles);
   
+  const categories = [
+    { id: 'all', label: 'All News', icon: '📰' },
+    { id: 'market', label: 'Market & Economic', icon: '📊' },
+    { id: 'transactions', label: 'Transactions & Capital', icon: '💰' },
+    { id: 'development', label: 'Development & Construction', icon: '🏗️' },
+    { id: 'policy', label: 'Policy, Taxes & Zoning', icon: '⚖️' },
+    { id: 'sector', label: 'Sector Intelligence', icon: '🎯' },
+    { id: 'regional', label: 'Regional & Local', icon: '📍' },
+    { id: 'financial', label: 'Financial & Lending', icon: '🏦' },
+    { id: 'technology', label: 'Technology & Innovation', icon: '🚀' }
+  ];
+
+  // Filter articles by category (for now, show all in each category - AI categorization can be added later)
+  const filteredArticles = activeCategory === 'all' 
+    ? articles 
+    : articles.filter(article => {
+        // Simple keyword matching for categorization
+        const text = (article.title + ' ' + article.description).toLowerCase();
+        
+        switch(activeCategory) {
+          case 'market':
+            return text.includes('market') || text.includes('economic') || text.includes('trend') || text.includes('cap rate');
+          case 'transactions':
+            return text.includes('sale') || text.includes('acquisition') || text.includes('investment') || text.includes('capital');
+          case 'development':
+            return text.includes('development') || text.includes('construction') || text.includes('build') || text.includes('project');
+          case 'policy':
+            return text.includes('tax') || text.includes('zoning') || text.includes('regulation') || text.includes('policy');
+          case 'sector':
+            return text.includes('office') || text.includes('retail') || text.includes('industrial') || text.includes('multifamily');
+          case 'regional':
+            return text.includes('city') || text.includes('metro') || text.includes('local') || text.includes('region');
+          case 'financial':
+            return text.includes('loan') || text.includes('lending') || text.includes('financing') || text.includes('debt');
+          case 'technology':
+            return text.includes('tech') || text.includes('proptech') || text.includes('innovation') || text.includes('digital');
+          default:
+            return true;
+        }
+      });
+  
   return (
-  <div style={{
-    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    borderRadius: '20px',
-    padding: '28px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04)'
-  }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+    <div style={{
+      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
+      border: '1px solid rgba(255, 255, 255, 0.06)',
+      borderRadius: '20px',
+      padding: '28px',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04)'
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+        <div style={{
+          width: '36px',
+          height: '36px',
+          background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08))',
+          borderRadius: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: '1px solid rgba(249, 115, 22, 0.2)',
+          boxShadow: '0 2px 8px rgba(249, 115, 22, 0.1)'
+        }}>
+          <Newspaper style={{ color: '#f97316', width: '18px', height: '18px' }} />
+        </div>
+        <h2 style={{
+          color: '#ffffff',
+          fontSize: '20px',
+          fontWeight: '700',
+          letterSpacing: '-0.01em'
+        }}>
+          Market Intelligence
+        </h2>
+      </div>
+
+      {/* Category Tabs */}
       <div style={{
-        width: '36px',
-        height: '36px',
-        background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08))',
-        borderRadius: '10px',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        border: '1px solid rgba(249, 115, 22, 0.2)',
-        boxShadow: '0 2px 8px rgba(249, 115, 22, 0.1)'
+        gap: '8px',
+        marginBottom: '20px',
+        flexWrap: 'wrap'
       }}>
-        <Newspaper style={{ color: '#f97316', width: '18px', height: '18px' }} />
-      </div>
-      <h2 style={{
-        color: '#ffffff',
-        fontSize: '20px',
-        fontWeight: '700',
-        letterSpacing: '-0.01em'
-      }}>
-        Market Updates
-      </h2>
-    </div>
-    
-    {articles.length === 0 ? (
-      <div style={{
-        padding: '20px',
-        textAlign: 'center',
-        background: 'rgba(249, 115, 22, 0.04)',
-        border: '1px solid rgba(249, 115, 22, 0.1)',
-        borderRadius: '12px'
-      }}>
-        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '12px' }}>
-          Market news feed coming soon
-        </p>
-        <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px' }}>
-          Connect a news API to display commercial real estate updates from CoStar, Bloomberg, and industry sources
-        </p>
-      </div>
-    ) : (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        {articles.slice(0, 5).map((article, idx) => (
-          <NewsArticle key={idx} article={article} index={idx} />
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setActiveCategory(category.id)}
+            style={{
+              padding: '8px 14px',
+              background: activeCategory === category.id 
+                ? 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(0, 184, 212, 0.1))'
+                : 'rgba(255, 255, 255, 0.03)',
+              border: activeCategory === category.id 
+                ? '1px solid rgba(0, 184, 212, 0.4)' 
+                : '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '10px',
+              color: activeCategory === category.id ? '#00d4ff' : 'rgba(255, 255, 255, 0.6)',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: activeCategory === category.id 
+                ? '0 2px 8px rgba(0, 184, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                : '0 1px 2px rgba(0, 0, 0, 0.2)'
+            }}
+            onMouseEnter={(e) => {
+              if (activeCategory !== category.id) {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeCategory !== category.id) {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+              }
+            }}
+          >
+            <span>{category.icon}</span>
+            <span>{category.label}</span>
+          </button>
         ))}
       </div>
-    )}
-  </div>
+      
+      {/* Articles List */}
+      {filteredArticles.length === 0 ? (
+        <div style={{
+          padding: '32px 20px',
+          textAlign: 'center',
+          background: 'rgba(249, 115, 22, 0.04)',
+          border: '1px solid rgba(249, 115, 22, 0.1)',
+          borderRadius: '12px'
+        }}>
+          <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '8px' }}>
+            {articles.length === 0 
+              ? 'Loading market intelligence...' 
+              : `No articles found in ${categories.find(c => c.id === activeCategory)?.label}`}
+          </p>
+          <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px' }}>
+            {articles.length === 0 
+              ? 'Fetching latest CRE news from Commercial Observer, GlobeSt, and industry sources'
+              : 'Try selecting a different category'}
+          </p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {filteredArticles.slice(0, 8).map((article, idx) => (
+            <NewsArticle key={idx} article={article} index={idx} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
