@@ -927,8 +927,8 @@ const NewsArticle = ({ article, index }) => (
           {article.description}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          {/* Local/National Badge */}
-          {article.relevanceType === 'local' && (
+          {/* Local/Macro Badge */}
+          {article.relevanceType === 'local' ? (
             <div style={{
               padding: '4px 8px',
               background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
@@ -945,10 +945,30 @@ const NewsArticle = ({ article, index }) => (
                 fontWeight: '700',
                 textTransform: 'uppercase'
               }}>
-                Local
+                Texas
               </span>
             </div>
-          )}
+          ) : article.relevanceType === 'macro' ? (
+            <div style={{
+              padding: '4px 8px',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.08))',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              borderRadius: '5px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <TrendingUp style={{ color: '#a78bfa', width: '10px', height: '10px' }} />
+              <span style={{
+                color: '#a78bfa',
+                fontSize: '10px',
+                fontWeight: '700',
+                textTransform: 'uppercase'
+              }}>
+                National
+              </span>
+            </div>
+          ) : null}
           
           <span style={{
             color: '#f97316',
