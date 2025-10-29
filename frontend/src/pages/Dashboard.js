@@ -643,15 +643,15 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
   console.log('NewsModule rendering with articles:', articles?.length || 0, articles);
   
   const categories = [
-    { id: 'all', label: 'All News', icon: '📰' },
-    { id: 'market', label: 'Market & Economic', icon: '📊' },
-    { id: 'transactions', label: 'Transactions & Capital', icon: '💰' },
-    { id: 'development', label: 'Development & Construction', icon: '🏗️' },
-    { id: 'policy', label: 'Policy, Taxes & Zoning', icon: '⚖️' },
-    { id: 'sector', label: 'Sector Intelligence', icon: '🎯' },
-    { id: 'regional', label: 'Regional & Local', icon: '📍' },
-    { id: 'financial', label: 'Financial & Lending', icon: '🏦' },
-    { id: 'technology', label: 'Technology & Innovation', icon: '🚀' }
+    { id: 'all', label: 'All News' },
+    { id: 'market', label: 'Market & Economic' },
+    { id: 'transactions', label: 'Transactions & Capital' },
+    { id: 'development', label: 'Development & Construction' },
+    { id: 'policy', label: 'Policy, Taxes & Zoning' },
+    { id: 'sector', label: 'Sector Intelligence' },
+    { id: 'regional', label: 'Regional & Local' },
+    { id: 'financial', label: 'Financial & Lending' },
+    { id: 'technology', label: 'Technology & Innovation' }
   ];
 
   // Filter articles by category (for now, show all in each category - AI categorization can be added later)
