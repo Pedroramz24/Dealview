@@ -1129,6 +1129,7 @@ async def chat_with_ai(request: ChatRequest, current_user = Depends(get_current_
 async def get_market_news():
     """
     Fetch latest commercial real estate market news from RSS feeds.
+    Filters for San Antonio, Texas, and regional relevance.
     Caches results for 1 hour to minimize requests.
     No authentication required - public news data.
     """
@@ -1139,7 +1140,7 @@ async def get_market_news():
             logger.info("Returning cached news articles")
             return {"articles": news_cache['articles'], "count": len(news_cache['articles']), "cached": True}
         
-        logger.info("Fetching fresh news from RSS feeds")
+        logger.info("Fetching fresh news from RSS feeds with San Antonio/Texas filter")
         
         # Define CRE RSS feeds with working URLs
         rss_feeds = [
@@ -1165,6 +1166,19 @@ async def get_market_news():
             }
         ]
         
+        # Location keywords for filtering (San Antonio and broader Texas/Southwest region)
+        location_keywords = [
+            'san antonio', 'texas', 'austin', 'houston', 'dallas', 'fort worth',
+            'tx', 'southwest', 'south texas', 'bexar county', 'alamo city'
+        ]
+        
+        # National/general keywords that are always relevant
+        general_keywords = [
+            'multifamily', 'industrial', 'office', 'retail', 'cap rate', 'investment',
+            'market trend', 'vacancy', 'lease', 'financing', 'commercial real estate',
+            'cre market', 'property market', 'real estate investment'
+        ]
+        
         articles = []
         
         # Fetch from each feed
@@ -1172,8 +1186,8 @@ async def get_market_news():
             try:
                 feed = feedparser.parse(feed_info['url'])
                 
-                # Get top 3 articles from each source
-                for entry in feed.entries[:3]:
+                # Get articles and filter for relevance
+                for entry in feed.entries[:10]:  # Check more entries to find relevant ones
                     # Calculate time ago
                     published_time = entry.get('published_parsed') or entry.get('updated_parsed')
                     if published_time:
@@ -1198,28 +1212,49 @@ async def get_market_news():
                     
                     # Clean HTML tags from description
                     description = re.sub(r'<[^>]+>', '', description)
-                    description = description[:200] + '...' if len(description) > 200 else description
                     
-                    articles.append({
-                        'title': entry.get('title', 'Untitled'),
-                        'description': description,
-                        'source': feed_info['source'],
-                        'url': entry.get('link', ''),
-                        'publishedAt': time_ago
-                    })
+                    # Check if article is relevant (location-based or general CRE)
+                    article_text = (entry.get('title', '') + ' ' + description).lower()
+                    
+                    is_relevant = False
+                    
+                    # Check for local/regional relevance
+                    for keyword in location_keywords:
+                        if keyword in article_text:
+                            is_relevant = True
+                            break
+                    
+                    # If not local, check if it's important general CRE news
+                    if not is_relevant:
+                        for keyword in general_keywords:
+                            if keyword in article_text:
+                                is_relevant = True
+                                break
+                    
+                    # Only include relevant articles
+                    if is_relevant:
+                        description = description[:250] + '...' if len(description) > 250 else description
+                        
+                        articles.append({
+                            'title': entry.get('title', 'Untitled'),
+                            'description': description,
+                            'source': feed_info['source'],
+                            'url': entry.get('link', ''),
+                            'publishedAt': time_ago
+                        })
                     
             except Exception as feed_error:
                 logger.warning(f"Error parsing feed {feed_info['source']}: {str(feed_error)}")
                 continue
         
-        # Sort by most recent and limit to 8 articles
-        articles = articles[:8]
+        # Sort by most recent and limit to 12 articles
+        articles = articles[:12]
         
         # Update cache
         news_cache['articles'] = articles
         news_cache['last_updated'] = current_time
         
-        logger.info(f"Successfully fetched {len(articles)} news articles")
+        logger.info(f"Successfully fetched {len(articles)} relevant news articles for San Antonio/Texas")
         return {"articles": articles, "count": len(articles), "cached": False}
         
     except Exception as e:
