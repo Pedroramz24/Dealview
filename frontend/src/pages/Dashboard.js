@@ -37,32 +37,46 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     if (!user) {
+      console.log('No user found, skipping data fetch');
       setLoading(false);
       return;
     }
 
+    console.log('Fetching dashboard data for user:', user.id);
+
     try {
       // Fetch deals
+      console.log('Fetching deals...');
       const { data: deals, error: dealsError } = await supabase
         .from('deals')
         .select('*')
         .eq('owner_id', user.id);
 
-      if (dealsError) throw dealsError;
+      if (dealsError) {
+        console.error('Deals error:', dealsError);
+        throw dealsError;
+      }
+      console.log('Deals fetched:', deals?.length || 0);
 
       // Ensure deals is an array
       const dealsArray = deals || [];
 
       // Fetch contacts
+      console.log('Fetching contacts...');
       const { data: contactsData, error: contactsError } = await supabase
         .from('contacts')
         .select('*')
         .eq('owner_id', user.id);
 
-      if (contactsError) throw contactsError;
+      if (contactsError) {
+        console.error('Contacts error:', contactsError);
+        throw contactsError;
+      }
+      console.log('Contacts fetched:', contactsData?.length || 0);
       setContacts(contactsData || []);
 
       // Fetch calendar events
+      console.log('Fetching calendar events...');
       const { data: calendarEvents } = await supabase
         .from('calendar_events')
         .select('*')
@@ -70,6 +84,8 @@ const Dashboard = () => {
         .gte('start_date', new Date().toISOString())
         .order('start_date', { ascending: true })
         .limit(5);
+
+      console.log('Calendar events fetched:', calendarEvents?.length || 0);
 
       // Calculate statistics
       const totalValue = dealsArray.reduce((sum, deal) => sum + (parseFloat(deal.price) || 0), 0);
