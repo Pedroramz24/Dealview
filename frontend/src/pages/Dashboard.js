@@ -651,7 +651,7 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
     { id: 'sector', label: 'Sector Focus' }
   ];
 
-  // Filter articles by category (for now, show all in each category - AI categorization can be added later)
+  // Filter articles by category
   const filteredArticles = activeCategory === 'all' 
     ? articles 
     : articles.filter(article => {
@@ -659,22 +659,43 @@ const NewsModule = ({ articles, activeCategory, setActiveCategory }) => {
         const text = (article.title + ' ' + article.description).toLowerCase();
         
         switch(activeCategory) {
+          case 'local':
+            // Show only San Antonio and Texas articles
+            return article.relevanceType === 'local' || 
+                   text.includes('san antonio') || text.includes('texas') || 
+                   text.includes('austin') || text.includes('houston') || 
+                   text.includes('dallas') || text.includes('tx');
+          
           case 'market':
-            return text.includes('market') || text.includes('economic') || text.includes('trend') || text.includes('cap rate');
-          case 'transactions':
-            return text.includes('sale') || text.includes('acquisition') || text.includes('investment') || text.includes('capital');
+            // Market Trends: Economics + Cap Rates + Forecasts
+            return text.includes('market') || text.includes('economic') || 
+                   text.includes('trend') || text.includes('cap rate') || 
+                   text.includes('forecast') || text.includes('outlook') ||
+                   text.includes('vacancy') || text.includes('demand');
+          
+          case 'deals':
+            // Deals & Capital: Transactions + Financing + Investment
+            return text.includes('sale') || text.includes('acquisition') || 
+                   text.includes('investment') || text.includes('capital') ||
+                   text.includes('loan') || text.includes('lending') || 
+                   text.includes('financing') || text.includes('debt') ||
+                   text.includes('fund') || text.includes('investor');
+          
           case 'development':
-            return text.includes('development') || text.includes('construction') || text.includes('build') || text.includes('project');
-          case 'policy':
-            return text.includes('tax') || text.includes('zoning') || text.includes('regulation') || text.includes('policy');
+            // Development & Policy: Construction + Zoning + Regulations
+            return text.includes('development') || text.includes('construction') || 
+                   text.includes('build') || text.includes('project') ||
+                   text.includes('tax') || text.includes('zoning') || 
+                   text.includes('regulation') || text.includes('policy') ||
+                   text.includes('permit');
+          
           case 'sector':
-            return text.includes('office') || text.includes('retail') || text.includes('industrial') || text.includes('multifamily');
-          case 'regional':
-            return text.includes('city') || text.includes('metro') || text.includes('local') || text.includes('region');
-          case 'financial':
-            return text.includes('loan') || text.includes('lending') || text.includes('financing') || text.includes('debt');
-          case 'technology':
-            return text.includes('tech') || text.includes('proptech') || text.includes('innovation') || text.includes('digital');
+            // Sector Focus: Office/Retail/Industrial/Multifamily
+            return text.includes('office') || text.includes('retail') || 
+                   text.includes('industrial') || text.includes('multifamily') ||
+                   text.includes('warehouse') || text.includes('logistics') ||
+                   text.includes('apartment') || text.includes('shopping center');
+          
           default:
             return true;
         }
