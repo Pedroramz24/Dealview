@@ -278,8 +278,8 @@ const Dashboard = () => {
   };
 
   const getUserFirstName = () => {
-    if (user?.user_metadata?.full_name) {
-      return user.user_metadata.full_name.split(' ')[0];
+    if (currentUser?.user_metadata?.full_name) {
+      return currentUser.user_metadata.full_name.split(' ')[0];
     }
     return 'there';
   };
