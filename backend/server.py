@@ -1230,18 +1230,65 @@ async def get_market_news():
         articles = []
         total_checked = 0
         local_articles = 0
-        general_articles = 0
+        macro_articles = 0
         
-        # PHASE 1: Fetch from Texas-specific feeds first (highest priority)
+        # PHASE 1: Fetch from Texas-specific feeds first (highest priority - NO FILTERING)
         logger.info("📍 PHASE 1: Fetching Texas-specific RSS feeds...")
         for feed_info in texas_rss_feeds:
             try:
                 feed = feedparser.parse(feed_info['url'])
-                logger.info(f"  Checking {feed_info['source']}: {len(feed.entries)} entries found")
+                logger.info(f"  ✅ {feed_info['source']}: {len(feed.entries)} entries found")
                 
-                # Get top 5 articles from each Texas feed (no filtering needed - all Texas content)
+                # Texas feeds: Accept ALL articles (they're already Texas-specific)
                 for entry in feed.entries[:5]:
                     total_checked += 1
+                    
+                    title = entry.get('title', 'Untitled')
+                    description = entry.get('summary', '')
+                    if not description and 'content' in entry:
+                        description = entry.content[0].get('value', '')
+                    
+                    # Clean and format
+                    description = re.sub(r'<[^>]+>', '', description)
+                    description = description[:250] + '...' if len(description) > 250 else description
+                    
+                    # Format time
+                    published_time = entry.get('published_parsed') or entry.get('updated_parsed')
+                    if published_time:
+                        pub_datetime = datetime(*published_time[:6])
+                        time_diff = datetime.now() - pub_datetime
+                        if time_diff.days > 0:
+                            time_ago = f"{time_diff.days} day{'s' if time_diff.days > 1 else ''} ago"
+                        elif time_diff.seconds >= 3600:
+                            hours = time_diff.seconds // 3600
+                            time_ago = f"{hours} hour{'s' if hours > 1 else ''} ago"
+                        else:
+                            minutes = time_diff.seconds // 60
+                            time_ago = f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+                    else:
+                        time_ago = "Recently"
+                    
+                    articles.append({
+                        'title': title,
+                        'description': description,
+                        'source': feed_info['source'],
+                        'url': entry.get('link', ''),
+                        'publishedAt': time_ago,
+                        'relevanceType': 'local'
+                    })
+                    
+                    local_articles += 1
+                    logger.info(f"    ✅ [TEXAS] {title[:70]}...")
+                    
+            except Exception as feed_error:
+                logger.warning(f"  ⚠️  {feed_info['source']} failed: {str(feed_error)}")
+                continue
+        
+        logger.info(f"📍 Phase 1 Complete: {local_articles} Texas articles collected")
+        
+        # PHASE 2: Fetch from national feeds (WITH FILTERING for macro-economic only)
+        logger.info("🌎 PHASE 2: Fetching national macro-economic news...")
+        for feed_info in national_rss_feeds:
                     
                     # Calculate time ago
                     published_time = entry.get('published_parsed') or entry.get('updated_parsed')
