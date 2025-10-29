@@ -251,9 +251,62 @@ const Campaigns = () => {
           {/* Step 1: API Key */}
           {setupStep === 1 && (
             <div>
+              <div className="mb-6 p-4" style={{
+                background: 'rgba(0, 184, 212, 0.05)',
+                border: '1px solid rgba(0, 184, 212, 0.2)',
+                borderRadius: '8px'
+              }}>
+                <p style={{ color: '#00b8d4', fontSize: '14px', fontWeight: 600, marginBottom: '12px' }}>
+                  📝 Quick Setup (2 minutes)
+                </p>
+                <ol style={{ color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8', paddingLeft: '20px', margin: 0 }}>
+                  <li>Click the button below to open SendGrid API Keys page</li>
+                  <li>Click the blue "Create API Key" button (top right)</li>
+                  <li>Name it: <strong style={{ color: 'var(--text-primary)' }}>DealView CRM</strong></li>
+                  <li>Permissions: Select <strong style={{ color: 'var(--text-primary)' }}>"Full Access"</strong></li>
+                  <li>Click "Create & View"</li>
+                  <li>Copy the key (starts with SG.) and paste below</li>
+                </ol>
+              </div>
+
+              <a
+                href="https://app.sendgrid.com/settings/api_keys"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '12px 24px',
+                  marginBottom: '20px',
+                  background: 'rgba(0, 184, 212, 0.1)',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  borderRadius: '8px',
+                  color: '#00b8d4',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <Settings size={18} />
+                Open SendGrid API Keys Page
+              </a>
+
               <div className="mb-6">
                 <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-                  SendGrid API Key
+                  Paste Your SendGrid API Key *
                 </label>
                 <input
                   type="password"
@@ -270,21 +323,21 @@ const Campaigns = () => {
                     fontSize: '15px'
                   }}
                 />
-                <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '8px' }}>
-                  Get your API key from SendGrid → Settings → API Keys
+                <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '8px' }}>
+                  The key should start with "SG." - make sure you copy the entire key!
                 </p>
               </div>
 
               <div className="mb-6 p-4" style={{
-                background: 'rgba(0, 184, 212, 0.05)',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
+                background: 'rgba(34, 197, 94, 0.05)',
+                border: '1px solid rgba(34, 197, 94, 0.2)',
                 borderRadius: '8px'
               }}>
-                <p style={{ color: '#00b8d4', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                <p style={{ color: '#22c55e', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
                   ✓ 100 free emails/day with SendGrid
                 </p>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>
-                  SendGrid offers 100 emails per day for free, perfect for most CRE professionals.
+                  SendGrid's free tier includes 100 emails per day forever - perfect for most CRE professionals. No credit card required!
                 </p>
               </div>
 
@@ -308,24 +361,27 @@ const Campaigns = () => {
                 }}
               >
                 {setupData.testing ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
-                {setupData.testing ? 'Testing Connection...' : 'Test Connection'}
+                {setupData.testing ? 'Testing Connection...' : 'Test & Continue'}
               </button>
 
-              <a
-                href="https://sendgrid.com/signup"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  marginTop: '16px',
-                  color: '#00b8d4',
-                  fontSize: '14px',
-                  textDecoration: 'none'
-                }}
-              >
-                Don't have a SendGrid account? Sign up (free)
-              </a>
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <a
+                  href="https://sendgrid.com/signup"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: '#00b8d4',
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                    display: 'inline-block'
+                  }}
+                >
+                  Don't have a SendGrid account? Sign up free →
+                </a>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '8px' }}>
+                  No credit card required
+                </p>
+              </div>
             </div>
           )}
 
