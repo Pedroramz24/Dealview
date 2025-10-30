@@ -491,6 +491,88 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               position: 'relative',
               zIndex: 100000
             }}>
+              {/* Left - Template Name Input */}
+              <div style={{ flex: 1, maxWidth: '400px' }}>
+                {showTemplateNameInput ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input
+                      type="text"
+                      value={templateName}
+                      onChange={(e) => setTemplateName(e.target.value)}
+                      placeholder="Enter template name..."
+                      autoFocus
+                      style={{
+                        flex: 1,
+                        padding: '8px 12px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '14px'
+                      }}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSaveTemplate();
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={handleSaveTemplate}
+                      disabled={!templateName.trim()}
+                      style={{
+                        padding: '8px 16px',
+                        background: !templateName.trim() ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                        color: !templateName.trim() ? 'rgba(255, 255, 255, 0.3)' : '#000',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        cursor: !templateName.trim() ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowTemplateNameInput(false);
+                        setTemplateName('');
+                      }}
+                      style={{
+                        padding: '8px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '6px',
+                        color: 'var(--text-secondary)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowTemplateNameInput(true)}
+                    style={{
+                      padding: '8px 16px',
+                      background: 'rgba(139, 92, 246, 0.12)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      borderRadius: '6px',
+                      color: '#8b5cf6',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <Save size={14} />
+                    Save as Template
+                  </button>
+                )}
+              </div>
+
+              {/* Center - Preview Mode Toggle */}
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
                   onClick={() => setPreviewMode('desktop')}
