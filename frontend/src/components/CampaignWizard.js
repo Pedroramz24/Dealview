@@ -181,8 +181,9 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
       const createResult = await createResponse.json();
       const campaignId = createResult.campaign.id;
 
-      // Send campaign based on send option
+      // Handle different send options
       if (campaignConfig.sendOption === 'now') {
+        // Send immediately
         const sendResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/send`, {
           method: 'POST',
           headers: {
@@ -204,11 +205,59 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
         } else {
           throw new Error(sendResult.detail || 'Failed to send campaign');
         }
-      } else {
-        // For schedule/batch - just create campaign for now
-        toast.success('Campaign created and scheduled!');
-        onComplete && onComplete();
-        onClose();
+      } 
+      else if (campaignConfig.sendOption === 'schedule') {
+        // Schedule for specific time
+        const scheduleResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/schedule`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            campaign_id: campaignId,
+            contact_ids: campaignConfig.selectedContacts,
+            scheduled_time: campaignConfig.scheduleDate.toISOString(),
+            timezone: 'America/Chicago'
+          })
+        });
+
+        const scheduleResult = await scheduleResponse.json();
+        
+        if (scheduleResponse.ok) {
+          toast.success(`📅 Campaign scheduled for ${campaignConfig.scheduleDate.toLocaleString()}!`);
+          onComplete && onComplete();
+          onClose();
+        } else {
+          throw new Error(scheduleResult.detail || 'Failed to schedule campaign');
+        }
+      }
+      else if (campaignConfig.sendOption === 'batch') {
+        // Batch schedule over time
+        const batchResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/schedule/batch`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            campaign_id: campaignId,
+            contact_ids: campaignConfig.selectedContacts,
+            start_date: campaignConfig.batchSchedule.startDate.toISOString(),
+            end_date: campaignConfig.batchSchedule.endDate.toISOString(),
+            emails_per_day: campaignConfig.batchSchedule.emailsPerDay
+          })
+        });
+
+        const batchResult = await batchResponse.json();
+        
+        if (batchResponse.ok) {
+          toast.success(`🔄 Batch campaign scheduled: ${batchResult.queued_count} emails over ${batchResult.days} days!`);
+          onComplete && onComplete();
+          onClose();
+        } else {
+          throw new Error(batchResult.detail || 'Failed to schedule batch campaign');
+        }
       }
     } catch (error) {
       console.error('Error sending campaign:', error);
