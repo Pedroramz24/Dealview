@@ -98,6 +98,39 @@ const Campaigns = () => {
     }
   };
 
+  const fetchTemplates = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/email/templates`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setTemplates(data.templates || []);
+    } catch (error) {
+      toast.error('Failed to load templates');
+    }
+  };
+
+  const deleteTemplate = async (templateId) => {
+    if (!window.confirm('Are you sure you want to delete this template?')) {
+      return;
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('email_templates')
+        .delete()
+        .eq('id', templateId);
+      
+      if (error) throw error;
+      
+      toast.success('Template deleted');
+      fetchTemplates();
+    } catch (error) {
+      toast.error('Failed to delete template');
+    }
+  };
+
   const filterCampaigns = () => {
     let filtered = [...campaigns];
     if (searchTerm) {
