@@ -1054,3 +1054,17 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
   -moz-osx-font-smoothing: grayscale !important;
 }
 
+/* Unlayer Email Editor - Force Full Height */
+.email-editor-iframe,
+.email-editor-iframe iframe {
+  height: 100% !important;
+  min-height: calc(100vh - 80px) !important;
+  width: 100% !important;
+}
+
+/* Ensure Unlayer container fills space */
+div[style*="unlayer"] {
+  height: 100% !important;
+  min-height: calc(100vh - 80px) !important;
+}
+
