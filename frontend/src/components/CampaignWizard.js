@@ -937,7 +937,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         )}
                         <div style={{ flex: 1 }}>
                           <p style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: 500 }}>
-                            {contact.full_name || contact.name}
+                            {contact.name}
                           </p>
                           <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
                             {contact.email}
