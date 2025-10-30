@@ -6,6 +6,8 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
+import EmailComposeModal from '../components/EmailComposeModal';
+import EmailActivityTimeline from '../components/EmailActivityTimeline';
 import { 
   Plus, Mail, Phone, Building2, Search, MapPin, Calendar, 
   FileText, X, Save, Link, Eye, Edit, Filter, User, Grid, List, Network
