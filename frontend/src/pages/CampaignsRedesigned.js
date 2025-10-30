@@ -839,141 +839,87 @@ const Campaigns = () => {
 
         {/* Campaigns Table */}
         <div className="flex-1 overflow-hidden">
-          {filteredCampaigns.length === 0 ? (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center" style={{ maxWidth: '500px' }}>
-                {/* Animated icon */}
-                <div style={{
-                  width: '120px',
-                  height: '120px',
-                  margin: '0 auto 32px',
-                  borderRadius: '24px',
-                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
-                  border: '2px solid rgba(0, 184, 212, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  animation: 'pulse-glow 3s ease-in-out infinite'
-                }}>
-                  <Mail size={56} style={{ color: '#00b8d4', opacity: 0.7 }} />
+          <div className="glass-surface" style={{ 
+            borderRadius: '14px', 
+            overflow: 'hidden',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+          }}>
+            {filteredCampaigns.length === 0 ? (
+              /* Empty state inside table */
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center" style={{ maxWidth: '500px', padding: '60px 40px' }}>
+                  {/* Simple icon - no animation */}
                   <div style={{
-                    position: 'absolute',
-                    inset: '-2px',
-                    borderRadius: '24px',
-                    background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
-                    filter: 'blur(12px)',
-                    zIndex: -1,
-                    opacity: 0.5
-                  }} />
+                    width: '80px',
+                    height: '80px',
+                    margin: '0 auto 24px',
+                    borderRadius: '16px',
+                    background: 'rgba(0, 184, 212, 0.08)',
+                    border: '1px solid rgba(0, 184, 212, 0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Mail size={40} style={{ color: '#00b8d4', opacity: 0.6 }} />
+                  </div>
+
+                  <h3 style={{ 
+                    color: '#FFFFFF', 
+                    fontSize: '22px', 
+                    fontWeight: 600, 
+                    marginBottom: '8px',
+                    letterSpacing: '-0.01em'
+                  }}>
+                    {campaigns.length === 0 ? 'No campaigns yet' : 'No campaigns match filters'}
+                  </h3>
+                  <p style={{ 
+                    color: 'rgba(255, 255, 255, 0.5)', 
+                    fontSize: '14px', 
+                    lineHeight: '1.6'
+                  }}>
+                    {campaigns.length === 0 
+                      ? 'Create your first email campaign to get started'
+                      : 'Try adjusting your search or filter criteria'}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Table Header */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr',
+                  padding: '18px 24px',
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                  position: 'sticky',
+                  top: 0,
+                  zIndex: 5
+                }}>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                    Campaign
+                  </p>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                    Audience
+                  </p>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                    Status
+                  </p>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                    Health Metrics
+                  </p>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', textAlign: 'right' }}>
+                    Updated
+                  </p>
                 </div>
 
-                <h3 style={{ 
-                  color: '#FFFFFF', 
-                  fontSize: '28px', 
-                  fontWeight: 700, 
-                  marginBottom: '12px',
-                  letterSpacing: '-0.02em'
-                }}>
-                  {campaigns.length === 0 ? 'No campaigns yet' : 'No campaigns match filters'}
-                </h3>
-                <p style={{ 
-                  color: 'rgba(255, 255, 255, 0.5)', 
-                  fontSize: '16px', 
-                  lineHeight: '1.6',
-                  marginBottom: '32px'
-                }}>
-                  {campaigns.length === 0 
-                    ? 'Create your first email campaign to reach your contacts with professional, targeted messages'
-                    : 'Try adjusting your search or filter criteria to find campaigns'}
-                </p>
-
-                {/* Only show Create button here if truly no campaigns exist */}
-                {campaigns.length === 0 && (
-                  <div style={{
-                    display: 'inline-flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                    alignItems: 'center'
-                  }}>
-                    <div style={{
-                      padding: '12px 24px',
-                      background: 'rgba(0, 184, 212, 0.1)',
-                      border: '1px solid rgba(0, 184, 212, 0.3)',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      gap: '16px'
-                    }}>
-                      <div style={{ textAlign: 'left' }}>
-                        <p style={{ color: '#00b8d4', fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>
-                          ✓ Professional email builder
-                        </p>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>
-                          Drag & drop design
-                        </p>
-                      </div>
-                      <div style={{ textAlign: 'left' }}>
-                        <p style={{ color: '#8b5cf6', fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>
-                          ✓ Smart targeting
-                        </p>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>
-                          Tags & segmentation
-                        </p>
-                      </div>
-                      <div style={{ textAlign: 'left' }}>
-                        <p style={{ color: '#22c55e', fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>
-                          ✓ Full analytics
-                        </p>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>
-                          Track every metric
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="glass-surface" style={{ 
-              borderRadius: '14px', 
-              overflow: 'hidden',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-            }}>
-              {/* Table Header */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr',
-                padding: '18px 24px',
-                background: 'rgba(255, 255, 255, 0.02)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-                position: 'sticky',
-                top: 0,
-                zIndex: 5
-              }}>
-                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-                  Campaign
-                </p>
-                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-                  Audience
-                </p>
-                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-                  Status
-                </p>
-                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-                  Health Metrics
-                </p>
-                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', textAlign: 'right' }}>
-                  Updated
-                </p>
-              </div>
-
-              {/* Table Body - Scrollable */}
-              <div style={{ flex: 1, overflowY: 'auto' }}>
-                {filteredCampaigns.map((campaign, index) => {
+                {/* Table Body - Scrollable */}
+                <div style={{ flex: 1, overflowY: 'auto' }}>
+                  {filteredCampaigns.map((campaign, index) => {
                   const statusStyle = getStatusColor(campaign.status);
                   const deliveredRate = campaign.total_sent > 0 ? (campaign.total_delivered / campaign.total_sent) * 100 : 0;
                   const openRate = campaign.total_delivered > 0 ? (campaign.total_opened / campaign.total_delivered) * 100 : 0;
