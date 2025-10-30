@@ -640,6 +640,26 @@ const Contacts = () => {
                 <option key={status.value} value={status.value}>{status.label}</option>
               ))}
             </select>
+
+            {/* Tag Filter */}
+            <select
+              value={filterTag}
+              onChange={(e) => setFilterTag(e.target.value)}
+              className="px-4 py-2 rounded-lg"
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="all">All Tags</option>
+              {Array.from(new Set(contacts.flatMap(c => c.tags || []))).sort().map(tag => (
+                <option key={tag} value={tag}>{tag}</option>
+              ))}
+            </select>
+              ))}
+            </select>
           </div>
         </div>
       </div>
