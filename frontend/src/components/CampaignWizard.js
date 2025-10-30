@@ -1203,9 +1203,47 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
                 <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '8px' }}>
                   Send Option
                 </p>
-                <p style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600 }}>
-                  {campaignConfig.sendOption === 'now' ? '⚡ Send Now' : '📅 Scheduled'}
-                </p>
+                {campaignConfig.sendOption === 'now' && (
+                  <p style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600 }}>
+                    ⚡ Send Now
+                  </p>
+                )}
+                {campaignConfig.sendOption === 'schedule' && (
+                  <div>
+                    <p style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600, marginBottom: '6px' }}>
+                      📅 Scheduled Send
+                    </p>
+                    {campaignConfig.scheduleDate && (
+                      <p style={{ color: '#00b8d4', fontSize: '13px' }}>
+                        {campaignConfig.scheduleDate.toLocaleString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {campaignConfig.sendOption === 'batch' && (
+                  <div>
+                    <p style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600, marginBottom: '6px' }}>
+                      🔄 Batch Schedule
+                    </p>
+                    {campaignConfig.batchSchedule.startDate && campaignConfig.batchSchedule.endDate && (
+                      <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                        <p style={{ marginBottom: '4px' }}>
+                          {campaignConfig.batchSchedule.startDate.toLocaleDateString()} - {campaignConfig.batchSchedule.endDate.toLocaleDateString()}
+                        </p>
+                        <p style={{ color: '#8b5cf6' }}>
+                          {campaignConfig.batchSchedule.emailsPerDay} emails/day
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}
