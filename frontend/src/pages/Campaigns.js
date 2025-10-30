@@ -1213,13 +1213,26 @@ const Campaigns = () => {
                     {templates.filter(t => !t.is_default).map(template => (
                       <div
                         key={template.id}
+                        onClick={() => {
+                          setSelectedTemplate(template);
+                          setShowCampaignWizard(true);
+                        }}
                         style={{
                           background: 'rgba(255, 255, 255, 0.02)',
                           border: '1px solid rgba(255, 255, 255, 0.08)',
                           borderRadius: '12px',
-                          overflow: 'hidden',
+                          overflow: 'visible',
                           transition: 'all 0.2s ease',
-                          position: 'relative'
+                          position: 'relative',
+                          cursor: 'pointer'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.border = '1px solid rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+                          e.currentTarget.style.transform = 'translateY(0)';
                         }}
                       >
                         {/* Preview */}
