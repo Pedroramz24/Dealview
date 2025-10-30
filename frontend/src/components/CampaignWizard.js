@@ -188,6 +188,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       console.log('🎯 Step 3 rendered - Review & Send');
       console.log('📧 Email HTML length:', emailHTML?.length || 0);
       console.log('📧 Email Design:', !!emailDesign);
+      console.log('🔴 YOU SHOULD NOW SEE THE FINAL REVIEW SCREEN WITH "SEND CAMPAIGN" BUTTON ON THE RIGHT');
+      toast.info('📧 Step 3: Review your campaign and click "Send Campaign" on the right →');
     }
   }, [currentStep, emailHTML, emailDesign]);
 
