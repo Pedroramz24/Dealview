@@ -625,21 +625,24 @@ const Campaigns = () => {
   }
 
   // Render CampaignWizard
-  if (showCampaignWizard) {
-    return (
+  return (
+    <>
+      {/* Main Content (List or Details) */}
+      {/* ... existing content ... */}
+      
+      {/* Campaign Wizard */}
       <CampaignWizard
-        onClose={() => {
+        isOpen={showCampaignWizard}
+        onClose={() => setShowCampaignWizard(false)}
+        onComplete={() => {
           setShowCampaignWizard(false);
           fetchCampaigns();
         }}
         token={token}
         BACKEND_URL={BACKEND_URL}
       />
-    );
-  }
-
-  // Fallback return (should never reach here)
-  return null;
+    </>
+  );
 };
 
 export default Campaigns;
