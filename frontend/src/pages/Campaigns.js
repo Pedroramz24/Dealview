@@ -36,8 +36,14 @@ const Campaigns = () => {
     name: '',
     subject: '',
     htmlContent: '',
-    plainTextContent: ''
+    plainTextContent: '',
+    design: null // Store Unlayer design JSON
   });
+
+  // Email builder state
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [showEmailBuilder, setShowEmailBuilder] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const editorRef = useRef(null);
 
