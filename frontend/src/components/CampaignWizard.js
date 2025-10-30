@@ -569,6 +569,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         {/* STEP 1: Build Template */}
         {currentStep === 1 && (
           <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            {console.log('✅ Step 1 is rendering')}
             {/* Toolbar */}
             <div style={{
               padding: '12px 24px',
