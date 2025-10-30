@@ -1804,6 +1804,24 @@ const Contacts = () => {
           </div>
         </div>
       )}
+      
+      {/* Email Compose Modal */}
+      <EmailComposeModal
+        isOpen={showEmailCompose}
+        onClose={() => {
+          setShowEmailCompose(false);
+          setEmailRecipient(null);
+        }}
+        onSend={() => {
+          // Refresh email activities
+          if (selectedContact) {
+            window.location.reload(); // Simple refresh for now
+          }
+        }}
+        recipient={emailRecipient}
+        token={token}
+        BACKEND_URL={BACKEND_URL}
+      />
     </div>
   );
 };
