@@ -612,26 +612,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 </button>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button
-                  onClick={handleSaveTemplate}
-                  style={{
-                    padding: '10px 18px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '6px',
-                    color: 'var(--text-primary)',
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                >
-                  <Save size={16} />
-                  Save
-                </button>
+              {/* Right - Review and Send Button */}
+              <div>
                 <button
                   onClick={handleSaveDesign}
                   style={{
