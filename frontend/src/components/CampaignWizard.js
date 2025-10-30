@@ -540,6 +540,563 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
               width: '50%',
               padding: '32px',
               overflowY: 'auto',
+              borderRight: '1px solid rgba(255, 255, 255, 0.08)'
+            }}>
+              <h2 style={{ color: 'var(--text-primary)', fontSize: '24px', fontWeight: 600, marginBottom: '24px' }}>
+                Configure Campaign
+              </h2>
+
+              {/* Campaign Details Card */}
+              <div className="glass-surface" style={{ padding: '20px', marginBottom: '20px', borderRadius: '10px' }}>
+                <h3 style={{ 
+                  color: '#00b8d4', 
+                  fontSize: '12px', 
+                  fontWeight: 600, 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '1px',
+                  marginBottom: '16px'
+                }}>
+                  Campaign Details
+                </h3>
+
+                <div className="mb-4">
+                  <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                    Campaign Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={campaignConfig.name}
+                    onChange={(e) => setCampaignConfig({ ...campaignConfig, name: e.target.value })}
+                    placeholder="Q1 2025 Retail Listings"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                    Subject Line *
+                  </label>
+                  <input
+                    type="text"
+                    value={campaignConfig.subject}
+                    onChange={(e) => setCampaignConfig({ ...campaignConfig, subject: e.target.value })}
+                    placeholder="New Retail Opportunities in San Antonio"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                    Preview Text
+                  </label>
+                  <input
+                    type="text"
+                    value={campaignConfig.previewText}
+                    onChange={(e) => setCampaignConfig({ ...campaignConfig, previewText: e.target.value })}
+                    placeholder="Shows in email inbox preview..."
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Audience Card */}
+              <div className="glass-surface" style={{ padding: '20px', marginBottom: '20px', borderRadius: '10px' }}>
+                <h3 style={{ 
+                  color: '#00b8d4', 
+                  fontSize: '12px', 
+                  fontWeight: 600, 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '1px',
+                  marginBottom: '16px'
+                }}>
+                  Audience
+                </h3>
+
+                {/* Recipient Type Options */}
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setCampaignConfig({ ...campaignConfig, recipientType: 'choose_contacts' })}
+                    style={{
+                      flex: 1,
+                      padding: '10px 14px',
+                      background: campaignConfig.recipientType === 'choose_contacts' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.recipientType === 'choose_contacts' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '6px',
+                      color: campaignConfig.recipientType === 'choose_contacts' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Users size={14} />
+                    Choose Contacts
+                  </button>
+                  <button
+                    onClick={() => setCampaignConfig({ ...campaignConfig, recipientType: 'tags' })}
+                    style={{
+                      flex: 1,
+                      padding: '10px 14px',
+                      background: campaignConfig.recipientType === 'tags' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.recipientType === 'tags' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '6px',
+                      color: campaignConfig.recipientType === 'tags' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Tag size={14} />
+                    Smart Tags
+                  </button>
+                </div>
+
+                {/* Choose Contacts */}
+                {campaignConfig.recipientType === 'choose_contacts' && (
+                  <div style={{
+                    maxHeight: '280px',
+                    overflowY: 'auto',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '8px',
+                    padding: '12px'
+                  }}>
+                    <div className="flex justify-between mb-3 pb-2" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                      <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>
+                        {campaignConfig.selectedContacts.length} of {contacts.length} selected
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={selectAll}
+                          style={{
+                            padding: '4px 10px',
+                            background: 'rgba(0, 184, 212, 0.1)',
+                            border: '1px solid rgba(0, 184, 212, 0.2)',
+                            borderRadius: '4px',
+                            color: '#00b8d4',
+                            fontSize: '11px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Select All
+                        </button>
+                        <button
+                          onClick={deselectAll}
+                          style={{
+                            padding: '4px 10px',
+                            background: 'rgba(255, 255, 255, 0.03)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            borderRadius: '4px',
+                            color: 'rgba(255, 255, 255, 0.6)',
+                            fontSize: '11px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    </div>
+                    {contacts.map(contact => (
+                      <div
+                        key={contact.id}
+                        onClick={() => toggleContact(contact.id)}
+                        style={{
+                          padding: '10px 12px',
+                          marginBottom: '4px',
+                          background: campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.02)',
+                          border: `1px solid ${campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        {campaignConfig.selectedContacts.includes(contact.id) ? (
+                          <CheckSquare size={16} style={{ color: '#00b8d4' }} />
+                        ) : (
+                          <Square size={16} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+                        )}
+                        <div style={{ flex: 1 }}>
+                          <p style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: 500 }}>
+                            {contact.full_name || contact.name}
+                          </p>
+                          <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
+                            {contact.email}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Smart Tags Selection */}
+                {campaignConfig.recipientType === 'tags' && (
+                  <div>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '10px' }}>
+                      Select tags to target:
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {allTags.map(tag => (
+                        <button
+                          key={tag}
+                          onClick={() => {
+                            setCampaignConfig(prev => ({
+                              ...prev,
+                              selectedTags: prev.selectedTags.includes(tag)
+                                ? prev.selectedTags.filter(t => t !== tag)
+                                : [...prev.selectedTags, tag],
+                              selectedContacts: prev.selectedTags.includes(tag)
+                                ? prev.selectedContacts
+                                : [...prev.selectedContacts, ...filteredContacts.filter(c => c.tags?.includes(tag)).map(c => c.id)]
+                            }));
+                          }}
+                          style={{
+                            padding: '8px 14px',
+                            background: campaignConfig.selectedTags.includes(tag) ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                            border: `1px solid ${campaignConfig.selectedTags.includes(tag) ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                            borderRadius: '6px',
+                            color: campaignConfig.selectedTags.includes(tag) ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+                            fontSize: '13px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          <Tag size={12} />
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
+                      {filteredContacts.length} contact{filteredContacts.length !== 1 ? 's' : ''} with selected tag{campaignConfig.selectedTags.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Schedule Card */}
+              <div className="glass-surface" style={{ padding: '20px', marginBottom: '20px', borderRadius: '10px' }}>
+                <h3 style={{ 
+                  color: '#00b8d4', 
+                  fontSize: '12px', 
+                  fontWeight: 600, 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '1px',
+                  marginBottom: '16px'
+                }}>
+                  When to Send
+                </h3>
+
+                <div className="space-y-2">
+                  {/* Send Now */}
+                  <button
+                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'now' })}
+                    style={{
+                      width: '100%',
+                      padding: '14px 16px',
+                      background: campaignConfig.sendOption === 'now' ? 'rgba(0, 184, 212, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      border: `1px solid ${campaignConfig.sendOption === 'now' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '8px',
+                      color: campaignConfig.sendOption === 'now' ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      textAlign: 'left',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Zap size={18} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontWeight: 600, marginBottom: '2px' }}>Send Now</p>
+                      <p style={{ fontSize: '12px', opacity: 0.7 }}>Send immediately to all recipients</p>
+                    </div>
+                  </button>
+
+                  {/* Schedule */}
+                  <button
+                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'schedule' })}
+                    style={{
+                      width: '100%',
+                      padding: '14px 16px',
+                      background: campaignConfig.sendOption === 'schedule' ? 'rgba(0, 184, 212, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      border: `1px solid ${campaignConfig.sendOption === 'schedule' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '8px',
+                      color: campaignConfig.sendOption === 'schedule' ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      textAlign: 'left',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Calendar size={18} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontWeight: 600, marginBottom: '2px' }}>Schedule</p>
+                      <p style={{ fontSize: '12px', opacity: 0.7 }}>Choose a specific date and time</p>
+                    </div>
+                  </button>
+
+                  {campaignConfig.sendOption === 'schedule' && (
+                    <div className="mt-3 p-4" style={{
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(0, 184, 212, 0.2)',
+                      borderRadius: '8px'
+                    }}>
+                      <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '10px', display: 'block' }}>
+                        Select Date & Time *
+                      </label>
+                      <DateTimePicker
+                        onChange={(date) => setCampaignConfig({ ...campaignConfig, scheduleDate: date })}
+                        value={campaignConfig.scheduleDate}
+                        minDate={new Date()}
+                        className="datetime-picker-dark"
+                        format="MM/dd/yyyy h:mm a"
+                        disableClock={false}
+                      />
+                    </div>
+                  )}
+
+                  {/* Batch Schedule */}
+                  <button
+                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'batch' })}
+                    style={{
+                      width: '100%',
+                      padding: '14px 16px',
+                      background: campaignConfig.sendOption === 'batch' ? 'rgba(0, 184, 212, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      border: `1px solid ${campaignConfig.sendOption === 'batch' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      borderRadius: '8px',
+                      color: campaignConfig.sendOption === 'batch' ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      textAlign: 'left',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Clock size={18} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontWeight: 600, marginBottom: '2px' }}>Batch Schedule</p>
+                      <p style={{ fontSize: '12px', opacity: 0.7 }}>Spread emails over multiple days</p>
+                    </div>
+                  </button>
+
+                  {campaignConfig.sendOption === 'batch' && (
+                    <div className="mt-3 p-4 space-y-3" style={{
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      borderRadius: '8px'
+                    }}>
+                      <div>
+                        <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                          Start Date & Time *
+                        </label>
+                        <DateTimePicker
+                          onChange={(date) => setCampaignConfig({ 
+                            ...campaignConfig, 
+                            batchSchedule: { ...campaignConfig.batchSchedule, startDate: date }
+                          })}
+                          value={campaignConfig.batchSchedule.startDate}
+                          minDate={new Date()}
+                          className="datetime-picker-dark"
+                          format="MM/dd/yyyy h:mm a"
+                        />
+                      </div>
+                      <div>
+                        <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                          End Date & Time *
+                        </label>
+                        <DateTimePicker
+                          onChange={(date) => setCampaignConfig({ 
+                            ...campaignConfig, 
+                            batchSchedule: { ...campaignConfig.batchSchedule, endDate: date }
+                          })}
+                          value={campaignConfig.batchSchedule.endDate}
+                          minDate={campaignConfig.batchSchedule.startDate || new Date()}
+                          className="datetime-picker-dark"
+                          format="MM/dd/yyyy h:mm a"
+                        />
+                      </div>
+                      <div>
+                        <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                          Emails Per Day
+                        </label>
+                        <input
+                          type="number"
+                          value={campaignConfig.batchSchedule.emailsPerDay}
+                          onChange={(e) => setCampaignConfig({ 
+                            ...campaignConfig, 
+                            batchSchedule: { ...campaignConfig.batchSchedule, emailsPerDay: parseInt(e.target.value) || 50 }
+                          })}
+                          min="1"
+                          max="500"
+                          style={{
+                            width: '100%',
+                            padding: '10px 12px',
+                            background: 'rgba(0, 0, 0, 0.3)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '6px',
+                            color: '#FFFFFF',
+                            fontSize: '14px'
+                          }}
+                        />
+                        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', marginTop: '6px' }}>
+                          Recommended: 50-100 emails/day for best deliverability
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
+                <button
+                  onClick={() => setCurrentStep(1)}
+                  style={{
+                    flex: 1,
+                    padding: '12px 20px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <ArrowLeft size={16} />
+                  Back to Design
+                </button>
+                <button
+                  onClick={() => {
+                    // Validate scheduling fields
+                    if (campaignConfig.sendOption === 'schedule' && !campaignConfig.scheduleDate) {
+                      toast.error('Please select a date and time for scheduled send');
+                      return;
+                    }
+                    if (campaignConfig.sendOption === 'batch' && (!campaignConfig.batchSchedule.startDate || !campaignConfig.batchSchedule.endDate)) {
+                      toast.error('Please select start and end dates for batch schedule');
+                      return;
+                    }
+                    setCurrentStep(3);
+                  }}
+                  disabled={!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0}
+                  style={{
+                    flex: 2,
+                    padding: '12px 20px',
+                    background: (!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0) 
+                      ? 'rgba(255, 255, 255, 0.03)' 
+                      : '#00b8d4',
+                    color: (!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0) 
+                      ? 'rgba(255, 255, 255, 0.3)' 
+                      : '#000',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    cursor: (!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0) 
+                      ? 'not-allowed' 
+                      : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  Review and Send
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Right Panel - Email Preview */}
+            <div style={{
+              width: '50%',
+              padding: '32px',
+              background: 'rgba(0, 0, 0, 0.4)',
+              overflowY: 'auto'
+            }}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 style={{ color: 'var(--text-primary)', fontSize: '16px', fontWeight: 600 }}>
+                  Email Preview
+                </h3>
+                <div className="flex items-center gap-2">
+                  <Eye size={16} style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                  <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
+                    Live Preview
+                  </span>
+                </div>
+              </div>
+              
+              <div style={{
+                background: '#fff',
+                borderRadius: '8px',
+                padding: '24px',
+                minHeight: '600px',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+              }}>
+                <div dangerouslySetInnerHTML={{ __html: emailHTML || '<p style="color: #999; text-align: center; padding: 40px;">Design your email to see preview</p>' }} />
+              </div>
+            </div>
+          </div>
+        )}
+          <div style={{ height: '100%', display: 'flex' }}>
+            {/* Left Panel - Configuration */}
+            <div style={{
+              width: '50%',
+              padding: '32px',
+              overflowY: 'auto',
               borderRight: '1px solid rgba(255, 255, 255, 0.1)'
             }}>
               <h2 style={{ color: 'var(--text-primary)', fontSize: '24px', fontWeight: 600, marginBottom: '24px' }}>
