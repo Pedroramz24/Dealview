@@ -517,7 +517,7 @@ const Campaigns = () => {
             </p>
           </div>
           <button
-            onClick={startCampaignCreation}
+            onClick={() => setShowCampaignWizard(true)}
             style={{
               padding: '12px 24px',
               background: '#00b8d4',
