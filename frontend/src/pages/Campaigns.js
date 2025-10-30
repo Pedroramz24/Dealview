@@ -1282,7 +1282,7 @@ const Campaigns = () => {
                                   padding: '6px',
                                   minWidth: '180px',
                                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
-                                  zIndex: 1000
+                                  zIndex: 10000
                                 }}>
                                   <button
                                     onClick={(e) => {
