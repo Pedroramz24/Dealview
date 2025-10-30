@@ -355,9 +355,20 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       });
       
       try {
+        // Get current user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError || !user) {
+          console.error('❌ User error:', userError);
+          throw new Error('You must be logged in to save templates');
+        }
+        
+        console.log('👤 Current user:', user.id);
+        
         const { data: templateData, error } = await supabase
           .from('email_templates')
           .insert({
+            user_id: user.id,
             name: templateName.trim(),
             description: 'Custom email template',
             category: 'custom',
