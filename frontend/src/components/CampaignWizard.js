@@ -222,26 +222,29 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
   // Step 3: Final send
   const handleFinalSend = async () => {
-    console.log('🚀 handleFinalSend called');
-    console.log('📋 Final campaign data:', {
-      name: campaignConfig.name,
-      subject: campaignConfig.subject,
-      selectedContacts: campaignConfig.selectedContacts,
-      sendOption: campaignConfig.sendOption,
-      htmlLength: emailHTML?.length,
-      hasDesign: !!emailDesign
-    });
-    
-    if (campaignConfig.selectedContacts.length === 0) {
-      toast.error('Please select at least one recipient');
-      return;
-    }
-
-    setSaving(true);
-    console.log('💾 Setting saving state to true');
-
     try {
+      console.log('🚀 handleFinalSend called');
+      console.log('📋 Final campaign data:', {
+        name: campaignConfig.name,
+        subject: campaignConfig.subject,
+        selectedContacts: campaignConfig.selectedContacts,
+        sendOption: campaignConfig.sendOption,
+        htmlLength: emailHTML?.length,
+        hasDesign: !!emailDesign
+      });
+      
+      if (campaignConfig.selectedContacts.length === 0) {
+        toast.error('Please select at least one recipient');
+        return;
+      }
+
+      setSaving(true);
+      console.log('💾 Setting saving state to true');
+
       console.log('📤 Creating campaign...');
+      console.log('🔗 Backend URL:', BACKEND_URL);
+      console.log('🔑 Token exists:', !!token);
+      
       // Create campaign
       const createResponse = await fetch(`${BACKEND_URL}/api/email/campaigns`, {
         method: 'POST',
