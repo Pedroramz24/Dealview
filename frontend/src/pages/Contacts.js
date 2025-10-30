@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import ForceGraph2D from 'react-force-graph-2d';
+import TagManager from '../components/TagManager';
 
 // Contact types options
 const contactTypeOptions = [
