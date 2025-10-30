@@ -1219,6 +1219,176 @@ const Campaigns = () => {
             )}
           </div>
         </div>
+              </>
+            )}
+          </div>
+        </div>
+        </>
+        )}
+
+        {/* Templates Tab Content */}
+        {activeTab === 'templates' && (
+          <div className="flex-1 overflow-hidden">
+            <div className="glass-surface" style={{ 
+              borderRadius: '14px', 
+              overflow: 'hidden',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+            }}>
+              {templates.filter(t => !t.is_default).length === 0 ? (
+                /* Empty state */
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center" style={{ maxWidth: '400px', padding: '60px 40px' }}>
+                    <div style={{
+                      width: '64px',
+                      height: '64px',
+                      margin: '0 auto 20px',
+                      borderRadius: '12px',
+                      background: 'rgba(139, 92, 246, 0.08)',
+                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <BarChart3 size={32} style={{ color: 'rgba(139, 92, 246, 0.6)' }} />
+                    </div>
+
+                    <h3 style={{ 
+                      color: 'rgba(255, 255, 255, 0.9)', 
+                      fontSize: '18px', 
+                      fontWeight: 600, 
+                      marginBottom: '6px',
+                      letterSpacing: '-0.01em'
+                    }}>
+                      No saved templates
+                    </h3>
+                    <p style={{ 
+                      color: 'rgba(255, 255, 255, 0.4)', 
+                      fontSize: '14px', 
+                      lineHeight: '1.5'
+                    }}>
+                      Create a campaign and click "Save as Template" to reuse your designs
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ padding: '24px', overflowY: 'auto' }}>
+                  <div className="grid grid-cols-3 gap-6">
+                    {templates.filter(t => !t.is_default).map(template => (
+                      <div
+                        key={template.id}
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.02)',
+                          border: '1px solid rgba(255, 255, 255, 0.08)',
+                          borderRadius: '12px',
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                          e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                      >
+                        {/* Template Preview */}
+                        <div style={{
+                          height: '200px',
+                          background: '#fff',
+                          padding: '16px',
+                          overflow: 'hidden',
+                          position: 'relative'
+                        }}>
+                          <div 
+                            dangerouslySetInnerHTML={{ __html: template.html_content }} 
+                            style={{ 
+                              transform: 'scale(0.3)',
+                              transformOrigin: 'top left',
+                              width: '333%',
+                              height: '333%',
+                              overflow: 'hidden',
+                              pointerEvents: 'none'
+                            }}
+                          />
+                        </div>
+
+                        {/* Template Info */}
+                        <div style={{ padding: '16px' }}>
+                          <h3 style={{ 
+                            color: '#FFFFFF', 
+                            fontSize: '16px', 
+                            fontWeight: 600, 
+                            marginBottom: '6px' 
+                          }}>
+                            {template.name}
+                          </h3>
+                          {template.description && (
+                            <p style={{ 
+                              color: 'rgba(255, 255, 255, 0.5)', 
+                              fontSize: '13px',
+                              marginBottom: '12px'
+                            }}>
+                              {template.description}
+                            </p>
+                          )}
+
+                          <div className="flex gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTemplate(template);
+                                setShowCampaignWizard(true);
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '8px 14px',
+                                background: 'rgba(0, 184, 212, 0.12)',
+                                border: '1px solid rgba(0, 184, 212, 0.3)',
+                                borderRadius: '6px',
+                                color: '#00b8d4',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Use Template
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteTemplate(template.id);
+                              }}
+                              style={{
+                                padding: '8px 14px',
+                                background: 'rgba(239, 68, 68, 0.12)',
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                borderRadius: '6px',
+                                color: '#ef4444',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Campaign Analytics Panel */}
