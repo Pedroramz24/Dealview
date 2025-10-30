@@ -313,9 +313,13 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
     }
   };
 
+  // Email builder state
+  const [showTemplateNameInput, setShowTemplateNameInput] = useState(false);
+  const [templateName, setTemplateName] = useState('');
+
   const handleSaveTemplate = async () => {
-    const templateName = window.prompt('Enter a name for this template:');
     if (!templateName || !templateName.trim()) {
+      toast.error('Please enter a template name');
       return;
     }
 
@@ -332,7 +336,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
             subject: campaignConfig.subject || 'Email Template',
             html_content: html,
             plain_text_content: '',
-            is_default: false
+            is_default: false,
+            design: JSON.stringify(design)
           })
           .select()
           .single();
@@ -340,6 +345,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         if (error) throw error;
         
         toast.success(`✅ Template "${templateName}" saved!`);
+        setTemplateName('');
+        setShowTemplateNameInput(false);
         setEmailDesign(JSON.stringify(design));
         setEmailHTML(html);
       } catch (error) {
