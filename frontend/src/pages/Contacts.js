@@ -658,8 +658,6 @@ const Contacts = () => {
                 <option key={tag} value={tag}>{tag}</option>
               ))}
             </select>
-              ))}
-            </select>
           </div>
         </div>
       </div>
