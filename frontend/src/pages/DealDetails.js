@@ -524,6 +524,32 @@ const DealDetails = () => {
             {/* Edit Mode Toggle */}
             {!isEditMode ? (
               <div className="flex gap-2">
+                {linkedContacts.length > 0 && linkedContacts[0].email && (
+                  <Button
+                    onClick={() => {
+                      setEmailRecipient({
+                        id: linkedContacts[0].id,
+                        email: linkedContacts[0].email,
+                        name: linkedContacts[0].full_name || linkedContacts[0].name
+                      });
+                      setShowEmailCompose(true);
+                    }}
+                    style={{
+                      background: 'rgba(139, 92, 246, 0.15)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      color: '#8b5cf6',
+                      padding: '8px 24px',
+                      borderRadius: '6px',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    SEND EMAIL
+                  </Button>
+                )}
                 <Button
                   onClick={handleEditMode}
                   style={{
