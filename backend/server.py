@@ -1922,6 +1922,145 @@ async def send_campaign(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Campaign Scheduling Endpoints
+class ScheduleCampaign(BaseModel):
+    campaign_id: str
+    contact_ids: List[str]
+    scheduled_time: datetime
+    timezone: str = 'America/Chicago'
+
+class BatchScheduleCampaign(BaseModel):
+    campaign_id: str
+    contact_ids: List[str]
+    start_date: datetime
+    end_date: datetime
+    emails_per_day: int = 50
+
+
+@api_router.post("/email/campaigns/schedule")
+async def schedule_campaign(
+    schedule_data: ScheduleCampaign,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Schedule a campaign to send at specific time"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        scheduler = get_scheduler(supabase)
+        
+        result = await scheduler.schedule_campaign(
+            campaign_id=schedule_data.campaign_id,
+            contact_ids=schedule_data.contact_ids,
+            scheduled_time=schedule_data.scheduled_time,
+            batch_mode=False
+        )
+        
+        if result['success']:
+            return result
+        else:
+            raise HTTPException(status_code=500, detail=result.get('error', 'Failed to schedule campaign'))
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error scheduling campaign: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/email/campaigns/schedule/batch")
+async def schedule_batch_campaign(
+    batch_data: BatchScheduleCampaign,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Schedule a batch campaign to send over time"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        scheduler = get_scheduler(supabase)
+        
+        result = await scheduler.schedule_campaign(
+            campaign_id=batch_data.campaign_id,
+            contact_ids=batch_data.contact_ids,
+            scheduled_time=batch_data.start_date,
+            batch_mode=True,
+            batch_config={
+                'start_date': batch_data.start_date,
+                'end_date': batch_data.end_date,
+                'emails_per_day': batch_data.emails_per_day
+            }
+        )
+        
+        if result['success']:
+            return result
+        else:
+            raise HTTPException(status_code=500, detail=result.get('error', 'Failed to schedule batch campaign'))
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error scheduling batch campaign: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/email/campaigns/{campaign_id}/cancel")
+async def cancel_scheduled_campaign(
+    campaign_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Cancel a scheduled campaign"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        scheduler = get_scheduler(supabase)
+        result = await scheduler.cancel_scheduled_campaign(campaign_id)
+        
+        return result
+    
+    except Exception as e:
+        logger.error(f"Error cancelling campaign: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/email/campaigns/{campaign_id}/queue-status")
+async def get_campaign_queue_status(
+    campaign_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get queue status for a scheduled campaign"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        scheduler = get_scheduler(supabase)
+        status = await scheduler.get_campaign_queue_status(campaign_id)
+        
+        return status
+    
+    except Exception as e:
+        logger.error(f"Error getting queue status: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Background task to process scheduled campaigns
+@api_router.post("/email/process-queue")
+async def process_scheduled_queue():
+    """Process scheduled campaign queue (called by cron job)"""
+    try:
+        scheduler = get_scheduler(supabase)
+        result = await scheduler.process_scheduled_queue(batch_size=50)
+        return result
+    except Exception as e:
+        logger.error(f"Error processing queue: {str(e)}")
+        return {"error": str(e)}
+
+
 @api_router.post("/email/webhook")
 async def sendgrid_webhook(request: Dict[str, Any]):
     """Handle SendGrid webhook events (open, click, bounce, etc.)"""
