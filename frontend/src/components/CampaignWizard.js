@@ -712,7 +712,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 {/* Recipient Type Options */}
                 <div className="flex gap-2 mb-4">
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, recipientType: 'choose_contacts' })}
+                    onClick={() => updateConfig('recipientType', 'choose_contacts')}
                     style={{
                       flex: 1,
                       padding: '10px 14px',
@@ -1302,7 +1302,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 {/* Recipient Type Options */}
                 <div className="flex gap-2 mb-4">
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, recipientType: 'choose_contacts' })}
+                    onClick={() => updateConfig('recipientType', 'choose_contacts')}
                     style={{
                       flex: 1,
                       padding: '10px 14px',
