@@ -510,6 +510,9 @@ const Campaigns = () => {
           </button>
         </div>
 
+        {/* Analytics Summary (All Campaigns) */}
+        <CampaignAnalyticsSummary campaigns={campaigns} />
+
         {/* Campaigns Grid */}
         {campaigns.length === 0 ? (
           <div className="flex-1 flex items-center justify-center">
