@@ -184,12 +184,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
   // Log when currentStep changes
   useEffect(() => {
     console.log('📍 Current step changed to:', currentStep);
-    if (currentStep === 3) {
-      console.log('🎯 Step 3 rendered - Review & Send');
+    if (currentStep === 2) {
+      console.log('📧 Step 2 rendered - Configure & Send');
       console.log('📧 Email HTML length:', emailHTML?.length || 0);
       console.log('📧 Email Design:', !!emailDesign);
-      console.log('🔴 YOU SHOULD NOW SEE THE FINAL REVIEW SCREEN WITH "SEND CAMPAIGN" BUTTON ON THE RIGHT');
-      toast.info('📧 Step 3: Review your campaign and click "Send Campaign" on the right →');
     }
   }, [currentStep, emailHTML, emailDesign]);
 
