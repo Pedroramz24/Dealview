@@ -635,93 +635,9 @@ const Campaigns = () => {
           </button>
         </div>
 
-        {/* Campaigns Tab Content */}
+        {/* Analytics Summary Ribbon - ALWAYS VISIBLE (only on campaigns tab) */}
         {activeTab === 'campaigns' && (
-          <>
-            {/* Search & Filters with enhanced design */}
-        <div className="flex gap-3 mb-6">
-          <div style={{ position: 'relative', flex: 1 }}>
-            <Search size={18} style={{ 
-              position: 'absolute', 
-              left: '16px', 
-              top: '50%', 
-              transform: 'translateY(-50%)', 
-              color: 'rgba(0, 184, 212, 0.6)',
-              zIndex: 1
-            }} />
-            <input
-              type="text"
-              placeholder="Search campaigns by name or subject..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px 12px 48px',
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '10px',
-                color: 'var(--text-primary)',
-                fontSize: '14px',
-                transition: 'all 0.2s ease'
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-              }}
-            />
-          </div>
-
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            style={{
-              padding: '12px 16px',
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '10px',
-              color: 'var(--text-primary)',
-              fontSize: '14px',
-              cursor: 'pointer',
-              minWidth: '140px'
-            }}
-          >
-            <option value="all">All Status</option>
-            <option value="draft">Draft</option>
-            <option value="scheduled">Scheduled</option>
-            <option value="sending">Sending</option>
-            <option value="sent">Sent</option>
-            <option value="paused">Paused</option>
-          </select>
-
-          {getAllTags().length > 0 && (
-            <select
-              value={tagFilter}
-              onChange={(e) => setTagFilter(e.target.value)}
-              style={{
-                padding: '12px 16px',
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '10px',
-                color: 'var(--text-primary)',
-                fontSize: '14px',
-                cursor: 'pointer',
-                minWidth: '140px'
-              }}
-            >
-              <option value="all">All Tags</option>
-              {getAllTags().map(tag => (
-                <option key={tag} value={tag}>{tag}</option>
-              ))}
-            </select>
-          )}
-        </div>
-
-        {/* Analytics Summary Ribbon - ALWAYS VISIBLE */}
-        <div style={{
+          <div style={{
           background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
           border: '1px solid rgba(0, 184, 212, 0.15)',
           borderRadius: '14px',
