@@ -119,6 +119,31 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
     });
   };
 
+  const onEditorReady = () => {
+    // Load initial template if provided
+    if (initialTemplate && initialTemplate.html_content && !emailDesign) {
+      // First time loading a template
+      try {
+        if (initialTemplate.design) {
+          const design = typeof initialTemplate.design === 'string' 
+            ? JSON.parse(initialTemplate.design) 
+            : initialTemplate.design;
+          emailEditorRef.current?.editor?.loadDesign(design);
+        }
+      } catch (error) {
+        console.error('Error loading template design:', error);
+      }
+    } else if (emailDesign) {
+      // Loading existing design when navigating back
+      try {
+        const design = JSON.parse(emailDesign);
+        emailEditorRef.current?.editor?.loadDesign(design);
+      } catch (error) {
+        console.error('Error loading existing design:', error);
+      }
+    }
+  };
+
   // Step 2: Filter contacts based on recipient type
   useEffect(() => {
     if (campaignConfig.recipientType === 'tags' && campaignConfig.selectedTags.length > 0) {
