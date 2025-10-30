@@ -31,22 +31,6 @@ const Campaigns = () => {
     testing: false
   });
 
-  // Campaign creation state
-  const [campaignData, setCampaignData] = useState({
-    name: '',
-    subject: '',
-    htmlContent: '',
-    plainTextContent: '',
-    design: null // Store Unlayer design JSON
-  });
-
-  // Email builder state
-  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
-  const [showEmailBuilder, setShowEmailBuilder] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-
-  const editorRef = useRef(null);
-
   // Get Supabase session token
   useEffect(() => {
     const getToken = async () => {
