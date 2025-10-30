@@ -561,9 +561,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
             }}>
               <EmailEditor
                 ref={emailEditorRef}
-                onReady={() => {
-                  // Editor ready
-                }}
+                onReady={onEditorReady}
                 projectId={123456}
                 options={{
                   displayMode: previewMode === 'desktop' ? 'email' : 'web',
