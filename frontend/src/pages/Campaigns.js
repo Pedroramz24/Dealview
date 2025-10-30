@@ -152,6 +152,31 @@ const Campaigns = () => {
     }
   };
 
+  const cloneTemplate = async (template) => {
+    try {
+      const { data, error } = await supabase
+        .from('email_templates')
+        .insert({
+          name: `${template.name} (Copy)`,
+          description: template.description,
+          category: template.category,
+          subject: template.subject,
+          html_content: template.html_content,
+          plain_text_content: template.plain_text_content,
+          design: template.design,
+          is_default: false
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      toast.success('Template cloned!');
+      fetchTemplates();
+    } catch (error) {
+      toast.error('Failed to clone template');
+    }
+  };
+
   const testSendGridConnection = async () => {
     if (!setupData.apiKey) {
       toast.error('Please enter your SendGrid API key');
