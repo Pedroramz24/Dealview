@@ -47,19 +47,24 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0, 0, 0, 0.95)',
+      width: '100vw',
+      height: '100vh',
+      background: '#000',
       zIndex: 9999,
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      overflow: 'hidden'
     }}>
       {/* Header */}
       <div style={{
         padding: '16px 24px',
-        background: 'rgba(0, 0, 0, 0.8)',
+        background: 'rgba(0, 0, 0, 0.9)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        flexShrink: 0,
+        height: '80px'
       }}>
         <div>
           <h2 style={{ color: 'var(--text-primary)', fontSize: '20px', fontWeight: 600, marginBottom: '4px' }}>
@@ -158,12 +163,18 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
         </div>
       </div>
 
-      {/* Email Editor */}
-      <div style={{ flex: 1, overflow: 'hidden' }}>
+      {/* Email Editor - Full Height */}
+      <div style={{ 
+        flex: 1,
+        width: '100%',
+        height: 'calc(100vh - 80px)',
+        overflow: 'hidden',
+        position: 'relative'
+      }}>
         <EmailEditor
           ref={emailEditorRef}
           onReady={onReady}
-          projectId={123456} // You can use any number here
+          projectId={123456}
           options={{
             displayMode: previewMode === 'desktop' ? 'email' : 'web',
             appearance: {
@@ -251,7 +262,11 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
               }
             }
           }}
-          style={{ height: '100%', width: '100%' }}
+          style={{ 
+            height: '100%',
+            width: '100%',
+            minHeight: 'calc(100vh - 80px)'
+          }}
         />
       </div>
     </div>
