@@ -343,8 +343,16 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       return;
     }
 
+    console.log('💾 Saving template:', templateName);
+
     emailEditorRef.current?.editor?.exportHtml(async (data) => {
       const { design, html } = data;
+      
+      console.log('📧 Exported email data:', { 
+        hasDesign: !!design, 
+        htmlLength: html?.length,
+        templateName: templateName.trim()
+      });
       
       try {
         const { data: templateData, error } = await supabase
@@ -362,16 +370,20 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
           .select()
           .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Supabase error:', error);
+          throw error;
+        }
         
+        console.log('✅ Template saved:', templateData);
         toast.success(`✅ Template "${templateName}" saved!`);
         setTemplateName('');
         setShowTemplateNameInput(false);
         setEmailDesign(JSON.stringify(design));
         setEmailHTML(html);
       } catch (error) {
-        console.error('Error saving template:', error);
-        toast.error('Failed to save template');
+        console.error('❌ Error saving template:', error);
+        toast.error(`Failed to save template: ${error.message || 'Unknown error'}`);
       }
     });
   };
