@@ -22,6 +22,13 @@ const Campaigns = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [showCampaignWizard, setShowCampaignWizard] = useState(false);
   const [showAnalyticsPanel, setShowAnalyticsPanel] = useState(false);
+  
+  // Tab state
+  const [activeTab, setActiveTab] = useState('campaigns'); // 'campaigns' or 'templates'
+  
+  // Templates state
+  const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
