@@ -842,16 +842,33 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 {/* Choose Contacts */}
                 {campaignConfig.recipientType === 'choose_contacts' && (
                   <div style={{
-                    maxHeight: '280px',
-                    overflowY: 'auto',
                     background: 'rgba(0, 0, 0, 0.3)',
                     border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
                     padding: '12px'
                   }}>
+                    {/* Search Input */}
+                    <div style={{ marginBottom: '12px' }}>
+                      <input
+                        type="text"
+                        value={contactSearchTerm}
+                        onChange={(e) => setContactSearchTerm(e.target.value)}
+                        placeholder="Search contacts by name or email..."
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          background: 'rgba(0, 0, 0, 0.4)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#FFFFFF',
+                          fontSize: '14px'
+                        }}
+                      />
+                    </div>
+
                     <div className="flex justify-between mb-3 pb-2" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
                       <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>
-                        {campaignConfig.selectedContacts.length} of {contacts.length} selected
+                        {campaignConfig.selectedContacts.length} of {getSearchedContacts().length} selected
                       </span>
                       <div className="flex gap-2">
                         <button
@@ -884,7 +901,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         </button>
                       </div>
                     </div>
-                    {contacts.map(contact => (
+
+                    {/* Contact List - Scrollable */}
+                    <div style={{ maxHeight: '220px', overflowY: 'auto' }}>
+                      {getSearchedContacts().map(contact => (
                       <div
                         key={contact.id}
                         onClick={() => toggleContact(contact.id)}
