@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => {
+const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initialTemplate = null }) => {
   const [currentStep, setCurrentStep] = useState(1); // 1: Design, 2: Configure, 3: Review
   const emailEditorRef = useRef(null);
   
