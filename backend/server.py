@@ -23,6 +23,7 @@ from layer_registry import LAYER_REGISTRY, CACHE_TTL, MAX_CACHE_SIZE, RATE_LIMIT
 import feedparser
 import time
 from sendgrid_service import sendgrid_service
+from campaign_scheduler import get_scheduler
 
 
 ROOT_DIR = Path(__file__).parent
