@@ -1548,13 +1548,16 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       <label style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
                         Select Date & Time
                       </label>
-                      <DateTimePicker
+                      <DatePicker
+                        selected={campaignConfig.scheduleDate}
                         onChange={(date) => setCampaignConfig({ ...campaignConfig, scheduleDate: date })}
-                        value={campaignConfig.scheduleDate}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="MM/dd/yyyy h:mm aa"
                         minDate={new Date()}
+                        placeholderText="Select date and time"
                         className="datetime-picker-dark"
-                        format="MM/dd/yyyy h:mm a"
-                        disableClock={false}
                       />
                     </div>
                   )}
