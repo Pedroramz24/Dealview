@@ -846,6 +846,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
                   When to Send
                 </label>
                 <div className="space-y-2">
+                  {/* Send Now */}
                   <button
                     onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'now' })}
                     style={{
@@ -871,6 +872,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
                     </div>
                   </button>
 
+                  {/* Schedule */}
                   <button
                     onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'schedule' })}
                     style={{
@@ -892,9 +894,121 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
                     <Calendar size={18} />
                     <div>
                       <p style={{ fontWeight: 600 }}>Schedule</p>
-                      <p style={{ fontSize: '12px', opacity: 0.7 }}>Choose a specific date and time (Coming Soon)</p>
+                      <p style={{ fontSize: '12px', opacity: 0.7 }}>Choose a specific date and time</p>
                     </div>
                   </button>
+
+                  {campaignConfig.sendOption === 'schedule' && (
+                    <div className="mt-3 p-4" style={{
+                      background: 'rgba(0, 184, 212, 0.05)',
+                      border: '1px solid rgba(0, 184, 212, 0.2)',
+                      borderRadius: '6px'
+                    }}>
+                      <label style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                        Select Date & Time
+                      </label>
+                      <DateTimePicker
+                        onChange={(date) => setCampaignConfig({ ...campaignConfig, scheduleDate: date })}
+                        value={campaignConfig.scheduleDate}
+                        minDate={new Date()}
+                        className="datetime-picker-dark"
+                        format="MM/dd/yyyy h:mm a"
+                        disableClock={false}
+                      />
+                    </div>
+                  )}
+
+                  {/* Batch Schedule */}
+                  <button
+                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'batch' })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: campaignConfig.sendOption === 'batch' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.sendOption === 'batch' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                      borderRadius: '6px',
+                      color: campaignConfig.sendOption === 'batch' ? '#00b8d4' : 'var(--text-primary)',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <Clock size={18} />
+                    <div>
+                      <p style={{ fontWeight: 600 }}>Batch Schedule</p>
+                      <p style={{ fontSize: '12px', opacity: 0.7 }}>Spread emails over multiple days</p>
+                    </div>
+                  </button>
+
+                  {campaignConfig.sendOption === 'batch' && (
+                    <div className="mt-3 p-4" style={{
+                      background: 'rgba(139, 92, 246, 0.05)',
+                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      borderRadius: '6px'
+                    }}>
+                      <div className="mb-3">
+                        <label style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '6px', display: 'block' }}>
+                          Start Date
+                        </label>
+                        <DateTimePicker
+                          onChange={(date) => setCampaignConfig({ 
+                            ...campaignConfig, 
+                            batchSchedule: { ...campaignConfig.batchSchedule, startDate: date }
+                          })}
+                          value={campaignConfig.batchSchedule.startDate}
+                          minDate={new Date()}
+                          className="datetime-picker-dark"
+                          format="MM/dd/yyyy h:mm a"
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '6px', display: 'block' }}>
+                          End Date
+                        </label>
+                        <DateTimePicker
+                          onChange={(date) => setCampaignConfig({ 
+                            ...campaignConfig, 
+                            batchSchedule: { ...campaignConfig.batchSchedule, endDate: date }
+                          })}
+                          value={campaignConfig.batchSchedule.endDate}
+                          minDate={campaignConfig.batchSchedule.startDate || new Date()}
+                          className="datetime-picker-dark"
+                          format="MM/dd/yyyy h:mm a"
+                        />
+                      </div>
+                      <div>
+                        <label style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '6px', display: 'block' }}>
+                          Emails Per Day
+                        </label>
+                        <input
+                          type="number"
+                          value={campaignConfig.batchSchedule.emailsPerDay}
+                          onChange={(e) => setCampaignConfig({ 
+                            ...campaignConfig, 
+                            batchSchedule: { ...campaignConfig.batchSchedule, emailsPerDay: parseInt(e.target.value) || 50 }
+                          })}
+                          min="1"
+                          max="500"
+                          style={{
+                            width: '100%',
+                            padding: '10px 12px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '4px',
+                            color: 'var(--text-primary)',
+                            fontSize: '14px'
+                          }}
+                        />
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '4px' }}>
+                          Recommended: 50-100 emails/day for best deliverability
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
