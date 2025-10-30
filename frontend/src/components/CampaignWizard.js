@@ -1932,12 +1932,6 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         hasEmailDesign: !!emailDesign
                       });
                       
-                      if (currentStep !== 2) {
-                        console.log('❌ ERROR: This button should only work in Step 2, but currentStep is:', currentStep);
-                        toast.error('⚠️ You are not on Step 2. Please check the UI.');
-                        return;
-                      }
-                      
                       // Validate required fields
                       if (!campaignConfig.name || !campaignConfig.name.trim()) {
                         console.log('❌ Validation failed: Campaign name missing');
