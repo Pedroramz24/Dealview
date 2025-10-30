@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { AuthContext } from '../App';
 import { supabase } from '../supabaseClient';
 import CampaignDetails from '../components/CampaignDetails';
+import EmailBuilderModal from '../components/EmailBuilderModal';
+import TemplateSelector from '../components/TemplateSelector';
 import { 
   Mail, Plus, Send, Users, BarChart3, Settings, CheckCircle2,
   Eye, Edit3, Trash2, Play, Pause, Calendar, TrendingUp, Loader2
