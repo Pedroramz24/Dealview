@@ -38,7 +38,18 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
     }
   });
 
-  // Contacts and tags data
+  // Contact search
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
+
+  // Filter contacts by search
+  const getSearchedContacts = () => {
+    if (!contactSearchTerm) return filteredContacts;
+    return filteredContacts.filter(c =>
+      c.full_name?.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+      c.name?.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
+      c.email?.toLowerCase().includes(contactSearchTerm.toLowerCase())
+    );
+  };
   const [contacts, setContacts] = useState([]);
   const [allTags, setAllTags] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
