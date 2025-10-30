@@ -1057,10 +1057,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         <input
                           type="number"
                           value={campaignConfig.batchSchedule.emailsPerDay}
-                          onChange={(e) => setCampaignConfig({ 
-                            ...campaignConfig, 
-                            batchSchedule: { ...campaignConfig.batchSchedule, emailsPerDay: parseInt(e.target.value) || 50 }
-                          })}
+                          onChange={(e) => {
+                            setCampaignConfig(prev => ({
+                              ...prev,
+                              batchSchedule: { ...prev.batchSchedule, emailsPerDay: parseInt(e.target.value) || 50 }
+                            }));
+                          }}
                           min="1"
                           max="500"
                           style={{
@@ -1647,10 +1649,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         <input
                           type="number"
                           value={campaignConfig.batchSchedule.emailsPerDay}
-                          onChange={(e) => setCampaignConfig({ 
-                            ...campaignConfig, 
-                            batchSchedule: { ...campaignConfig.batchSchedule, emailsPerDay: parseInt(e.target.value) || 50 }
-                          })}
+                          onChange={(e) => {
+                            setCampaignConfig(prev => ({
+                              ...prev,
+                              batchSchedule: { ...prev.batchSchedule, emailsPerDay: parseInt(e.target.value) || 50 }
+                            }));
+                          }}
                           min="1"
                           max="500"
                           style={{
