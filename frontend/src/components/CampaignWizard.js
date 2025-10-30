@@ -1222,6 +1222,20 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 </button>
                 <button
                   onClick={() => {
+                    // Validate required fields
+                    if (!campaignConfig.name || !campaignConfig.name.trim()) {
+                      toast.error('❌ Please enter a Campaign Name');
+                      return;
+                    }
+                    if (!campaignConfig.subject || !campaignConfig.subject.trim()) {
+                      toast.error('❌ Please enter a Subject Line');
+                      return;
+                    }
+                    if (campaignConfig.selectedContacts.length === 0) {
+                      toast.error('❌ Please select at least one recipient');
+                      return;
+                    }
+                    
                     // Validate scheduling fields
                     if (campaignConfig.sendOption === 'schedule' && !campaignConfig.scheduleDate) {
                       toast.error('Please select a date and time for scheduled send');
@@ -1231,25 +1245,20 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       toast.error('Please select start and end dates for batch schedule');
                       return;
                     }
+                    
+                    console.log('✅ Validation passed, moving to Step 3');
                     setCurrentStep(3);
                   }}
-                  disabled={!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0}
                   style={{
                     flex: 2,
                     padding: '12px 20px',
-                    background: (!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0) 
-                      ? 'rgba(255, 255, 255, 0.03)' 
-                      : '#00b8d4',
-                    color: (!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0) 
-                      ? 'rgba(255, 255, 255, 0.3)' 
-                      : '#000',
+                    background: '#00b8d4',
+                    color: '#000',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '14px',
                     fontWeight: 600,
-                    cursor: (!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0) 
-                      ? 'not-allowed' 
-                      : 'pointer',
+                    cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
