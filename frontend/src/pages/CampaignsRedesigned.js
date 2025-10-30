@@ -1666,13 +1666,19 @@ const Campaigns = () => {
       {/* Campaign Wizard */}
       <CampaignWizard
         isOpen={showCampaignWizard}
-        onClose={() => setShowCampaignWizard(false)}
+        onClose={() => {
+          setShowCampaignWizard(false);
+          setSelectedTemplate(null);
+        }}
         onComplete={() => {
           setShowCampaignWizard(false);
+          setSelectedTemplate(null);
           fetchCampaigns();
+          fetchTemplates();
         }}
         token={token}
         BACKEND_URL={BACKEND_URL}
+        initialTemplate={selectedTemplate}
       />
     </div>
   );
