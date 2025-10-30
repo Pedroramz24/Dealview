@@ -1068,6 +1068,44 @@ div[style*="unlayer"] {
   min-height: calc(100vh - 80px) !important;
 }
 
+/* Fix Unlayer z-index issues - Ensure dropdowns, color pickers, and modals appear above everything */
+#u_body,
+#u_row,
+#u_column,
+.blockbuilder-layer {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Unlayer top toolbar and panels */
+.blockbuilder-topbar,
+.blockbuilder-layers-panel,
+.blockbuilder-sidebar {
+  z-index: 100001 !important;
+}
+
+/* Unlayer color picker, dropdown menus, and popovers */
+.blockbuilder-color-picker,
+.blockbuilder-dropdown,
+.blockbuilder-popover,
+.blockbuilder-modal,
+.blockbuilder-tooltip,
+div[class*="picker"],
+div[class*="dropdown"],
+div[class*="popover"],
+div[class*="modal"],
+div[role="dialog"],
+div[role="menu"],
+div[role="listbox"] {
+  z-index: 100002 !important;
+}
+
+/* Unlayer iframe content should allow overflow for dropdowns */
+.email-editor-iframe {
+  overflow: visible !important;
+}
+
+
 /* React DateTime Picker - Dark Theme */
 .datetime-picker-dark .react-datetime-picker__wrapper {
   background: rgba(255, 255, 255, 0.03) !important;
