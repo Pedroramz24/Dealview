@@ -687,19 +687,8 @@ const Campaigns = () => {
               background: 'rgba(0, 184, 212, 0.08)',
               border: '1px solid rgba(0, 184, 212, 0.2)',
               borderRadius: '10px',
-              padding: '18px 16px',
-              position: 'relative',
-              overflow: 'hidden'
+              padding: '18px 16px'
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '-10px',
-                right: '-10px',
-                width: '60px',
-                height: '60px',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
               <div className="flex items-center gap-2 mb-2">
                 <Send size={14} style={{ color: '#00b8d4' }} />
                 <p style={{ 
@@ -712,7 +701,7 @@ const Campaigns = () => {
                   Total Sent
                 </p>
               </div>
-              <p className="animate-counter" style={{ 
+              <p style={{ 
                 color: '#00b8d4', 
                 fontSize: '32px', 
                 fontWeight: 800,
@@ -728,19 +717,8 @@ const Campaigns = () => {
               background: 'rgba(34, 197, 94, 0.08)',
               border: '1px solid rgba(34, 197, 94, 0.2)',
               borderRadius: '10px',
-              padding: '18px 16px',
-              position: 'relative',
-              overflow: 'hidden'
+              padding: '18px 16px'
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '-10px',
-                right: '-10px',
-                width: '60px',
-                height: '60px',
-                background: 'radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 size={14} style={{ color: '#22c55e' }} />
                 <p style={{ 
@@ -753,7 +731,7 @@ const Campaigns = () => {
                   Delivered
                 </p>
               </div>
-              <p className="animate-counter" style={{ 
+              <p style={{ 
                 color: '#22c55e', 
                 fontSize: '32px', 
                 fontWeight: 800,
@@ -772,19 +750,8 @@ const Campaigns = () => {
               background: 'rgba(139, 92, 246, 0.08)',
               border: '1px solid rgba(139, 92, 246, 0.2)',
               borderRadius: '10px',
-              padding: '18px 16px',
-              position: 'relative',
-              overflow: 'hidden'
+              padding: '18px 16px'
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '-10px',
-                right: '-10px',
-                width: '60px',
-                height: '60px',
-                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
               <div className="flex items-center gap-2 mb-2">
                 <Eye size={14} style={{ color: '#8b5cf6' }} />
                 <p style={{ 
@@ -797,7 +764,7 @@ const Campaigns = () => {
                   Open Rate
                 </p>
               </div>
-              <p className="animate-counter" style={{ 
+              <p style={{ 
                 color: '#8b5cf6', 
                 fontSize: '32px', 
                 fontWeight: 800,
@@ -813,19 +780,8 @@ const Campaigns = () => {
               background: 'rgba(245, 158, 11, 0.08)',
               border: '1px solid rgba(245, 158, 11, 0.2)',
               borderRadius: '10px',
-              padding: '18px 16px',
-              position: 'relative',
-              overflow: 'hidden'
+              padding: '18px 16px'
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '-10px',
-                right: '-10px',
-                width: '60px',
-                height: '60px',
-                background: 'radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
               <div className="flex items-center gap-2 mb-2">
                 <MousePointerClick size={14} style={{ color: '#f59e0b' }} />
                 <p style={{ 
@@ -838,7 +794,7 @@ const Campaigns = () => {
                   Click Rate
                 </p>
               </div>
-              <p className="animate-counter" style={{ 
+              <p style={{ 
                 color: '#f59e0b', 
                 fontSize: '32px', 
                 fontWeight: 800,
@@ -854,19 +810,8 @@ const Campaigns = () => {
               background: 'rgba(239, 68, 68, 0.08)',
               border: '1px solid rgba(239, 68, 68, 0.2)',
               borderRadius: '10px',
-              padding: '18px 16px',
-              position: 'relative',
-              overflow: 'hidden'
+              padding: '18px 16px'
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '-10px',
-                right: '-10px',
-                width: '60px',
-                height: '60px',
-                background: 'radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle size={14} style={{ color: '#ef4444' }} />
                 <p style={{ 
@@ -879,7 +824,7 @@ const Campaigns = () => {
                   Bounce Rate
                 </p>
               </div>
-              <p className="animate-counter" style={{ 
+              <p style={{ 
                 color: '#ef4444', 
                 fontSize: '32px', 
                 fontWeight: 800,
@@ -892,7 +837,7 @@ const Campaigns = () => {
           </div>
         </div>
 
-        {/* Campaigns Table or Empty State */}
+        {/* Campaigns Table */}
         <div className="flex-1 overflow-hidden">
           {filteredCampaigns.length === 0 ? (
             <div className="h-full flex items-center justify-center">
