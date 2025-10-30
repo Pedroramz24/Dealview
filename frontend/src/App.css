@@ -1068,3 +1068,64 @@ div[style*="unlayer"] {
   min-height: calc(100vh - 80px) !important;
 }
 
+/* React DateTime Picker - Dark Theme */
+.datetime-picker-dark .react-datetime-picker__wrapper {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  color: var(--text-primary) !important;
+}
+
+.datetime-picker-dark .react-datetime-picker__inputGroup__input {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+}
+
+.datetime-picker-dark .react-datetime-picker__button {
+  color: #00b8d4 !important;
+}
+
+.datetime-picker-dark .react-datetime-picker__button:hover {
+  background: rgba(0, 184, 212, 0.1) !important;
+}
+
+.react-calendar {
+  background: rgba(20, 20, 20, 0.98) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+  padding: 12px !important;
+}
+
+.react-calendar__tile {
+  color: var(--text-primary) !important;
+  border-radius: 4px !important;
+}
+
+.react-calendar__tile:hover {
+  background: rgba(0, 184, 212, 0.15) !important;
+}
+
+.react-calendar__tile--active {
+  background: #00b8d4 !important;
+  color: #000 !important;
+}
+
+.react-calendar__tile--now {
+  background: rgba(0, 184, 212, 0.2) !important;
+}
+
+.react-calendar__month-view__weekdays {
+  color: var(--text-secondary) !important;
+}
+
+.react-clock {
+  background: rgba(20, 20, 20, 0.98) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.react-clock__hand {
+  stroke: #00b8d4 !important;
+}
+
