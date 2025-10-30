@@ -1555,6 +1555,51 @@ const Campaigns = () => {
         </div>
       )}
 
+      {/* Template Preview Modal */}
+      {previewTemplate && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ background: 'rgba(0, 0, 0, 0.85)', backdropFilter: 'blur(8px)' }}
+          onClick={() => setPreviewTemplate(null)}
+        >
+          <div
+            style={{
+              maxWidth: '800px',
+              width: '90%',
+              maxHeight: '90vh',
+              background: 'rgba(20, 20, 20, 0.98)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ padding: '24px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: 600 }}>
+                {previewTemplate.name}
+              </h3>
+              <button
+                onClick={() => setPreviewTemplate(null)}
+                style={{
+                  padding: '8px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '6px',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer'
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '32px', background: '#fff', overflowY: 'auto', maxHeight: 'calc(90vh - 80px)' }}>
+              <div dangerouslySetInnerHTML={{ __html: previewTemplate.html_content }} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Campaign Wizard */}
       <CampaignWizard
         isOpen={showCampaignWizard}
