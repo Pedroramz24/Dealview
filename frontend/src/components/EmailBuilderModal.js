@@ -167,107 +167,108 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
       <div style={{ 
         flex: 1,
         width: '100%',
+        minHeight: 'calc(100vh - 80px)',
         height: 'calc(100vh - 80px)',
         overflow: 'hidden',
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column'
       }}>
-        <EmailEditor
-          ref={emailEditorRef}
-          onReady={onReady}
-          projectId={123456}
-          options={{
-            displayMode: previewMode === 'desktop' ? 'email' : 'web',
-            appearance: {
-              theme: 'dark',
-              panels: {
-                tools: {
-                  dock: 'left'
+        <div style={{ flex: 1, minHeight: '800px' }}>
+          <EmailEditor
+            ref={emailEditorRef}
+            onReady={onReady}
+            projectId={123456}
+            options={{
+              displayMode: previewMode === 'desktop' ? 'email' : 'web',
+              appearance: {
+                theme: 'dark',
+                panels: {
+                  tools: {
+                    dock: 'left'
+                  }
+                }
+              },
+              features: {
+                preview: true,
+                imageEditor: true,
+                undoRedo: true,
+                stockImages: true
+              },
+              tools: {
+                image: {
+                  enabled: true
+                },
+                form: {
+                  enabled: true
+                }
+              },
+              mergeTags: {
+                firstName: {
+                  name: 'First Name',
+                  value: '{{firstName}}',
+                  sample: 'John'
+                },
+                lastName: {
+                  name: 'Last Name',
+                  value: '{{lastName}}',
+                  sample: 'Doe'
+                },
+                email: {
+                  name: 'Email',
+                  value: '{{email}}',
+                  sample: 'john@example.com'
+                },
+                company: {
+                  name: 'Company',
+                  value: '{{company}}',
+                  sample: 'Acme Corp'
+                },
+                phone: {
+                  name: 'Phone',
+                  value: '{{phone}}',
+                  sample: '(210) 555-0123'
+                },
+                propertyAddress: {
+                  name: 'Property Address',
+                  value: '{{propertyAddress}}',
+                  sample: '123 Main St, San Antonio, TX'
+                },
+                price: {
+                  name: 'Price',
+                  value: '{{price}}',
+                  sample: '$1,500,000'
+                },
+                assetType: {
+                  name: 'Asset Type',
+                  value: '{{assetType}}',
+                  sample: 'Retail Center'
+                },
+                size: {
+                  name: 'Size (SF)',
+                  value: '{{size}}',
+                  sample: '10,000'
+                },
+                capRate: {
+                  name: 'Cap Rate',
+                  value: '{{capRate}}',
+                  sample: '7.5%'
+                },
+                senderName: {
+                  name: 'Your Name',
+                  value: '{{senderName}}',
+                  sample: 'Pedro Armando'
+                },
+                senderEmail: {
+                  name: 'Your Email',
+                  value: '{{senderEmail}}',
+                  sample: 'pedro@dealview.com'
                 }
               }
-            },
-            features: {
-              preview: true,
-              imageEditor: true,
-              undoRedo: true,
-              stockImages: true
-            },
-            tools: {
-              image: {
-                enabled: true
-              },
-              form: {
-                enabled: true
-              }
-            },
-            mergeTags: {
-              firstName: {
-                name: 'First Name',
-                value: '{{firstName}}',
-                sample: 'John'
-              },
-              lastName: {
-                name: 'Last Name',
-                value: '{{lastName}}',
-                sample: 'Doe'
-              },
-              email: {
-                name: 'Email',
-                value: '{{email}}',
-                sample: 'john@example.com'
-              },
-              company: {
-                name: 'Company',
-                value: '{{company}}',
-                sample: 'Acme Corp'
-              },
-              phone: {
-                name: 'Phone',
-                value: '{{phone}}',
-                sample: '(210) 555-0123'
-              },
-              propertyAddress: {
-                name: 'Property Address',
-                value: '{{propertyAddress}}',
-                sample: '123 Main St, San Antonio, TX'
-              },
-              price: {
-                name: 'Price',
-                value: '{{price}}',
-                sample: '$1,500,000'
-              },
-              assetType: {
-                name: 'Asset Type',
-                value: '{{assetType}}',
-                sample: 'Retail Center'
-              },
-              size: {
-                name: 'Size (SF)',
-                value: '{{size}}',
-                sample: '10,000'
-              },
-              capRate: {
-                name: 'Cap Rate',
-                value: '{{capRate}}',
-                sample: '7.5%'
-              },
-              senderName: {
-                name: 'Your Name',
-                value: '{{senderName}}',
-                sample: 'Pedro Armando'
-              },
-              senderEmail: {
-                name: 'Your Email',
-                value: '{{senderEmail}}',
-                sample: 'pedro@dealview.com'
-              }
-            }
-          }}
-          style={{ 
-            height: '100%',
-            width: '100%',
-            minHeight: 'calc(100vh - 80px)'
-          }}
-        />
+            }}
+            minHeight="800px"
+          />
+        </div>
       </div>
     </div>
   );
