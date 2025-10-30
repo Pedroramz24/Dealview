@@ -1697,6 +1697,20 @@ const Contacts = () => {
                   </div>
                 </div>
 
+                {/* Smart Tags Section */}
+                <div className="glass-surface p-5 rounded-xl">
+                  <TagManager
+                    contactId={selectedContact.id}
+                    currentTags={selectedContact.tags || []}
+                    onTagsUpdate={(updatedTags) => {
+                      // Update local state
+                      setSelectedContact({ ...selectedContact, tags: updatedTags });
+                      // Refresh contacts list
+                      fetchContacts();
+                    }}
+                  />
+                </div>
+
                 {/* Linked Deals */}
                 <div>
                   <h3 className="text-sm font-semibold uppercase mb-4" style={{ color: 'var(--accent)', letterSpacing: '0.5px' }}>
