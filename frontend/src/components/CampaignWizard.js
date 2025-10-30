@@ -1917,6 +1917,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   onClick={(e) => {
                     try {
                       console.log('🔵 Review and Send button clicked (bottom)', e);
+                      console.log('⚠️ CURRENT STEP:', currentStep);
                       console.log('📋 Campaign config:', {
                         name: campaignConfig.name,
                         subject: campaignConfig.subject,
@@ -1925,6 +1926,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         hasEmailHTML: !!emailHTML,
                         hasEmailDesign: !!emailDesign
                       });
+                      
+                      if (currentStep !== 2) {
+                        console.log('❌ ERROR: This button should only work in Step 2, but currentStep is:', currentStep);
+                        toast.error('⚠️ You are not on Step 2. Please check the UI.');
+                        return;
+                      }
                       
                       // Validate required fields
                       if (!campaignConfig.name || !campaignConfig.name.trim()) {
@@ -1969,7 +1976,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       console.error('❌ Error in Review and Send button (bottom):', error);
                       toast.error(`Error: ${error.message}`);
                     }
-                  }}
+                  }}}
                   style={{
                     flex: 2,
                     padding: '12px 20px',
