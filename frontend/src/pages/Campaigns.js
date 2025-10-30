@@ -620,29 +620,24 @@ const Campaigns = () => {
             ))}
           </div>
         )}
+        
+        {/* Campaign Wizard */}
+        <CampaignWizard
+          isOpen={showCampaignWizard}
+          onClose={() => setShowCampaignWizard(false)}
+          onComplete={() => {
+            setShowCampaignWizard(false);
+            fetchCampaigns();
+          }}
+          token={token}
+          BACKEND_URL={BACKEND_URL}
+        />
       </div>
     );
   }
 
-  // Render CampaignWizard
-  return (
-    <>
-      {/* Main Content (List or Details) */}
-      {/* ... existing content ... */}
-      
-      {/* Campaign Wizard */}
-      <CampaignWizard
-        isOpen={showCampaignWizard}
-        onClose={() => setShowCampaignWizard(false)}
-        onComplete={() => {
-          setShowCampaignWizard(false);
-          fetchCampaigns();
-        }}
-        token={token}
-        BACKEND_URL={BACKEND_URL}
-      />
-    </>
-  );
+  // Fallback return
+  return null;
 };
 
 export default Campaigns;
