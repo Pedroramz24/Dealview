@@ -224,6 +224,13 @@ const Contacts = () => {
       filtered = filtered.filter(contact => contact.status === filterStatus);
     }
 
+    // Tag filter
+    if (filterTag !== 'all') {
+      filtered = filtered.filter(contact => 
+        contact.tags && contact.tags.includes(filterTag)
+      );
+    }
+
     setFilteredContacts(filtered);
   };
 
