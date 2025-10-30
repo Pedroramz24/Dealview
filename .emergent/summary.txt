@@ -1,104 +1,85 @@
 <analysis>
-The AI engineer's work spanned several critical areas: refining the Calendar tab's UI, implementing event rescheduling, adding property deletion functionality, and a major redesign of the Dashboard with an intelligent, location-aware news feed. Initial efforts focused on toning down global glow effects and fixing visual glitches in calendar event pills, requiring iterative CSS adjustments and syntax error corrections. Subsequently, an inline event rescheduling feature was added to the Calendar. A significant task involved introducing a delete property option with confirmation dialogs to both the MapView's  and the  page.
+The AI engineer's work primarily focused on expanding the application's email capabilities and refining its UI. Initially, the task involved verifying the dashboard's hybrid news fetching, which was interrupted by persistent login issues. The focus then shifted to implementing a comprehensive email campaign system, a crown jewel feature. This involved setting up a Bring Your Own Key (BYOK) model for SendGrid, including database migrations, backend API integration, and a frontend setup wizard.
 
-The bulk of the recent work centered on transforming the Dashboard into a GOTHAM-style command center. This involved a complete architectural redesign, integrating an AI greeting, real-time metrics, an events timeline, and a sophisticated news intelligence panel. The news feed implementation progressed from a general RSS aggregator to a highly personalized, location-based system. Challenges included resolving persistent failed to load dashboard data errors due to authentication flow issues, unifying loading screens, fixing function definition order, and debugging a complex hybrid news fetching logic that combined Texas-specific RSS feeds with general news and Perplexity AI. The engineer leveraged the  to resolve a critical code structure issue in the backend's news fetching logic, ensuring deployment readiness by removing redundant authentication checks.
+A significant portion of the work revolved around building a sophisticated 3-step campaign flow, integrating the Unlayer drag-and-drop email builder (after user preference for its UI over GrapeJS's cost-effectiveness), and subsequently fixing numerous UI glitches, layout issues, and functionality gaps. Key challenges included: persistent JSX and rendering errors, issues with design persistence in the Unlayer editor, input field glitches (focus loss), and the integration of smart tags and scheduling. The engineer also addressed fixing a 403 API error with SendGrid and clarified developer-centric instructions for the user. The latest efforts concentrate on implementing a template library with management options and a robust contact selection interface.
 </analysis>
 
 <product_requirements>
-The Pedro Armando CRM is a map-first commercial real estate platform with a dark, AI-startup, glass-morphism UI, utilizing MapLibre GL for map interactions. Key features include deal creation, transaction timelines, a layer manager, Kanban Pipeline, Contacts management, geocoding, and data synchronization.
+The Pedro Armando CRM is a map-first commercial real estate platform with a dark, AI-startup, glass-morphism UI. Initial goals included Calendar tab development, Dashboard redesign (GOTHAM-style with AI greeting, metrics, location-aware news, AI Assistant), Delete Property functionality, and overall Visual Polish.
 
-Recent and ongoing goals for the product include:
-- **Calendar Tab Development**: A unified timeline displaying events from deals, contacts, and tasks. Features a dark UI, togglable views, color-coded events (green for deal milestones, blue for contact follow-ups, purple for tasks, orange for team events), and a side panel for event details. It dynamically pulls data for automatic event creation, allows manual event creation, and supports quick actions like Mark Complete and Reschedule. Visual flags indicate deadlines (red for overdue, yellow for due soon, green for completed). The UI should be premium, with depth, glass-morphism, glowing edges, and smooth interactions, with a  mirroring .
-- **Dashboard Redesign**: A GOTHAM-style headquarters acting as a command center. Upon login, it presents a personalized AI greeting, real-time summary metrics (active deals, under contract, pipeline value, new contacts), a news feed (CoStar-like, location-filtered by San Antonio/Texas), a timeline of upcoming events/milestones, and an AI Assistant Panel providing contextual insights and suggested actions. The visual design requires depth, motion, glowing edge panels, subtle animations, and accent colors matching data types.
-- **Delete Property Functionality**: Add an option to delete properties from both the Map Deal Details panel () and the  tab, with a confirmation dialog.
-- **Visual Polish**: Tone down overall glow intensity, add micro shadows and layered depth for visual hierarchy, and introduce subtle motion to enhance the UI. This includes ensuring smooth, perfectly rounded corners, even padding, and consistent border radius for elements like event pills.
+Recent major product initiatives, as per the trajectory, focused on a comprehensive Email Campaigns tab. This crown jewel feature aims for:
+-   **Bulk Email Campaigns:** Ability to send emails about CRM deals.
+-   **Bring Your Own Key (BYOK):** Users integrate their own SendGrid/Mailgun accounts, shifting cost and liability.
+-   **Seamless Onboarding:** A simple setup wizard for API key integration, minimizing user friction.
+-   **Dual Email Functionality:** Support for both bulk Email Campaigns and 1-to-1 Transactional Emails (e.g., emailing a single contact).
+-   **In-App Email Builder:** A drag-and-drop UI for designing campaigns, preferably Unlayer for its premium experience.
+-   **HighLevel-style Campaign Flow:** A 3-step process: design → preview & plan (audience, schedule) → review & send.
+-   **Smart Tags System:** Ability to tag contacts and filter recipients for campaigns based on these tags.
+-   **Scheduling Options:** Send now, schedule for later, or batch schedule.
+-   **Advanced UI & Analytics:** A redesigned Campaigns tab with a table view, analytics ribbon (average across all campaigns), side panel for campaign-specific analytics, polished input fields, and consistent glass-morphism styling.
+-   **Template Management:** Functionality to save, view, preview, create, clone, and delete email templates.
 </product_requirements>
 
 <key_technical_concepts>
-- **Frontend**: React (18+), React Context, Custom Hooks (, , ), MapLibre GL JS, , , FullCalendar, Tailwind CSS,  (icons),  (toasts).
-- **Backend**: FastAPI (Python), Supabase (PostgreSQL),  (RSS),  (async HTTP client), JWT, Perplexity AI (LLM API),  (for bcrypt).
-- **Styling & UI**: Glass-morphism design, Dark theme, Controlled Components, Component Refactoring, CSS animations (, , ).
-- **Data Management**: Caching strategies (for RSS feeds), Supabase RLS (Row Level Security), Environment variables (, ).
+-   **Frontend:** React, React Context, , Tailwind CSS, , ,  (Unlayer), , controlled components.
+-   **Backend:** FastAPI (Python), Supabase (PostgreSQL), , ,  (Python SDK), JWT, Perplexity AI, .
+-   **Styling & UI:** Glass-morphism, Dark theme, CSS animations (), Z-index management.
+-   **Data Management:** Supabase RLS, Environment variables, Database migrations.
 </key_technical_concepts>
 
 <code_architecture>
 
-
-- :
-    - Summary: Main application router.
-    - Changes: Added the new  route with  component. No recent changes in the provided trajectory.
-- :
-    - Summary: Global CSS file, extensively used for application-wide styling including glass-morphism effects and animations.
-    - Changes: Repeatedly modified to refine calendar glow effects, fix syntax errors (e.g., unexpected closing brace), add slide-down animations for reschedule panels,  animations for dashboard elements, and styles for consistent event pill rendering and day cell spacing. This file now contains critical styling for the overall premium dark glass aesthetic and specific component animations.
-- :
-    - Summary: Defines the main application layout and sidebar navigation.
-    - Changes: Added a new navigation link for the Calendar tab in the sidebar. No recent changes in the provided trajectory.
-- :
-    - Summary: Reusable panel for creating new calendar events.
-    - Changes: Created, mimicking  for event creation and Supabase integration. No recent changes in the provided trajectory.
-- :
-    - Summary: Displays detailed information about a selected property on the map, allowing for editing and saving.
-    - Changes: Added a delete property button with confirmation modal logic ( state,  function,  icon import) to allow users to remove properties from the CRM.
-- :
-    - Summary: Implements the integrated calendar view using .
-    - Changes: Initially developed with  and iteratively styled for a premium aesthetic. Recent changes include:
-        - Refined glow effects and pill styling (padding, borders, text alignment).
-        - Added an inline reschedule panel with date/time pickers triggered by a Reschedule Event button, managed by  state and  function.
-        - Fixed calendar month display accuracy by adjusting the  callback and adding a Today button.
-        - Unified its custom loading screen to use the standard  class.
-- :
-    - Summary: Redesigned to be the main command center, providing a dynamic overview of CRM data, market news, and AI insights.
-    - Changes: Completely rewritten to include an AI greeting, real-time metrics (total deals, pipeline value, new contacts), an events timeline, an AI Assistant Panel, and a Market Updates section.
-        -  was refactored to handle user authentication (fetching user via Supabase) and data initialization.
-        - Unified its custom loading screen to use the standard  class.
-        - Implemented a  with 6 categories (San Antonio & Texas, All News, Market Trends, Deals & Capital, Development & Policy, Sector Focus) and location-based filtering.
-        - Added visual badges for 'LOCAL' and 'MACRO' news.
-        - Fixed  and  icon imports.
-        - Resolved several  and  errors by reordering function definitions and fixing try-catch blocks.
-        - Restructured layout to make the news section full width.
-- :
-    - Summary: Displays comprehensive details about a specific deal, allowing for editing and associated actions.
-    - Changes: Added a delete property button with confirmation modal logic ( state,  function,  icon import) to allow users to remove deals.
-- :
-    - Summary: FastAPI backend, handling API routes and data retrieval from MongoDB and Supabase.
-    - Changes:
-        - Added a  endpoint to fetch and cache RSS news feeds.
-        - Implemented  function which parses news from multiple commercial real estate RSS sources (Bisnow, GlobeSt, Commercial Observer, NAIOP) and caches them for 1 hour.
-        - Refined news filtering logic to distinguish and prioritize macro-economic, Texas-specific local, and irrelevant news based on keywords, with a focus on San Antonio.
-        - Removed redundant  calls from , , and  endpoints, enhancing deployment readiness.
-        - Fixed a critical code structure issue within the news fetching logic (identified and fixed with ).
-        - Added  and .
-- :
-    - Summary: Lists Python dependencies for the backend.
-    - Changes: Added  to enable RSS feed parsing.
-- :
-    - Summary: Database migration script for the Calendar feature.
-    - Changes: Created to define the  table and add date-related fields to existing deal tables. No recent changes in the provided trajectory.
+-   : FastAPI backend. **Changes**: Added  endpoint (news fetching logic fixed and refined),  endpoints (for SendGrid integration, campaign creation, transactional sends, and scheduling), Pydantic models for email-related data, and removed redundant  calls.
+-   : Python dependencies. **Changes**: Added  and , .
+-   : **New file.** Handles SendGrid API interactions, including email sending and API key validation.
+-   : **New file.** Service for managing and processing scheduled email campaigns.
+-   : **New file.** Script for running background tasks to execute scheduled campaigns.
+-   : Main router. **Changes**: Added  route, and updated to use the latest  component for the email tab.
+-   : Global CSS. **Changes**: Extensive styling for calendar glow effects, animations (), custom styles for  and Unlayer editor to fit dark glass-morphism theme.
+-   : Main layout. **Changes**: Added Campaigns navigation link to the sidebar.
+-   : Calendar view. **Changes**: UI refinements, reschedule panel, loading screen. (No recent changes in this trajectory for this file, but its button style was referenced).
+-   : Dashboard view. **Changes**: Complete rewrite for GOTHAM-style command center, news module, authentication fixes. (Verification was pending).
+-   : Deal details. **Changes**: Added delete deal button, integrated  and .
+-   : Contacts management. **Changes**: Integrated , , , and tag filtering in the contact list. Also received a clean rebuild to fix structural issues.
+-   : Campaigns tab. **New file initially, then extensively modified and rebuilt.** Now handles campaign listing (table view), analytics summary, template listing, and integrates , , , . It was rebuilt from scratch several times to address structural issues and UX redesigns.
+-   : **New file.** Reusable modal for composing and sending individual (transactional) emails.
+-   : **New file.** Displays a chronological list of email interactions for contacts/deals.
+-   : **New file.** Component to display details of a selected campaign.
+-   : **New file.** Encapsulates the Unlayer drag-and-drop email editor.
+-   : **New file.** Component to select from available email templates.
+-   : **New file.** Manages the creation, editing, and deletion of contact tags.
+-   : **New file.** Implements the multi-step campaign creation and scheduling flow.
+-   : **New file.** Displays aggregate analytics for all campaigns.
+-   : **New file.** Database migration for , , , ,  tables.
+-   : **New file.** Adds a  (JSONB) column to the  table to store Unlayer JSON.
+-   : **New file.** Adds scheduling-related fields to  and .
+-   Documentation files (, , , , , , ): Various markdown files detailing implementation, troubleshooting, and phase completion.
 </code_architecture>
 
 <pending_tasks>
-- Accurately display the owner's full mailing address in the Property Intelligence Panel.
-- Fully implement the scalable vector tile (PMTiles) system for FEMA and SA Zoning.
-- Complete the Create New Deal form's auto-calculation functions.
-- Remove old query-based layer system ( and ).
-- Simplify the FastAPI backend (beyond what's already been done by removing redundant token checks).
-- Conduct a thorough security audit as indicated by .
-- Implement advanced graphical enhancements for Contacts page.
-- Complete the Email Inbox Integration.
-- Implement a date picker calendar for all date inputs (partially done in CreateEventPanel, but still pending for *all* date inputs).
-- Resolve the persistent issue with street labels not appearing on the map (currently paused).
+-   Verify the hybrid news fetching and display on the Dashboard (frontend application).
+-   Accurately display the owner's full mailing address in the Property Intelligence Panel.
+-   Fully implement the scalable vector tile (PMTiles) system for FEMA and SA Zoning.
+-   Complete the Create New Deal form's auto-calculation functions.
+-   Remove old query-based layer system ( and ).
+-   Simplify the FastAPI backend (general simplification beyond token checks).
+-   Conduct a thorough security audit as indicated by .
+-   Implement advanced graphical enhancements for the Contacts page (beyond smart tags).
+-   Complete the Email Inbox Integration (distinct from campaign/transactional emails).
+-   Implement a date picker calendar for all remaining date inputs in the application.
+-   Resolve the persistent issue with street labels not appearing on the map.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was engaged in implementing a hybrid news fetching strategy for the Dashboard's Market Updates module. This involved integrating Texas-specific RSS feeds, general national RSS feeds, and potentially Perplexity AI-powered personalized news.
+The AI engineer is currently in the process of enhancing the Email Campaigns tab, specifically focusing on refining the campaign creation flow and template management. The most recent efforts address three critical user-reported issues:
 
-During this implementation, a critical code structure issue (malformed code) was introduced in the  function within . The AI engineer used the  to diagnose this problem, which identified the root cause as a code structure issue (likely from improper editing of the news fetching logic).
+1.  **Template Name Input:** An input field has been added to the top-left of Step 1 in the  for users to name their templates before saving.
+2.  **Template Management Actions:** The  component has been updated to display a 3-dot menu for each template in the template list. This menu provides options such as Preview Template, Create Campaign, Clone, and Delete. A  has also been added to facilitate viewing templates.
+3.  **Contact Search Functionality:** Within the Choose Contacts section of the , a search input field has been integrated. This allows users to type and filter their contacts by name, enabling precise recipient selection for campaigns, leveraging the newly implemented Smart Tags system for audience segmentation.
 
-The engineer then applied the fix recommended by the , which involved replacing a large block of broken news fetching logic (lines 1289-1403) with a corrected, clean implementation in . This fix is intended to ensure the hybrid news fetching mechanism, with its intelligent location-based filtering and categorization, functions correctly.
-
-The backend was successfully restarted after applying this critical fix, indicating that the code now passes initial startup checks. The system is in a state where the backend code for hybrid news fetching has been structurally corrected, awaiting frontend verification.
+This work builds on previous fixes for input glitches, date/time picker UI, and persistent design in the Unlayer editor, aiming to provide a robust and user-friendly experience for campaign creation and template reuse.
 </current_work>
 
 <optional_next_step>
-Verify the hybrid news fetching and display on the Dashboard by checking the frontend application.
+Test the newly implemented template naming, 3-dot menu actions (Preview, Create Campaign, Clone, Delete), and contact search functionality.
 </optional_next_step>
