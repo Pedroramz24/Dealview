@@ -1236,7 +1236,7 @@ const Campaigns = () => {
                         }}
                       >
                         {/* Preview */}
-                        <div style={{ height: '180px', background: '#fff', padding: '12px', overflow: 'hidden', position: 'relative' }}>
+                        <div style={{ height: '180px', background: '#fff', padding: '12px', overflow: 'hidden', position: 'relative', borderRadius: '12px 12px 0 0' }}>
                           <div 
                             dangerouslySetInnerHTML={{ __html: template.html_content }} 
                             style={{ transform: 'scale(0.25)', transformOrigin: 'top left', width: '400%', height: '400%', pointerEvents: 'none' }}
@@ -1244,7 +1244,7 @@ const Campaigns = () => {
                         </div>
 
                         {/* Info */}
-                        <div style={{ padding: '16px' }}>
+                        <div style={{ padding: '16px', overflow: 'visible', position: 'relative' }}>
                           <div className="flex justify-between items-start mb-2">
                             <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 600, flex: 1 }}>
                               {template.name}
