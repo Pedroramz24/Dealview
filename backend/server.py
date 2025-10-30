@@ -1422,6 +1422,7 @@ class CreateCampaign(BaseModel):
     plain_text_content: Optional[str] = None
     template_id: Optional[str] = None
     segment_filters: Optional[Dict[str, Any]] = None
+    design: Optional[str] = None  # Unlayer design JSON for re-editing
 
 class SendCampaign(BaseModel):
     campaign_id: str
