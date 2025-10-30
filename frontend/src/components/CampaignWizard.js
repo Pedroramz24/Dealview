@@ -46,6 +46,17 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [saving, setSaving] = useState(false);
 
+  // Load initial template if provided
+  useEffect(() => {
+    if (isOpen && initialTemplate && initialTemplate.html_content) {
+      setEmailHTML(initialTemplate.html_content);
+      // Load design if available (from custom templates)
+      if (initialTemplate.design) {
+        setEmailDesign(initialTemplate.design);
+      }
+    }
+  }, [isOpen, initialTemplate]);
+
   useEffect(() => {
     if (isOpen) {
       fetchContacts();
