@@ -1978,7 +1978,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       console.error('❌ Error in Review and Send button (bottom):', error);
                       toast.error(`Error: ${error.message}`);
                     }
-                  }}}
+                  }}
                   style={{
                     flex: 2,
                     padding: '12px 20px',
