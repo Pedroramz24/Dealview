@@ -599,7 +599,46 @@ const Campaigns = () => {
           </button>
         </div>
 
-        {/* Search & Filters with enhanced design */}
+        {/* Tab Switcher */}
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => setActiveTab('campaigns')}
+            style={{
+              padding: '10px 24px',
+              background: activeTab === 'campaigns' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'campaigns' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              borderRadius: '10px',
+              color: activeTab === 'campaigns' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Campaigns
+          </button>
+          <button
+            onClick={() => setActiveTab('templates')}
+            style={{
+              padding: '10px 24px',
+              background: activeTab === 'templates' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'templates' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              borderRadius: '10px',
+              color: activeTab === 'templates' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Templates
+          </button>
+        </div>
+
+        {/* Campaigns Tab Content */}
+        {activeTab === 'campaigns' && (
+          <>
+            {/* Search & Filters with enhanced design */}
         <div className="flex gap-3 mb-6">
           <div style={{ position: 'relative', flex: 1 }}>
             <Search size={18} style={{ 
