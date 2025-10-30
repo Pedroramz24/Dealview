@@ -1234,26 +1234,39 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 </button>
                 <button
                   onClick={() => {
+                    console.log('🔵 Review and Send button clicked');
+                    console.log('📋 Campaign config:', {
+                      name: campaignConfig.name,
+                      subject: campaignConfig.subject,
+                      selectedContacts: campaignConfig.selectedContacts.length,
+                      sendOption: campaignConfig.sendOption
+                    });
+                    
                     // Validate required fields
                     if (!campaignConfig.name || !campaignConfig.name.trim()) {
+                      console.log('❌ Validation failed: Campaign name missing');
                       toast.error('❌ Please enter a Campaign Name');
                       return;
                     }
                     if (!campaignConfig.subject || !campaignConfig.subject.trim()) {
+                      console.log('❌ Validation failed: Subject line missing');
                       toast.error('❌ Please enter a Subject Line');
                       return;
                     }
                     if (campaignConfig.selectedContacts.length === 0) {
+                      console.log('❌ Validation failed: No contacts selected');
                       toast.error('❌ Please select at least one recipient');
                       return;
                     }
                     
                     // Validate scheduling fields
                     if (campaignConfig.sendOption === 'schedule' && !campaignConfig.scheduleDate) {
+                      console.log('❌ Validation failed: Schedule date missing');
                       toast.error('Please select a date and time for scheduled send');
                       return;
                     }
                     if (campaignConfig.sendOption === 'batch' && (!campaignConfig.batchSchedule.startDate || !campaignConfig.batchSchedule.endDate)) {
+                      console.log('❌ Validation failed: Batch schedule dates missing');
                       toast.error('Please select start and end dates for batch schedule');
                       return;
                     }
