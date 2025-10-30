@@ -517,34 +517,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               fontSize: '14px',
               fontWeight: currentStep === 2 ? 600 : 400
             }}>
-              Preview & Plan
-            </span>
-          </div>
-
-          <ArrowRight size={20} style={{ color: 'var(--text-secondary)' }} />
-
-          {/* Step 3 */}
-          <div className="flex items-center gap-3">
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: currentStep >= 3 ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)',
-              color: currentStep >= 3 ? '#000' : 'var(--text-secondary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 600,
-              fontSize: '14px'
-            }}>
-              3
-            </div>
-            <span style={{ 
-              color: currentStep === 3 ? '#00b8d4' : 'var(--text-secondary)', 
-              fontSize: '14px',
-              fontWeight: currentStep === 3 ? 600 : 400
-            }}>
-              Review & Send
+              Preview & Send
             </span>
           </div>
         </div>
