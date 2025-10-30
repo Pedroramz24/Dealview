@@ -177,26 +177,46 @@ const Campaigns = () => {
     }
 
     try {
+      console.log('Creating campaign with data:', {
+        name: campaignData.name,
+        subject: campaignData.subject,
+        hasHtmlContent: !!campaignData.htmlContent,
+        htmlContentLength: campaignData.htmlContent?.length
+      });
+
       const response = await fetch(`${BACKEND_URL}/api/email/campaigns`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(campaignData)
+        body: JSON.stringify({
+          name: campaignData.name,
+          subject: campaignData.subject,
+          html_content: campaignData.htmlContent,
+          plain_text_content: campaignData.plainTextContent || null,
+          template_id: null,
+          segment_filters: null
+        })
       });
+
+      console.log('Campaign creation response status:', response.status);
 
       if (response.ok) {
         const result = await response.json();
+        console.log('Campaign created successfully:', result);
         toast.success('Campaign created successfully!');
         setCampaignData({ name: '', subject: '', htmlContent: '', plainTextContent: '', design: null });
         setCurrentView('list');
         fetchCampaigns();
       } else {
-        toast.error('Failed to create campaign');
+        const errorData = await response.json();
+        console.error('Campaign creation failed:', errorData);
+        toast.error(errorData.detail || errorData.message || 'Failed to create campaign');
       }
     } catch (error) {
-      toast.error('Failed to create campaign');
+      console.error('Error creating campaign:', error);
+      toast.error(`Failed to create campaign: ${error.message}`);
     }
   };
 
