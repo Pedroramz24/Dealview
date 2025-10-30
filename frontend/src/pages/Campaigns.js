@@ -3,6 +3,7 @@ import { AuthContext } from '../App';
 import { supabase } from '../supabaseClient';
 import CampaignDetails from '../components/CampaignDetails';
 import CampaignWizard from '../components/CampaignWizard';
+import CampaignAnalyticsSummary from '../components/CampaignAnalyticsSummary';
 import { 
   Mail, Plus, Send, Users, BarChart3, Settings, CheckCircle2,
   Eye, Edit3, Trash2, Play, Pause, Calendar, TrendingUp, Loader2
