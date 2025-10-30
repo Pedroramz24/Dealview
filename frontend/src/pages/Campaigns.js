@@ -559,7 +559,7 @@ const Campaigns = () => {
             </p>
           </div>
           <button
-            onClick={() => setCurrentView('create')}
+            onClick={startCampaignCreation}
             style={{
               padding: '12px 24px',
               background: '#00b8d4',
@@ -591,7 +591,7 @@ const Campaigns = () => {
                 Create your first email campaign to get started
               </p>
               <button
-                onClick={() => setCurrentView('create')}
+                onClick={startCampaignCreation}
                 style={{
                   padding: '12px 24px',
                   background: '#00b8d4',
