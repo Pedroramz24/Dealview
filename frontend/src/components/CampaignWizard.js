@@ -212,14 +212,26 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
   // Step 3: Final send
   const handleFinalSend = async () => {
+    console.log('🚀 handleFinalSend called');
+    console.log('📋 Final campaign data:', {
+      name: campaignConfig.name,
+      subject: campaignConfig.subject,
+      selectedContacts: campaignConfig.selectedContacts,
+      sendOption: campaignConfig.sendOption,
+      htmlLength: emailHTML?.length,
+      hasDesign: !!emailDesign
+    });
+    
     if (campaignConfig.selectedContacts.length === 0) {
       toast.error('Please select at least one recipient');
       return;
     }
 
     setSaving(true);
+    console.log('💾 Setting saving state to true');
 
     try {
+      console.log('📤 Creating campaign...');
       // Create campaign
       const createResponse = await fetch(`${BACKEND_URL}/api/email/campaigns`, {
         method: 'POST',
@@ -240,15 +252,21 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         })
       });
 
+      console.log('📥 Create campaign response status:', createResponse.status);
+
       if (!createResponse.ok) {
-        throw new Error('Failed to create campaign');
+        const errorText = await createResponse.text();
+        console.error('❌ Create campaign failed:', errorText);
+        throw new Error(`Failed to create campaign: ${errorText}`);
       }
 
       const createResult = await createResponse.json();
       const campaignId = createResult.campaign.id;
+      console.log('✅ Campaign created:', campaignId);
 
       // Handle different send options
       if (campaignConfig.sendOption === 'now') {
+        console.log('📧 Sending immediately to:', campaignConfig.selectedContacts);
         // Send immediately
         const sendResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/send`, {
           method: 'POST',
@@ -262,17 +280,22 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
           })
         });
 
+        console.log('📥 Send response status:', sendResponse.status);
         const sendResult = await sendResponse.json();
+        console.log('📥 Send result:', sendResult);
         
         if (sendResponse.ok) {
           toast.success(`🎉 Campaign sent to ${sendResult.results.total_sent} recipients!`);
+          console.log('✅ Campaign sent successfully');
           onComplete && onComplete();
           onClose();
         } else {
+          console.error('❌ Send failed:', sendResult);
           throw new Error(sendResult.detail || 'Failed to send campaign');
         }
       } 
       else if (campaignConfig.sendOption === 'schedule') {
+        console.log('📅 Scheduling campaign for:', campaignConfig.scheduleDate);
         // Schedule for specific time
         const scheduleResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/schedule`, {
           method: 'POST',
@@ -289,16 +312,19 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         });
 
         const scheduleResult = await scheduleResponse.json();
+        console.log('📥 Schedule result:', scheduleResult);
         
         if (scheduleResponse.ok) {
           toast.success(`📅 Campaign scheduled for ${campaignConfig.scheduleDate.toLocaleString()}!`);
           onComplete && onComplete();
           onClose();
         } else {
+          console.error('❌ Schedule failed:', scheduleResult);
           throw new Error(scheduleResult.detail || 'Failed to schedule campaign');
         }
       }
       else if (campaignConfig.sendOption === 'batch') {
+        console.log('🔄 Batch scheduling campaign...');
         // Batch schedule over time
         const batchResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/schedule/batch`, {
           method: 'POST',
@@ -316,20 +342,23 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         });
 
         const batchResult = await batchResponse.json();
+        console.log('📥 Batch result:', batchResult);
         
         if (batchResponse.ok) {
           toast.success(`🔄 Batch campaign scheduled: ${batchResult.queued_count} emails over ${batchResult.days} days!`);
           onComplete && onComplete();
           onClose();
         } else {
+          console.error('❌ Batch schedule failed:', batchResult);
           throw new Error(batchResult.detail || 'Failed to schedule batch campaign');
         }
       }
     } catch (error) {
-      console.error('Error sending campaign:', error);
+      console.error('❌ Error in handleFinalSend:', error);
       toast.error(error.message || 'Failed to send campaign');
     } finally {
       setSaving(false);
+      console.log('💾 Setting saving state to false');
     }
   };
 
