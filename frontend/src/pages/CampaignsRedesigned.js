@@ -64,6 +64,7 @@ const Campaigns = () => {
   useEffect(() => {
     if (emailSettingsConfigured && token) {
       fetchCampaigns();
+      fetchTemplates();
     }
   }, [emailSettingsConfigured, token]);
 
