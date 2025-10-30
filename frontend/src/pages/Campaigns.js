@@ -5,7 +5,7 @@ import CampaignWizard from '../components/CampaignWizard';
 import { 
   Mail, Plus, Send, Eye, Settings, CheckCircle2, Clock,
   Search, X, TrendingUp, MousePointerClick, AlertTriangle,
-  Calendar, Tag, Users, BarChart3, Trash2, Edit3
+  Calendar, Tag, Users, BarChart3, Trash2, Edit3, MoreVertical, Copy
 } from 'lucide-react';
 import { toast } from 'sonner';
 
