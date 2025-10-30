@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../App';
 import { supabase } from '../supabaseClient';
-import CampaignDetails from '../components/CampaignDetails';
 import CampaignWizard from '../components/CampaignWizard';
-import CampaignAnalyticsSummary from '../components/CampaignAnalyticsSummary';
 import { 
-  Mail, Plus, Send, Users, BarChart3, Settings, CheckCircle2,
-  Eye, Edit3, Trash2, Play, Pause, Calendar, TrendingUp, Loader2
+  Mail, Plus, Send, Eye, Settings, CheckCircle2, Clock,
+  Search, X, TrendingUp, MousePointerClick, AlertTriangle,
+  Calendar, Tag, Users, BarChart3, Trash2, Edit3
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -15,15 +14,30 @@ const Campaigns = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const [token, setToken] = useState(null);
 
-  // State management
+  // Main state
   const [emailSettingsConfigured, setEmailSettingsConfigured] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('campaigns');
+  
+  // Campaigns
   const [campaigns, setCampaigns] = useState([]);
-  const [currentView, setCurrentView] = useState('list'); // 'list', 'setup', 'details'
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [showAnalyticsPanel, setShowAnalyticsPanel] = useState(false);
+  
+  // Templates
+  const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  
+  // Wizard
   const [showCampaignWizard, setShowCampaignWizard] = useState(false);
+  
+  // Filters
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [tagFilter, setTagFilter] = useState('all');
 
-  // Setup wizard state
+  // Setup wizard
   const [setupStep, setSetupStep] = useState(1);
   const [setupData, setSetupData] = useState({
     apiKey: '',
@@ -32,7 +46,7 @@ const Campaigns = () => {
     testing: false
   });
 
-  // Get Supabase session token
+  // Get token
   useEffect(() => {
     const getToken = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -43,48 +57,96 @@ const Campaigns = () => {
     getToken();
   }, [user]);
 
-  // Check if email settings are configured
   useEffect(() => {
     if (token) {
       checkEmailSettings();
-      if (emailSettingsConfigured) {
-        fetchCampaigns();
-      }
     }
-  }, [token, emailSettingsConfigured]);
+  }, [token]);
+
+  useEffect(() => {
+    if (emailSettingsConfigured && token) {
+      fetchCampaigns();
+      fetchTemplates();
+    }
+  }, [emailSettingsConfigured, token]);
+
+  useEffect(() => {
+    filterCampaigns();
+  }, [campaigns, searchTerm, statusFilter, tagFilter]);
 
   const checkEmailSettings = async () => {
     if (!token) return;
-    
     try {
       const response = await fetch(`${BACKEND_URL}/api/email/settings`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
       setEmailSettingsConfigured(data.configured);
       setLoading(false);
     } catch (error) {
-      console.error('Error checking email settings:', error);
       setLoading(false);
     }
   };
 
   const fetchCampaigns = async () => {
     if (!token) return;
-    
     try {
       const response = await fetch(`${BACKEND_URL}/api/email/campaigns?limit=100`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
       setCampaigns(data.campaigns || []);
     } catch (error) {
-      console.error('Error fetching campaigns:', error);
       toast.error('Failed to load campaigns');
+    }
+  };
+
+  const fetchTemplates = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/email/templates`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setTemplates(data.templates || []);
+    } catch (error) {
+      toast.error('Failed to load templates');
+    }
+  };
+
+  const filterCampaigns = () => {
+    let filtered = [...campaigns];
+    if (searchTerm) {
+      filtered = filtered.filter(c => 
+        c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.subject?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(c => c.status === statusFilter);
+    }
+    if (tagFilter !== 'all') {
+      filtered = filtered.filter(c => 
+        c.segment_filters?.tags?.includes(tagFilter)
+      );
+    }
+    setFilteredCampaigns(filtered);
+  };
+
+  const deleteTemplate = async (templateId) => {
+    if (!window.confirm('Delete this template?')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('email_templates')
+        .delete()
+        .eq('id', templateId);
+      
+      if (error) throw error;
+      toast.success('Template deleted');
+      fetchTemplates();
+    } catch (error) {
+      toast.error('Failed to delete template');
     }
   };
 
@@ -93,20 +155,14 @@ const Campaigns = () => {
       toast.error('Please enter your SendGrid API key');
       return;
     }
-
     setSetupData({ ...setupData, testing: true });
-
     try {
       const response = await fetch(`${BACKEND_URL}/api/email/test-connection`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ api_key: setupData.apiKey })
       });
-
       const result = await response.json();
-
       if (result.valid) {
         toast.success('✅ SendGrid connection successful!');
         setSetupStep(2);
@@ -125,7 +181,6 @@ const Campaigns = () => {
       toast.error('Please fill in all fields');
       return;
     }
-
     try {
       const response = await fetch(`${BACKEND_URL}/api/email/settings`, {
         method: 'POST',
@@ -139,23 +194,79 @@ const Campaigns = () => {
           sender_name: setupData.senderName
         })
       });
-
       if (response.ok) {
         toast.success('🎉 Email setup complete!');
         setEmailSettingsConfigured(true);
-        setCurrentView('list');
         setSetupStep(1);
         setSetupData({ apiKey: '', senderEmail: '', senderName: '', testing: false });
       } else {
-        const error = await response.json();
-        toast.error(error.detail || 'Failed to save settings');
+        toast.error('Failed to save settings');
       }
     } catch (error) {
       toast.error('Failed to save settings');
     }
   };
 
-  // Render loading state
+  const calculateAggregateStats = () => {
+    if (campaigns.length === 0) {
+      return {
+        totalSent: 0,
+        delivered: 0,
+        deliveryRate: 0,
+        openRate: 0,
+        clickRate: 0,
+        bounceRate: 0
+      };
+    }
+
+    const totals = campaigns.reduce((acc, c) => ({
+      sent: acc.sent + (c.total_sent || 0),
+      delivered: acc.delivered + (c.total_delivered || 0),
+      opened: acc.opened + (c.total_opened || 0),
+      clicked: acc.clicked + (c.total_clicked || 0),
+      bounced: acc.bounced + (c.total_bounced || 0)
+    }), { sent: 0, delivered: 0, opened: 0, clicked: 0, bounced: 0 });
+
+    return {
+      totalSent: totals.sent,
+      delivered: totals.delivered,
+      deliveryRate: totals.sent > 0 ? (totals.delivered / totals.sent) * 100 : 0,
+      openRate: totals.delivered > 0 ? (totals.opened / totals.delivered) * 100 : 0,
+      clickRate: totals.opened > 0 ? (totals.clicked / totals.opened) * 100 : 0,
+      bounceRate: totals.sent > 0 ? (totals.bounced / totals.sent) * 100 : 0
+    };
+  };
+
+  const stats = calculateAggregateStats();
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'sent': return { bg: 'rgba(34, 197, 94, 0.12)', border: 'rgba(34, 197, 94, 0.25)', text: '#22c55e' };
+      case 'scheduled': return { bg: 'rgba(0, 184, 212, 0.12)', border: 'rgba(0, 184, 212, 0.25)', text: '#00b8d4' };
+      case 'sending': return { bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.25)', text: '#f59e0b' };
+      case 'draft': return { bg: 'rgba(100, 116, 139, 0.12)', border: 'rgba(100, 116, 139, 0.25)', text: '#94a3b8' };
+      case 'paused': return { bg: 'rgba(239, 68, 68, 0.12)', border: 'rgba(239, 68, 68, 0.25)', text: '#ef4444' };
+      default: return { bg: 'rgba(255, 255, 255, 0.05)', border: 'rgba(255, 255, 255, 0.1)', text: 'rgba(255, 255, 255, 0.6)' };
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const getAllTags = () => {
+    const tags = new Set();
+    campaigns.forEach(c => {
+      if (c.segment_filters?.tags) {
+        c.segment_filters.tags.forEach(tag => tags.add(tag));
+      }
+    });
+    return Array.from(tags).sort();
+  };
+
+  // Loading
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)' }}>
@@ -164,8 +275,8 @@ const Campaigns = () => {
     );
   }
 
-  // Render setup wizard if not configured
-  if (!emailSettingsConfigured || currentView === 'setup') {
+  // Setup wizard
+  if (!emailSettingsConfigured) {
     return (
       <div className="h-screen flex items-center justify-center p-8" style={{ background: 'var(--bg-base)' }}>
         <div className="glass-surface p-10 max-w-2xl w-full">
@@ -192,7 +303,6 @@ const Campaigns = () => {
             </p>
           </div>
 
-          {/* Step Indicator */}
           <div className="flex justify-center mb-10">
             <div className="flex items-center gap-4">
               <div style={{
@@ -231,7 +341,6 @@ const Campaigns = () => {
             </div>
           </div>
 
-          {/* Step 1: API Key */}
           {setupStep === 1 && (
             <div>
               <div className="mb-6 p-4" style={{
@@ -243,12 +352,11 @@ const Campaigns = () => {
                   📝 Quick Setup (2 minutes)
                 </p>
                 <ol style={{ color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8', paddingLeft: '20px', margin: 0 }}>
-                  <li>Click the button below to open SendGrid API Keys page</li>
-                  <li>Click the blue "Create API Key" button (top right)</li>
-                  <li>Name it: <strong style={{ color: 'var(--text-primary)' }}>DealView CRM</strong></li>
-                  <li>Permissions: Select <strong style={{ color: 'var(--text-primary)' }}>"Full Access"</strong></li>
-                  <li>Click "Create & View"</li>
-                  <li>Copy the key (starts with SG.) and paste below</li>
+                  <li>Click button below to open SendGrid</li>
+                  <li>Click "Create API Key"</li>
+                  <li>Name: <strong style={{ color: 'var(--text-primary)' }}>DealView CRM</strong></li>
+                  <li>Permissions: <strong style={{ color: 'var(--text-primary)' }}>"Full Access"</strong></li>
+                  <li>Copy key and paste below</li>
                 </ol>
               </div>
 
@@ -270,26 +378,16 @@ const Campaigns = () => {
                   color: '#00b8d4',
                   fontSize: '15px',
                   fontWeight: 600,
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
-                  e.currentTarget.style.transform = 'translateY(0)';
+                  textDecoration: 'none'
                 }}
               >
                 <Settings size={18} />
-                Open SendGrid API Keys Page
+                Open SendGrid API Keys
               </a>
 
               <div className="mb-6">
                 <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-                  Paste Your SendGrid API Key *
+                  SendGrid API Key *
                 </label>
                 <input
                   type="password"
@@ -306,22 +404,6 @@ const Campaigns = () => {
                     fontSize: '15px'
                   }}
                 />
-                <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '8px' }}>
-                  The key should start with "SG." - make sure you copy the entire key!
-                </p>
-              </div>
-
-              <div className="mb-6 p-4" style={{
-                background: 'rgba(34, 197, 94, 0.05)',
-                border: '1px solid rgba(34, 197, 94, 0.2)',
-                borderRadius: '8px'
-              }}>
-                <p style={{ color: '#22c55e', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
-                  ✓ 100 free emails/day with SendGrid
-                </p>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>
-                  SendGrid's free tier includes 100 emails per day forever - perfect for most CRE professionals. No credit card required!
-                </p>
               </div>
 
               <button
@@ -336,39 +418,14 @@ const Campaigns = () => {
                   borderRadius: '8px',
                   fontSize: '15px',
                   fontWeight: 600,
-                  cursor: setupData.testing || !setupData.apiKey ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
+                  cursor: setupData.testing || !setupData.apiKey ? 'not-allowed' : 'pointer'
                 }}
               >
-                {setupData.testing ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
-                {setupData.testing ? 'Testing Connection...' : 'Test & Continue'}
+                {setupData.testing ? 'Testing...' : 'Test & Continue'}
               </button>
-
-              <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <a
-                  href="https://sendgrid.com/signup"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    color: '#00b8d4',
-                    fontSize: '14px',
-                    textDecoration: 'none',
-                    display: 'inline-block'
-                  }}
-                >
-                  Don't have a SendGrid account? Sign up free →
-                </a>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '8px' }}>
-                  No credit card required
-                </p>
-              </div>
             </div>
           )}
 
-          {/* Step 2: Sender Info */}
           {setupStep === 2 && (
             <div>
               <div className="mb-6">
@@ -400,7 +457,7 @@ const Campaigns = () => {
                   type="text"
                   value={setupData.senderName}
                   onChange={(e) => setSetupData({ ...setupData, senderName: e.target.value })}
-                  placeholder="Your Name or Company"
+                  placeholder="Your Name"
                   style={{
                     width: '100%',
                     padding: '14px 16px',
@@ -442,14 +499,9 @@ const Campaigns = () => {
                     borderRadius: '8px',
                     fontSize: '15px',
                     fontWeight: 600,
-                    cursor: !setupData.senderEmail || !setupData.senderName ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
+                    cursor: !setupData.senderEmail || !setupData.senderName ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  <CheckCircle2 size={18} />
                   Complete Setup
                 </button>
               </div>
@@ -460,188 +512,936 @@ const Campaigns = () => {
     );
   }
 
-  // Render campaign details
-  if (currentView === 'details' && selectedCampaign) {
-    return (
-      <CampaignDetails
-        campaignId={selectedCampaign.id}
-        onBack={() => {
-          setCurrentView('list');
-          setSelectedCampaign(null);
-        }}
-        token={token}
-        BACKEND_URL={BACKEND_URL}
-      />
-    );
-  }
+  // Main view
+  return (
+    <div className="h-screen flex flex-col" style={{ background: 'var(--bg-base)', overflow: 'hidden' }}>
+      {/* Ambient gradient */}
+      <div style={{
+        position: 'absolute',
+        top: '10%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '1200px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(0, 184, 212, 0.08) 0%, transparent 70%)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
 
-  // Render campaigns list
-  if (currentView === 'list') {
-    return (
-      <div className="h-screen flex flex-col" style={{ background: 'var(--bg-base)', padding: '32px' }}>
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', padding: '32px' }}>
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 style={{ color: 'var(--text-primary)', fontSize: '32px', fontWeight: 600, marginBottom: '8px' }}>
-              Email Campaigns
-            </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
-              Create and send email campaigns to your contacts
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                border: '1px solid rgba(0, 184, 212, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 16px rgba(0, 184, 212, 0.15)'
+              }}>
+                <Mail size={24} style={{ color: '#00b8d4' }} />
+              </div>
+              <h1 style={{ 
+                color: 'var(--text-primary)', 
+                fontSize: '32px', 
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '-0.02em'
+              }}>
+                Email Campaigns
+              </h1>
+            </div>
+            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '15px', marginLeft: '60px' }}>
+              Manage and track your email marketing campaigns
             </p>
           </div>
+
           <button
             onClick={() => setShowCampaignWizard(true)}
             style={{
               padding: '12px 24px',
-              background: '#00b8d4',
-              color: '#000',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '15px',
-              fontWeight: 600,
+              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
+              border: '1px solid rgba(0, 184, 212, 0.4)',
+              borderRadius: '12px',
+              color: '#00d4ff',
+              fontWeight: '800',
+              fontSize: '14px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '10px',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.35), rgba(59, 130, 246, 0.35))';
+              e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 16px 48px rgba(0, 184, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))';
+              e.currentTarget.style.transform = 'translateY(0) scale(1)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
             }}
           >
-            <Plus size={18} />
+            <Plus size={20} />
             Create Campaign
           </button>
         </div>
 
-        {/* Analytics Summary (All Campaigns) */}
-        <CampaignAnalyticsSummary campaigns={campaigns} />
+        {/* Tab Switcher */}
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => setActiveTab('campaigns')}
+            style={{
+              padding: '10px 24px',
+              background: activeTab === 'campaigns' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'campaigns' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              borderRadius: '10px',
+              color: activeTab === 'campaigns' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Campaigns
+          </button>
+          <button
+            onClick={() => setActiveTab('templates')}
+            style={{
+              padding: '10px 24px',
+              background: activeTab === 'templates' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'templates' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              borderRadius: '10px',
+              color: activeTab === 'templates' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Templates
+          </button>
+        </div>
 
-        {/* Campaigns Grid */}
-        {campaigns.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <Mail size={64} style={{ color: 'rgba(255, 255, 255, 0.1)', margin: '0 auto 24px' }} />
-              <h3 style={{ color: 'var(--text-primary)', fontSize: '20px', fontWeight: 600, marginBottom: '8px' }}>
-                No campaigns yet
-              </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '24px' }}>
-                Create your first email campaign to get started
-              </p>
-              <button
-                onClick={() => setShowCampaignWizard(true)}
-                style={{
-                  padding: '12px 24px',
-                  background: '#00b8d4',
-                  color: '#000',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '15px',
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
-              >
-                Create Your First Campaign
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {campaigns.map((campaign) => (
-              <div key={campaign.id} className="glass-surface p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 style={{ color: 'var(--text-primary)', fontSize: '18px', fontWeight: 600, marginBottom: '4px' }}>
-                      {campaign.name}
-                    </h3>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-                      {campaign.subject}
-                    </p>
-                  </div>
+        {/* CAMPAIGNS TAB */}
+        {activeTab === 'campaigns' && (
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Analytics Ribbon */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
+              border: '1px solid rgba(0, 184, 212, 0.15)',
+              borderRadius: '14px',
+              padding: '24px',
+              marginBottom: '24px',
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+            }}>
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
                   <div style={{
-                    padding: '4px 12px',
-                    background: campaign.status === 'sent' ? 'rgba(0, 200, 100, 0.1)' : 'rgba(255, 200, 0, 0.1)',
-                    border: campaign.status === 'sent' ? '1px solid rgba(0, 200, 100, 0.3)' : '1px solid rgba(255, 200, 0, 0.3)',
-                    borderRadius: '12px',
-                    fontSize: '12px',
-                    color: campaign.status === 'sent' ? '#00c864' : '#ffc800',
-                    fontWeight: 600
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '8px',
+                    background: 'rgba(0, 184, 212, 0.15)',
+                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}>
-                    {campaign.status}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '4px' }}>
-                      Sent
-                    </p>
-                    <p style={{ color: 'var(--text-primary)', fontSize: '20px', fontWeight: 600 }}>
-                      {campaign.total_sent || 0}
-                    </p>
+                    <BarChart3 size={20} style={{ color: '#00b8d4' }} />
                   </div>
                   <div>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '4px' }}>
-                      Opened
-                    </p>
-                    <p style={{ color: '#00c864', fontSize: '20px', fontWeight: 600 }}>
-                      {campaign.total_opened || 0}
-                    </p>
-                  </div>
-                  <div>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '4px' }}>
-                      Clicked
-                    </p>
-                    <p style={{ color: '#00b8d4', fontSize: '20px', fontWeight: 600 }}>
-                      {campaign.total_clicked || 0}
+                    <h3 style={{ 
+                      color: '#FFFFFF', 
+                      fontSize: '17px', 
+                      fontWeight: 700,
+                      marginBottom: '2px',
+                      letterSpacing: '-0.01em'
+                    }}>
+                      Campaign Performance
+                    </h3>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px' }}>
+                      Aggregate metrics across {campaigns.length} campaign{campaigns.length !== 1 ? 's' : ''}
                     </p>
                   </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setSelectedCampaign(campaign);
-                      setCurrentView('details');
-                    }}
-                    style={{
-                      flex: 1,
-                      padding: '8px 16px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '6px',
-                      color: 'var(--text-primary)',
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <Eye size={14} />
-                    View
-                  </button>
                 </div>
               </div>
-            ))}
+
+              <div className="grid grid-cols-5 gap-4">
+                {/* Total Sent */}
+                <div style={{
+                  background: 'rgba(0, 184, 212, 0.08)',
+                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  borderRadius: '10px',
+                  padding: '18px 16px'
+                }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Send size={14} style={{ color: '#00b8d4' }} />
+                    <p style={{ 
+                      color: 'rgba(0, 184, 212, 0.8)', 
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      Total Sent
+                    </p>
+                  </div>
+                  <p style={{ 
+                    color: '#00b8d4', 
+                    fontSize: '32px', 
+                    fontWeight: 800,
+                    lineHeight: '1',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {stats.totalSent.toLocaleString()}
+                  </p>
+                </div>
+
+                {/* Delivery Rate */}
+                <div style={{
+                  background: 'rgba(34, 197, 94, 0.08)',
+                  border: '1px solid rgba(34, 197, 94, 0.2)',
+                  borderRadius: '10px',
+                  padding: '18px 16px'
+                }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle2 size={14} style={{ color: '#22c55e' }} />
+                    <p style={{ 
+                      color: 'rgba(34, 197, 94, 0.8)', 
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      Delivered
+                    </p>
+                  </div>
+                  <p style={{ 
+                    color: '#22c55e', 
+                    fontSize: '32px', 
+                    fontWeight: 800,
+                    lineHeight: '1',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {stats.deliveryRate.toFixed(1)}%
+                  </p>
+                  <p style={{ color: 'rgba(34, 197, 94, 0.6)', fontSize: '12px', marginTop: '4px' }}>
+                    {stats.delivered.toLocaleString()} emails
+                  </p>
+                </div>
+
+                {/* Open Rate */}
+                <div style={{
+                  background: 'rgba(139, 92, 246, 0.08)',
+                  border: '1px solid rgba(139, 92, 246, 0.2)',
+                  borderRadius: '10px',
+                  padding: '18px 16px'
+                }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Eye size={14} style={{ color: '#8b5cf6' }} />
+                    <p style={{ 
+                      color: 'rgba(139, 92, 246, 0.8)', 
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      Open Rate
+                    </p>
+                  </div>
+                  <p style={{ 
+                    color: '#8b5cf6', 
+                    fontSize: '32px', 
+                    fontWeight: 800,
+                    lineHeight: '1',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {stats.openRate.toFixed(1)}%
+                  </p>
+                </div>
+
+                {/* Click Rate */}
+                <div style={{
+                  background: 'rgba(245, 158, 11, 0.08)',
+                  border: '1px solid rgba(245, 158, 11, 0.2)',
+                  borderRadius: '10px',
+                  padding: '18px 16px'
+                }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <MousePointerClick size={14} style={{ color: '#f59e0b' }} />
+                    <p style={{ 
+                      color: 'rgba(245, 158, 11, 0.8)', 
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      Click Rate
+                    </p>
+                  </div>
+                  <p style={{ 
+                    color: '#f59e0b', 
+                    fontSize: '32px', 
+                    fontWeight: 800,
+                    lineHeight: '1',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {stats.clickRate.toFixed(1)}%
+                  </p>
+                </div>
+
+                {/* Bounce Rate */}
+                <div style={{
+                  background: 'rgba(239, 68, 68, 0.08)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  borderRadius: '10px',
+                  padding: '18px 16px'
+                }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle size={14} style={{ color: '#ef4444' }} />
+                    <p style={{ 
+                      color: 'rgba(239, 68, 68, 0.8)', 
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      Bounce Rate
+                    </p>
+                  </div>
+                  <p style={{ 
+                    color: '#ef4444', 
+                    fontSize: '32px', 
+                    fontWeight: 800,
+                    lineHeight: '1',
+                    fontVariantNumeric: 'tabular-nums'
+                  }}>
+                    {stats.bounceRate.toFixed(1)}%
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Search & Filters */}
+            <div className="flex gap-3 mb-6">
+              <div style={{ position: 'relative', flex: 1 }}>
+                <Search size={18} style={{ 
+                  position: 'absolute', 
+                  left: '16px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  color: 'rgba(0, 184, 212, 0.6)',
+                  zIndex: 1
+                }} />
+                <input
+                  type="text"
+                  placeholder="Search campaigns by name or subject..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px 12px 48px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '10px',
+                    color: 'var(--text-primary)',
+                    fontSize: '14px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                />
+              </div>
+
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={{
+                  padding: '12px 16px',
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '10px',
+                  color: 'var(--text-primary)',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  minWidth: '140px'
+                }}
+              >
+                <option value="all">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="sending">Sending</option>
+                <option value="sent">Sent</option>
+                <option value="paused">Paused</option>
+              </select>
+
+              {getAllTags().length > 0 && (
+                <select
+                  value={tagFilter}
+                  onChange={(e) => setTagFilter(e.target.value)}
+                  style={{
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '10px',
+                    color: 'var(--text-primary)',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    minWidth: '140px'
+                  }}
+                >
+                  <option value="all">All Tags</option>
+                  {getAllTags().map(tag => (
+                    <option key={tag} value={tag}>{tag}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            {/* Campaigns Table */}
+            <div className="flex-1 overflow-hidden">
+              <div className="glass-surface" style={{ 
+                borderRadius: '14px', 
+                overflow: 'hidden',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+              }}>
+                {filteredCampaigns.length === 0 ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center" style={{ maxWidth: '400px', padding: '60px 40px' }}>
+                      <div style={{
+                        width: '64px',
+                        height: '64px',
+                        margin: '0 auto 20px',
+                        borderRadius: '12px',
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <Mail size={32} style={{ color: 'rgba(255, 255, 255, 0.3)' }} />
+                      </div>
+
+                      <h3 style={{ 
+                        color: 'rgba(255, 255, 255, 0.9)', 
+                        fontSize: '18px', 
+                        fontWeight: 600, 
+                        marginBottom: '6px',
+                        letterSpacing: '-0.01em'
+                      }}>
+                        {campaigns.length === 0 ? 'No campaigns yet' : 'No campaigns match filters'}
+                      </h3>
+                      <p style={{ 
+                        color: 'rgba(255, 255, 255, 0.4)', 
+                        fontSize: '14px', 
+                        lineHeight: '1.5'
+                      }}>
+                        {campaigns.length === 0 
+                          ? 'Create your first email campaign to get started'
+                          : 'Try adjusting your search or filter criteria'}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    {/* Table Header */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr',
+                      padding: '18px 24px',
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+                    }}>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                        Campaign
+                      </p>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                        Audience
+                      </p>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                        Status
+                      </p>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
+                        Health Metrics
+                      </p>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', textAlign: 'right' }}>
+                        Updated
+                      </p>
+                    </div>
+
+                    {/* Table Rows */}
+                    <div style={{ flex: 1, overflowY: 'auto' }}>
+                      {filteredCampaigns.map((campaign, index) => {
+                        const statusStyle = getStatusColor(campaign.status);
+                        const deliveredRate = campaign.total_sent > 0 ? (campaign.total_delivered / campaign.total_sent) * 100 : 0;
+                        const openRate = campaign.total_delivered > 0 ? (campaign.total_opened / campaign.total_delivered) * 100 : 0;
+                        const clickRate = campaign.total_opened > 0 ? (campaign.total_clicked / campaign.total_opened) * 100 : 0;
+                        const bounceRate = campaign.total_sent > 0 ? (campaign.total_bounced / campaign.total_sent) * 100 : 0;
+
+                        return (
+                          <div
+                            key={campaign.id}
+                            onClick={() => {
+                              setSelectedCampaign(campaign);
+                              setShowAnalyticsPanel(true);
+                            }}
+                            style={{
+                              display: 'grid',
+                              gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr',
+                              padding: '20px 24px',
+                              borderBottom: index === filteredCampaigns.length - 1 ? 'none' : '1px solid rgba(255, 255, 255, 0.05)',
+                              borderLeft: '3px solid transparent',
+                              cursor: 'pointer',
+                              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.04)';
+                              e.currentTarget.style.borderLeftColor = '#00b8d4';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'transparent';
+                              e.currentTarget.style.borderLeftColor = 'transparent';
+                            }}
+                          >
+                            {/* Campaign */}
+                            <div>
+                              <p style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 600, marginBottom: '6px', letterSpacing: '-0.01em' }}>
+                                {campaign.name}
+                              </p>
+                              <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '90%' }}>
+                                {campaign.subject}
+                              </p>
+                            </div>
+
+                            {/* Audience */}
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <Users size={14} style={{ color: '#00b8d4' }} />
+                                <p style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 600 }}>
+                                  {campaign.total_recipients || 0}
+                                </p>
+                              </div>
+                              {campaign.segment_filters?.tags && campaign.segment_filters.tags.length > 0 && (
+                                <div className="flex flex-wrap gap-1">
+                                  {campaign.segment_filters.tags.slice(0, 2).map(tag => (
+                                    <span
+                                      key={tag}
+                                      style={{
+                                        padding: '3px 8px',
+                                        background: 'rgba(0, 184, 212, 0.12)',
+                                        border: '1px solid rgba(0, 184, 212, 0.25)',
+                                        borderRadius: '5px',
+                                        color: '#00b8d4',
+                                        fontSize: '11px',
+                                        fontWeight: 600
+                                      }}
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))}
+                                  {campaign.segment_filters.tags.length > 2 && (
+                                    <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '11px', padding: '3px 4px' }}>
+                                      +{campaign.segment_filters.tags.length - 2}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Status */}
+                            <div>
+                              <span style={{
+                                padding: '6px 14px',
+                                background: statusStyle.bg,
+                                border: `1px solid ${statusStyle.border}`,
+                                borderRadius: '7px',
+                                color: statusStyle.text,
+                                fontSize: '12px',
+                                fontWeight: 700,
+                                textTransform: 'capitalize',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                letterSpacing: '0.3px'
+                              }}>
+                                <span style={{
+                                  width: '6px',
+                                  height: '6px',
+                                  borderRadius: '50%',
+                                  background: statusStyle.text,
+                                  animation: campaign.status === 'sending' ? 'pulse-dot 1.5s ease-in-out infinite' : 'none'
+                                }} />
+                                {campaign.status}
+                              </span>
+                            </div>
+
+                            {/* Health Metrics */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                              <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px rgba(34, 197, 94, 0.4)' }} />
+                                  <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 500 }}>Delivered</span>
+                                  <span style={{ color: '#22c55e', fontSize: '13px', fontWeight: 700, marginLeft: 'auto' }}>{deliveredRate.toFixed(0)}%</span>
+                                </div>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#8b5cf6', boxShadow: '0 0 8px rgba(139, 92, 246, 0.4)' }} />
+                                  <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 500 }}>Opened</span>
+                                  <span style={{ color: '#8b5cf6', fontSize: '13px', fontWeight: 700, marginLeft: 'auto' }}>{openRate.toFixed(0)}%</span>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 8px rgba(245, 158, 11, 0.4)' }} />
+                                  <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 500 }}>Clicked</span>
+                                  <span style={{ color: '#f59e0b', fontSize: '13px', fontWeight: 700, marginLeft: 'auto' }}>{clickRate.toFixed(0)}%</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 8px rgba(239, 68, 68, 0.4)' }} />
+                                  <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 500 }}>Bounced</span>
+                                  <span style={{ color: '#ef4444', fontSize: '13px', fontWeight: 700, marginLeft: 'auto' }}>{bounceRate.toFixed(0)}%</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Updated */}
+                            <div style={{ textAlign: 'right' }}>
+                              <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', fontWeight: 500 }}>
+                                {formatDate(campaign.updated_at || campaign.created_at)}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
-        
-        {/* Campaign Wizard */}
-        <CampaignWizard
-          isOpen={showCampaignWizard}
-          onClose={() => setShowCampaignWizard(false)}
-          onComplete={() => {
-            setShowCampaignWizard(false);
-            fetchCampaigns();
-          }}
-          token={token}
-          BACKEND_URL={BACKEND_URL}
-        />
-      </div>
-    );
-  }
 
-  // Fallback return
-  return null;
+        {/* TEMPLATES TAB */}
+        {activeTab === 'templates' && (
+          <div className="flex-1 overflow-hidden">
+            <div className="glass-surface" style={{ 
+              borderRadius: '14px', 
+              overflow: 'hidden',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              height: '100%',
+              boxShadow: '0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+            }}>
+              {templates.filter(t => !t.is_default).length === 0 ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center" style={{ maxWidth: '400px', padding: '60px 40px' }}>
+                    <div style={{
+                      width: '64px',
+                      height: '64px',
+                      margin: '0 auto 20px',
+                      borderRadius: '12px',
+                      background: 'rgba(139, 92, 246, 0.08)',
+                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <BarChart3 size={32} style={{ color: 'rgba(139, 92, 246, 0.6)' }} />
+                    </div>
+
+                    <h3 style={{ 
+                      color: 'rgba(255, 255, 255, 0.9)', 
+                      fontSize: '18px', 
+                      fontWeight: 600, 
+                      marginBottom: '6px'
+                    }}>
+                      No saved templates
+                    </h3>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '14px', lineHeight: '1.5' }}>
+                      Create a campaign and click "Save as Template" to reuse your designs
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ padding: '24px', overflowY: 'auto', height: '100%' }}>
+                  <div className="grid grid-cols-3 gap-6">
+                    {templates.filter(t => !t.is_default).map(template => (
+                      <div
+                        key={template.id}
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.02)',
+                          border: '1px solid rgba(255, 255, 255, 0.08)',
+                          borderRadius: '12px',
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                          e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                      >
+                        {/* Preview */}
+                        <div style={{ height: '180px', background: '#fff', padding: '12px', overflow: 'hidden' }}>
+                          <div 
+                            dangerouslySetInnerHTML={{ __html: template.html_content }} 
+                            style={{ transform: 'scale(0.25)', transformOrigin: 'top left', width: '400%', height: '400%', pointerEvents: 'none' }}
+                          />
+                        </div>
+
+                        {/* Info */}
+                        <div style={{ padding: '16px' }}>
+                          <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 600, marginBottom: '6px' }}>
+                            {template.name}
+                          </h3>
+                          {template.description && (
+                            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px', marginBottom: '12px' }}>
+                              {template.description}
+                            </p>
+                          )}
+
+                          <div className="flex gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTemplate(template);
+                                setShowCampaignWizard(true);
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '8px 14px',
+                                background: 'rgba(0, 184, 212, 0.12)',
+                                border: '1px solid rgba(0, 184, 212, 0.3)',
+                                borderRadius: '6px',
+                                color: '#00b8d4',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Use Template
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteTemplate(template.id);
+                              }}
+                              style={{
+                                padding: '8px 14px',
+                                background: 'rgba(239, 68, 68, 0.12)',
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                borderRadius: '6px',
+                                color: '#ef4444',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Campaign Analytics Panel */}
+      {showAnalyticsPanel && selectedCampaign && (
+        <div 
+          className="fixed inset-0 z-50 flex justify-end animate-fade-in"
+          style={{ background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(8px)' }}
+          onClick={() => setShowAnalyticsPanel(false)}
+        >
+          <div
+            className="w-full md:w-[800px] h-full animate-slide-in"
+            style={{
+              background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.98) 0%, rgba(20, 20, 25, 0.98) 100%)',
+              borderLeft: '1px solid rgba(0, 184, 212, 0.15)',
+              boxShadow: '-20px 0 60px rgba(0, 0, 0, 0.5), inset 1px 0 0 rgba(0, 184, 212, 0.1)',
+              backdropFilter: 'blur(20px)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ padding: '28px 32px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', background: 'rgba(0, 0, 0, 0.3)', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #00b8d4 0%, #8b5cf6 50%, #00b8d4 100%)', opacity: 0.6 }} />
+
+              <div className="flex justify-between items-start">
+                <div style={{ flex: 1 }}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <h2 style={{ color: '#FFFFFF', fontSize: '26px', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: '1.2' }}>
+                      {selectedCampaign.name}
+                    </h2>
+                    <span style={{
+                      padding: '5px 12px',
+                      background: getStatusColor(selectedCampaign.status).bg,
+                      border: `1px solid ${getStatusColor(selectedCampaign.status).border}`,
+                      borderRadius: '6px',
+                      color: getStatusColor(selectedCampaign.status).text,
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      {selectedCampaign.status}
+                    </span>
+                  </div>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '12px' }}>
+                    {selectedCampaign.subject}
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar size={14} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+                      <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px' }}>
+                        {formatDate(selectedCampaign.created_at)}
+                      </span>
+                    </div>
+                    {selectedCampaign.sent_at && (
+                      <div className="flex items-center gap-2">
+                        <Send size={14} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+                        <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px' }}>
+                          Sent {formatDate(selectedCampaign.sent_at)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowAnalyticsPanel(false)}
+                  style={{ padding: '10px', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: 'rgba(255, 255, 255, 0.7)', cursor: 'pointer' }}
+                >
+                  <X size={22} />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '32px' }}>
+              <div className="grid grid-cols-3 gap-5 mb-8">
+                <div className="glass-surface" style={{ padding: '20px', borderRadius: '12px', border: '1px solid rgba(0, 184, 212, 0.15)', background: 'rgba(0, 184, 212, 0.03)' }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <Send size={16} style={{ color: '#00b8d4' }} />
+                    <p style={{ color: 'rgba(0, 184, 212, 0.7)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                      Total Sent
+                    </p>
+                  </div>
+                  <p style={{ color: '#00b8d4', fontSize: '36px', fontWeight: 800, lineHeight: '1', fontVariantNumeric: 'tabular-nums' }}>
+                    {(selectedCampaign.total_sent || 0).toLocaleString()}
+                  </p>
+                </div>
+
+                <div className="glass-surface" style={{ padding: '20px', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.15)', background: 'rgba(139, 92, 246, 0.03)' }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <Eye size={16} style={{ color: '#8b5cf6' }} />
+                    <p style={{ color: 'rgba(139, 92, 246, 0.7)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                      Opened
+                    </p>
+                  </div>
+                  <p style={{ color: '#8b5cf6', fontSize: '36px', fontWeight: 800, lineHeight: '1', marginBottom: '6px', fontVariantNumeric: 'tabular-nums' }}>
+                    {(selectedCampaign.total_opened || 0).toLocaleString()}
+                  </p>
+                  <p style={{ color: 'rgba(139, 92, 246, 0.6)', fontSize: '13px', fontWeight: 600 }}>
+                    {selectedCampaign.total_sent > 0 ? ((selectedCampaign.total_opened / selectedCampaign.total_sent) * 100).toFixed(1) : '0'}% rate
+                  </p>
+                </div>
+
+                <div className="glass-surface" style={{ padding: '20px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.15)', background: 'rgba(245, 158, 11, 0.03)' }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <MousePointerClick size={16} style={{ color: '#f59e0b' }} />
+                    <p style={{ color: 'rgba(245, 158, 11, 0.7)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                      Clicked
+                    </p>
+                  </div>
+                  <p style={{ color: '#f59e0b', fontSize: '36px', fontWeight: 800, lineHeight: '1', marginBottom: '6px', fontVariantNumeric: 'tabular-nums' }}>
+                    {(selectedCampaign.total_clicked || 0).toLocaleString()}
+                  </p>
+                  <p style={{ color: 'rgba(245, 158, 11, 0.6)', fontSize: '13px', fontWeight: 600 }}>
+                    {selectedCampaign.total_opened > 0 ? ((selectedCampaign.total_clicked / selectedCampaign.total_opened) * 100).toFixed(1) : '0'}% CTR
+                  </p>
+                </div>
+              </div>
+
+              <div className="glass-surface" style={{ padding: '24px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: '20px' }}>
+                  Campaign Details
+                </h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', marginBottom: '6px' }}>Recipients</p>
+                    <p style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 600 }}>{selectedCampaign.total_recipients || 0} contacts</p>
+                  </div>
+                  <div>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', marginBottom: '6px' }}>Delivered</p>
+                    <p style={{ color: '#22c55e', fontSize: '16px', fontWeight: 600 }}>{selectedCampaign.total_delivered || 0}</p>
+                  </div>
+                  <div>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', marginBottom: '6px' }}>Bounced</p>
+                    <p style={{ color: '#ef4444', fontSize: '16px', fontWeight: 600 }}>{selectedCampaign.total_bounced || 0}</p>
+                  </div>
+                  <div>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', marginBottom: '6px' }}>Failed</p>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '16px', fontWeight: 600 }}>{selectedCampaign.total_failed || 0}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Campaign Wizard */}
+      <CampaignWizard
+        isOpen={showCampaignWizard}
+        onClose={() => {
+          setShowCampaignWizard(false);
+          setSelectedTemplate(null);
+        }}
+        onComplete={() => {
+          setShowCampaignWizard(false);
+          setSelectedTemplate(null);
+          fetchCampaigns();
+          fetchTemplates();
+        }}
+        token={token}
+        BACKEND_URL={BACKEND_URL}
+        initialTemplate={selectedTemplate}
+      />
+    </div>
+  );
 };
 
 export default Campaigns;
