@@ -1217,7 +1217,6 @@ const Campaigns = () => {
                   );
                 })}
               </div>
-              </>
             )}
           </div>
           </>
