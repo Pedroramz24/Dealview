@@ -28,6 +28,8 @@ const Campaigns = () => {
   // Templates
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [templateMenuOpen, setTemplateMenuOpen] = useState(null);
+  const [previewTemplate, setPreviewTemplate] = useState(null);
   
   // Wizard
   const [showCampaignWizard, setShowCampaignWizard] = useState(false);
