@@ -1734,9 +1734,42 @@ const DealDetails = () => {
                 </div>
               )}
             </div>
+            
+            {/* Email Activity Timeline */}
+            {token && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
+                <EmailActivityTimeline
+                  dealId={dealId}
+                  token={token}
+                  BACKEND_URL={BACKEND_URL}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Email Compose Modal */}
+      <EmailComposeModal
+        isOpen={showEmailCompose}
+        onClose={() => {
+          setShowEmailCompose(false);
+          setEmailRecipient(null);
+        }}
+        onSend={() => {
+          // Refresh page to show new email activity
+          fetchDeal();
+        }}
+        recipient={emailRecipient}
+        dealContext={deal ? {
+          id: deal.id,
+          title: deal.title,
+          address: deal.address,
+          price: deal.price
+        } : null}
+        token={token}
+        BACKEND_URL={BACKEND_URL}
+      />
 
       {/* Contact Form Panel */}
       <ContactFormPanel
