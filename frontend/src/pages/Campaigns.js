@@ -455,20 +455,6 @@ const Campaigns = () => {
             </div>
           )}
         </div>
-        
-        {/* Modals (always render) */}
-        <TemplateSelector
-          isOpen={showTemplateSelector}
-          onClose={() => setShowTemplateSelector(false)}
-          onSelectTemplate={handleTemplateSelection}
-        />
-        <EmailBuilderModal
-          isOpen={showEmailBuilder}
-          onClose={() => setShowEmailBuilder(false)}
-          onSave={handleEmailBuilderSave}
-          initialDesign={campaignData.design}
-          campaignName={campaignData.name}
-        />
       </div>
     );
   }
