@@ -1035,10 +1035,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         </label>
                         <DatePicker
                           selected={campaignConfig.batchSchedule.endDate}
-                          onChange={(date) => setCampaignConfig({ 
-                            ...campaignConfig, 
-                            batchSchedule: { ...campaignConfig.batchSchedule, endDate: date }
-                          })}
+                          onChange={(date) => {
+                            setCampaignConfig(prev => ({
+                              ...prev,
+                              batchSchedule: { ...prev.batchSchedule, endDate: date }
+                            }));
+                          }}
                           showTimeSelect
                           timeFormat="HH:mm"
                           timeIntervals={15}
@@ -1623,10 +1625,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         </label>
                         <DatePicker
                           selected={campaignConfig.batchSchedule.endDate}
-                          onChange={(date) => setCampaignConfig({ 
-                            ...campaignConfig, 
-                            batchSchedule: { ...campaignConfig.batchSchedule, endDate: date }
-                          })}
+                          onChange={(date) => {
+                            setCampaignConfig(prev => ({
+                              ...prev,
+                              batchSchedule: { ...prev.batchSchedule, endDate: date }
+                            }));
+                          }}
                           showTimeSelect
                           timeFormat="HH:mm"
                           timeIntervals={15}
