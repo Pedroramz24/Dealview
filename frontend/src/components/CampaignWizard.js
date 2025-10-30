@@ -77,7 +77,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
     try {
       const { data, error } = await supabase
         .from('contacts')
-        .select('id, name, full_name, email, tags, asset_type_focus, markets, status')
+        .select('id, name, email, tags, asset_type_focus, markets, status')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -91,6 +91,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       setAllTags(tags);
       
       setFilteredContacts(validContacts);
+      
+      console.log('✅ Contacts loaded:', validContacts.length, 'contacts with emails');
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
