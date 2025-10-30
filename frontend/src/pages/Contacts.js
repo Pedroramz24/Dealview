@@ -79,6 +79,23 @@ const Contacts = () => {
   const [focusedNodeId, setFocusedNodeId] = useState(null);
   const graphRef = useRef();
   const { user } = useContext(AuthContext);
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  
+  // Email compose state
+  const [showEmailCompose, setShowEmailCompose] = useState(false);
+  const [emailRecipient, setEmailRecipient] = useState(null);
+  const [token, setToken] = useState(null);
+
+  // Get Supabase session token
+  useEffect(() => {
+    const getToken = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setToken(session.access_token);
+      }
+    };
+    getToken();
+  }, [user]);
 
   const [contactForm, setContactForm] = useState({
     name: '',
