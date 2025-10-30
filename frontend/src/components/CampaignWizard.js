@@ -445,6 +445,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
   if (!isOpen) return null;
 
+  console.log('🎬 CampaignWizard rendering - isOpen:', isOpen, 'currentStep:', currentStep);
+
   return (
     <div style={{
       position: 'fixed',
