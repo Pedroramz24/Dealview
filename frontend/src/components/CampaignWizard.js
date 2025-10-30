@@ -639,7 +639,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   <input
                     type="text"
                     value={campaignConfig.name}
-                    onChange={(e) => setCampaignConfig({ ...campaignConfig, name: e.target.value })}
+                    onChange={(e) => updateConfig('name', e.target.value)}
                     placeholder="Q1 2025 Retail Listings"
                     style={{
                       width: '100%',
@@ -660,7 +660,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   <input
                     type="text"
                     value={campaignConfig.subject}
-                    onChange={(e) => setCampaignConfig({ ...campaignConfig, subject: e.target.value })}
+                    onChange={(e) => updateConfig('subject', e.target.value)}
                     placeholder="New Retail Opportunities in San Antonio"
                     style={{
                       width: '100%',
@@ -681,7 +681,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   <input
                     type="text"
                     value={campaignConfig.previewText}
-                    onChange={(e) => setCampaignConfig({ ...campaignConfig, previewText: e.target.value })}
+                    onChange={(e) => updateConfig('previewText', e.target.value)}
                     placeholder="Shows in email inbox preview..."
                     style={{
                       width: '100%',
