@@ -174,7 +174,7 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
         display: 'flex',
         flexDirection: 'column'
       }}>
-        <div style={{ flex: 1, minHeight: '800px' }}>
+        <div className="email-editor-iframe" style={{ flex: 1, minHeight: 'calc(100vh - 80px)', height: '100%' }}>
           <EmailEditor
             ref={emailEditorRef}
             onReady={onReady}
@@ -266,7 +266,7 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
                 }
               }
             }}
-            minHeight="800px"
+            minHeight="calc(100vh - 80px)"
           />
         </div>
       </div>
