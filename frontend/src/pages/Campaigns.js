@@ -624,162 +624,17 @@ const Campaigns = () => {
     );
   }
 
-  // Render campaign creation form (after email builder)
-  if (currentView === 'create') {
+  // Render CampaignWizard
+  if (showCampaignWizard) {
     return (
-      <div className="h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '32px' }}>
-        <div className="glass-surface p-10" style={{ maxWidth: '600px', width: '100%' }}>
-          <div className="mb-8">
-            <h1 style={{ color: 'var(--text-primary)', fontSize: '28px', fontWeight: 600, marginBottom: '8px' }}>
-              Campaign Details
-            </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
-              Add a name and subject line for your campaign
-            </p>
-          </div>
-
-          <div className="mb-6">
-            <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-              Campaign Name *
-            </label>
-            <input
-              type="text"
-              value={campaignData.name}
-              onChange={(e) => setCampaignData({ ...campaignData, name: e.target.value })}
-              placeholder="Q1 Retail Listings"
-              style={{
-                width: '100%',
-                padding: '14px 16px',
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: 'var(--text-primary)',
-                fontSize: '15px'
-              }}
-            />
-            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '6px' }}>
-              Internal name to identify this campaign
-            </p>
-          </div>
-
-          <div className="mb-8">
-            <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-              Subject Line *
-            </label>
-            <input
-              type="text"
-              value={campaignData.subject}
-              onChange={(e) => setCampaignData({ ...campaignData, subject: e.target.value })}
-              placeholder="New Retail Opportunities in San Antonio"
-              style={{
-                width: '100%',
-                padding: '14px 16px',
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: 'var(--text-primary)',
-                fontSize: '15px'
-              }}
-            />
-            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '6px' }}>
-              This will be the email subject line recipients see
-            </p>
-          </div>
-
-          {/* Preview Section */}
-          {campaignData.htmlContent && (
-            <div className="mb-8">
-              <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-                Email Preview
-              </label>
-              <div style={{
-                padding: '16px',
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                maxHeight: '200px',
-                overflow: 'auto'
-              }}>
-                <div dangerouslySetInnerHTML={{ __html: campaignData.htmlContent }} style={{ fontSize: '12px' }} />
-              </div>
-              <button
-                onClick={() => setShowEmailBuilder(true)}
-                style={{
-                  marginTop: '8px',
-                  padding: '8px 16px',
-                  background: 'rgba(0, 184, 212, 0.1)',
-                  border: '1px solid rgba(0, 184, 212, 0.3)',
-                  borderRadius: '6px',
-                  color: '#00b8d4',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  cursor: 'pointer'
-                }}
-              >
-                Edit Email Design
-              </button>
-            </div>
-          )}
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => {
-                setCampaignData({ name: '', subject: '', htmlContent: '', plainTextContent: '', design: null });
-                setCurrentView('list');
-              }}
-              style={{
-                flex: 1,
-                padding: '14px 24px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: 'var(--text-primary)',
-                fontSize: '15px',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={createCampaign}
-              disabled={!campaignData.name || !campaignData.subject || !campaignData.htmlContent}
-              style={{
-                flex: 2,
-                padding: '14px 24px',
-                background: (!campaignData.name || !campaignData.subject || !campaignData.htmlContent) ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
-                color: (!campaignData.name || !campaignData.subject || !campaignData.htmlContent) ? 'rgba(255, 255, 255, 0.3)' : '#000',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '15px',
-                fontWeight: 600,
-                cursor: (!campaignData.name || !campaignData.subject || !campaignData.htmlContent) ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}
-            >
-              <CheckCircle2 size={18} />
-              Create Campaign
-            </button>
-          </div>
-        </div>
-        
-        {/* Modals (always render) */}
-        <TemplateSelector
-          isOpen={showTemplateSelector}
-          onClose={() => setShowTemplateSelector(false)}
-          onSelectTemplate={handleTemplateSelection}
-        />
-        <EmailBuilderModal
-          isOpen={showEmailBuilder}
-          onClose={() => setShowEmailBuilder(false)}
-          onSave={handleEmailBuilderSave}
-          initialDesign={campaignData.design}
-          campaignName={campaignData.name}
-        />
-      </div>
+      <CampaignWizard
+        onClose={() => {
+          setShowCampaignWizard(false);
+          fetchCampaigns();
+        }}
+        token={token}
+        BACKEND_URL={BACKEND_URL}
+      />
     );
   }
 
