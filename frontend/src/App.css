@@ -1238,3 +1238,73 @@ div[style*="unlayer"] {
   stroke: #00b8d4 !important;
 }
 
+/* Campaign Page Animations */
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes animate-counter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-counter {
+  animation: animate-counter 0.4s ease-out;
+}
+
+.campaign-row {
+  border-left: 3px solid transparent;
+}
+
+.campaign-row:hover {
+  border-left-color: #00b8d4 !important;
+}
+
+.campaign-create-btn {
+  position: relative;
+}
+
+.campaign-create-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  padding: 1px;
+  background: linear-gradient(135deg, #00b8d4, #00d4ed);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.campaign-create-btn:hover::before {
+  opacity: 0.6;
+}
+
