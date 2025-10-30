@@ -482,7 +482,9 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'center',
+              position: 'relative',
+              zIndex: 100000
             }}>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
