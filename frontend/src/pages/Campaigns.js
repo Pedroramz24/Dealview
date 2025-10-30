@@ -1218,22 +1218,12 @@ const Campaigns = () => {
                           border: '1px solid rgba(255, 255, 255, 0.08)',
                           borderRadius: '12px',
                           overflow: 'hidden',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                          e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                          e.currentTarget.style.transform = 'translateY(0)';
+                          transition: 'all 0.2s ease',
+                          position: 'relative'
                         }}
                       >
                         {/* Preview */}
-                        <div style={{ height: '180px', background: '#fff', padding: '12px', overflow: 'hidden' }}>
+                        <div style={{ height: '180px', background: '#fff', padding: '12px', overflow: 'hidden', position: 'relative' }}>
                           <div 
                             dangerouslySetInnerHTML={{ __html: template.html_content }} 
                             style={{ transform: 'scale(0.25)', transformOrigin: 'top left', width: '400%', height: '400%', pointerEvents: 'none' }}
@@ -1242,55 +1232,170 @@ const Campaigns = () => {
 
                         {/* Info */}
                         <div style={{ padding: '16px' }}>
-                          <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 600, marginBottom: '6px' }}>
-                            {template.name}
-                          </h3>
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 600, flex: 1 }}>
+                              {template.name}
+                            </h3>
+                            
+                            {/* 3-Dot Menu */}
+                            <div style={{ position: 'relative' }}>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTemplateMenuOpen(templateMenuOpen === template.id ? null : template.id);
+                                }}
+                                style={{
+                                  padding: '6px',
+                                  background: 'rgba(255, 255, 255, 0.05)',
+                                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                                  borderRadius: '6px',
+                                  color: 'rgba(255, 255, 255, 0.6)',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                <MoreVertical size={16} />
+                              </button>
+
+                              {/* Dropdown Menu */}
+                              {templateMenuOpen === template.id && (
+                                <div style={{
+                                  position: 'absolute',
+                                  right: 0,
+                                  top: '100%',
+                                  marginTop: '4px',
+                                  background: 'rgba(20, 20, 20, 0.98)',
+                                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                                  borderRadius: '8px',
+                                  padding: '6px',
+                                  minWidth: '180px',
+                                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+                                  zIndex: 1000
+                                }}>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setPreviewTemplate(template);
+                                      setTemplateMenuOpen(null);
+                                    }}
+                                    style={{
+                                      width: '100%',
+                                      padding: '10px 12px',
+                                      background: 'transparent',
+                                      border: 'none',
+                                      borderRadius: '4px',
+                                      color: 'rgba(255, 255, 255, 0.9)',
+                                      fontSize: '13px',
+                                      fontWeight: 500,
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '10px',
+                                      textAlign: 'left',
+                                      transition: 'all 0.15s ease'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(139, 92, 246, 0.15)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                  >
+                                    <Eye size={14} />
+                                    Preview Template
+                                  </button>
+
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedTemplate(template);
+                                      setShowCampaignWizard(true);
+                                      setTemplateMenuOpen(null);
+                                    }}
+                                    style={{
+                                      width: '100%',
+                                      padding: '10px 12px',
+                                      background: 'transparent',
+                                      border: 'none',
+                                      borderRadius: '4px',
+                                      color: 'rgba(255, 255, 255, 0.9)',
+                                      fontSize: '13px',
+                                      fontWeight: 500,
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '10px',
+                                      textAlign: 'left'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                  >
+                                    <Send size={14} />
+                                    Create Campaign
+                                  </button>
+
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      cloneTemplate(template);
+                                      setTemplateMenuOpen(null);
+                                    }}
+                                    style={{
+                                      width: '100%',
+                                      padding: '10px 12px',
+                                      background: 'transparent',
+                                      border: 'none',
+                                      borderRadius: '4px',
+                                      color: 'rgba(255, 255, 255, 0.9)',
+                                      fontSize: '13px',
+                                      fontWeight: 500,
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '10px',
+                                      textAlign: 'left'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(245, 158, 11, 0.15)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                  >
+                                    <Copy size={14} />
+                                    Clone
+                                  </button>
+
+                                  <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.1)', margin: '6px 0' }} />
+
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      deleteTemplate(template.id);
+                                      setTemplateMenuOpen(null);
+                                    }}
+                                    style={{
+                                      width: '100%',
+                                      padding: '10px 12px',
+                                      background: 'transparent',
+                                      border: 'none',
+                                      borderRadius: '4px',
+                                      color: '#ef4444',
+                                      fontSize: '13px',
+                                      fontWeight: 500,
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '10px',
+                                      textAlign: 'left'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                  >
+                                    <Trash2 size={14} />
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
                           {template.description && (
-                            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px', marginBottom: '12px' }}>
+                            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px' }}>
                               {template.description}
                             </p>
                           )}
-
-                          <div className="flex gap-2">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedTemplate(template);
-                                setShowCampaignWizard(true);
-                              }}
-                              style={{
-                                flex: 1,
-                                padding: '8px 14px',
-                                background: 'rgba(0, 184, 212, 0.12)',
-                                border: '1px solid rgba(0, 184, 212, 0.3)',
-                                borderRadius: '6px',
-                                color: '#00b8d4',
-                                fontSize: '13px',
-                                fontWeight: 600,
-                                cursor: 'pointer'
-                              }}
-                            >
-                              Use Template
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteTemplate(template.id);
-                              }}
-                              style={{
-                                padding: '8px 14px',
-                                background: 'rgba(239, 68, 68, 0.12)',
-                                border: '1px solid rgba(239, 68, 68, 0.3)',
-                                borderRadius: '6px',
-                                color: '#ef4444',
-                                fontSize: '13px',
-                                fontWeight: 600,
-                                cursor: 'pointer'
-                              }}
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
                         </div>
                       </div>
                     ))}
