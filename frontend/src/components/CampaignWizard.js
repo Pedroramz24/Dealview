@@ -267,12 +267,39 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
     }
   };
 
-  const handleSaveTemplate = () => {
-    emailEditorRef.current?.editor?.exportHtml((data) => {
+  const handleSaveTemplate = async () => {
+    const templateName = window.prompt('Enter a name for this template:');
+    if (!templateName || !templateName.trim()) {
+      return;
+    }
+
+    emailEditorRef.current?.editor?.exportHtml(async (data) => {
       const { design, html } = data;
-      setEmailDesign(JSON.stringify(design));
-      setEmailHTML(html);
-      toast.success('Template saved! You can close and continue later.');
+      
+      try {
+        const { data: templateData, error } = await supabase
+          .from('email_templates')
+          .insert({
+            name: templateName.trim(),
+            description: 'Custom email template',
+            category: 'custom',
+            subject: campaignConfig.subject || 'Email Template',
+            html_content: html,
+            plain_text_content: '',
+            is_default: false
+          })
+          .select()
+          .single();
+        
+        if (error) throw error;
+        
+        toast.success(`✅ Template "${templateName}" saved!`);
+        setEmailDesign(JSON.stringify(design));
+        setEmailHTML(html);
+      } catch (error) {
+        console.error('Error saving template:', error);
+        toast.error('Failed to save template');
+      }
     });
   };
 
