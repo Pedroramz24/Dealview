@@ -936,6 +936,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         </div>
                       </div>
                     ))}
+                    </div>
                   </div>
                 )}
 
