@@ -694,114 +694,136 @@ const Campaigns = () => {
     );
   }
 
-  // Render campaign creation form
+  // Render campaign creation form (after email builder)
   if (currentView === 'create') {
     return (
-      <div className="h-screen flex flex-col" style={{ background: 'var(--bg-base)', padding: '32px' }}>
-        <div className="flex justify-between items-center mb-8">
-          <h1 style={{ color: 'var(--text-primary)', fontSize: '32px', fontWeight: 600 }}>
-            Create Campaign
-          </h1>
-          <button
-            onClick={() => setCurrentView('list')}
-            style={{
-              padding: '10px 20px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '8px',
-              color: 'var(--text-primary)',
-              fontSize: '14px',
-              cursor: 'pointer'
-            }}
-          >
-            Cancel
-          </button>
-        </div>
+      <div className="h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '32px' }}>
+        <div className="glass-surface p-10" style={{ maxWidth: '600px', width: '100%' }}>
+          <div className="mb-8">
+            <h1 style={{ color: 'var(--text-primary)', fontSize: '28px', fontWeight: 600, marginBottom: '8px' }}>
+              Campaign Details
+            </h1>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
+              Add a name and subject line for your campaign
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Form */}
-          <div className="glass-surface p-8">
-            <div className="mb-6">
-              <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-                Campaign Name *
-              </label>
-              <input
-                type="text"
-                value={campaignData.name}
-                onChange={(e) => setCampaignData({ ...campaignData, name: e.target.value })}
-                placeholder="Q1 Retail Listings"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  color: 'var(--text-primary)',
-                  fontSize: '15px'
-                }}
-              />
-            </div>
-
-            <div className="mb-6">
-              <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-                Subject Line *
-              </label>
-              <input
-                type="text"
-                value={campaignData.subject}
-                onChange={(e) => setCampaignData({ ...campaignData, subject: e.target.value })}
-                placeholder="New Retail Opportunities in San Antonio"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  color: 'var(--text-primary)',
-                  fontSize: '15px'
-                }}
-              />
-            </div>
-
-            <div className="mb-6">
-              <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
-                Email Content *
-              </label>
-              <textarea
-                ref={editorRef}
-                value={campaignData.htmlContent}
-                onChange={(e) => setCampaignData({ ...campaignData, htmlContent: e.target.value })}
-                placeholder="Write your email content here..."
-                rows={15}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  color: 'var(--text-primary)',
-                  fontSize: '14px',
-                  fontFamily: 'monospace',
-                  resize: 'vertical'
-                }}
-              />
-              <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '8px' }}>
-                You can use HTML or plain text. Merge fields: {"{{firstName}}"}, {"{{company}}"}, {"{{email}}"}
-              </p>
-            </div>
-
-            <button
-              onClick={createCampaign}
+          <div className="mb-6">
+            <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
+              Campaign Name *
+            </label>
+            <input
+              type="text"
+              value={campaignData.name}
+              onChange={(e) => setCampaignData({ ...campaignData, name: e.target.value })}
+              placeholder="Q1 Retail Listings"
               style={{
                 width: '100%',
+                padding: '14px 16px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                color: 'var(--text-primary)',
+                fontSize: '15px'
+              }}
+            />
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '6px' }}>
+              Internal name to identify this campaign
+            </p>
+          </div>
+
+          <div className="mb-8">
+            <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
+              Subject Line *
+            </label>
+            <input
+              type="text"
+              value={campaignData.subject}
+              onChange={(e) => setCampaignData({ ...campaignData, subject: e.target.value })}
+              placeholder="New Retail Opportunities in San Antonio"
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                color: 'var(--text-primary)',
+                fontSize: '15px'
+              }}
+            />
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '6px' }}>
+              This will be the email subject line recipients see
+            </p>
+          </div>
+
+          {/* Preview Section */}
+          {campaignData.htmlContent && (
+            <div className="mb-8">
+              <label style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>
+                Email Preview
+              </label>
+              <div style={{
+                padding: '16px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                maxHeight: '200px',
+                overflow: 'auto'
+              }}>
+                <div dangerouslySetInnerHTML={{ __html: campaignData.htmlContent }} style={{ fontSize: '12px' }} />
+              </div>
+              <button
+                onClick={() => setShowEmailBuilder(true)}
+                style={{
+                  marginTop: '8px',
+                  padding: '8px 16px',
+                  background: 'rgba(0, 184, 212, 0.1)',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  borderRadius: '6px',
+                  color: '#00b8d4',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  cursor: 'pointer'
+                }}
+              >
+                Edit Email Design
+              </button>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                setCampaignData({ name: '', subject: '', htmlContent: '', plainTextContent: '', design: null });
+                setCurrentView('list');
+              }}
+              style={{
+                flex: 1,
                 padding: '14px 24px',
-                background: '#00b8d4',
-                color: '#000',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                color: 'var(--text-primary)',
+                fontSize: '15px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={createCampaign}
+              disabled={!campaignData.name || !campaignData.subject || !campaignData.htmlContent}
+              style={{
+                flex: 2,
+                padding: '14px 24px',
+                background: (!campaignData.name || !campaignData.subject || !campaignData.htmlContent) ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                color: (!campaignData.name || !campaignData.subject || !campaignData.htmlContent) ? 'rgba(255, 255, 255, 0.3)' : '#000',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '15px',
                 fontWeight: 600,
-                cursor: 'pointer',
+                cursor: (!campaignData.name || !campaignData.subject || !campaignData.htmlContent) ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -812,31 +834,30 @@ const Campaigns = () => {
               Create Campaign
             </button>
           </div>
-
-          {/* Preview */}
-          <div className="glass-surface p-8">
-            <h3 style={{ color: 'var(--text-primary)', fontSize: '18px', fontWeight: 600, marginBottom: '16px' }}>
-              Preview
-            </h3>
-            <div style={{
-              padding: '24px',
-              background: '#fff',
-              borderRadius: '8px',
-              minHeight: '400px',
-              color: '#333'
-            }}>
-              <div style={{ borderBottom: '2px solid #00b8d4', paddingBottom: '12px', marginBottom: '20px' }}>
-                <strong>{campaignData.subject || 'Subject Line'}</strong>
-              </div>
-              <div dangerouslySetInnerHTML={{ __html: campaignData.htmlContent || '<p style="color: #999;">Your email content will appear here...</p>' }} />
-            </div>
-          </div>
         </div>
       </div>
     );
   }
 
-  return null;
+  return (
+    <>
+      {/* Template Selector Modal */}
+      <TemplateSelector
+        isOpen={showTemplateSelector}
+        onClose={() => setShowTemplateSelector(false)}
+        onSelectTemplate={handleTemplateSelection}
+      />
+
+      {/* Email Builder Modal */}
+      <EmailBuilderModal
+        isOpen={showEmailBuilder}
+        onClose={() => setShowEmailBuilder(false)}
+        onSave={handleEmailBuilderSave}
+        initialDesign={campaignData.design}
+        campaignName={campaignData.name}
+      />
+    </>
+  );
 };
 
 export default Campaigns;
