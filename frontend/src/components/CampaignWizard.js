@@ -1012,15 +1012,19 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
                           Start Date & Time *
                         </label>
-                        <DateTimePicker
+                        <DatePicker
+                          selected={campaignConfig.batchSchedule.startDate}
                           onChange={(date) => setCampaignConfig({ 
                             ...campaignConfig, 
                             batchSchedule: { ...campaignConfig.batchSchedule, startDate: date }
                           })}
-                          value={campaignConfig.batchSchedule.startDate}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          dateFormat="MM/dd/yyyy h:mm aa"
                           minDate={new Date()}
+                          placeholderText="Select start date and time"
                           className="datetime-picker-dark"
-                          format="MM/dd/yyyy h:mm a"
                         />
                       </div>
                       <div>
