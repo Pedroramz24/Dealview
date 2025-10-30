@@ -1036,7 +1036,18 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL }) => 
                   Back to Design
                 </button>
                 <button
-                  onClick={() => setCurrentStep(3)}
+                  onClick={() => {
+                    // Validate scheduling fields
+                    if (campaignConfig.sendOption === 'schedule' && !campaignConfig.scheduleDate) {
+                      toast.error('Please select a date and time for scheduled send');
+                      return;
+                    }
+                    if (campaignConfig.sendOption === 'batch' && (!campaignConfig.batchSchedule.startDate || !campaignConfig.batchSchedule.endDate)) {
+                      toast.error('Please select start and end dates for batch schedule');
+                      return;
+                    }
+                    setCurrentStep(3);
+                  }}
                   disabled={!campaignConfig.name || !campaignConfig.subject || campaignConfig.selectedContacts.length === 0}
                   style={{
                     flex: 2,
