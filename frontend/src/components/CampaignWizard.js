@@ -167,6 +167,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         contact.tags && campaignConfig.selectedTags.some(tag => contact.tags.includes(tag))
       );
       setFilteredContacts(filtered);
+      console.log('📊 Filtered by tags:', filtered.length, 'contacts');
       
       // Auto-select contacts with these tags
       const taggedContactIds = filtered.map(c => c.id);
@@ -176,6 +177,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       }));
     } else {
       setFilteredContacts(contacts);
+      console.log('📊 All contacts available:', contacts.length, 'contacts');
     }
   }, [campaignConfig.recipientType, campaignConfig.selectedTags, contacts]);
 
