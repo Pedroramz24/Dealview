@@ -2172,7 +2172,11 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               {/* Action Buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <button
-                  onClick={handleFinalSend}
+                  onClick={(e) => {
+                    console.log('🎯 Send Campaign button CLICKED in Step 3', e);
+                    console.log('💾 Saving state:', saving);
+                    handleFinalSend();
+                  }}
                   disabled={saving}
                   style={{
                     width: '100%',
