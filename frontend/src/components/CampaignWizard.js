@@ -900,7 +900,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 <div className="space-y-2">
                   {/* Send Now */}
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'now' })}
+                    onClick={() => updateConfig('sendOption', 'now')}
                     style={{
                       width: '100%',
                       padding: '14px 16px',
@@ -1478,7 +1478,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 <div className="space-y-2">
                   {/* Send Now */}
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'now' })}
+                    onClick={() => updateConfig('sendOption', 'now')}
                     style={{
                       width: '100%',
                       padding: '12px 16px',
