@@ -43,12 +43,17 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
   // Filter contacts by search
   const getSearchedContacts = () => {
-    if (!contactSearchTerm) return filteredContacts;
-    return filteredContacts.filter(c =>
-      c.full_name?.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
-      c.name?.toLowerCase().includes(contactSearchTerm.toLowerCase()) ||
-      c.email?.toLowerCase().includes(contactSearchTerm.toLowerCase())
-    );
+    if (!contactSearchTerm.trim()) return filteredContacts;
+    
+    const searchLower = contactSearchTerm.toLowerCase().trim();
+    const searched = filteredContacts.filter(c => {
+      const nameMatch = c.name?.toLowerCase().includes(searchLower);
+      const emailMatch = c.email?.toLowerCase().includes(searchLower);
+      return nameMatch || emailMatch;
+    });
+    
+    console.log('🔍 Search results for "' + contactSearchTerm + '":', searched.length, 'contacts found');
+    return searched;
   };
   const [contacts, setContacts] = useState([]);
   const [allTags, setAllTags] = useState([]);
