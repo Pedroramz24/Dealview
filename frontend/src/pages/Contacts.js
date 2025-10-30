@@ -1768,6 +1768,17 @@ const Contacts = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Email Activity Timeline */}
+                {selectedContact.email && token && (
+                  <div className="glass-surface rounded-xl overflow-hidden">
+                    <EmailActivityTimeline
+                      contactId={selectedContact.id}
+                      token={token}
+                      BACKEND_URL={BACKEND_URL}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
