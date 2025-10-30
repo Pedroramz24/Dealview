@@ -18,8 +18,9 @@ const Campaigns = () => {
   const [emailSettingsConfigured, setEmailSettingsConfigured] = useState(false);
   const [loading, setLoading] = useState(true);
   const [campaigns, setCampaigns] = useState([]);
-  const [currentView, setCurrentView] = useState('list'); // 'list', 'setup', 'create', 'details'
+  const [currentView, setCurrentView] = useState('list'); // 'list', 'setup', 'details'
   const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [showCampaignWizard, setShowCampaignWizard] = useState(false);
 
   // Setup wizard state
   const [setupStep, setSetupStep] = useState(1);
