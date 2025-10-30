@@ -68,6 +68,7 @@ const Contacts = () => {
   const [filterContactType, setFilterContactType] = useState('all');
   const [filterAssetType, setFilterAssetType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterTag, setFilterTag] = useState('all');
   const [viewMode, setViewMode] = useState('table'); // 'card', 'table', or 'graph' - default to table
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showDetailsPanel, setShowDetailsPanel] = useState(false);
