@@ -140,7 +140,7 @@ const Contacts = () => {
 
   useEffect(() => {
     filterContacts();
-  }, [contacts, searchTerm, filterContactType, filterAssetType, filterStatus]);
+  }, [contacts, searchTerm, filterContactType, filterAssetType, filterStatus, filterTag]);
 
   const fetchContacts = async () => {
     if (!user) {
