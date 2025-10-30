@@ -2174,12 +2174,20 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
               {/* Action Buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {console.log('🔧 Rendering Send Campaign button in Step 3')}
                 <button
+                  data-testid="send-campaign-button"
                   onClick={(e) => {
                     console.log('🎯 Send Campaign button CLICKED in Step 3', e);
                     console.log('💾 Saving state:', saving);
+                    console.log('🔍 Event target:', e.target);
+                    console.log('🔍 Current target:', e.currentTarget);
+                    e.preventDefault();
+                    e.stopPropagation();
                     handleFinalSend();
                   }}
+                  onMouseEnter={() => console.log('🖱️ Mouse entered Send Campaign button')}
+                  onMouseDown={() => console.log('🖱️ Mouse down on Send Campaign button')}
                   disabled={saving}
                   style={{
                     width: '100%',
@@ -2194,7 +2202,9 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '10px'
+                    gap: '10px',
+                    pointerEvents: 'auto',
+                    zIndex: 10
                   }}
                 >
                   {saving ? (
