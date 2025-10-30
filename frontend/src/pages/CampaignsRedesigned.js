@@ -1135,6 +1135,7 @@ const Campaigns = () => {
                   );
                 })}
               </div>
+              </>
             )}
           </div>
         </div>
