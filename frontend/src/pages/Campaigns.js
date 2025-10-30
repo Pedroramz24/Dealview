@@ -189,7 +189,7 @@ const Campaigns = () => {
       if (response.ok) {
         const result = await response.json();
         toast.success('Campaign created successfully!');
-        setCampaignData({ name: '', subject: '', htmlContent: '', plainTextContent: '' });
+        setCampaignData({ name: '', subject: '', htmlContent: '', plainTextContent: '', design: null });
         setCurrentView('list');
         fetchCampaigns();
       } else {
@@ -198,6 +198,30 @@ const Campaigns = () => {
     } catch (error) {
       toast.error('Failed to create campaign');
     }
+  };
+
+  const handleTemplateSelection = (template) => {
+    setSelectedTemplate(template);
+    setShowTemplateSelector(false);
+    setShowEmailBuilder(true);
+  };
+
+  const handleEmailBuilderSave = ({ design, html }) => {
+    setCampaignData(prev => ({
+      ...prev,
+      htmlContent: html,
+      design: design
+    }));
+    setShowEmailBuilder(false);
+    // Show campaign details form to add name and subject
+    setCurrentView('create');
+  };
+
+  const startCampaignCreation = () => {
+    // Reset campaign data
+    setCampaignData({ name: '', subject: '', htmlContent: '', plainTextContent: '', design: null });
+    // Show template selector
+    setShowTemplateSelector(true);
   };
 
   // Render loading state
