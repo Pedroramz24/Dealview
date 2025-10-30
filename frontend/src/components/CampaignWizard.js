@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import EmailEditor from 'react-email-editor';
+import DateTimePicker from 'react-datetime-picker';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 import { 
   ArrowRight, ArrowLeft, Send, Calendar, Zap, Tag, Users, 
-  CheckSquare, Square, Filter, Eye, Save, Loader2, X, Monitor, Smartphone
+  CheckSquare, Square, Filter, Eye, Save, Loader2, X, Monitor, Smartphone, Clock
 } from 'lucide-react';
 import { toast } from 'sonner';
 
