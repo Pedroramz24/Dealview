@@ -877,29 +877,26 @@ const Campaigns = () => {
             </button>
           </div>
         </div>
+        
+        {/* Modals (always render) */}
+        <TemplateSelector
+          isOpen={showTemplateSelector}
+          onClose={() => setShowTemplateSelector(false)}
+          onSelectTemplate={handleTemplateSelection}
+        />
+        <EmailBuilderModal
+          isOpen={showEmailBuilder}
+          onClose={() => setShowEmailBuilder(false)}
+          onSave={handleEmailBuilderSave}
+          initialDesign={campaignData.design}
+          campaignName={campaignData.name}
+        />
       </div>
     );
   }
 
-  return (
-    <>
-      {/* Template Selector Modal */}
-      <TemplateSelector
-        isOpen={showTemplateSelector}
-        onClose={() => setShowTemplateSelector(false)}
-        onSelectTemplate={handleTemplateSelection}
-      />
-
-      {/* Email Builder Modal */}
-      <EmailBuilderModal
-        isOpen={showEmailBuilder}
-        onClose={() => setShowEmailBuilder(false)}
-        onSave={handleEmailBuilderSave}
-        initialDesign={campaignData.design}
-        campaignName={campaignData.name}
-      />
-    </>
-  );
+  // Fallback return (should never reach here)
+  return null;
 };
 
 export default Campaigns;
