@@ -974,7 +974,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
                   {/* Batch Schedule */}
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'batch' })}
+                    onClick={() => updateConfig('sendOption', 'batch')}
                     style={{
                       width: '100%',
                       padding: '14px 16px',
@@ -1550,7 +1550,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
                   {/* Batch Schedule */}
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'batch' })}
+                    onClick={() => updateConfig('sendOption', 'batch')}
                     style={{
                       width: '100%',
                       padding: '12px 16px',
