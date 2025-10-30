@@ -1564,17 +1564,56 @@ const Contacts = () => {
                   <p style={{ color: 'var(--accent)' }}>{selectedContact.title}</p>
                 )}
               </div>
-              <button
-                onClick={() => setShowDetailsPanel(false)}
-                className="p-2 rounded-lg transition-colors"
-                style={{
-                  background: 'var(--glass-bg)',
-                  border: '1px solid var(--glass-border)',
-                  color: 'var(--text-secondary)'
-                }}
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {selectedContact.email && (
+                  <button
+                    onClick={() => {
+                      setEmailRecipient({
+                        id: selectedContact.id,
+                        email: selectedContact.email,
+                        name: selectedContact.name || selectedContact.full_name
+                      });
+                      setShowEmailCompose(true);
+                    }}
+                    style={{
+                      padding: '10px 16px',
+                      background: 'rgba(0, 184, 212, 0.1)',
+                      border: '1px solid rgba(0, 184, 212, 0.3)',
+                      borderRadius: '8px',
+                      color: '#00b8d4',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <Mail size={16} />
+                    Send Email
+                  </button>
+                )}
+                <button
+                  onClick={() => setShowDetailsPanel(false)}
+                  className="p-2 rounded-lg transition-colors"
+                  style={{
+                    background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-secondary)'
+                  }}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Scrollable Content */}
