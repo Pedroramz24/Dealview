@@ -1730,6 +1730,7 @@ async def create_campaign(
             'plain_text_content': campaign.plain_text_content,
             'template_id': campaign.template_id,
             'segment_filters': campaign.segment_filters,
+            'design': campaign.design,
             'status': 'draft'
         }
         
