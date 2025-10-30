@@ -527,30 +527,30 @@ const Campaigns = () => {
 
           <button
             onClick={() => setShowCampaignWizard(true)}
-            className="campaign-create-btn"
             style={{
-              padding: '14px 28px',
-              background: 'linear-gradient(135deg, #00b8d4 0%, #00d4ed 100%)',
-              color: '#000',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: '15px',
-              fontWeight: 700,
+              padding: '12px 24px',
+              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
+              border: '1px solid rgba(0, 184, 212, 0.4)',
+              borderRadius: '12px',
+              color: '#00d4ff',
+              fontWeight: '800',
+              fontSize: '14px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              boxShadow: '0 4px 16px rgba(0, 184, 212, 0.3)',
-              transition: 'all 0.3s ease',
-              letterSpacing: '0.3px'
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.35), rgba(59, 130, 246, 0.35))';
+              e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 16px 48px rgba(0, 184, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 184, 212, 0.3)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))';
+              e.currentTarget.style.transform = 'translateY(0) scale(1)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
             }}
           >
             <Plus size={20} />
