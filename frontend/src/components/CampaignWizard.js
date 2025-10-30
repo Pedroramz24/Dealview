@@ -927,7 +927,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
                   {/* Schedule */}
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'schedule' })}
+                    onClick={() => updateConfig('sendOption', 'schedule')}
                     style={{
                       width: '100%',
                       padding: '14px 16px',
@@ -1504,7 +1504,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
                   {/* Schedule */}
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, sendOption: 'schedule' })}
+                    onClick={() => updateConfig('sendOption', 'schedule')}
                     style={{
                       width: '100%',
                       padding: '12px 16px',
