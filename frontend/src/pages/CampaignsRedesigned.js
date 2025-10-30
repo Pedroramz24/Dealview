@@ -1219,11 +1219,6 @@ const Campaigns = () => {
             )}
           </div>
         </div>
-              </>
-            )}
-          </div>
-        </div>
-        </>
         )}
 
         {/* Templates Tab Content */}
