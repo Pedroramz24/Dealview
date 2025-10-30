@@ -181,6 +181,16 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
     }
   }, [campaignConfig.recipientType, campaignConfig.selectedTags, contacts]);
 
+  // Log when currentStep changes
+  useEffect(() => {
+    console.log('📍 Current step changed to:', currentStep);
+    if (currentStep === 3) {
+      console.log('🎯 Step 3 rendered - Review & Send');
+      console.log('📧 Email HTML length:', emailHTML?.length || 0);
+      console.log('📧 Email Design:', !!emailDesign);
+    }
+  }, [currentStep, emailHTML, emailDesign]);
+
   // Toggle contact selection - OPTIMIZED
   const toggleContact = (contactId) => {
     setCampaignConfig(prev => ({
