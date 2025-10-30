@@ -159,20 +159,6 @@ const Campaigns = () => {
     return (
       <div className="h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)' }}>
         <div className="loading-spinner"></div>
-        
-        {/* Modals (always render) */}
-        <TemplateSelector
-          isOpen={showTemplateSelector}
-          onClose={() => setShowTemplateSelector(false)}
-          onSelectTemplate={handleTemplateSelection}
-        />
-        <EmailBuilderModal
-          isOpen={showEmailBuilder}
-          onClose={() => setShowEmailBuilder(false)}
-          onSave={handleEmailBuilderSave}
-          initialDesign={campaignData.design}
-          campaignName={campaignData.name}
-        />
       </div>
     );
   }
