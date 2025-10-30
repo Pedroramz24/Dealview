@@ -734,7 +734,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     Choose Contacts
                   </button>
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, recipientType: 'tags' })}
+                    onClick={() => updateConfig('recipientType', 'tags')}
                     style={{
                       flex: 1,
                       padding: '10px 14px',
@@ -1323,7 +1323,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     Choose Contacts
                   </button>
                   <button
-                    onClick={() => setCampaignConfig({ ...campaignConfig, recipientType: 'tags' })}
+                    onClick={() => updateConfig('recipientType', 'tags')}
                     style={{
                       flex: 1,
                       padding: '10px 14px',
