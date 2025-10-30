@@ -549,7 +549,7 @@ const Campaigns = () => {
                 Create your first email campaign to get started
               </p>
               <button
-                onClick={startCampaignCreation}
+                onClick={() => setShowCampaignWizard(true)}
                 style={{
                   padding: '12px 24px',
                   background: '#00b8d4',
