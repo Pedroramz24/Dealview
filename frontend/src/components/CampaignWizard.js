@@ -1334,8 +1334,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     gap: '8px'
                   }}
                 >
-                  Review and Send
-                  <ArrowRight size={16} />
+                  <Send size={16} />
+                  Send Campaign
                 </button>
               </div>
             </div>
