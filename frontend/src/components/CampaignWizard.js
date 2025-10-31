@@ -1262,9 +1262,9 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   Back to Design
                 </button>
                 <button
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     try {
-                      console.log('🔵 Review and Send button clicked', e);
+                      console.log('🔵 Send Campaign button clicked (top)', e);
                       console.log('📋 Campaign config:', {
                         name: campaignConfig.name,
                         subject: campaignConfig.subject,
@@ -1310,11 +1310,11 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         return;
                       }
                       
-                      console.log('✅ All validation passed, moving to Step 3');
-                      setCurrentStep(3);
-                      toast.success('Moving to review...');
+                      console.log('✅ All validation passed, sending campaign...');
+                      // Call handleFinalSend directly
+                      await handleFinalSend();
                     } catch (error) {
-                      console.error('❌ Error in Review and Send button:', error);
+                      console.error('❌ Error in Send Campaign button (top):', error);
                       toast.error(`Error: ${error.message}`);
                     }
                   }}
