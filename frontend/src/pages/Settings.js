@@ -110,7 +110,7 @@ const Settings = () => {
 
       setOriginalData(profileData);
       setIsDirty(false);
-      toast.success('✅ Settings saved successfully');
+      toast.success('Settings saved successfully');
     } catch (error) {
       console.error('❌ Error saving:', error);
       toast.error(`Failed to save settings: ${error.message || 'Unknown error'}`);
