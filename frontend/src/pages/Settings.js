@@ -41,10 +41,6 @@ const Settings = () => {
     emailNotifications: true
   });
 
-  // Appearance
-  const [theme, setTheme] = useState('dark');
-  const [density, setDensity] = useState('cozy');
-
   useEffect(() => {
     loadUserData();
   }, []);
