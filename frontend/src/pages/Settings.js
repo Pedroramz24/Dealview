@@ -233,10 +233,6 @@ const Settings = () => {
               setProfileData={setProfileData} 
               user={user}
               setShowChangePassword={setShowChangePassword}
-              theme={theme}
-              setTheme={setTheme}
-              density={density}
-              setDensity={setDensity}
             />
           )}
           {activeSection === 'security' && <SecuritySection user={user} />}
