@@ -6,7 +6,7 @@ import {
   User, Mail, Lock, Shield, Bell, Palette, Database, 
   Building2, Plug, Upload, X, Eye, EyeOff, LogOut, Clock, 
   Globe, Chrome, Monitor, Loader2, Save, RotateCcw, Trash2, 
-  Download, Check, AlertCircle
+  Download, Check, AlertCircle, FileText
 } from 'lucide-react';
 
 const Settings = () => {
