@@ -328,7 +328,7 @@ const Settings = () => {
 };
 
 // Account Section (Merged: Profile + Account + Appearance)
-const AccountSection = ({ profileData, setProfileData, user, setShowChangePassword, theme, setTheme, density, setDensity }) => {
+const AccountSection = ({ profileData, setProfileData, user, setShowChangePassword }) => {
   const handleInputChange = (field, value) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
