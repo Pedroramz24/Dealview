@@ -3,15 +3,16 @@ import { supabase } from '../supabaseClient';
 import { toast } from 'sonner';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { 
-  User, Mail, Lock, Shield, Bell, Palette, Database, 
-  Building2, Plug, Upload, X, Eye, EyeOff, LogOut, Clock, 
-  Globe, Chrome, Monitor, Loader2, Save, RotateCcw, Trash2, 
-  Download, Check, AlertCircle, FileText
+  User, Mail, Lock, Shield, Bell, Database, Building2, Plug, 
+  Upload, X, Eye, EyeOff, LogOut, Clock, Globe, Loader2, 
+  Save, RotateCcw, Trash2, Download, Check, AlertCircle, 
+  Monitor, Chrome, Smartphone, Moon, Sun, Layout, FileText
 } from 'lucide-react';
 
 const Settings = () => {
-  const [activeSection, setActiveSection] = useState('profile');
+  const [activeSection, setActiveSection] = useState('account');
   const [user, setUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -30,8 +31,9 @@ const Settings = () => {
 
   // Modals
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showDeleteAvatar, setShowDeleteAvatar] = useState(false);
 
-  // Notifications state
+  // Notifications
   const [notifications, setNotifications] = useState({
     dealUpdates: true,
     reminders: true,
@@ -39,7 +41,7 @@ const Settings = () => {
     emailNotifications: true
   });
 
-  // Appearance state
+  // Appearance
   const [theme, setTheme] = useState('dark');
   const [density, setDensity] = useState('cozy');
 
@@ -65,6 +67,7 @@ const Settings = () => {
         .single();
 
       if (profile) {
+        setUserProfile(profile);
         const data = {
           full_name: profile.full_name || '',
           title: profile.title || '',
@@ -112,11 +115,9 @@ const Settings = () => {
   };
 
   const sections = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'account', label: 'Account', icon: Mail },
+    { id: 'account', label: 'Account', icon: User },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'data-privacy', label: 'Data & Privacy', icon: Database },
     { id: 'organization', label: 'Organization', icon: Building2, comingSoon: true },
     { id: 'integrations', label: 'Integrations', icon: Plug, comingSoon: true },
@@ -124,8 +125,8 @@ const Settings = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
-        <Loader2 className="animate-spin" size={32} style={{ color: '#00b8d4' }} />
+      <div className="flex items-center justify-center min-h-screen" style={{ background: '#000' }}>
+        <Loader2 className="animate-spin" size={40} style={{ color: '#00b8d4' }} />
       </div>
     );
   }
@@ -135,18 +136,24 @@ const Settings = () => {
       <div style={{ display: 'flex', flex: 1 }}>
         {/* Left Sidebar */}
         <div style={{
-          width: '280px',
-          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
-          padding: '32px 24px',
-          height: 'calc(100vh - 80px)',
+          width: '260px',
+          borderRight: '1px solid rgba(255, 255, 255, 0.06)',
+          padding: '40px 20px',
+          height: '100vh',
           position: 'sticky',
-          top: 0
+          top: 0,
+          background: 'rgba(0, 0, 0, 0.4)'
         }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '32px', color: '#fff' }}>
-            Settings
-          </h1>
+          <div style={{ marginBottom: '40px' }}>
+            <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>
+              Settings
+            </h1>
+            <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.4)' }}>
+              Manage your account
+            </p>
+          </div>
 
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             {sections.map(section => {
               const Icon = section.icon;
               const isActive = activeSection === section.id;
@@ -160,29 +167,45 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    padding: '12px 16px',
-                    background: isActive ? 'rgba(0, 184, 212, 0.1)' : 'transparent',
-                    border: `1px solid ${isActive ? 'rgba(0, 184, 212, 0.3)' : 'transparent'}`,
-                    borderRadius: '8px',
-                    color: isActive ? '#00b8d4' : section.comingSoon ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.7)',
+                    padding: '11px 14px',
+                    background: isActive ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
+                    border: 'none',
+                    borderLeft: `3px solid ${isActive ? '#00b8d4' : 'transparent'}`,
+                    borderRadius: '0',
+                    color: isActive ? '#00b8d4' : section.comingSoon ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.6)',
                     fontSize: '14px',
-                    fontWeight: isActive ? 600 : 400,
+                    fontWeight: isActive ? 600 : 500,
                     cursor: section.comingSoon ? 'not-allowed' : 'pointer',
                     textAlign: 'left',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.15s ease',
+                    letterSpacing: '0.2px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!section.comingSoon && !isActive) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = section.comingSoon ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.6)';
+                    }
                   }}
                 >
-                  <Icon size={18} />
+                  <Icon size={17} strokeWidth={2} />
                   <span style={{ flex: 1 }}>{section.label}</span>
                   {section.comingSoon && (
                     <span style={{
-                      fontSize: '11px',
-                      padding: '2px 8px',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      borderRadius: '4px',
-                      color: 'rgba(255, 255, 255, 0.5)'
+                      fontSize: '10px',
+                      padding: '2px 6px',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      borderRadius: '3px',
+                      color: 'rgba(255, 255, 255, 0.4)',
+                      fontWeight: 600,
+                      letterSpacing: '0.5px'
                     }}>
-                      Soon
+                      SOON
                     </span>
                   )}
                 </button>
@@ -192,12 +215,21 @@ const Settings = () => {
         </div>
 
         {/* Main Content */}
-        <div style={{ flex: 1, padding: '32px 48px 120px', overflowY: 'auto', maxWidth: '900px' }}>
-          {activeSection === 'profile' && <ProfileSection profileData={profileData} setProfileData={setProfileData} user={user} />}
-          {activeSection === 'account' && <AccountSection user={user} setShowChangePassword={setShowChangePassword} />}
+        <div style={{ flex: 1, padding: '40px 56px 120px', overflowY: 'auto', maxWidth: '1000px' }}>
+          {activeSection === 'account' && (
+            <AccountSection 
+              profileData={profileData} 
+              setProfileData={setProfileData} 
+              user={user}
+              setShowChangePassword={setShowChangePassword}
+              theme={theme}
+              setTheme={setTheme}
+              density={density}
+              setDensity={setDensity}
+            />
+          )}
           {activeSection === 'security' && <SecuritySection user={user} />}
           {activeSection === 'notifications' && <NotificationsSection notifications={notifications} setNotifications={setNotifications} />}
-          {activeSection === 'appearance' && <AppearanceSection theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />}
           {activeSection === 'data-privacy' && <DataPrivacySection />}
         </div>
       </div>
@@ -207,59 +239,76 @@ const Settings = () => {
         <div style={{
           position: 'fixed',
           bottom: 0,
-          left: '280px',
+          left: '260px',
           right: 0,
-          padding: '20px 48px',
-          background: 'rgba(0, 0, 0, 0.95)',
+          padding: '16px 56px',
+          background: 'rgba(10, 10, 10, 0.98)',
           backdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          borderTop: '1px solid rgba(0, 184, 212, 0.2)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          zIndex: 1000
+          zIndex: 1000,
+          boxShadow: '0 -4px 20px rgba(0, 184, 212, 0.1)'
         }}>
-          <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px' }}>
-            You have unsaved changes
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: '#00b8d4',
+              boxShadow: '0 0 8px rgba(0, 184, 212, 0.6)'
+            }} />
+            <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px', fontWeight: 500 }}>
+              Unsaved changes
+            </p>
+          </div>
           <div style={{ display: 'flex', gap: '12px' }}>
             <button
               onClick={handleDiscard}
               disabled={saving}
               style={{
                 padding: '10px 20px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '6px',
                 color: '#fff',
                 fontSize: '14px',
                 fontWeight: 600,
                 cursor: saving ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                transition: 'all 0.15s ease'
               }}
+              onMouseEnter={(e) => !saving && (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)')}
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
               Discard
             </button>
             <button
               onClick={handleSave}
               disabled={saving}
               style={{
-                padding: '10px 20px',
+                padding: '10px 24px',
                 background: '#00b8d4',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '6px',
                 color: '#000',
                 fontSize: '14px',
-                fontWeight: 600,
+                fontWeight: 700,
                 cursor: saving ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                boxShadow: '0 2px 12px rgba(0, 184, 212, 0.3)',
+                transition: 'all 0.15s ease'
               }}
+              onMouseEnter={(e) => !saving && (e.currentTarget.style.transform = 'translateY(-1px)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
             >
-              {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+              {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               Save Changes
             </button>
           </div>
@@ -271,194 +320,208 @@ const Settings = () => {
   );
 };
 
-// Profile Section
-const ProfileSection = ({ profileData, setProfileData }) => {
+// Account Section (Merged: Profile + Account + Appearance)
+const AccountSection = ({ profileData, setProfileData, user, setShowChangePassword, theme, setTheme, density, setDensity }) => {
   const handleInputChange = (field, value) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      toast.info('Avatar upload with crop coming soon');
+      // TODO: Implement crop and upload
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    try {
+      setProfileData(prev => ({ ...prev, avatar_url: '' }));
+      toast.success('Avatar removed');
+    } catch (error) {
+      toast.error('Failed to remove avatar');
+    }
+  };
+
   const timezones = [
-    'America/New_York',
-    'America/Chicago',
-    'America/Denver',
-    'America/Los_Angeles',
-    'America/Phoenix'
+    { value: 'America/New_York', label: 'Eastern Time (ET)' },
+    { value: 'America/Chicago', label: 'Central Time (CT)' },
+    { value: 'America/Denver', label: 'Mountain Time (MT)' },
+    { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
+    { value: 'America/Phoenix', label: 'Arizona (MST)' },
   ];
 
   return (
     <div>
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Profile</h2>
-      <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '15px' }}>
-        Manage your personal information
-      </p>
+      {/* Header */}
+      <div style={{ marginBottom: '36px' }}>
+        <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '6px', letterSpacing: '-0.5px' }}>Account</h2>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
+          Manage your profile, preferences, and account settings
+        </p>
+      </div>
 
-      {/* Avatar and Logo */}
+      {/* Profile Picture */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px',
-        marginBottom: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginBottom: '20px'
       }}>
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'start' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           {/* Avatar */}
-          <div>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '12px', fontWeight: 500 }}>
-              Profile Picture
-            </label>
-            <div style={{
-              width: '120px',
-              height: '120px',
-              borderRadius: '50%',
-              background: profileData.avatar_url ? `url(${profileData.avatar_url})` : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(139, 92, 246, 0.2))',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '2px solid rgba(0, 184, 212, 0.3)',
-              boxShadow: '0 4px 20px rgba(0, 184, 212, 0.2)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              {!profileData.avatar_url && (
-                <User size={48} style={{ color: '#00b8d4' }} />
-              )}
+          <div style={{
+            width: '100px',
+            height: '100px',
+            borderRadius: '50%',
+            background: profileData.avatar_url 
+              ? `url(${profileData.avatar_url})` 
+              : 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(139, 92, 246, 0.15))',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px solid rgba(0, 184, 212, 0.2)',
+            boxShadow: '0 4px 16px rgba(0, 184, 212, 0.15)',
+            flexShrink: 0
+          }}>
+            {!profileData.avatar_url && <User size={42} style={{ color: '#00b8d4' }} />}
+          </div>
+
+          {/* Upload Actions */}
+          <div style={{ flex: 1 }}>
+            <h3 style={{ color: '#fff', fontSize: '15px', fontWeight: 600, marginBottom: '6px' }}>Profile Picture</h3>
+            <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', marginBottom: '14px' }}>
+              JPG, PNG or GIF • Max 5MB
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
               <label htmlFor="avatar-upload" style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                background: '#00b8d4',
-                borderRadius: '50%',
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                padding: '9px 18px',
+                background: 'rgba(0, 184, 212, 0.08)',
+                border: '1px solid rgba(0, 184, 212, 0.25)',
+                borderRadius: '6px',
+                color: '#00b8d4',
+                fontSize: '13px',
+                fontWeight: 600,
                 cursor: 'pointer',
-                border: '3px solid #000',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '7px',
+                transition: 'all 0.15s ease'
               }}>
-                <Upload size={16} style={{ color: '#000' }} />
+                <Upload size={14} />
+                Upload New Picture
               </label>
               <input
                 id="avatar-upload"
                 type="file"
                 accept="image/*"
                 style={{ display: 'none' }}
-                onChange={(e) => toast.info('Avatar upload coming soon')}
+                onChange={handleAvatarUpload}
               />
-            </div>
-          </div>
-
-          {/* Company Logo */}
-          <div>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '12px', fontWeight: 500 }}>
-              Company Logo
-            </label>
-            <div style={{
-              width: '120px',
-              height: '120px',
-              borderRadius: '12px',
-              background: profileData.company_logo_url ? `url(${profileData.company_logo_url})` : 'rgba(255, 255, 255, 0.03)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '2px dashed rgba(255, 255, 255, 0.2)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              {!profileData.company_logo_url && (
-                <Building2 size={48} style={{ color: 'rgba(255, 255, 255, 0.3)' }} />
+              {profileData.avatar_url && (
+                <button
+                  onClick={handleDeleteAvatar}
+                  style={{
+                    padding: '9px 18px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '6px',
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(220, 38, 38, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(220, 38, 38, 0.3)';
+                    e.currentTarget.style.color = '#ff4444';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                  }}
+                >
+                  Delete
+                </button>
               )}
-              <label htmlFor="logo-upload" style={{
-                position: 'absolute',
-                bottom: '8px',
-                right: '8px',
-                background: '#00b8d4',
-                borderRadius: '50%',
-                width: '32px',
-                height: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
-              }}>
-                <Upload size={14} style={{ color: '#000' }} />
-              </label>
-              <input
-                id="logo-upload"
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={(e) => toast.info('Logo upload coming soon')}
-              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Personal Information */}
+      {/* Personal Details */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600, marginBottom: '20px' }}>
-          Personal Information
+        <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '20px', letterSpacing: '-0.2px' }}>
+          Personal Details
         </h3>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px' }}>
+          {/* Full Name */}
           <div>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
-              Full Name *
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+              Full Name
             </label>
             <input
               type="text"
               value={profileData.full_name}
               onChange={(e) => handleInputChange('full_name', e.target.value)}
-              placeholder="John Doe"
+              placeholder="Enter your name"
               style={{
                 width: '100%',
-                padding: '12px',
-                background: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
+                padding: '11px 14px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '7px',
                 color: '#fff',
-                fontSize: '14px'
+                fontSize: '14px',
+                transition: 'all 0.15s ease'
               }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
 
+          {/* Title */}
           <div>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
               Title
             </label>
             <input
               type="text"
               value={profileData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="Real Estate Broker"
+              placeholder="e.g., Senior Broker"
               style={{
                 width: '100%',
-                padding: '12px',
-                background: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
+                padding: '11px 14px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '7px',
                 color: '#fff',
-                fontSize: '14px'
+                fontSize: '14px',
+                transition: 'all 0.15s ease'
               }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
 
+          {/* Phone */}
           <div>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
               Phone Number
             </label>
             <input
@@ -468,19 +531,23 @@ const ProfileSection = ({ profileData, setProfileData }) => {
               placeholder="(210) 555-0123"
               style={{
                 width: '100%',
-                padding: '12px',
-                background: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
+                padding: '11px 14px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '7px',
                 color: '#fff',
-                fontSize: '14px'
+                fontSize: '14px',
+                transition: 'all 0.15s ease'
               }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
 
+          {/* Timezone */}
           <div>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
-              <Globe size={14} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+              <Globe size={13} style={{ display: 'inline', marginRight: '5px', verticalAlign: 'middle' }} />
               Time Zone
             </label>
             <select
@@ -488,122 +555,142 @@ const ProfileSection = ({ profileData, setProfileData }) => {
               onChange={(e) => handleInputChange('timezone', e.target.value)}
               style={{
                 width: '100%',
-                padding: '12px',
-                background: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
+                padding: '11px 14px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '7px',
                 color: '#fff',
                 fontSize: '14px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
               }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             >
               {timezones.map(tz => (
-                <option key={tz} value={tz} style={{ background: '#1a1a1a' }}>{tz}</option>
+                <option key={tz.value} value={tz.value} style={{ background: '#0a0a0a' }}>
+                  {tz.label}
+                </option>
               ))}
             </select>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
 
-// Account Section
-const AccountSection = ({ user, setShowChangePassword }) => {
-  return (
-    <div>
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Account</h2>
-      <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '15px' }}>
-        Manage your account settings and credentials
-      </p>
-
-      {/* Email */}
+      {/* Email Management */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px',
-        marginBottom: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600, marginBottom: '20px' }}>
-          Email Address
+        <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '18px', letterSpacing: '-0.2px' }}>
+          Email Addresses
         </h3>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <Mail size={16} style={{ color: '#00b8d4' }} />
-              <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px' }}>Primary Email</span>
-            </div>
+        
+        {/* Primary Email */}
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <Mail size={14} style={{ color: '#00b8d4' }} />
+            <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Primary
+            </span>
+          </div>
+          <div style={{ display: 'flex', gap: '12px' }}>
             <input
               type="email"
               value={user?.email || ''}
               readOnly
               style={{
-                width: '100%',
-                padding: '12px',
-                background: 'rgba(0, 0, 0, 0.5)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '8px',
+                flex: 1,
+                padding: '11px 14px',
+                background: 'rgba(0, 0, 0, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '7px',
                 color: '#fff',
-                fontSize: '15px',
+                fontSize: '14px',
                 cursor: 'not-allowed',
                 fontWeight: 500
               }}
             />
           </div>
-          <button
-            onClick={() => toast.info('Change email coming soon')}
-            style={{
-              padding: '12px 20px',
-              background: 'rgba(0, 184, 212, 0.1)',
-              border: '1px solid rgba(0, 184, 212, 0.3)',
-              borderRadius: '8px',
-              color: '#00b8d4',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              marginTop: '24px'
-            }}
-          >
-            Change Email
-          </button>
         </div>
+
+        {/* Add Another Email */}
+        <button
+          onClick={() => toast.info('Add email coming soon')}
+          style={{
+            padding: '9px 16px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '6px',
+            color: 'rgba(255, 255, 255, 0.7)',
+            fontSize: '13px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 0.15s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.25)';
+            e.currentTarget.style.color = '#00b8d4';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
+          }}
+        >
+          + Add Another Email
+        </button>
       </div>
 
       {/* Password */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px',
-        marginBottom: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600, marginBottom: '12px' }}>
+        <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '10px', letterSpacing: '-0.2px' }}>
           Password
         </h3>
-        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '16px' }}>
-          Change your password to keep your account secure
+        <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', marginBottom: '18px' }}>
+          Ensure your account is using a strong password
         </p>
         <button
           onClick={() => setShowChangePassword(true)}
           style={{
-            padding: '12px 20px',
-            background: 'rgba(0, 184, 212, 0.1)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
-            borderRadius: '8px',
+            padding: '10px 20px',
+            background: 'rgba(0, 184, 212, 0.08)',
+            border: '1px solid rgba(0, 184, 212, 0.25)',
+            borderRadius: '6px',
             color: '#00b8d4',
-            fontSize: '14px',
+            fontSize: '13px',
             fontWeight: 600,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            transition: 'all 0.15s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.12)';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+            e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
-          <Lock size={16} />
+          <Lock size={14} />
           Change Password
         </button>
       </div>
@@ -612,61 +699,204 @@ const AccountSection = ({ user, setShowChangePassword }) => {
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600, marginBottom: '12px' }}>
+        <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '10px', letterSpacing: '-0.2px' }}>
           Connected Accounts
         </h3>
-        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '20px' }}>
-          Connect your accounts for easier sign-in
+        <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', marginBottom: '20px' }}>
+          Link external accounts for seamless authentication
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {['Google', 'Microsoft'].map(provider => (
-            <div key={provider} style={{
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {[
+            { name: 'Google', icon: Chrome, connected: false },
+            { name: 'Microsoft', icon: Monitor, connected: false }
+          ].map(account => (
+            <div key={account.name} style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '16px',
-              background: 'rgba(0, 0, 0, 0.3)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
-              borderRadius: '8px'
+              padding: '16px 18px',
+              background: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.04)',
+              borderRadius: '8px',
+              transition: 'all 0.15s ease'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '38px',
+                  height: '38px',
                   borderRadius: '8px',
-                  background: 'rgba(255, 255, 255, 0.1)',
+                  background: 'rgba(255, 255, 255, 0.06)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
-                  <Chrome size={20} style={{ color: '#00b8d4' }} />
+                  <account.icon size={19} style={{ color: '#00b8d4' }} />
                 </div>
                 <div>
-                  <span style={{ color: '#fff', fontSize: '15px', fontWeight: 500, display: 'block' }}>{provider}</span>
-                  <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>Not connected</span>
+                  <span style={{ color: '#fff', fontSize: '14px', fontWeight: 500, display: 'block' }}>
+                    {account.name}
+                  </span>
+                  <span style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '12px' }}>
+                    {account.connected ? 'Connected' : 'Not connected'}
+                  </span>
                 </div>
               </div>
               <button 
-                onClick={() => toast.info(`${provider} integration coming soon`)}
+                onClick={() => toast.info(`${account.name} integration coming soon`)}
                 style={{
-                  padding: '8px 16px',
-                  background: 'transparent',
-                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  padding: '7px 16px',
+                  background: account.connected ? 'transparent' : 'rgba(0, 184, 212, 0.08)',
+                  border: `1px solid ${account.connected ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 184, 212, 0.25)'}`,
                   borderRadius: '6px',
-                  color: '#00b8d4',
+                  color: account.connected ? 'rgba(255, 255, 255, 0.6)' : '#00b8d4',
                   fontSize: '13px',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
               >
-                Connect
+                {account.connected ? 'Disconnect' : 'Connect'}
               </button>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Appearance */}
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.02)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px'
+      }}>
+        <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '18px', letterSpacing: '-0.2px' }}>
+          Appearance
+        </h3>
+
+        {/* Theme */}
+        <div style={{ marginBottom: '24px' }}>
+          <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '12px', fontWeight: 500 }}>
+            Theme
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            {[
+              { value: 'dark', label: 'Dark', icon: Moon, desc: 'Easy on the eyes' },
+              { value: 'light', label: 'Light', icon: Sun, desc: 'Bright interface' }
+            ].map(t => {
+              const Icon = t.icon;
+              return (
+                <button
+                  key={t.value}
+                  onClick={() => setTheme(t.value)}
+                  style={{
+                    padding: '16px',
+                    background: theme === t.value ? 'rgba(0, 184, 212, 0.08)' : 'rgba(0, 0, 0, 0.25)',
+                    border: `1.5px solid ${theme === t.value ? 'rgba(0, 184, 212, 0.35)' : 'rgba(255, 255, 255, 0.04)'}`,
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'all 0.15s ease',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (theme !== t.value) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (theme !== t.value) {
+                      e.currentTarget.style.background = 'rgba(0, 0, 0, 0.25)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.04)';
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                    <Icon size={16} style={{ color: theme === t.value ? '#00b8d4' : 'rgba(255, 255, 255, 0.4)' }} />
+                    <span style={{
+                      color: theme === t.value ? '#00b8d4' : '#fff',
+                      fontSize: '14px',
+                      fontWeight: 600
+                    }}>
+                      {t.label}
+                    </span>
+                    {theme === t.value && (
+                      <Check size={15} style={{ color: '#00b8d4', marginLeft: 'auto' }} />
+                    )}
+                  </div>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '12px' }}>
+                    {t.desc}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Density */}
+        <div>
+          <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '12px', fontWeight: 500 }}>
+            Interface Density
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            {[
+              { value: 'cozy', label: 'Cozy', icon: Layout, desc: 'Spacious layout' },
+              { value: 'compact', label: 'Compact', icon: Layout, desc: 'More on screen' }
+            ].map(d => {
+              const Icon = d.icon;
+              return (
+                <button
+                  key={d.value}
+                  onClick={() => setDensity(d.value)}
+                  style={{
+                    padding: '16px',
+                    background: density === d.value ? 'rgba(0, 184, 212, 0.08)' : 'rgba(0, 0, 0, 0.25)',
+                    border: `1.5px solid ${density === d.value ? 'rgba(0, 184, 212, 0.35)' : 'rgba(255, 255, 255, 0.04)'}`,
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (density !== d.value) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (density !== d.value) {
+                      e.currentTarget.style.background = 'rgba(0, 0, 0, 0.25)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.04)';
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                    <Icon size={16} style={{ color: density === d.value ? '#00b8d4' : 'rgba(255, 255, 255, 0.4)' }} />
+                    <span style={{
+                      color: density === d.value ? '#00b8d4' : '#fff',
+                      fontSize: '14px',
+                      fontWeight: 600
+                    }}>
+                      {d.label}
+                    </span>
+                    {density === d.value && (
+                      <Check size={15} style={{ color: '#00b8d4', marginLeft: 'auto' }} />
+                    )}
+                  </div>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '12px' }}>
+                    {d.desc}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -675,11 +905,13 @@ const AccountSection = ({ user, setShowChangePassword }) => {
 
 // Security Section
 const SecuritySection = ({ user }) => {
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+
   const handleSignOutAll = async () => {
     try {
       await supabase.auth.signOut({ scope: 'global' });
       toast.success('Signed out from all devices');
-      window.location.reload();
+      window.location.href = '/login';
     } catch (error) {
       toast.error('Failed to sign out');
     }
@@ -687,35 +919,41 @@ const SecuritySection = ({ user }) => {
 
   return (
     <div>
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Security</h2>
-      <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '15px' }}>
-        Manage your security settings and monitor account activity
-      </p>
+      {/* Header */}
+      <div style={{ marginBottom: '36px' }}>
+        <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '6px', letterSpacing: '-0.5px' }}>Security</h2>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
+          Manage security settings and monitor account activity
+        </p>
+      </div>
 
       {/* Last Login */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
         padding: '24px',
-        marginBottom: '24px'
+        marginBottom: '20px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '8px',
-            background: 'rgba(0, 184, 212, 0.1)',
+            width: '48px',
+            height: '48px',
+            borderRadius: '10px',
+            background: 'rgba(0, 184, 212, 0.08)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            flexShrink: 0
           }}>
-            <Clock size={20} style={{ color: '#00b8d4' }} />
+            <Clock size={22} style={{ color: '#00b8d4' }} />
           </div>
           <div>
-            <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600 }}>Last Login</h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px', marginTop: '4px' }}>
+            <h3 style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
+              Last Sign In
+            </h3>
+            <p style={{ color: '#fff', fontSize: '15px', fontWeight: 500 }}>
               {user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString('en-US', {
                 month: 'short',
                 day: 'numeric',
@@ -733,71 +971,82 @@ const SecuritySection = ({ user }) => {
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px',
-        marginBottom: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginBottom: '20px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-          <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600 }}>Active Sessions</h3>
+          <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px' }}>
+            Active Sessions
+          </h3>
           <button
             onClick={handleSignOutAll}
             style={{
-              padding: '8px 16px',
-              background: 'rgba(220, 38, 38, 0.1)',
-              border: '1px solid rgba(220, 38, 38, 0.3)',
+              padding: '7px 14px',
+              background: 'rgba(220, 38, 38, 0.08)',
+              border: '1px solid rgba(220, 38, 38, 0.25)',
               borderRadius: '6px',
               color: '#ff4444',
-              fontSize: '13px',
+              fontSize: '12px',
               fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '6px',
+              transition: 'all 0.15s ease'
             }}
+            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(220, 38, 38, 0.15)'}
+            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(220, 38, 38, 0.08)'}
           >
-            <LogOut size={14} />
+            <LogOut size={13} />
             Sign Out All
           </button>
         </div>
 
+        {/* Current Session */}
         <div style={{
           padding: '18px',
-          background: 'rgba(0, 184, 212, 0.05)',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
-          borderRadius: '10px'
+          background: 'rgba(0, 184, 212, 0.04)',
+          border: '1px solid rgba(0, 184, 212, 0.15)',
+          borderRadius: '8px'
         }}>
           <div style={{ display: 'flex', alignItems: 'start', gap: '14px' }}>
             <div style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '10px',
-              background: 'rgba(0, 184, 212, 0.15)',
+              width: '42px',
+              height: '42px',
+              borderRadius: '8px',
+              background: 'rgba(0, 184, 212, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0
             }}>
-              <Monitor size={22} style={{ color: '#00b8d4' }} />
+              {navigator.userAgent.includes('Mobile') ? 
+                <Smartphone size={20} style={{ color: '#00b8d4' }} /> : 
+                <Monitor size={20} style={{ color: '#00b8d4' }} />
+              }
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span style={{ color: '#fff', fontSize: '15px', fontWeight: 600 }}>Current Device</span>
+                <span style={{ color: '#fff', fontSize: '14px', fontWeight: 600 }}>This Device</span>
                 <span style={{
-                  fontSize: '11px',
-                  padding: '3px 10px',
-                  background: 'rgba(0, 184, 212, 0.2)',
-                  borderRadius: '12px',
+                  fontSize: '10px',
+                  padding: '3px 8px',
+                  background: 'rgba(0, 184, 212, 0.15)',
+                  borderRadius: '10px',
                   color: '#00b8d4',
-                  fontWeight: 600
+                  fontWeight: 700,
+                  letterSpacing: '0.3px'
                 }}>
-                  Active Now
+                  ACTIVE
                 </span>
               </div>
-              <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px', marginBottom: '4px' }}>
-                {navigator.userAgent.includes('Mac') ? 'MacOS' : 'Windows'} • {navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Firefox') ? 'Firefox' : 'Browser'}
+              <p style={{ color: 'rgba(255, 255, 255, 0.45)', fontSize: '13px', marginBottom: '4px' }}>
+                {navigator.userAgent.includes('Mac') ? 'macOS' : navigator.userAgent.includes('Win') ? 'Windows' : 'Linux'} • 
+                {navigator.userAgent.includes('Chrome') ? ' Chrome' : navigator.userAgent.includes('Firefox') ? ' Firefox' : navigator.userAgent.includes('Safari') ? ' Safari' : ' Browser'}
               </p>
-              <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>
+              <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '12px' }}>
                 {new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
               </p>
             </div>
@@ -805,37 +1054,42 @@ const SecuritySection = ({ user }) => {
         </div>
       </div>
 
-      {/* Two-Factor */}
+      {/* Two-Factor Authentication */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginTop: '20px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ flex: 1, maxWidth: '600px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <Shield size={20} style={{ color: '#00b8d4' }} />
-              <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600 }}>
+              <Shield size={18} style={{ color: '#00b8d4' }} />
+              <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px' }}>
                 Two-Factor Authentication
               </h3>
             </div>
-            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
-              Add an extra layer of security. You'll need a code from your authenticator app when signing in.
+            <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', lineHeight: '1.6' }}>
+              Enhance account security with authenticator app verification during sign-in
             </p>
           </div>
           <button 
-            onClick={() => toast.info('2FA coming soon')}
+            onClick={() => {
+              setTwoFactorEnabled(!twoFactorEnabled);
+              toast.info('2FA will be enabled in a future update');
+            }}
             style={{
               width: '52px',
               height: '28px',
               borderRadius: '14px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: twoFactorEnabled ? '#00b8d4' : 'rgba(255, 255, 255, 0.08)',
+              border: `1px solid ${twoFactorEnabled ? '#00b8d4' : 'rgba(255, 255, 255, 0.12)'}`,
               cursor: 'pointer',
               position: 'relative',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.25s ease',
+              flexShrink: 0
             }}
           >
             <div style={{
@@ -845,9 +1099,9 @@ const SecuritySection = ({ user }) => {
               background: '#fff',
               position: 'absolute',
               top: '2px',
-              left: '3px',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+              left: twoFactorEnabled ? '27px' : '3px',
+              transition: 'all 0.25s ease',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.25)'
             }} />
           </button>
         </div>
@@ -867,48 +1121,52 @@ const NotificationsSection = ({ notifications, setNotifications }) => {
     { 
       key: 'dealUpdates', 
       label: 'Deal Updates', 
-      description: 'Get notified when deals change status, are assigned to you, or receive new activity',
-      icon: FileText
+      description: 'Notifications when deals change status or receive activity',
+      icon: FileText,
+      category: 'In-App'
     },
     { 
       key: 'reminders', 
       label: 'Reminders & Deadlines', 
-      description: 'Receive reminders for upcoming tasks, follow-ups, and important deadlines',
-      icon: Clock
+      description: 'Get notified about upcoming tasks and important dates',
+      icon: Clock,
+      category: 'In-App'
     },
     { 
       key: 'mentions', 
       label: 'Shares & Mentions', 
-      description: 'Be notified when someone mentions you or shares content with you',
-      icon: Bell
+      description: 'When someone shares content with you or mentions you',
+      icon: Bell,
+      category: 'In-App'
     },
     { 
       key: 'emailNotifications', 
-      label: 'Email Notifications', 
-      description: 'Receive important updates and summaries via email',
-      icon: Mail
+      label: 'Email Digest', 
+      description: 'Daily summary of important updates sent to your inbox',
+      icon: Mail,
+      category: 'Email'
     },
   ];
 
   return (
     <div>
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Notifications</h2>
-      <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '15px' }}>
-        Control what notifications you receive and how
-      </p>
+      {/* Header */}
+      <div style={{ marginBottom: '36px' }}>
+        <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '6px', letterSpacing: '-0.5px' }}>Notifications</h2>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
+          Control how and when you receive notifications
+        </p>
+      </div>
 
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px'
       }}>
-        <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '20px' }}>
-          Notification Preferences
-        </h3>
         {notificationOptions.map((option, index) => {
-          const Icon = option.icon || Bell;
+          const Icon = option.icon;
           return (
             <div
               key={option.key}
@@ -917,27 +1175,41 @@ const NotificationsSection = ({ notifications, setNotifications }) => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '20px 0',
-                borderBottom: index < notificationOptions.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none'
+                borderBottom: index < notificationOptions.length - 1 ? '1px solid rgba(255, 255, 255, 0.04)' : 'none'
               }}
             >
-              <div style={{ flex: 1, display: 'flex', alignItems: 'start', gap: '14px' }}>
+              <div style={{ flex: 1, display: 'flex', alignItems: 'start', gap: '16px' }}>
                 <div style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: '8px',
-                  background: notifications[option.key] ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                  background: notifications[option.key] ? 'rgba(0, 184, 212, 0.08)' : 'rgba(255, 255, 255, 0.03)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  flexShrink: 0
+                  flexShrink: 0,
+                  transition: 'all 0.2s ease'
                 }}>
-                  <Icon size={18} style={{ color: notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.4)' }} />
+                  <Icon size={18} style={{ color: notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.35)' }} />
                 </div>
-                <div>
-                  <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: 500, marginBottom: '4px' }}>
-                    {option.label}
-                  </h4>
-                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px', lineHeight: '1.5' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
+                    <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 600 }}>
+                      {option.label}
+                    </h4>
+                    <span style={{
+                      fontSize: '10px',
+                      padding: '2px 7px',
+                      background: 'rgba(255, 255, 255, 0.06)',
+                      borderRadius: '4px',
+                      color: 'rgba(255, 255, 255, 0.4)',
+                      fontWeight: 600,
+                      letterSpacing: '0.3px'
+                    }}>
+                      {option.category}
+                    </span>
+                  </div>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', lineHeight: '1.5' }}>
                     {option.description}
                   </p>
                 </div>
@@ -948,11 +1220,11 @@ const NotificationsSection = ({ notifications, setNotifications }) => {
                   width: '52px',
                   height: '28px',
                   borderRadius: '14px',
-                  background: notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)',
-                  border: 'none',
+                  background: notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.08)',
+                  border: `1px solid ${notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.12)'}`,
                   cursor: 'pointer',
                   position: 'relative',
-                  transition: 'all 0.3s ease',
+                  transition: 'all 0.25s ease',
                   flexShrink: 0,
                   marginLeft: '20px'
                 }}
@@ -965,156 +1237,13 @@ const NotificationsSection = ({ notifications, setNotifications }) => {
                   position: 'absolute',
                   top: '2px',
                   left: notifications[option.key] ? '27px' : '3px',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                  transition: 'all 0.25s ease',
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)'
                 }} />
               </button>
             </div>
           );
         })}
-      </div>
-    </div>
-  );
-};
-
-// Appearance Section
-const AppearanceSection = ({ theme, setTheme, density, setDensity }) => {
-  return (
-    <div>
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Appearance</h2>
-      <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '15px' }}>
-        Customize how the application looks and feels
-      </p>
-
-      {/* Theme */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px',
-        marginBottom: '24px'
-      }}>
-        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600, marginBottom: '12px' }}>Theme</h3>
-        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '20px' }}>
-          Select your preferred color scheme
-        </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          {[
-            { value: 'dark', label: 'Dark', icon: '🌙', desc: 'Easy on the eyes' },
-            { value: 'light', label: 'Light', icon: '☀️', desc: 'Bright and clean' }
-          ].map(t => (
-            <button
-              key={t.value}
-              onClick={() => setTheme(t.value)}
-              style={{
-                padding: '20px',
-                background: theme === t.value ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.02)',
-                border: `2px solid ${theme === t.value ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255, 255, 255, 0.05)'}`,
-                borderRadius: '12px',
-                cursor: 'pointer',
-                textAlign: 'center',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (theme !== t.value) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (theme !== t.value) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
-                }
-              }}
-            >
-              <div style={{ fontSize: '32px', marginBottom: '12px' }}>{t.icon}</div>
-              <div style={{
-                color: theme === t.value ? '#00b8d4' : '#fff',
-                fontSize: '16px',
-                fontWeight: 600,
-                marginBottom: '6px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px'
-              }}>
-                {t.label}
-                {theme === t.value && <Check size={16} />}
-              </div>
-              <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px' }}>
-                {t.desc}
-              </p>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Density */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px'
-      }}>
-        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600, marginBottom: '12px' }}>Interface Density</h3>
-        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '20px' }}>
-          Choose how compact you want the interface to be
-        </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          {[
-            { value: 'cozy', label: 'Cozy', description: 'More space, easier to read', icon: '📖' },
-            { value: 'compact', label: 'Compact', description: 'Dense, shows more content', icon: '📊' }
-          ].map(d => (
-            <button
-              key={d.value}
-              onClick={() => setDensity(d.value)}
-              style={{
-                padding: '20px',
-                background: density === d.value ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.02)',
-                border: `2px solid ${density === d.value ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255, 255, 255, 0.05)'}`,
-                borderRadius: '12px',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (density !== d.value) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (density !== d.value) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
-                }
-              }}
-            >
-              <div style={{ fontSize: '28px', marginBottom: '10px' }}>{d.icon}</div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '8px'
-              }}>
-                <span style={{
-                  color: density === d.value ? '#00b8d4' : '#fff',
-                  fontSize: '16px',
-                  fontWeight: 600
-                }}>
-                  {d.label}
-                </span>
-                {density === d.value && <Check size={18} style={{ color: '#00b8d4' }} />}
-              </div>
-              <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', lineHeight: '1.5' }}>
-                {d.description}
-              </p>
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -1128,8 +1257,8 @@ const DataPrivacySection = () => {
   const handleExportData = async () => {
     toast.info('⏳ Preparing your data export...');
     setTimeout(() => {
-      toast.success('📧 Export will be sent to your email shortly');
-    }, 2000);
+      toast.success('📧 Export will be sent to your email within 24 hours');
+    }, 1500);
   };
 
   const handleDeleteAccount = async () => {
@@ -1137,32 +1266,36 @@ const DataPrivacySection = () => {
       toast.error('Please type DELETE to confirm');
       return;
     }
-    toast.error('Account deletion coming soon');
+    toast.info('Account deletion will be enabled in a future update');
     setShowDeleteDialog(false);
+    setDeleteConfirm('');
   };
 
   return (
     <div>
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Data & Privacy</h2>
-      <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '15px' }}>
-        Manage your data and account privacy
-      </p>
+      {/* Header */}
+      <div style={{ marginBottom: '36px' }}>
+        <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '6px', letterSpacing: '-0.5px' }}>Data & Privacy</h2>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
+          Control your data and manage account lifecycle
+        </p>
+      </div>
 
       {/* Export Data */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        padding: '24px',
-        marginBottom: '24px'
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '28px',
+        marginBottom: '20px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'start', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'start', gap: '16px' }}>
           <div style={{
-            width: '44px',
-            height: '44px',
+            width: '48px',
+            height: '48px',
             borderRadius: '10px',
-            background: 'rgba(0, 184, 212, 0.1)',
+            background: 'rgba(0, 184, 212, 0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1171,29 +1304,38 @@ const DataPrivacySection = () => {
             <Download size={22} style={{ color: '#00b8d4' }} />
           </div>
           <div style={{ flex: 1 }}>
-            <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: 600, marginBottom: '8px' }}>
+            <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '8px', letterSpacing: '-0.2px' }}>
               Export Your Data
             </h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginBottom: '16px', lineHeight: '1.6' }}>
-              Download a complete copy of your data including deals, contacts, documents, and activity history in JSON format
+            <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', marginBottom: '16px', lineHeight: '1.6' }}>
+              Download all your data including deals, contacts, documents, and activity history in JSON format
             </p>
             <button
               onClick={handleExportData}
               style={{
-                padding: '12px 24px',
-                background: 'rgba(0, 184, 212, 0.1)',
-                border: '1px solid rgba(0, 184, 212, 0.3)',
-                borderRadius: '8px',
+                padding: '10px 20px',
+                background: 'rgba(0, 184, 212, 0.08)',
+                border: '1px solid rgba(0, 184, 212, 0.25)',
+                borderRadius: '6px',
                 color: '#00b8d4',
                 cursor: 'pointer',
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.12)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              <Download size={16} />
+              <Download size={14} />
               Request Data Export
             </button>
           </div>
@@ -1202,18 +1344,18 @@ const DataPrivacySection = () => {
 
       {/* Delete Account */}
       <div style={{
-        background: 'rgba(220, 38, 38, 0.05)',
+        background: 'rgba(220, 38, 38, 0.04)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(220, 38, 38, 0.2)',
-        borderRadius: '12px',
-        padding: '24px'
+        border: '1px solid rgba(220, 38, 38, 0.15)',
+        borderRadius: '10px',
+        padding: '28px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'start', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'start', gap: '16px' }}>
           <div style={{
-            width: '44px',
-            height: '44px',
+            width: '48px',
+            height: '48px',
             borderRadius: '10px',
-            background: 'rgba(220, 38, 38, 0.1)',
+            background: 'rgba(220, 38, 38, 0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1222,48 +1364,54 @@ const DataPrivacySection = () => {
             <AlertCircle size={22} style={{ color: '#ff4444' }} />
           </div>
           <div style={{ flex: 1 }}>
-            <h3 style={{ color: '#ff4444', fontSize: '18px', fontWeight: 600, marginBottom: '8px' }}>
-              Danger Zone
+            <h3 style={{ color: '#ff4444', fontSize: '16px', fontWeight: 600, marginBottom: '8px', letterSpacing: '-0.2px' }}>
+              Delete Account
             </h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px', marginBottom: '16px', lineHeight: '1.6' }}>
-              Once you delete your account, there is no going back. All your data including deals, contacts, and documents will be permanently erased.
+            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px', marginBottom: '16px', lineHeight: '1.6' }}>
+              Permanently delete your account and all associated data. This action cannot be undone.
             </p>
             <button
-              onClick={() => setShowDeleteDialog(true)}
+              onClick={() => setShowDeleteDialog(!showDeleteDialog)}
               style={{
-                padding: '12px 24px',
+                padding: '10px 20px',
                 background: 'transparent',
-                border: '2px solid #ff4444',
-                borderRadius: '8px',
+                border: '1.5px solid rgba(220, 38, 38, 0.4)',
+                borderRadius: '6px',
                 color: '#ff4444',
                 cursor: 'pointer',
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.15s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(220, 38, 38, 0.1)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(220, 38, 38, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(220, 38, 38, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(220, 38, 38, 0.4)';
+              }}
             >
-              <Trash2 size={16} />
+              <Trash2 size={14} />
               Delete Account
             </button>
           </div>
         </div>
 
-        {/* Delete Confirmation Dialog */}
+        {/* Delete Confirmation */}
         {showDeleteDialog && (
           <div style={{
             marginTop: '24px',
-            padding: '20px',
-            background: 'rgba(0, 0, 0, 0.5)',
-            border: '1px solid rgba(220, 38, 38, 0.3)',
+            padding: '24px',
+            background: 'rgba(0, 0, 0, 0.4)',
+            border: '1px solid rgba(220, 38, 38, 0.25)',
             borderRadius: '8px'
           }}>
-            <p style={{ color: '#fff', fontSize: '14px', marginBottom: '12px', fontWeight: 500 }}>
-              Type <span style={{ color: '#ff4444', fontWeight: 700 }}>DELETE</span> to confirm:
+            <p style={{ color: '#fff', fontSize: '14px', marginBottom: '14px', fontWeight: 500 }}>
+              Type <span style={{ color: '#ff4444', fontWeight: 700, fontFamily: 'monospace', background: 'rgba(220, 38, 38, 0.1)', padding: '2px 8px', borderRadius: '4px' }}>DELETE</span> to confirm:
             </p>
             <input
               type="text"
@@ -1272,16 +1420,17 @@ const DataPrivacySection = () => {
               placeholder="Type DELETE"
               style={{
                 width: '100%',
-                padding: '12px',
-                background: 'rgba(0, 0, 0, 0.6)',
+                padding: '12px 14px',
+                background: 'rgba(0, 0, 0, 0.5)',
                 border: '1px solid rgba(220, 38, 38, 0.3)',
-                borderRadius: '8px',
+                borderRadius: '7px',
                 color: '#fff',
                 fontSize: '14px',
-                marginBottom: '12px'
+                marginBottom: '14px',
+                fontFamily: 'monospace'
               }}
             />
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
               <button
                 onClick={() => {
                   setShowDeleteDialog(false);
@@ -1290,11 +1439,11 @@ const DataPrivacySection = () => {
                 style={{
                   flex: 1,
                   padding: '10px',
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'rgba(255, 255, 255, 0.04)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   borderRadius: '6px',
                   color: '#fff',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   fontWeight: 600,
                   cursor: 'pointer'
                 }}
@@ -1307,12 +1456,12 @@ const DataPrivacySection = () => {
                 style={{
                   flex: 1,
                   padding: '10px',
-                  background: deleteConfirm === 'DELETE' ? '#ff4444' : 'rgba(255, 255, 255, 0.05)',
+                  background: deleteConfirm === 'DELETE' ? '#ff4444' : 'rgba(255, 255, 255, 0.04)',
                   border: 'none',
                   borderRadius: '6px',
-                  color: deleteConfirm === 'DELETE' ? '#000' : 'rgba(255, 255, 255, 0.3)',
-                  fontSize: '14px',
-                  fontWeight: 600,
+                  color: deleteConfirm === 'DELETE' ? '#000' : 'rgba(255, 255, 255, 0.25)',
+                  fontSize: '13px',
+                  fontWeight: 700,
                   cursor: deleteConfirm === 'DELETE' ? 'pointer' : 'not-allowed'
                 }}
               >
@@ -1358,7 +1507,7 @@ const ChangePasswordModal = ({ onClose }) => {
       onClose();
     } catch (error) {
       console.error('Error updating password:', error);
-      toast.error('Failed to update password');
+      toast.error(error.message || 'Failed to update password');
     } finally {
       setLoading(false);
     }
@@ -1371,7 +1520,7 @@ const ChangePasswordModal = ({ onClose }) => {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0, 0, 0, 0.8)',
+      background: 'rgba(0, 0, 0, 0.85)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -1380,13 +1529,14 @@ const ChangePasswordModal = ({ onClose }) => {
     }}>
       <div style={{
         width: '100%',
-        maxWidth: '500px',
-        background: 'rgba(20, 20, 20, 0.98)',
+        maxWidth: '520px',
+        background: 'rgba(15, 15, 15, 0.98)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '16px',
-        padding: '32px',
-        position: 'relative'
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '12px',
+        padding: '36px',
+        position: 'relative',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)'
       }}>
         <button
           onClick={onClose}
@@ -1394,42 +1544,45 @@ const ChangePasswordModal = ({ onClose }) => {
             position: 'absolute',
             top: '20px',
             right: '20px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: 'none',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             borderRadius: '6px',
             padding: '8px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            transition: 'all 0.15s ease'
           }}
+          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
+          onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'}
         >
-          <X size={20} style={{ color: '#fff' }} />
+          <X size={18} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-          <div style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '10px',
-            background: 'rgba(0, 184, 212, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Lock size={22} style={{ color: '#00b8d4' }} />
-          </div>
-          <div>
-            <h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700 }}>
+        <div style={{ marginBottom: '28px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <div style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '10px',
+              background: 'rgba(0, 184, 212, 0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Lock size={20} style={{ color: '#00b8d4' }} />
+            </div>
+            <h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, letterSpacing: '-0.3px' }}>
               Change Password
             </h2>
-            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
-              Enter your current password and choose a new one
-            </p>
           </div>
+          <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '14px', marginLeft: '56px' }}>
+            Create a strong, unique password
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Current Password */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+          <div style={{ marginBottom: '18px' }}>
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
               Current Password
             </label>
             <div style={{ position: 'relative' }}>
@@ -1440,11 +1593,11 @@ const ChangePasswordModal = ({ onClose }) => {
                 required
                 style={{
                   width: '100%',
-                  padding: '12px',
+                  padding: '12px 14px',
                   paddingRight: '45px',
                   background: 'rgba(0, 0, 0, 0.4)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '7px',
                   color: '#fff',
                   fontSize: '14px'
                 }}
@@ -1463,14 +1616,17 @@ const ChangePasswordModal = ({ onClose }) => {
                   padding: '4px'
                 }}
               >
-                {showCurrent ? <EyeOff size={18} style={{ color: 'rgba(255, 255, 255, 0.5)' }} /> : <Eye size={18} style={{ color: 'rgba(255, 255, 255, 0.5)' }} />}
+                {showCurrent ? 
+                  <EyeOff size={17} style={{ color: 'rgba(255, 255, 255, 0.4)' }} /> : 
+                  <Eye size={17} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+                }
               </button>
             </div>
           </div>
 
           {/* New Password */}
           <div style={{ marginBottom: '8px' }}>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
               New Password
             </label>
             <div style={{ position: 'relative' }}>
@@ -1481,11 +1637,11 @@ const ChangePasswordModal = ({ onClose }) => {
                 required
                 style={{
                   width: '100%',
-                  padding: '12px',
+                  padding: '12px 14px',
                   paddingRight: '45px',
                   background: 'rgba(0, 0, 0, 0.4)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '7px',
                   color: '#fff',
                   fontSize: '14px'
                 }}
@@ -1504,19 +1660,22 @@ const ChangePasswordModal = ({ onClose }) => {
                   padding: '4px'
                 }}
               >
-                {showNew ? <EyeOff size={18} style={{ color: 'rgba(255, 255, 255, 0.5)' }} /> : <Eye size={18} style={{ color: 'rgba(255, 255, 255, 0.5)' }} />}
+                {showNew ? 
+                  <EyeOff size={17} style={{ color: 'rgba(255, 255, 255, 0.4)' }} /> : 
+                  <Eye size={17} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+                }
               </button>
             </div>
           </div>
           {newPassword && (
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '18px' }}>
               <PasswordStrengthBar password={newPassword} />
             </div>
           )}
 
           {/* Confirm Password */}
-          <div style={{ marginBottom: '24px' }}>
-            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
+          <div style={{ marginBottom: '28px' }}>
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
               Confirm New Password
             </label>
             <div style={{ position: 'relative' }}>
@@ -1527,11 +1686,11 @@ const ChangePasswordModal = ({ onClose }) => {
                 required
                 style={{
                   width: '100%',
-                  padding: '12px',
+                  padding: '12px 14px',
                   paddingRight: '45px',
                   background: 'rgba(0, 0, 0, 0.4)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '7px',
                   color: '#fff',
                   fontSize: '14px'
                 }}
@@ -1550,7 +1709,10 @@ const ChangePasswordModal = ({ onClose }) => {
                   padding: '4px'
                 }}
               >
-                {showConfirm ? <EyeOff size={18} style={{ color: 'rgba(255, 255, 255, 0.5)' }} /> : <Eye size={18} style={{ color: 'rgba(255, 255, 255, 0.5)' }} />}
+                {showConfirm ? 
+                  <EyeOff size={17} style={{ color: 'rgba(255, 255, 255, 0.4)' }} /> : 
+                  <Eye size={17} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
+                }
               </button>
             </div>
           </div>
@@ -1563,14 +1725,17 @@ const ChangePasswordModal = ({ onClose }) => {
               style={{
                 flex: 1,
                 padding: '12px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '7px',
                 color: '#fff',
                 fontSize: '14px',
                 fontWeight: 600,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
               }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'}
             >
               Cancel
             </button>
@@ -1582,18 +1747,19 @@ const ChangePasswordModal = ({ onClose }) => {
                 padding: '12px',
                 background: loading ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '7px',
                 color: '#000',
                 fontSize: '14px',
-                fontWeight: 600,
+                fontWeight: 700,
                 cursor: loading ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '8px'
+                gap: '8px',
+                boxShadow: loading ? 'none' : '0 2px 12px rgba(0, 184, 212, 0.3)'
               }}
             >
-              {loading && <Loader2 size={16} className="animate-spin" />}
+              {loading && <Loader2 size={15} className="animate-spin" />}
               Update Password
             </button>
           </div>
