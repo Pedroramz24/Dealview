@@ -113,6 +113,7 @@ function App() {
             <Route path="pipeline" element={<Pipeline />} />
             <Route path="campaigns" element={<Campaigns />} />
             <Route path="calendar" element={<CalendarView />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="team" element={<Team />} />
           </Route>
         </Routes>
