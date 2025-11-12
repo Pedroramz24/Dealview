@@ -90,19 +90,34 @@ const Settings = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const { error } = await supabase
+      console.log('💾 Saving profile data:', profileData);
+      
+      const { data, error } = await supabase
         .from('user_profiles')
-        .update(profileData)
-        .eq('id', user.id);
+        .update({
+          full_name: profileData.full_name,
+          title: profileData.title,
+          phone: profileData.phone,
+          timezone: profileData.timezone,
+          avatar_url: profileData.avatar_url,
+          company_logo_url: profileData.company_logo_url
+        })
+        .eq('id', user.id)
+        .select();
 
-      if (error) throw error;
+      console.log('📥 Update result:', { data, error });
+
+      if (error) {
+        console.error('❌ Supabase error:', error);
+        throw error;
+      }
 
       setOriginalData(profileData);
       setIsDirty(false);
       toast.success('✅ Settings saved successfully');
     } catch (error) {
-      console.error('Error saving:', error);
-      toast.error('Failed to save settings');
+      console.error('❌ Error saving:', error);
+      toast.error(`Failed to save settings: ${error.message || 'Unknown error'}`);
     } finally {
       setSaving(false);
     }
