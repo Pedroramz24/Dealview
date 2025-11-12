@@ -1378,7 +1378,7 @@ const ChangePasswordModal = ({ onClose }) => {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
 
-      toast.success('✅ Password updated successfully');
+      toast.success('Password updated successfully');
       onClose();
     } catch (error) {
       console.error('Error updating password:', error);
