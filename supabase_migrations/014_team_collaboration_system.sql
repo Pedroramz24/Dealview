@@ -53,19 +53,24 @@ CREATE TABLE IF NOT EXISTS public.team_invites (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
--- Indexes
+-- Indexes (create after tables)
 CREATE INDEX IF NOT EXISTS teams_created_by_idx ON public.teams(created_by);
 CREATE INDEX IF NOT EXISTS team_members_team_id_idx ON public.team_members(team_id);
 CREATE INDEX IF NOT EXISTS team_members_user_id_idx ON public.team_members(user_id);
 CREATE INDEX IF NOT EXISTS team_invites_team_id_idx ON public.team_invites(team_id);
 CREATE INDEX IF NOT EXISTS team_invites_token_idx ON public.team_invites(token);
 
--- Enable RLS
+-- Enable RLS (after tables created)
 ALTER TABLE public.teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.team_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.team_invites ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies for teams
+-- Grant permissions BEFORE creating policies
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.teams TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.team_members TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.team_invites TO authenticated;
+
+-- RLS Policies for teams (create AFTER tables and permissions)
 CREATE POLICY "Users can view teams they are members of" ON public.teams
   FOR SELECT USING (
     id IN (SELECT team_id FROM public.team_members WHERE user_id = auth.uid())
@@ -146,6 +151,7 @@ CREATE POLICY "Owners and admins can update invites" ON public.team_invites
     )
   );
 
+-- Triggers (create LAST, after all tables and policies)
 -- Trigger to auto-create team membership when team is created
 CREATE OR REPLACE FUNCTION public.handle_new_team()
 RETURNS TRIGGER AS $$
@@ -167,11 +173,6 @@ CREATE TRIGGER update_teams_updated_at
   BEFORE UPDATE ON public.teams
   FOR EACH ROW
   EXECUTE FUNCTION public.update_updated_at_column();
-
--- Grant permissions
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.teams TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.team_members TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.team_invites TO authenticated;
 
 -- =====================================================
 -- DONE!
