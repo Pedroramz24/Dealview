@@ -1445,7 +1445,7 @@ async def get_user_teams(credentials: HTTPAuthorizationCredentials = Depends(sec
         # Get teams user is a member of
         result = supabase.table('team_members').select(
             'team_id, role, joined_at, teams(id, name, created_by, default_deal_sharing, created_at)'
-        ).eq('user_id', str(user['id'])).execute()
+        ).eq('user_id', str(user.id)).execute()
         
         teams = []
         for member in result.data:
