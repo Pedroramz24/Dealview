@@ -1414,19 +1414,26 @@ async def create_team(team_data: TeamCreate, credentials: HTTPAuthorizationCrede
     user = await get_current_user(credentials)
     
     try:
+        print(f"Creating team: {team_data.name} for user: {user}")
+        
         # Create team in Supabase
         result = supabase.table('teams').insert({
             'name': team_data.name,
             'created_by': str(user['id'])
         }).execute()
         
+        print(f"Supabase result: {result}")
+        
         team = result.data[0] if result.data else None
         
         if not team:
-            raise HTTPException(status_code=500, detail="Failed to create team")
+            raise HTTPException(status_code=500, detail="Failed to create team - no data returned")
         
         return {"team": team}
     except Exception as e:
+        print(f"Error creating team: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 # Get User's Teams
