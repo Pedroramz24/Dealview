@@ -551,7 +551,8 @@ const Team = () => {
                       {isCurrentUser && (
                         <div style={{
                           position: 'absolute',
-                          bottom: '-2px',\n                          right: '-2px',
+                          bottom: '-2px',
+                          right: '-2px',
                           width: '12px',
                           height: '12px',
                           borderRadius: '50%',
