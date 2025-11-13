@@ -101,6 +101,7 @@ function App() {
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/share/:dealId" element={<PublicShare />} />
+          <Route path="/join-team/:token" element={<JoinTeam />} />
           <Route
             path="/"
             element={user ? <MainLayout /> : <Navigate to="/login" />}
