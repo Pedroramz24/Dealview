@@ -832,28 +832,34 @@ const CreateTeamModal = ({ onClose, onCreate }) => {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0, 0, 0, 0.9)',
-      backdropFilter: 'blur(8px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 10000
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '520px',
-        background: '#0a0a0a',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '12px',
-        padding: '36px',
-        boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)'
-      }}>
+    <div 
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.9)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 10000
+      }}
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%',
+          maxWidth: '520px',
+          background: '#0a0a0a',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '12px',
+          padding: '36px',
+          boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)'
+        }}
+      >
         <div style={{ marginBottom: '32px' }}>
           <h2 style={{ 
             color: '#fff', 
