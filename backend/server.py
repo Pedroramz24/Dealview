@@ -1436,7 +1436,7 @@ async def get_user_teams(credentials: HTTPAuthorizationCredentials = Depends(sec
     
     try:
         # Get teams user is a member of
-        result = supabase.table('team_members').select(
+        result = supabase.table('team_memberships').select(
             'team_id, role, joined_at, teams(id, name, created_by, default_deal_sharing, created_at)'
         ).eq('user_id', str(user['id'])).execute()
         
@@ -1465,7 +1465,7 @@ async def get_team_members(team_id: str, credentials: HTTPAuthorizationCredentia
     
     try:
         # Get team members with user profile data
-        result = supabase.table('team_members').select(
+        result = supabase.table('team_memberships').select(
             '*, user_profiles(full_name, phone, avatar_url, company)'
         ).eq('team_id', team_id).execute()
         
@@ -1566,7 +1566,7 @@ async def join_team(token: str, credentials: HTTPAuthorizationCredentials = Depe
             raise HTTPException(status_code=400, detail="Invite link has expired")
         
         # Check if already a member
-        existing = supabase.table('team_members').select('*').eq(
+        existing = supabase.table('team_memberships').select('*').eq(
             'team_id', invite['team_id']
         ).eq('user_id', str(user['id'])).execute()
         
@@ -1574,7 +1574,7 @@ async def join_team(token: str, credentials: HTTPAuthorizationCredentials = Depe
             raise HTTPException(status_code=400, detail="You are already a member of this team")
         
         # Add user to team
-        supabase.table('team_members').insert({
+        supabase.table('team_memberships').insert({
             'team_id': invite['team_id'],
             'user_id': str(user['id']),
             'role': invite['role']
@@ -1606,7 +1606,7 @@ async def remove_team_member(team_id: str, user_id: str, credentials: HTTPAuthor
     
     try:
         # Check if current user is owner/admin
-        member_check = supabase.table('team_members').select('role').eq(
+        member_check = supabase.table('team_memberships').select('role').eq(
             'team_id', team_id
         ).eq('user_id', str(current_user['id'])).execute()
         
@@ -1618,7 +1618,7 @@ async def remove_team_member(team_id: str, user_id: str, credentials: HTTPAuthor
             raise HTTPException(status_code=400, detail="Owners cannot remove themselves")
         
         # Remove member
-        supabase.table('team_members').delete().eq('team_id', team_id).eq('user_id', user_id).execute()
+        supabase.table('team_memberships').delete().eq('team_id', team_id).eq('user_id', user_id).execute()
         
         return {"message": "Member removed successfully"}
     except HTTPException:
@@ -1638,7 +1638,7 @@ async def update_member_role(
     
     try:
         # Check if current user is owner/admin
-        member_check = supabase.table('team_members').select('role').eq(
+        member_check = supabase.table('team_memberships').select('role').eq(
             'team_id', team_id
         ).eq('user_id', str(current_user['id'])).execute()
         
@@ -1646,7 +1646,7 @@ async def update_member_role(
             raise HTTPException(status_code=403, detail="Only owners and admins can change roles")
         
         # Cannot change owner role
-        target_member = supabase.table('team_members').select('role').eq(
+        target_member = supabase.table('team_memberships').select('role').eq(
             'team_id', team_id
         ).eq('user_id', user_id).execute()
         
@@ -1654,7 +1654,7 @@ async def update_member_role(
             raise HTTPException(status_code=400, detail="Cannot change owner role")
         
         # Update role
-        supabase.table('team_members').update({
+        supabase.table('team_memberships').update({
             'role': role_data.role
         }).eq('team_id', team_id).eq('user_id', user_id).execute()
         
@@ -1685,7 +1685,7 @@ async def update_team(team_id: str, team_data: TeamUpdate, credentials: HTTPAuth
     
     try:
         # Check if user is owner/admin
-        member_check = supabase.table('team_members').select('role').eq(
+        member_check = supabase.table('team_memberships').select('role').eq(
             'team_id', team_id
         ).eq('user_id', str(user['id'])).execute()
         
