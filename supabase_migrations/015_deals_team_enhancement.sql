@@ -37,7 +37,7 @@ CREATE POLICY "Users can view own and team deals" ON public.deals
     OR (
       is_shared_with_team = true 
       AND team_id IN (
-        SELECT team_id FROM public.team_members WHERE user_id = auth.uid()
+        SELECT team_id FROM public.team_memberships WHERE user_id = auth.uid()
       )
     )
     OR auth.uid() = ANY(
@@ -54,7 +54,7 @@ CREATE POLICY "Users can update own and assigned deals" ON public.deals
     OR assigned_to = auth.uid()
     OR (
       team_id IN (
-        SELECT team_id FROM public.team_members 
+        SELECT team_id FROM public.team_memberships 
         WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
       )
     )
