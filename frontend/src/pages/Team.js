@@ -459,163 +459,181 @@ const Team = () => {
 
       {/* Team Members Section */}
       <div className="glass-surface" style={{ padding: '24px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '24px' }}>
-        <h3 style={{
-          color: '#FFFFFF',
-          fontSize: '16px',
-          fontWeight: 700,
-          marginBottom: '16px',
-          letterSpacing: '-0.01em'
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <h3 style={{
+            color: '#FFFFFF',
+            fontSize: '16px',
+            fontWeight: 700,
+            margin: 0,
+            letterSpacing: '-0.01em'
+          }}>
+            Team Members
+          </h3>
+          <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', fontWeight: 500 }}>
+            {members.length} total
+          </span>
+        </div>
+
+        {/* Table Header */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '2.5fr 2fr 1fr auto',
+          padding: '12px 16px',
+          background: 'rgba(0, 0, 0, 0.3)',
+          borderRadius: '8px 8px 0 0',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          borderBottom: 'none'
         }}>
-          Team Members
-        </h3>
+          <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Member
+          </span>
+          <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Email
+          </span>
+          <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Role
+          </span>
+          <span></span>
+        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px' }}>
-          {members.map((member) => {
-            const RoleIcon = getRoleIcon(member.role);
-            const roleColor = getRoleColor(member.role);
-            const isCurrentUser = member.user_id === user?.id;
-            
-            return (
-              <div
-                key={member.id}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '10px',
-                  padding: '16px',
-                  transition: 'border-color 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)'}
-                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
-              >
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-                  <div style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '50%',
-                    background: member.avatar_url 
-                      ? `url(${member.avatar_url})` 
-                      : `linear-gradient(135deg, ${roleColor}40, ${roleColor}20)`,
-                    backgroundSize: 'cover',
-                    display: 'flex',
+        {/* Table Body */}
+        <div style={{
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          borderTop: 'none',
+          borderRadius: '0 0 8px 8px',
+          overflow: 'hidden'
+        }}>
+          {members.length === 0 ? (
+            <div style={{ padding: '40px', textAlign: 'center', background: 'rgba(0, 0, 0, 0.2)' }}>
+              <Users size={32} style={{ color: 'rgba(255, 255, 255, 0.2)', margin: '0 auto 12px' }} />
+              <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '14px' }}>No team members yet</p>
+            </div>
+          ) : (
+            members.map((member, index) => {
+              const RoleIcon = getRoleIcon(member.role);
+              const roleColor = getRoleColor(member.role);
+              const isCurrentUser = member.user_id === user?.id;
+              
+              return (
+                <div
+                  key={member.id}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '2.5fr 2fr 1fr auto',
+                    padding: '14px 16px',
+                    background: index % 2 === 0 ? 'rgba(0, 0, 0, 0.15)' : 'rgba(0, 0, 0, 0.25)',
+                    borderBottom: index < members.length - 1 ? '1px solid rgba(255, 255, 255, 0.04)' : 'none',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    border: `2px solid ${roleColor}30`,
-                    flexShrink: 0,
-                    position: 'relative'
-                  }}>
-                    {!member.avatar_url && <User size={22} style={{ color: roleColor }} />}
-                    {isCurrentUser && (
-                      <div style={{
-                        position: 'absolute',
-                        bottom: '-2px',
-                        right: '-2px',
-                        width: '14px',
-                        height: '14px',
-                        borderRadius: '50%',
-                        background: '#10b981',
-                        border: '2px solid #000'
-                      }} />
-                    )}
-                  </div>
-
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                      <h3 style={{
-                        color: '#fff',
-                        fontSize: '14px',
-                        fontWeight: 600,
-                        margin: 0,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {member.full_name || member.email?.split('@')[0] || 'Member'}
-                      </h3>
+                    transition: 'background 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = index % 2 === 0 ? 'rgba(0, 0, 0, 0.15)' : 'rgba(0, 0, 0, 0.25)'}
+                >
+                  {/* Member Column */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: member.avatar_url 
+                        ? `url(${member.avatar_url})` 
+                        : `linear-gradient(135deg, ${roleColor}40, ${roleColor}20)`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: `2px solid ${roleColor}30`,
+                      flexShrink: 0,
+                      position: 'relative'
+                    }}>
+                      {!member.avatar_url && <User size={20} style={{ color: roleColor }} />}
                       {isCurrentUser && (
-                        <span style={{
-                          fontSize: '9px',
-                          padding: '2px 6px',
-                          background: 'rgba(0, 184, 212, 0.2)',
-                          borderRadius: '3px',
-                          color: '#00b8d4',
-                          fontWeight: 700
-                        }}>YOU</span>
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '-2px',\n                          right: '-2px',
+                          width: '12px',
+                          height: '12px',
+                          borderRadius: '50%',
+                          background: '#10b981',
+                          border: '2px solid #000'
+                        }} />
                       )}
                     </div>
-                    <p style={{
-                      color: 'rgba(255, 255, 255, 0.4)',
-                      fontSize: '12px',
-                      margin: 0,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {member.email}
-                    </p>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{
+                          color: '#fff',
+                          fontSize: '14px',
+                          fontWeight: 600,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {member.full_name || member.email?.split('@')[0] || 'Team Member'}
+                        </span>
+                        {isCurrentUser && (
+                          <span style={{
+                            fontSize: '9px',
+                            padding: '2px 6px',
+                            background: 'rgba(0, 184, 212, 0.2)',
+                            borderRadius: '3px',
+                            color: '#00b8d4',
+                            fontWeight: 700
+                          }}>YOU</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Email Column */}
+                  <span style={{
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    fontSize: '14px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {member.email}
+                  </span>
+
+                  {/* Role Column */}
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    padding: '5px 10px',
+                    background: `${roleColor}15`,
+                    border: `1px solid ${roleColor}35`,
+                    borderRadius: '6px',
+                    width: 'fit-content'
+                  }}>
+                    <RoleIcon size={12} style={{ color: roleColor }} />
+                    <span style={{ color: roleColor, fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                      {member.role}
+                    </span>
+                  </div>
+
+                  {/* Actions Column */}
+                  <div>
+                    {canManage && !isCurrentUser && member.role !== 'owner' && (
+                      <button
+                        style={{
+                          padding: '6px',
+                          background: 'rgba(255, 255, 255, 0.04)',
+                          border: '1px solid rgba(255, 255, 255, 0.08)',
+                          borderRadius: '5px',
+                          color: 'rgba(255, 255, 255, 0.5)',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <MoreVertical size={16} />
+                      </button>
+                    )}
                   </div>
                 </div>
-                
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  padding: '5px 10px',
-                  background: `${roleColor}15`,
-                  border: `1px solid ${roleColor}35`,
-                  borderRadius: '6px'
-                }}>
-                  <RoleIcon size={12} style={{ color: roleColor }} />
-                  <span style={{ color: roleColor, fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-                    {member.role}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Add Member Card */}
-          {canManage && (
-            <button
-              onClick={() => setShowInviteMember(true)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px dashed rgba(0, 184, 212, 0.4)',
-                borderRadius: '10px',
-                padding: '16px',
-                cursor: 'pointer',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '110px',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.06)';
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.6)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)';
-              }}
-            >
-              <div style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                background: 'rgba(0, 184, 212, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '8px'
-              }}>
-                <Plus size={18} style={{ color: '#00b8d4' }} />
-              </div>
-              <span style={{ color: '#00b8d4', fontSize: '12px', fontWeight: 600 }}>
-                Invite Member
-              </span>
-            </button>
+              );
+            })
           )}
         </div>
       </div>
