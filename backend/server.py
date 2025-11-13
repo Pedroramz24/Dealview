@@ -1468,7 +1468,7 @@ async def get_user_teams(credentials: HTTPAuthorizationCredentials = Depends(sec
 # Get Team Members
 @app.get("/api/teams/{team_id}/members")
 async def get_team_members(team_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
         # Get team members with user profile data
@@ -1502,7 +1502,7 @@ async def get_team_members(team_id: str, credentials: HTTPAuthorizationCredentia
 # Create Invite Link
 @app.post("/api/teams/{team_id}/invite")
 async def create_invite(team_id: str, invite_data: InviteCreate, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
         # Generate unique token
@@ -1542,7 +1542,7 @@ async def create_invite(team_id: str, invite_data: InviteCreate, credentials: HT
 # Get Team Invites
 @app.get("/api/teams/{team_id}/invites")
 async def get_team_invites(team_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
         result = supabase.table('team_invites').select('*').eq(
@@ -1556,7 +1556,7 @@ async def get_team_invites(team_id: str, credentials: HTTPAuthorizationCredentia
 # Join Team via Invite Link
 @app.post("/api/teams/join/{token}")
 async def join_team(token: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
         # Find invite
@@ -1609,7 +1609,7 @@ async def join_team(token: str, credentials: HTTPAuthorizationCredentials = Depe
 # Remove Team Member
 @app.delete("/api/teams/{team_id}/members/{user_id}")
 async def remove_team_member(team_id: str, user_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    current_user = await get_current_user(credentials)
+    current_user = await get_current_user_supabase(credentials)
     
     try:
         # Check if current user is owner/admin
@@ -1641,7 +1641,7 @@ async def update_member_role(
     role_data: UpdateMemberRole,
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
-    current_user = await get_current_user(credentials)
+    current_user = await get_current_user_supabase(credentials)
     
     try:
         # Check if current user is owner/admin
@@ -1674,7 +1674,7 @@ async def update_member_role(
 # Revoke Invite
 @app.delete("/api/teams/{team_id}/invites/{invite_id}")
 async def revoke_invite(team_id: str, invite_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
         supabase.table('team_invites').update({
@@ -1688,7 +1688,7 @@ async def revoke_invite(team_id: str, invite_id: str, credentials: HTTPAuthoriza
 # Update Team Settings
 @app.put("/api/teams/{team_id}")
 async def update_team(team_id: str, team_data: TeamUpdate, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
         # Check if user is owner/admin
