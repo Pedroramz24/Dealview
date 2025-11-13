@@ -1411,15 +1411,15 @@ class UpdateMemberRole(BaseModel):
 # Create Team
 @app.post("/api/teams")
 async def create_team(team_data: TeamCreate, credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
-        print(f"Creating team: {team_data.name} for user: {user}")
+        print(f"Creating team: {team_data.name} for user: {user.id}")
         
         # Create team in Supabase
         result = supabase.table('teams').insert({
             'name': team_data.name,
-            'created_by': str(user['id'])
+            'created_by': str(user.id)
         }).execute()
         
         print(f"Supabase result: {result}")
@@ -1439,7 +1439,7 @@ async def create_team(team_data: TeamCreate, credentials: HTTPAuthorizationCrede
 # Get User's Teams
 @app.get("/api/teams")
 async def get_user_teams(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    user = await get_current_user(credentials)
+    user = await get_current_user_supabase(credentials)
     
     try:
         # Get teams user is a member of
