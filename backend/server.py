@@ -1385,6 +1385,330 @@ async def get_market_news():
         }
 
 
+
+# =====================================================
+# TEAM COLLABORATION ENDPOINTS
+# =====================================================
+
+# Pydantic Models for Team System
+class TeamCreate(BaseModel):
+    name: str
+
+class TeamUpdate(BaseModel):
+    name: Optional[str] = None
+    default_deal_sharing: Optional[str] = None
+
+class InviteCreate(BaseModel):
+    role: str = 'agent'
+    email: Optional[str] = None
+
+class JoinTeam(BaseModel):
+    token: str
+
+class UpdateMemberRole(BaseModel):
+    role: str
+
+# Create Team
+@app.post("/api/teams")
+async def create_team(team_data: TeamCreate, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        # Create team in Supabase
+        result = supabase.table('teams').insert({
+            'name': team_data.name,
+            'created_by': str(user['id'])
+        }).execute()
+        
+        team = result.data[0] if result.data else None
+        
+        if not team:
+            raise HTTPException(status_code=500, detail="Failed to create team")
+        
+        return {"team": team}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Get User's Teams
+@app.get("/api/teams")
+async def get_user_teams(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        # Get teams user is a member of
+        result = supabase.table('team_members').select(
+            'team_id, role, joined_at, teams(id, name, created_by, default_deal_sharing, created_at)'
+        ).eq('user_id', str(user['id'])).execute()
+        
+        teams = []
+        for member in result.data:
+            team_data = member.get('teams', {})
+            if team_data:
+                teams.append({
+                    'id': team_data['id'],
+                    'name': team_data['name'],
+                    'created_by': team_data['created_by'],
+                    'default_deal_sharing': team_data.get('default_deal_sharing', 'private'),
+                    'created_at': team_data['created_at'],
+                    'user_role': member['role'],
+                    'joined_at': member['joined_at']
+                })
+        
+        return {"teams": teams}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Get Team Members
+@app.get("/api/teams/{team_id}/members")
+async def get_team_members(team_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        # Get team members with user profile data
+        result = supabase.table('team_members').select(
+            '*, user_profiles(full_name, phone, avatar_url, company)'
+        ).eq('team_id', team_id).execute()
+        
+        members = []
+        for member in result.data:
+            profile = member.get('user_profiles', {}) or {}
+            # Get user email from auth
+            user_result = supabase.auth.admin.get_user(member['user_id'])
+            email = user_result.user.email if user_result.user else None
+            
+            members.append({
+                'id': member['id'],
+                'user_id': member['user_id'],
+                'role': member['role'],
+                'joined_at': member['joined_at'],
+                'full_name': profile.get('full_name', ''),
+                'email': email,
+                'phone': profile.get('phone', ''),
+                'avatar_url': profile.get('avatar_url', ''),
+                'company': profile.get('company', '')
+            })
+        
+        return {"members": members}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Create Invite Link
+@app.post("/api/teams/{team_id}/invite")
+async def create_invite(team_id: str, invite_data: InviteCreate, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        # Generate unique token
+        import secrets
+        token = secrets.token_urlsafe(32)
+        
+        # Set expiration (7 days from now)
+        expires_at = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
+        
+        # Create invite
+        result = supabase.table('team_invites').insert({
+            'team_id': team_id,
+            'invited_by': str(user['id']),
+            'email': invite_data.email,
+            'token': token,
+            'role': invite_data.role,
+            'expires_at': expires_at,
+            'status': 'pending'
+        }).execute()
+        
+        invite = result.data[0] if result.data else None
+        
+        if not invite:
+            raise HTTPException(status_code=500, detail="Failed to create invite")
+        
+        # Generate shareable link
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+        invite_link = f"{frontend_url}/join-team/{token}"
+        
+        return {
+            "invite": invite,
+            "invite_link": invite_link
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Get Team Invites
+@app.get("/api/teams/{team_id}/invites")
+async def get_team_invites(team_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        result = supabase.table('team_invites').select('*').eq(
+            'team_id', team_id
+        ).eq('status', 'pending').execute()
+        
+        return {"invites": result.data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Join Team via Invite Link
+@app.post("/api/teams/join/{token}")
+async def join_team(token: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        # Find invite
+        invite_result = supabase.table('team_invites').select('*').eq('token', token).eq('status', 'pending').execute()
+        
+        if not invite_result.data:
+            raise HTTPException(status_code=404, detail="Invalid or expired invite link")
+        
+        invite = invite_result.data[0]
+        
+        # Check expiration
+        expires_at = datetime.fromisoformat(invite['expires_at'].replace('Z', '+00:00'))
+        if datetime.now(timezone.utc) > expires_at:
+            raise HTTPException(status_code=400, detail="Invite link has expired")
+        
+        # Check if already a member
+        existing = supabase.table('team_members').select('*').eq(
+            'team_id', invite['team_id']
+        ).eq('user_id', str(user['id'])).execute()
+        
+        if existing.data:
+            raise HTTPException(status_code=400, detail="You are already a member of this team")
+        
+        # Add user to team
+        supabase.table('team_members').insert({
+            'team_id': invite['team_id'],
+            'user_id': str(user['id']),
+            'role': invite['role']
+        }).execute()
+        
+        # Mark invite as used
+        supabase.table('team_invites').update({
+            'status': 'accepted',
+            'used_by': str(user['id']),
+            'used_at': datetime.now(timezone.utc).isoformat()
+        }).eq('id', invite['id']).execute()
+        
+        # Get team info
+        team_result = supabase.table('teams').select('*').eq('id', invite['team_id']).single().execute()
+        
+        return {
+            "message": "Successfully joined team",
+            "team": team_result.data
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Remove Team Member
+@app.delete("/api/teams/{team_id}/members/{user_id}")
+async def remove_team_member(team_id: str, user_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    current_user = await get_current_user(credentials)
+    
+    try:
+        # Check if current user is owner/admin
+        member_check = supabase.table('team_members').select('role').eq(
+            'team_id', team_id
+        ).eq('user_id', str(current_user['id'])).execute()
+        
+        if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
+            raise HTTPException(status_code=403, detail="Only owners and admins can remove members")
+        
+        # Cannot remove yourself if you're the owner
+        if user_id == str(current_user['id']) and member_check.data[0]['role'] == 'owner':
+            raise HTTPException(status_code=400, detail="Owners cannot remove themselves")
+        
+        # Remove member
+        supabase.table('team_members').delete().eq('team_id', team_id).eq('user_id', user_id).execute()
+        
+        return {"message": "Member removed successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Update Member Role
+@app.put("/api/teams/{team_id}/members/{user_id}/role")
+async def update_member_role(
+    team_id: str, 
+    user_id: str, 
+    role_data: UpdateMemberRole,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    current_user = await get_current_user(credentials)
+    
+    try:
+        # Check if current user is owner/admin
+        member_check = supabase.table('team_members').select('role').eq(
+            'team_id', team_id
+        ).eq('user_id', str(current_user['id'])).execute()
+        
+        if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
+            raise HTTPException(status_code=403, detail="Only owners and admins can change roles")
+        
+        # Cannot change owner role
+        target_member = supabase.table('team_members').select('role').eq(
+            'team_id', team_id
+        ).eq('user_id', user_id).execute()
+        
+        if target_member.data and target_member.data[0]['role'] == 'owner':
+            raise HTTPException(status_code=400, detail="Cannot change owner role")
+        
+        # Update role
+        supabase.table('team_members').update({
+            'role': role_data.role
+        }).eq('team_id', team_id).eq('user_id', user_id).execute()
+        
+        return {"message": "Role updated successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Revoke Invite
+@app.delete("/api/teams/{team_id}/invites/{invite_id}")
+async def revoke_invite(team_id: str, invite_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        supabase.table('team_invites').update({
+            'status': 'revoked'
+        }).eq('id', invite_id).eq('team_id', team_id).execute()
+        
+        return {"message": "Invite revoked successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Update Team Settings
+@app.put("/api/teams/{team_id}")
+async def update_team(team_id: str, team_data: TeamUpdate, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    
+    try:
+        # Check if user is owner/admin
+        member_check = supabase.table('team_members').select('role').eq(
+            'team_id', team_id
+        ).eq('user_id', str(user['id'])).execute()
+        
+        if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
+            raise HTTPException(status_code=403, detail="Only owners and admins can update team settings")
+        
+        # Update team
+        update_data = {}
+        if team_data.name:
+            update_data['name'] = team_data.name
+        if team_data.default_deal_sharing:
+            update_data['default_deal_sharing'] = team_data.default_deal_sharing
+        
+        if update_data:
+            supabase.table('teams').update(update_data).eq('id', team_id).execute()
+        
+        return {"message": "Team updated successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # =====================================================
 # EMAIL CAMPAIGNS & TRANSACTIONAL EMAIL ENDPOINTS
 # =====================================================
