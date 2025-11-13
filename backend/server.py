@@ -1515,7 +1515,7 @@ async def create_invite(team_id: str, invite_data: InviteCreate, credentials: HT
         # Create invite
         result = supabase.table('team_invites').insert({
             'team_id': team_id,
-            'invited_by': str(user['id']),
+            'invited_by': str(user.id),
             'email': invite_data.email,
             'token': token,
             'role': invite_data.role,
@@ -1575,7 +1575,7 @@ async def join_team(token: str, credentials: HTTPAuthorizationCredentials = Depe
         # Check if already a member
         existing = supabase.table('team_members').select('*').eq(
             'team_id', invite['team_id']
-        ).eq('user_id', str(user['id'])).execute()
+        ).eq('user_id', str(user.id)).execute()
         
         if existing.data:
             raise HTTPException(status_code=400, detail="You are already a member of this team")
@@ -1583,14 +1583,14 @@ async def join_team(token: str, credentials: HTTPAuthorizationCredentials = Depe
         # Add user to team
         supabase.table('team_members').insert({
             'team_id': invite['team_id'],
-            'user_id': str(user['id']),
+            'user_id': str(user.id),
             'role': invite['role']
         }).execute()
         
         # Mark invite as used
         supabase.table('team_invites').update({
             'status': 'accepted',
-            'used_by': str(user['id']),
+            'used_by': str(user.id),
             'used_at': datetime.now(timezone.utc).isoformat()
         }).eq('id', invite['id']).execute()
         
@@ -1615,13 +1615,13 @@ async def remove_team_member(team_id: str, user_id: str, credentials: HTTPAuthor
         # Check if current user is owner/admin
         member_check = supabase.table('team_members').select('role').eq(
             'team_id', team_id
-        ).eq('user_id', str(current_user['id'])).execute()
+        ).eq('user_id', str(current_user.id)).execute()
         
         if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
             raise HTTPException(status_code=403, detail="Only owners and admins can remove members")
         
         # Cannot remove yourself if you're the owner
-        if user_id == str(current_user['id']) and member_check.data[0]['role'] == 'owner':
+        if user_id == str(current_user.id) and member_check.data[0]['role'] == 'owner':
             raise HTTPException(status_code=400, detail="Owners cannot remove themselves")
         
         # Remove member
@@ -1647,7 +1647,7 @@ async def update_member_role(
         # Check if current user is owner/admin
         member_check = supabase.table('team_members').select('role').eq(
             'team_id', team_id
-        ).eq('user_id', str(current_user['id'])).execute()
+        ).eq('user_id', str(current_user.id)).execute()
         
         if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
             raise HTTPException(status_code=403, detail="Only owners and admins can change roles")
@@ -1694,7 +1694,7 @@ async def update_team(team_id: str, team_data: TeamUpdate, credentials: HTTPAuth
         # Check if user is owner/admin
         member_check = supabase.table('team_members').select('role').eq(
             'team_id', team_id
-        ).eq('user_id', str(user['id'])).execute()
+        ).eq('user_id', str(user.id)).execute()
         
         if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
             raise HTTPException(status_code=403, detail="Only owners and admins can update team settings")
