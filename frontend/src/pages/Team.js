@@ -31,6 +31,18 @@ const Team = () => {
   const [openMemberMenu, setOpenMemberMenu] = useState(null); // Track which member's menu is open
   const [inviteLink, setInviteLink] = useState('');
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (openMemberMenu && !e.target.closest('[data-member-menu]')) {
+        setOpenMemberMenu(null);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [openMemberMenu]);
+
   useEffect(() => {
     loadData();
   }, []);
