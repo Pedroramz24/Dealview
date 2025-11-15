@@ -1358,7 +1358,7 @@ class BackendTester:
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
-        print("BACKEND API TESTING - RSS News Feed & Layer Management")
+        print("BACKEND API TESTING - Team Deals Map Layer (Phase 2)")
         print("=" * 60)
         print(f"Testing against: {self.base_url}")
         print(f"Test credentials: {TEST_CREDENTIALS['email']}")
@@ -1371,72 +1371,36 @@ class BackendTester:
         
         print()
         
-        # RSS News Feed API Tests (NEW - HIGH PRIORITY)
-        print("RSS NEWS FEED API TESTS (NEW)")
-        print("-" * 40)
+        # ========== TEAM DEALS MAP LAYER TESTS (HIGH PRIORITY) ==========
+        print("TEAM DEALS MAP LAYER TESTS (Phase 2 Team Collaboration)")
+        print("-" * 60)
         
-        # Test 1: Authentication required
-        self.test_dashboard_news_authentication()
+        # Test 1: Team Stats Authentication
+        self.test_team_stats_endpoint_authentication()
         print()
         
-        # Test 2: Successful news fetch
-        articles = self.test_dashboard_news_fetch()
+        # Test 2: Get User's Teams
+        teams = self.test_get_user_teams()
         print()
         
-        # Test 3: Article structure validation
-        self.test_dashboard_news_structure(articles)
+        # Test 3: Team Stats with Membership
+        team_stats_data = self.test_team_stats_with_membership(teams)
         print()
         
-        # Test 4: Caching verification
-        self.test_dashboard_news_caching()
+        # Test 4: Team Deals Array Structure
+        self.test_team_deals_array_structure(team_stats_data)
         print()
         
-        # Test 5: Error handling
-        self.test_dashboard_news_error_handling()
+        # Test 5: Team Deals Filtering
+        self.test_team_deals_filtering(team_stats_data)
         print()
         
-        # Layer Management API Tests
-        print("LAYER MANAGEMENT API TESTS")
-        print("-" * 40)
-        
-        # Test 6: Layer Registry
-        self.test_layer_registry()
+        # Test 6: Team Stats without Membership
+        self.test_team_stats_without_membership()
         print()
         
-        # Test 7: Counties Query
-        self.test_counties_query()
-        print()
-        
-        # Test 8: FEMA Floodplain Query
-        self.test_fema_floodplain_query()
-        print()
-        
-        # Test 9: San Antonio Zoning Query
-        self.test_sa_zoning_query()
-        print()
-        
-        # Test 10: Counties Identify
-        self.test_counties_identify()
-        print()
-        
-        # Deal API Tests (Legacy)
-        print("DEAL API TESTS (Legacy)")
-        print("-" * 40)
-        
-        # Step 2: Test GET all deals
-        deals = self.test_get_all_deals()
-        print()
-        
-        # Step 3: Test GET individual deal
-        self.test_get_individual_deal(deals)
-        print()
-        
-        # Step 4: Test POST create new deal
-        self.test_create_new_deal()
-        print()
-        
-        # Step 5: Test model validation
-        self.test_model_validation()
+        # Test 7: RLS Policies
+        self.test_team_deals_rls_policies(teams)
         print()
         
         # Summary
