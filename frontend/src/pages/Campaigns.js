@@ -1434,6 +1434,190 @@ const Campaigns = () => {
             </div>
           </div>
         )}
+
+        {/* SETTINGS TAB */}
+        {activeTab === 'settings' && (
+          <div className="flex-1 overflow-auto p-6">
+            <div className="max-w-3xl mx-auto">
+              {/* Email Configuration Section */}
+              <div className="glass-surface p-8 rounded-xl mb-6" style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: 'rgba(0, 184, 212, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Mail size={24} style={{ color: '#00b8d4' }} />
+                  </div>
+                  <div>
+                    <h2 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>SendGrid Configuration</h2>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Manage your email sending settings</p>
+                  </div>
+                </div>
+
+                {/* API Key Input */}
+                <div className="mb-6">
+                  <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, marginBottom: '8px', display: 'block' }}>
+                    SendGrid API Key
+                  </label>
+                  <input
+                    type="password"
+                    value={setupData.apiKey}
+                    onChange={(e) => setSetupData({ ...setupData, apiKey: e.target.value })}
+                    placeholder="SG.xxxxxxxxxxxxxxxxxxxxxxxx"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '8px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  />
+                  <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px', marginTop: '6px' }}>
+                    Get your API key from SendGrid dashboard → Settings → API Keys
+                  </p>
+                </div>
+
+                {/* Sender Email */}
+                <div className="mb-6">
+                  <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, marginBottom: '8px', display: 'block' }}>
+                    Sender Email
+                  </label>
+                  <input
+                    type="email"
+                    value={setupData.senderEmail}
+                    onChange={(e) => setSetupData({ ...setupData, senderEmail: e.target.value })}
+                    placeholder="your-email@domain.com"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '8px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  />
+                  <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px', marginTop: '6px' }}>
+                    Must be verified in SendGrid
+                  </p>
+                </div>
+
+                {/* Sender Name */}
+                <div className="mb-8">
+                  <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, marginBottom: '8px', display: 'block' }}>
+                    Sender Name
+                  </label>
+                  <input
+                    type="text"
+                    value={setupData.senderName}
+                    onChange={(e) => setSetupData({ ...setupData, senderName: e.target.value })}
+                    placeholder="Your Name or Company"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '8px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button
+                    onClick={testSendGridConnection}
+                    disabled={setupData.testing || !setupData.apiKey}
+                    style={{
+                      flex: 1,
+                      padding: '14px 24px',
+                      background: 'rgba(168, 85, 247, 0.1)',
+                      border: '1px solid rgba(168, 85, 247, 0.3)',
+                      borderRadius: '8px',
+                      color: '#a855f7',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      cursor: setupData.testing || !setupData.apiKey ? 'not-allowed' : 'pointer',
+                      opacity: setupData.testing || !setupData.apiKey ? 0.5 : 1,
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {setupData.testing ? 'Testing...' : 'Test Connection'}
+                  </button>
+                  <button
+                    onClick={saveEmailSettings}
+                    disabled={!setupData.senderEmail || !setupData.senderName || !setupData.apiKey}
+                    style={{
+                      flex: 1,
+                      padding: '14px 24px',
+                      background: (!setupData.senderEmail || !setupData.senderName || !setupData.apiKey) 
+                        ? 'rgba(255, 255, 255, 0.05)' 
+                        : 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#FFFFFF',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      cursor: (!setupData.senderEmail || !setupData.senderName || !setupData.apiKey) ? 'not-allowed' : 'pointer',
+                      opacity: (!setupData.senderEmail || !setupData.senderName || !setupData.apiKey) ? 0.5 : 1,
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    Save Settings
+                  </button>
+                </div>
+
+                {/* Status Indicator */}
+                {emailSettingsConfigured && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    background: 'rgba(16, 185, 129, 0.1)',
+                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}>
+                    <CheckSquare size={18} style={{ color: '#10b981' }} />
+                    <span style={{ color: '#10b981', fontSize: '14px', fontWeight: 500 }}>
+                      SendGrid is configured and ready to send emails
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Help Section */}
+              <div className="glass-surface p-6 rounded-xl" style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Setup Guide</h3>
+                <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px', lineHeight: '1.6' }}>
+                  <ol style={{ paddingLeft: '20px' }}>
+                    <li style={{ marginBottom: '8px' }}>
+                      <strong style={{ color: '#00b8d4' }}>Get API Key:</strong> Login to SendGrid → Settings → API Keys → Create API Key (Full Access)
+                    </li>
+                    <li style={{ marginBottom: '8px' }}>
+                      <strong style={{ color: '#00b8d4' }}>Verify Sender:</strong> SendGrid → Settings → Sender Authentication → Verify your sender email
+                    </li>
+                    <li style={{ marginBottom: '8px' }}>
+                      <strong style={{ color: '#00b8d4' }}>Test Connection:</strong> Click "Test Connection" to verify your API key works
+                    </li>
+                    <li>
+                      <strong style={{ color: '#00b8d4' }}>Save Settings:</strong> Save your configuration to start sending campaigns
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Campaign Analytics Panel */}
