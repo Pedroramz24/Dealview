@@ -219,6 +219,12 @@ class SendGridService:
             "total_failed": int
         }
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"[SendGrid] Starting campaign send to {len(recipients)} recipients")
+        logger.info(f"[SendGrid] From: {from_email} ({from_name})")
+        logger.info(f"[SendGrid] Subject: {subject}")
+        
         results = []
         total_sent = 0
         total_failed = 0
