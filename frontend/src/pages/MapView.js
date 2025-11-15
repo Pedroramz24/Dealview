@@ -1036,6 +1036,79 @@ const MapView = () => {
             </Marker>
           ))}
 
+          {/* Team Deals Markers - Only show when team deals layer is enabled */}
+          {showTeamDeals && teamDeals.map((deal) => (
+            <Marker
+              key={`team-${deal.id}`}
+              longitude={deal.longitude}
+              latitude={deal.latitude}
+              anchor="bottom"
+              onClick={e => {
+                e.originalEvent.stopPropagation();
+                // Open property panel with deal data
+                togglePropertyPanel(deal);
+                
+                // Use map's flyTo for better centering with panel
+                if (mapRef.current) {
+                  mapRef.current.flyTo({
+                    center: [deal.longitude, deal.latitude],
+                    zoom: 15,
+                    duration: 1000,
+                    essential: true,
+                    // Offset to account for panel on left
+                    offset: [150, 0]
+                  });
+                }
+              }}
+            >
+              <div className="map-marker" style={{
+                position: 'relative',
+                width: '48px',
+                height: '48px',
+                cursor: 'pointer',
+                transition: 'transform 0.3s ease',
+                filter: selectedDeal?.id === deal.id 
+                  ? 'drop-shadow(0 4px 12px rgba(168, 85, 247, 0.6))' 
+                  : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))'
+              }}>
+                {/* Pulsing outer ring - purple for team deals */}
+                <div className="marker-pulse" style={{
+                  position: 'absolute',
+                  top: '0',
+                  left: '0',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: selectedDeal?.id === deal.id ? 'rgba(168, 85, 247, 0.5)' : 'rgba(168, 85, 247, 0.3)',
+                  animation: 'pulse 2s ease-out infinite'
+                }}></div>
+                {/* Main marker circle - purple for team deals */}
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '8px',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #a855f7 0%, #d946ef 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.3s ease',
+                  border: selectedDeal?.id === deal.id ? '3px solid #ffffff' : 'none'
+                }}>
+                  {/* Team icon indicator */}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+              </div>
+            </Marker>
+          ))}
+
           {selectedDeal && (
             <Popup
               longitude={selectedDeal.longitude}
