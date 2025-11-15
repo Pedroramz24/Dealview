@@ -1813,7 +1813,7 @@ class BackendTester:
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
-        print("BACKEND API TESTING - Team Deals Map Layer (Phase 2)")
+        print("BACKEND API TESTING - Email Campaign Sending")
         print("=" * 60)
         print(f"Testing against: {self.base_url}")
         print(f"Test credentials: {TEST_CREDENTIALS['email']}")
@@ -1826,48 +1826,66 @@ class BackendTester:
         
         print()
         
-        # Step 2: Authenticate with Supabase (for team endpoints)
+        # Step 2: Authenticate with Supabase (for email endpoints)
         if not self.authenticate_supabase():
-            print("❌ Supabase authentication failed - cannot test team endpoints")
-            print("⚠️  Team endpoints require Supabase authentication")
+            print("❌ Supabase authentication failed - cannot test email endpoints")
+            print("⚠️  Email endpoints require Supabase authentication")
             return False
         
         print()
         
-        # ========== TEAM DEALS MAP LAYER TESTS (HIGH PRIORITY) ==========
-        print("TEAM DEALS MAP LAYER TESTS (Phase 2 Team Collaboration)")
+        # ========== EMAIL CAMPAIGN TESTS (HIGH PRIORITY) ==========
+        print("EMAIL CAMPAIGN TESTS (Encryption & SendGrid Integration)")
         print("-" * 60)
         
-        # Test 1: Team Stats Authentication
-        self.test_team_stats_endpoint_authentication()
+        # Test 1: Encryption Key Exists
+        encryption_key = self.test_encryption_key_exists()
         print()
         
-        # Test 2: Get User's Teams
-        teams = self.test_get_user_teams()
+        # Test 2: Encryption/Decryption
+        self.test_encryption_decryption(encryption_key)
         print()
         
-        # Test 3: Team Members Endpoint (CRITICAL - Foreign Key Fix Verification)
-        members = self.test_team_members_endpoint(teams)
+        # Test 3: SendGrid Connection Test
+        self.test_sendgrid_connection()
         print()
         
-        # Test 4: Team Stats with Membership
-        team_stats_data = self.test_team_stats_with_membership(teams)
+        # Test 4: Create Email Campaign
+        campaign_id = self.test_create_email_campaign()
         print()
         
-        # Test 5: Team Deals Array Structure
-        self.test_team_deals_array_structure(team_stats_data)
+        # Test 5: Get existing contacts (we'll use existing contacts from MongoDB)
+        print("Getting existing contacts for campaign testing...")
+        try:
+            response = requests.get(
+                f"{self.base_url}/contacts",
+                headers=self.headers,
+                timeout=10
+            )
+            if response.status_code == 200:
+                contacts = response.json()
+                # Filter contacts with valid emails
+                valid_contacts = [c for c in contacts if c.get('email')]
+                if len(valid_contacts) >= 2:
+                    contact_ids = [c['id'] for c in valid_contacts[:2]]
+                    print(f"✅ Found {len(valid_contacts)} contacts with emails, using first 2 for testing")
+                else:
+                    print(f"⚠️  Only found {len(valid_contacts)} contacts with emails, creating test contacts...")
+                    contact_ids = self.test_create_test_contacts()
+            else:
+                print("⚠️  Could not fetch contacts, creating test contacts...")
+                contact_ids = self.test_create_test_contacts()
+        except Exception as e:
+            print(f"⚠️  Error fetching contacts: {str(e)}, creating test contacts...")
+            contact_ids = self.test_create_test_contacts()
         print()
         
-        # Test 6: Team Deals Filtering
-        self.test_team_deals_filtering(team_stats_data)
+        # Test 6: Send Campaign
+        self.test_send_campaign(campaign_id, contact_ids)
         print()
         
-        # Test 7: Team Stats without Membership
-        self.test_team_stats_without_membership()
-        print()
-        
-        # Test 8: RLS Policies
-        self.test_team_deals_rls_policies(teams)
+        # Test 7: Campaign Error Handling
+        self.test_campaign_error_handling()
         print()
         
         # Summary
