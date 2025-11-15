@@ -1405,9 +1405,17 @@ class BackendTester:
         print(f"Test credentials: {TEST_CREDENTIALS['email']}")
         print()
         
-        # Step 1: Authenticate
+        # Step 1: Authenticate with MongoDB (for legacy endpoints)
         if not self.authenticate():
-            print("❌ Authentication failed - cannot proceed with tests")
+            print("❌ MongoDB authentication failed - cannot proceed with tests")
+            return False
+        
+        print()
+        
+        # Step 2: Authenticate with Supabase (for team endpoints)
+        if not self.authenticate_supabase():
+            print("❌ Supabase authentication failed - cannot test team endpoints")
+            print("⚠️  Team endpoints require Supabase authentication")
             return False
         
         print()
