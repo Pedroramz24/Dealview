@@ -2328,7 +2328,7 @@ async def send_campaign(
         api_key = sendgrid_service.decrypt_api_key(settings['sendgrid_api_key'])
         
         # Get contacts
-        contacts_result = supabase.table('contacts').select('id, email, full_name').in_('id', send_data.contact_ids).eq('owner_id', user_id).execute()
+        contacts_result = supabase.table('contacts').select('id, email, name').in_('id', send_data.contact_ids).eq('owner_id', user_id).execute()
         
         if not contacts_result.data or len(contacts_result.data) == 0:
             raise HTTPException(status_code=400, detail="No valid contacts found")
@@ -2337,7 +2337,7 @@ async def send_campaign(
         recipients = [
             {
                 "email": contact['email'],
-                "name": contact['full_name'],
+                "name": contact['name'],
                 "id": contact['id']
             }
             for contact in contacts_result.data if contact.get('email')
