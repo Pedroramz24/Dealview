@@ -548,7 +548,7 @@ const MembersTab = ({ members, user, canManage, invites, handleRevokeInvite, set
                           boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
                           backdropFilter: 'blur(12px)',
                           minWidth: '180px',
-                          zIndex: 1000,
+                          zIndex: 9999,
                           overflow: 'hidden'
                         }}>
                           {/* Change Role Section */}
