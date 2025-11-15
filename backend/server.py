@@ -2330,6 +2330,9 @@ async def send_campaign(
         # Get contacts
         contacts_result = supabase.table('contacts').select('id, email, name').in_('id', send_data.contact_ids).eq('owner_id', user_id).execute()
         
+        logger.info(f"Contacts query returned {len(contacts_result.data) if contacts_result.data else 0} contacts")
+        logger.info(f"Contacts data: {contacts_result.data}")
+        
         if not contacts_result.data or len(contacts_result.data) == 0:
             raise HTTPException(status_code=400, detail="No valid contacts found")
         
@@ -2342,6 +2345,9 @@ async def send_campaign(
             }
             for contact in contacts_result.data if contact.get('email')
         ]
+        
+        logger.info(f"Recipients after email filtering: {len(recipients)}")
+        logger.info(f"Recipients: {recipients}")
         
         if len(recipients) == 0:
             raise HTTPException(status_code=400, detail="No contacts with valid email addresses")
