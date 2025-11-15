@@ -168,11 +168,13 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
 
   const handleSaveContact = async () => {
     if (!contactForm.name) {
+      toast.dismiss(); // Dismiss any existing toasts
       toast.error('Contact name is required');
       return;
     }
 
     if (!user) {
+      toast.dismiss();
       toast.error('You must be logged in');
       return;
     }
@@ -205,6 +207,8 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           .eq('id', editingContact.id);
 
         if (error) throw error;
+        
+        toast.dismiss(); // Dismiss any existing toasts
         toast.success('Contact updated successfully');
         
         if (onContactCreated) {
@@ -223,7 +227,6 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           .single();
 
         if (error) throw error;
-        toast.success('Contact created successfully');
 
         // If dealId is provided, automatically link the contact to the deal
         if (dealId && newContact) {
@@ -237,10 +240,17 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
 
           if (linkError) {
             console.error('Error linking contact to deal:', linkError);
+            toast.dismiss();
             toast.warning('Contact created but failed to link to deal');
           } else {
-            toast.success('Contact linked to deal');
+            // Show single success message for both create and link
+            toast.dismiss();
+            toast.success('Contact created and linked to deal');
           }
+        } else {
+          // Show success for create only
+          toast.dismiss();
+          toast.success('Contact created successfully');
         }
 
         if (onContactCreated) {
@@ -251,6 +261,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
       onClose();
     } catch (error) {
       console.error('Error saving contact:', error);
+      toast.dismiss();
       toast.error('Failed to save contact: ' + error.message);
     } finally {
       setIsSaving(false);
