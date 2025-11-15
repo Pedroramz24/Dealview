@@ -127,7 +127,12 @@ class EmailCampaignTester:
             
             if response.status_code in [200, 201]:
                 campaign = response.json()
-                campaign_id = campaign.get('id')
+                self.log(f"Campaign response: {json.dumps(campaign, indent=2)}", "INFO")
+                # Handle both direct object and wrapped response
+                if isinstance(campaign, dict):
+                    campaign_id = campaign.get('id') or campaign.get('campaign', {}).get('id')
+                else:
+                    campaign_id = None
                 self.log(f"✅ Campaign created successfully (ID: {campaign_id})", "PASS")
                 return campaign_id
             else:
