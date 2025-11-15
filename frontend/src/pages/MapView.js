@@ -538,6 +538,67 @@ const MapView = () => {
     }
   };
 
+  // Fetch Team Deals
+  const fetchTeamDeals = async () => {
+    if (!user) return;
+
+    try {
+      console.log('[MapView] Fetching team deals for user:', user.id);
+      
+      // First, get the user's teams
+      const { data: teamsData, error: teamsError } = await supabase
+        .from('team_members')
+        .select('team_id, role')
+        .eq('user_id', user.id);
+
+      if (teamsError) {
+        console.error('[MapView] Error fetching teams:', teamsError);
+        return;
+      }
+
+      if (!teamsData || teamsData.length === 0) {
+        console.log('[MapView] User is not part of any team');
+        setTeamDeals([]);
+        return;
+      }
+
+      // Get the first team's ID (user's primary team)
+      const teamId = teamsData[0].team_id;
+      console.log('[MapView] Fetching deals for team:', teamId);
+
+      // Get the session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.error('[MapView] No active session');
+        return;
+      }
+
+      // Fetch team stats which includes team_deals
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${BACKEND_URL}/api/teams/${teamId}/stats`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch team deals: ${response.statusText}`);
+      }
+
+      const statsData = await response.json();
+      const deals = statsData.team_deals || [];
+      
+      // Filter out user's own deals to avoid duplicates on the map
+      const filteredTeamDeals = deals.filter(deal => deal.owner_id !== user.id);
+      
+      console.log('[MapView] Fetched team deals:', filteredTeamDeals.length);
+      setTeamDeals(filteredTeamDeals);
+    } catch (error) {
+      console.error('[MapView] Error loading team deals:', error);
+    }
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
