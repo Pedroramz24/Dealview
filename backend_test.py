@@ -1335,7 +1335,7 @@ class BackendTester:
             # Get team members
             response = requests.get(
                 f"{self.base_url}/teams/{team_id}/members",
-                headers=self.headers,
+                headers=self.supabase_headers,
                 timeout=15
             )
             
@@ -1354,7 +1354,7 @@ class BackendTester:
                     # Get team stats to see if we can see other members' deals
                     stats_response = requests.get(
                         f"{self.base_url}/teams/{team_id}/stats",
-                        headers=self.headers,
+                        headers=self.supabase_headers,
                         timeout=15
                     )
                     
