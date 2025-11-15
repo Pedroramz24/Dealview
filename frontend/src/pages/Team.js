@@ -517,7 +517,7 @@ const MembersTab = ({ members, user, canManage, invites, handleRevokeInvite, set
                   <RoleIcon size={12} style={{ color: roleColor }} />
                   <span style={{ color: roleColor, fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px' }}>{member.role}</span>
                 </div>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }} data-member-menu>
                   {canManage && !isCurrentUser && member.role !== 'owner' && (
                     <>
                       <button 
