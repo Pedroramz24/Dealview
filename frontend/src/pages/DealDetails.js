@@ -1850,6 +1850,18 @@ const DealDetails = () => {
                 />
               </div>
             )}
+
+            {/* Team Collaboration Panel */}
+            <TeamCollaborationPanel
+              deal={deal}
+              isSharedWithTeam={isSharedWithTeam}
+              assignedTo={assignedTo}
+              teamMembers={teamMembers}
+              teamNotesRef={teamNotesRef}
+              onToggleSharing={handleToggleTeamSharing}
+              onAssignDeal={handleAssignDeal}
+              onSaveTeamNotes={handleSaveTeamNotes}
+            />
           </div>
         </div>
       </div>
