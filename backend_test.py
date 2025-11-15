@@ -1608,6 +1608,56 @@ class BackendTester:
             self.log_result("SendGrid Connection Test", False, f"Request error: {str(e)}")
             return False
     
+    def test_save_email_settings(self):
+        """Test POST /api/email/settings - Save SendGrid configuration"""
+        try:
+            test_api_key = "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"
+            
+            settings_data = {
+                "sendgrid_api_key": test_api_key,
+                "sender_email": "test@example.com",
+                "sender_name": "Test Sender"
+            }
+            
+            response = requests.post(
+                f"{self.base_url}/email/settings",
+                json=settings_data,
+                headers=self.supabase_headers,
+                timeout=15
+            )
+            
+            if response.status_code == 201:
+                data = response.json()
+                success = data.get('success', False)
+                message = data.get('message', '')
+                
+                if success:
+                    self.log_result(
+                        "Save Email Settings",
+                        True,
+                        f"✅ Email settings saved successfully: {message}",
+                        f"Sender: {settings_data['sender_name']} <{settings_data['sender_email']}>"
+                    )
+                    return True
+                else:
+                    self.log_result(
+                        "Save Email Settings",
+                        False,
+                        f"❌ Failed to save email settings: {message}"
+                    )
+                    return False
+            else:
+                self.log_result(
+                    "Save Email Settings",
+                    False,
+                    f"Failed with status {response.status_code}",
+                    response.text[:500] if response.text else "No response"
+                )
+                return False
+        except Exception as e:
+            self.log_result("Save Email Settings", False, f"Request error: {str(e)}")
+            return False
+    
     def test_create_email_campaign(self):
         """Test creating an email campaign"""
         try:
