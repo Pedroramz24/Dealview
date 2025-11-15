@@ -104,6 +104,15 @@ const DealDetails = () => {
   const nextActionRef = useRef(null);
   const notesRef = useRef(null);
 
+
+  // Team collaboration state
+  const [teams, setTeams] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [isSharedWithTeam, setIsSharedWithTeam] = useState(false);
+  const [assignedTo, setAssignedTo] = useState(null);
+  const [teamNotes, setTeamNotes] = useState('');
+  const teamNotesRef = useRef(null);
+
   useEffect(() => {
     if (user) {
       fetchDeal();
