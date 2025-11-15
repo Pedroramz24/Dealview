@@ -10,7 +10,7 @@ import EmailComposeModal from '../components/EmailComposeModal';
 import EmailActivityTimeline from '../components/EmailActivityTimeline';
 import { 
   Plus, Mail, Phone, Building2, Search, MapPin, Calendar, 
-  FileText, X, Save, Link, Eye, Edit, Filter, User, Grid, List, Network
+  FileText, X, Save, Link, Eye, Edit, Filter, User, Grid, List, Network, Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
