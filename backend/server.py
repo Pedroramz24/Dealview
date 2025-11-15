@@ -1480,7 +1480,7 @@ async def get_team_members(team_id: str, credentials: HTTPAuthorizationCredentia
         for member in result.data:
             profile = member.get('user_profiles', {}) or {}
             # Get user email from auth
-            user_result = supabase.auth.admin.get_user(member['user_id'])
+            user_result = supabase.auth.admin.get_user_by_id(member['user_id'])
             email = user_result.user.email if user_result.user else None
             
             members.append({
