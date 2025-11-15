@@ -789,6 +789,8 @@ const MapView = () => {
           onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
           showParcels={showReportAllParcels}
           onToggleParcels={() => setShowReportAllParcels(!showReportAllParcels)}
+          showTeamDeals={showTeamDeals}
+          onToggleTeamDeals={() => setShowTeamDeals(!showTeamDeals)}
           mapStyle={mapStyle}
           onToggleMapStyle={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
           mapRef={mapRef}
