@@ -728,20 +728,37 @@ const Contacts = () => {
                     )}
                   </div>
                   
-                  {/* Edit Button */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenEdit(contact);
-                    }}
-                    className="p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{
-                      background: 'var(--glass-bg)',
-                      border: '1px solid var(--glass-border)'
-                    }}
-                  >
-                    <Edit className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-                  </button>
+                  {/* Action Buttons */}
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEdit(contact);
+                      }}
+                      className="p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{
+                        background: 'var(--glass-bg)',
+                        border: '1px solid var(--glass-border)'
+                      }}
+                      title="Edit Contact"
+                    >
+                      <Edit className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteContact(contact);
+                      }}
+                      className="p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        border: '1px solid rgba(239, 68, 68, 0.3)'
+                      }}
+                      title="Delete Contact"
+                    >
+                      <Trash2 className="w-4 h-4" style={{ color: '#ef4444' }} />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Contact Info */}
