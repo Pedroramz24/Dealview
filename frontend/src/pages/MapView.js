@@ -455,6 +455,7 @@ const MapView = () => {
 
   useEffect(() => {
     fetchDeals();
+    fetchTeamDeals();
   }, []);
 
   useEffect(() => {
