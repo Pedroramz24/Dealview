@@ -1900,11 +1900,15 @@ class BackendTester:
         self.test_sendgrid_connection()
         print()
         
-        # Test 4: Create Email Campaign
+        # Test 4: Save Email Settings
+        self.test_save_email_settings()
+        print()
+        
+        # Test 5: Create Email Campaign
         campaign_id = self.test_create_email_campaign()
         print()
         
-        # Test 5: Get existing contacts (we'll use existing contacts from MongoDB)
+        # Test 6: Get existing contacts (we'll use existing contacts from MongoDB)
         print("Getting existing contacts for campaign testing...")
         try:
             response = requests.get(
