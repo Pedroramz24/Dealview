@@ -499,11 +499,11 @@ agent_communication:
 
   - task: "Email Campaign Sending & Settings Tab"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Campaigns.js, /app/backend/server.py, /app/backend/.env, /app/backend/sendgrid_service.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
