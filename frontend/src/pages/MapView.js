@@ -18,6 +18,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapView = () => {
   const [deals, setDeals] = useState([]);
+  const [teamDeals, setTeamDeals] = useState([]);
+  const [showTeamDeals, setShowTeamDeals] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [selectedParcel, setSelectedParcel] = useState(null);
