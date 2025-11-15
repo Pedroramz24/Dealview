@@ -1696,6 +1696,24 @@ async def update_team(team_id: str, team_data: TeamUpdate, credentials: HTTPAuth
             'team_id', team_id
         ).eq('user_id', str(user.id)).execute()
         
+        if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
+            raise HTTPException(status_code=403, detail="Only owners and admins can update team settings")
+        
+        # Update team
+        update_data = {}
+        if team_data.name:
+            update_data['name'] = team_data.name
+        if team_data.default_deal_sharing:
+            update_data['default_deal_sharing'] = team_data.default_deal_sharing
+        
+        if update_data:
+            supabase.table('teams').update(update_data).eq('id', team_id).execute()
+        
+        return {"message": "Team updated successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Get Team Stats and Deals
