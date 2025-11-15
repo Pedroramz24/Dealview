@@ -422,9 +422,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "DealDetails Contact Management Enhancement"
-    - "Automatic Comma Formatting for Number Inputs"
-    - "PropertyIntelligencePanel Inline Editing"
+    - "Team Deals Map Layer (Phase 2 Team Collaboration)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
