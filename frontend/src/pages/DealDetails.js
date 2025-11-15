@@ -150,16 +150,111 @@ const DealDetails = () => {
       if (error) throw error;
       setDeal(data);
       
+      // Set team states
+      setIsSharedWithTeam(data.is_shared_with_team || false);
+      setAssignedTo(data.assigned_to);
+      setTeamNotes(data.team_notes || '');
+      
       // Set date states
       if (data.target_close_date) setTargetCloseDate(new Date(data.target_close_date));
       if (data.next_action_date) setNextActionDate(new Date(data.next_action_date));
       if (data.last_contact_date) setLastContactDate(new Date(data.last_contact_date));
+      
+      // Load teams if deal has team_id
+      if (data.team_id) {
+        await loadTeamMembers(data.team_id);
+      }
     } catch (error) {
       console.error('Error fetching deal:', error);
       toast.error('Failed to load deal');
       navigate('/deals');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadTeamMembers = async (teamId) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/teams/${teamId}/members`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setTeamMembers(data.members || []);
+      }
+    } catch (error) {
+      console.error('Error loading team members:', error);
+    }
+  };
+
+  const handleToggleTeamSharing = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/deals/${dealId}/share`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsSharedWithTeam(data.is_shared);
+        toast.success(data.message);
+        await fetchDeal();
+      } else {
+        toast.error('Failed to update sharing');
+      }
+    } catch (error) {
+      console.error('Error toggling team sharing:', error);
+      toast.error('Failed to update sharing');
+    }
+  };
+
+  const handleAssignDeal = async (userId) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/deals/${dealId}/assign`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ assigned_to: userId })
+      });
+
+      if (response.ok) {
+        setAssignedTo(userId);
+        toast.success('Deal assigned successfully');
+        await fetchDeal();
+      } else {
+        toast.error('Failed to assign deal');
+      }
+    } catch (error) {
+      console.error('Error assigning deal:', error);
+      toast.error('Failed to assign deal');
+    }
+  };
+
+  const handleSaveTeamNotes = async () => {
+    try {
+      const notes = teamNotesRef.current?.value || '';
+      
+      const response = await fetch(`${BACKEND_URL}/api/deals/${dealId}/team-notes`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ notes })
+      });
+
+      if (response.ok) {
+        setTeamNotes(notes);
+        toast.success('Team notes saved');
+      } else {
+        toast.error('Failed to save team notes');
+      }
+    } catch (error) {
+      console.error('Error saving team notes:', error);
+      toast.error('Failed to save team notes');
     }
   };
 
