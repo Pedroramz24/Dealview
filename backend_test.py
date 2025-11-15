@@ -27,6 +27,8 @@ class BackendTester:
         self.base_url = BASE_URL
         self.token = None
         self.headers = {}
+        self.supabase_token = None
+        self.supabase_headers = {}
         self.test_results = []
         
     def log_result(self, test_name, success, message, details=None):
