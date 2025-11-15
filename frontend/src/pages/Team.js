@@ -434,7 +434,18 @@ const Team = () => {
 
       {/* Tab Content */}
       {activeTab === 'members' && (
-        <MembersTab members={members} user={user} canManage={canManage} invites={invites} handleRevokeInvite={handleRevokeInvite} setShowInviteMember={setShowInviteMember} />
+        <MembersTab 
+          members={members} 
+          user={user} 
+          canManage={canManage} 
+          invites={invites} 
+          handleRevokeInvite={handleRevokeInvite} 
+          setShowInviteMember={setShowInviteMember}
+          openMemberMenu={openMemberMenu}
+          setOpenMemberMenu={setOpenMemberMenu}
+          handleRemoveMember={handleRemoveMember}
+          handleUpdateRole={handleUpdateRole}
+        />
       )}
       
       {activeTab === 'deals' && (
