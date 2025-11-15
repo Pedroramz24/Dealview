@@ -494,7 +494,111 @@ const MembersTab = ({ members, user, canManage, invites, handleRevokeInvite, set
                   <RoleIcon size={12} style={{ color: roleColor }} />
                   <span style={{ color: roleColor, fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.3px' }}>{member.role}</span>
                 </div>
-                <div>{canManage && !isCurrentUser && member.role !== 'owner' && <button style={{ padding: '6px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '5px', color: 'rgba(255, 255, 255, 0.5)', cursor: 'pointer' }}><MoreVertical size={16} /></button>}</div>
+                <div style={{ position: 'relative' }}>
+                  {canManage && !isCurrentUser && member.role !== 'owner' && (
+                    <>
+                      <button 
+                        onClick={() => setOpenMemberMenu(openMemberMenu === member.id ? null : member.id)}
+                        style={{ 
+                          padding: '6px', 
+                          background: openMemberMenu === member.id ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.04)', 
+                          border: `1px solid ${openMemberMenu === member.id ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`, 
+                          borderRadius: '5px', 
+                          color: openMemberMenu === member.id ? '#00b8d4' : 'rgba(255, 255, 255, 0.5)', 
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        <MoreVertical size={16} />
+                      </button>
+                      
+                      {/* Dropdown Menu */}
+                      {openMemberMenu === member.id && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '100%',
+                          right: 0,
+                          marginTop: '4px',
+                          background: 'rgba(20, 22, 25, 0.98)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '8px',
+                          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
+                          backdropFilter: 'blur(12px)',
+                          minWidth: '180px',
+                          zIndex: 1000,
+                          overflow: 'hidden'
+                        }}>
+                          {/* Change Role Section */}
+                          <div style={{ padding: '8px 12px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                            <div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>Change Role</div>
+                            {['admin', 'agent', 'viewer'].filter(role => role !== member.role).map(role => (
+                              <button
+                                key={role}
+                                onClick={() => handleUpdateRole(member.user_id, role)}
+                                style={{
+                                  width: '100%',
+                                  padding: '6px 10px',
+                                  background: 'transparent',
+                                  border: 'none',
+                                  borderRadius: '4px',
+                                  color: 'rgba(255, 255, 255, 0.8)',
+                                  fontSize: '13px',
+                                  textAlign: 'left',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  transition: 'all 0.15s ease',
+                                  marginBottom: '2px'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                                  e.currentTarget.style.color = '#00b8d4';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.background = 'transparent';
+                                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                                }}
+                              >
+                                {getRoleIcon(role)({ size: 12 })}
+                                <span style={{ textTransform: 'capitalize' }}>{role}</span>
+                              </button>
+                            ))}
+                          </div>
+                          
+                          {/* Remove Member */}
+                          <button
+                            onClick={() => handleRemoveMember(member.user_id)}
+                            style={{
+                              width: '100%',
+                              padding: '10px 12px',
+                              background: 'transparent',
+                              border: 'none',
+                              color: '#ef4444',
+                              fontSize: '13px',
+                              fontWeight: 500,
+                              textAlign: 'left',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              transition: 'all 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'transparent';
+                            }}
+                          >
+                            <Trash2 size={14} />
+                            Remove Member
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             );
           })}
