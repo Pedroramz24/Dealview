@@ -16,6 +16,12 @@ TEST_CREDENTIALS = {
     "password": "password123"
 }
 
+# Supabase credentials for team testing
+SUPABASE_TEST_CREDENTIALS = {
+    "email": "teamtest@test.com",
+    "password": "TestPassword123!"
+}
+
 class BackendTester:
     def __init__(self):
         self.base_url = BASE_URL
