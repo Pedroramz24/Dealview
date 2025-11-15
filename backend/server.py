@@ -1696,6 +1696,130 @@ async def update_team(team_id: str, team_data: TeamUpdate, credentials: HTTPAuth
             'team_id', team_id
         ).eq('user_id', str(user.id)).execute()
         
+
+
+# Get Team Stats and Deals
+@app.get("/api/teams/{team_id}/stats")
+async def get_team_stats(team_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user_supabase(credentials)
+    
+    try:
+        # Get all team deals (shared + owned by team members)
+        team_deals_result = supabase.table('deals').select('*').or_(
+            f'and(team_id.eq.{team_id},is_shared_with_team.eq.true),and(team_id.eq.{team_id},owner_id.eq.{user.id})'
+        ).execute()
+        
+        deals = team_deals_result.data or []
+        
+        # Calculate stats
+        total_active = len([d for d in deals if d.get('stage') not in ['closed', 'dead']])
+        total_pipeline = sum(float(d.get('price', 0) or 0) for d in deals if d.get('stage') not in ['closed', 'dead'])
+        
+        # Closed this month
+        from datetime import datetime
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+        closed_this_month = len([
+            d for d in deals 
+            if d.get('stage') == 'closed' and d.get('updated_at') and
+            datetime.fromisoformat(d['updated_at'].replace('Z', '+00:00')).month == current_month and
+            datetime.fromisoformat(d['updated_at'].replace('Z', '+00:00')).year == current_year
+        ])
+        
+        # Get team members for per-agent breakdown
+        members_result = supabase.table('team_members').select('user_id, role').eq('team_id', team_id).execute()
+        member_ids = [m['user_id'] for m in members_result.data]
+        
+        # Per-agent stats
+        agent_stats = []
+        for member_id in member_ids:
+            member_deals = [d for d in deals if d.get('owner_id') == member_id or d.get('assigned_to') == member_id]
+            active_deals = [d for d in member_deals if d.get('stage') not in ['closed', 'dead']]
+            closed_deals = [d for d in member_deals if d.get('stage') == 'closed']
+            
+            # Get most common asset type
+            asset_types = [d.get('asset_type') for d in member_deals if d.get('asset_type')]
+            primary_asset = max(set(asset_types), key=asset_types.count) if asset_types else None
+            
+            agent_stats.append({
+                'user_id': member_id,
+                'active_deals': len(active_deals),
+                'pipeline_value': sum(float(d.get('price', 0) or 0) for d in active_deals),
+                'closed_this_quarter': len(closed_deals),
+                'primary_asset_focus': primary_asset
+            })
+        
+        return {
+            'team_stats': {
+                'total_active_deals': total_active,
+                'total_pipeline_value': total_pipeline,
+                'closed_this_month': closed_this_month,
+                'team_activity': len(deals)
+            },
+            'agent_stats': agent_stats,
+            'team_deals': deals
+        }
+    except Exception as e:
+        print(f"Error getting team stats: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Share Deal with Team
+@app.put("/api/deals/{deal_id}/share")
+async def toggle_deal_sharing(deal_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user_supabase(credentials)
+    
+    try:
+        # Get current deal
+        deal_result = supabase.table('deals').select('*').eq('id', deal_id).single().execute()
+        deal = deal_result.data
+        
+        if not deal:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        # Toggle sharing
+        new_sharing_status = not deal.get('is_shared_with_team', False)
+        
+        supabase.table('deals').update({
+            'is_shared_with_team': new_sharing_status
+        }).eq('id', deal_id).execute()
+        
+        return {
+            'is_shared': new_sharing_status,
+            'message': 'Deal shared with team' if new_sharing_status else 'Deal is now private'
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Assign Deal to Team Member
+@app.put("/api/deals/{deal_id}/assign")
+async def assign_deal(deal_id: str, assigned_to: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user_supabase(credentials)
+    
+    try:
+        supabase.table('deals').update({
+            'assigned_to': assigned_to if assigned_to else None
+        }).eq('id', deal_id).execute()
+        
+        return {'message': 'Deal assigned successfully'}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Update Team Notes
+@app.put("/api/deals/{deal_id}/team-notes")
+async def update_team_notes(deal_id: str, notes: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user_supabase(credentials)
+    
+    try:
+        supabase.table('deals').update({
+            'team_notes': notes
+        }).eq('id', deal_id).execute()
+        
+        return {'message': 'Team notes updated'}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
         if not member_check.data or member_check.data[0]['role'] not in ['owner', 'admin']:
             raise HTTPException(status_code=403, detail="Only owners and admins can update team settings")
         
