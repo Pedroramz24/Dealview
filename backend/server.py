@@ -2392,6 +2392,8 @@ async def send_campaign(
         raise
     except Exception as e:
         logger.error(f"Error sending campaign: {str(e)}")
+        logger.error(f"Error type: {type(e).__name__}")
+        logger.error(f"Error traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
