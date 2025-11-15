@@ -199,6 +199,62 @@ const Team = () => {
     }
   };
 
+  const handleRemoveMember = async (userId) => {
+    if (!window.confirm('Are you sure you want to remove this member from the team?')) {
+      return;
+    }
+
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const token = session?.session?.access_token;
+
+      const response = await fetch(`${BACKEND_URL}/api/teams/${currentTeam.id}/members/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        toast.success('Member removed successfully');
+        setOpenMemberMenu(null);
+        await loadTeamData(currentTeam.id, token);
+      } else {
+        const data = await response.json();
+        toast.error(data.detail || 'Failed to remove member');
+      }
+    } catch (error) {
+      console.error('Error removing member:', error);
+      toast.error('Failed to remove member');
+    }
+  };
+
+  const handleUpdateRole = async (userId, newRole) => {
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const token = session?.session?.access_token;
+
+      const response = await fetch(`${BACKEND_URL}/api/teams/${currentTeam.id}/members/${userId}/role`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ role: newRole })
+      });
+
+      if (response.ok) {
+        toast.success(`Role updated to ${newRole}`);
+        setOpenMemberMenu(null);
+        await loadTeamData(currentTeam.id, token);
+      } else {
+        const data = await response.json();
+        toast.error(data.detail || 'Failed to update role');
+      }
+    } catch (error) {
+      console.error('Error updating role:', error);
+      toast.error('Failed to update role');
+    }
+  };
+
   const getRoleIcon = (role) => {
     switch(role) {
       case 'owner': return Crown;
