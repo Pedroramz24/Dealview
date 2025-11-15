@@ -1317,6 +1317,100 @@ class BackendTester:
         except Exception as e:
             self.log_result("Team Stats - Without Membership", False, f"Request error: {str(e)}")
     
+    def test_team_members_endpoint(self, teams):
+        """Test GET /api/teams/{team_id}/members - Verify foreign key fix is working"""
+        if not teams:
+            self.log_result(
+                "Team Members Endpoint", 
+                False, 
+                "No teams available to test team members endpoint",
+                "User needs to be member of at least one team"
+            )
+            return None
+        
+        team = teams[0]
+        team_id = team.get('id')
+        team_name = team.get('name', 'Unknown')
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/teams/{team_id}/members",
+                headers=self.supabase_headers,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                members = data.get("members", [])
+                
+                if len(members) == 0:
+                    self.log_result(
+                        "Team Members Endpoint", 
+                        True, 
+                        f"Successfully retrieved team members for '{team_name}' (0 members)",
+                        "Team has no members yet - endpoint working correctly"
+                    )
+                    return members
+                
+                # Verify each member has required fields including profile data
+                required_fields = ["id", "user_id", "role", "joined_at", "full_name", "email", "phone", "avatar_url", "company"]
+                
+                all_valid = True
+                invalid_members = []
+                
+                for idx, member in enumerate(members):
+                    missing_fields = [field for field in required_fields if field not in member]
+                    
+                    if missing_fields:
+                        all_valid = False
+                        invalid_members.append({
+                            "index": idx,
+                            "user_id": member.get("user_id", "Unknown"),
+                            "missing_fields": missing_fields
+                        })
+                
+                if all_valid:
+                    # Check if profile data is present (not just empty strings)
+                    members_with_profile = [m for m in members if m.get('full_name') or m.get('phone') or m.get('company')]
+                    
+                    self.log_result(
+                        "Team Members Endpoint", 
+                        True, 
+                        f"✅ FIXED: Successfully retrieved {len(members)} team members with profile data",
+                        f"Members with profile data: {len(members_with_profile)}/{len(members)}. Foreign key constraint working correctly - PostgREST join syntax successful."
+                    )
+                else:
+                    self.log_result(
+                        "Team Members Endpoint", 
+                        False, 
+                        f"{len(invalid_members)} members missing required fields",
+                        f"Invalid members: {invalid_members}"
+                    )
+                
+                return members
+                
+            elif response.status_code == 500:
+                # This was the error before the fix
+                self.log_result(
+                    "Team Members Endpoint", 
+                    False, 
+                    f"❌ CRITICAL: Endpoint returned 500 error - foreign key constraint may be missing",
+                    f"Error: {response.text[:500] if response.text else 'No error details'}. The PostgREST join syntax requires a foreign key from team_members.user_id to user_profiles.id"
+                )
+                return None
+            else:
+                self.log_result(
+                    "Team Members Endpoint", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                return None
+                
+        except Exception as e:
+            self.log_result("Team Members Endpoint", False, f"Request error: {str(e)}")
+            return None
+    
     def test_team_deals_rls_policies(self, teams):
         """Test RLS policies - verify team members can see each other's deals"""
         if not teams:
