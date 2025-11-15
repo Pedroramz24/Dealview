@@ -341,6 +341,37 @@ const Contacts = () => {
     setShowAddPanel(true);
   };
 
+  const handleDeleteContact = async (contact) => {
+    if (!window.confirm(`Are you sure you want to delete ${contact.name}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      // Delete the contact
+      const { error } = await supabase
+        .from('contacts')
+        .delete()
+        .eq('id', contact.id);
+
+      if (error) throw error;
+
+      toast.dismiss();
+      toast.success('Contact deleted successfully');
+      
+      // Refresh contacts list
+      fetchContacts();
+      
+      // Close detail panel if this contact was being viewed
+      if (selectedContact?.id === contact.id) {
+        setSelectedContact(null);
+      }
+    } catch (error) {
+      console.error('Error deleting contact:', error);
+      toast.dismiss();
+      toast.error('Failed to delete contact');
+    }
+  };
+
   const toggleArrayField = (field, value) => {
     setContactForm(prev => {
       const current = prev[field] || [];
