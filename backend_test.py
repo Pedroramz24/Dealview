@@ -1526,23 +1526,27 @@ class BackendTester:
         teams = self.test_get_user_teams()
         print()
         
-        # Test 3: Team Stats with Membership
+        # Test 3: Team Members Endpoint (CRITICAL - Foreign Key Fix Verification)
+        members = self.test_team_members_endpoint(teams)
+        print()
+        
+        # Test 4: Team Stats with Membership
         team_stats_data = self.test_team_stats_with_membership(teams)
         print()
         
-        # Test 4: Team Deals Array Structure
+        # Test 5: Team Deals Array Structure
         self.test_team_deals_array_structure(team_stats_data)
         print()
         
-        # Test 5: Team Deals Filtering
+        # Test 6: Team Deals Filtering
         self.test_team_deals_filtering(team_stats_data)
         print()
         
-        # Test 6: Team Stats without Membership
+        # Test 7: Team Stats without Membership
         self.test_team_stats_without_membership()
         print()
         
-        # Test 7: RLS Policies
+        # Test 8: RLS Policies
         self.test_team_deals_rls_policies(teams)
         print()
         
