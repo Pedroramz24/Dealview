@@ -31,8 +31,9 @@ def test_contacts_query_with_name_field():
         
         log("Creating test user and contacts...", "INFO")
         
-        # Create a test user
-        test_user_id = "test-user-" + datetime.now().strftime("%Y%m%d%H%M%S")
+        # Create a test user with proper UUID
+        import uuid
+        test_user_id = str(uuid.uuid4())
         
         # Create test contacts with 'name' field
         test_contacts = [
