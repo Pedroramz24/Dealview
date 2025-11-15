@@ -402,6 +402,18 @@ frontend:
         agent: "testing"
         comment: "✅ TESTED: Team page loads successfully. User profile displays correctly with email (testuser_1760982228@test.com) and role (User). Dark glass UI maintained. Informational card about team collaboration features displays correctly. All functionality working as expected."
 
+  - task: "Team Deals Map Layer (Phase 2 Team Collaboration)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js, /app/frontend/src/components/LayerManager.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Complete Team Deals map layer feature for Phase 2 of Team Collaboration. BACKEND: Team deals are fetched from existing /api/teams/{team_id}/stats endpoint which returns team_deals array. MAPVIEW.JS CHANGES: (1) Added fetchTeamDeals() function that queries user's teams, gets first team ID, and fetches team stats including team_deals. (2) Filters out user's own deals to avoid duplicates on map. (3) Added useEffect to call fetchTeamDeals() on mount. (4) Passed showTeamDeals and setShowTeamDeals props to LayerManager. (5) Added team deal markers with purple/gradient styling (rgba(168, 85, 247)) to differentiate from personal deals (cyan #00b8d4). (6) Team markers use team icon (users icon from lucide) instead of white dot. LAYERMANAGER.JS CHANGES: (1) Added showTeamDeals and onToggleTeamDeals props. (2) Added new 'Team Deals' toggle control in Base Map Controls section. (3) Styled with purple theme matching team branding. (4) Description: 'View deals shared by team'. (5) Toggle button uses purple gradient when active. VISUAL DESIGN: Personal deals = cyan markers with white dot. Team deals = purple gradient markers with team icon. Pulsing animation on both. Frontend compiled successfully with no errors. Needs manual testing to verify: (1) Team deals toggle appears in Layer Manager, (2) Clicking toggle shows/hides team deal markers, (3) Purple markers appear for teammate deals, (4) Clicking markers opens deal details, (5) No duplicates if user owns the deal."
+
 metadata:
   created_by: "main_agent"
   version: "1.4"
