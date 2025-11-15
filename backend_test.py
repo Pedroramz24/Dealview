@@ -69,6 +69,39 @@ class BackendTester:
             self.log_result("Authentication", False, f"Authentication error: {str(e)}")
             return False
     
+    def authenticate_supabase(self):
+        """Authenticate with Supabase and get JWT token for team endpoints"""
+        try:
+            from supabase import create_client
+            import os
+            from dotenv import load_dotenv
+            
+            load_dotenv('/app/backend/.env')
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_ANON_KEY']
+            
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Try to sign in
+            result = supabase.auth.sign_in_with_password({
+                'email': SUPABASE_TEST_CREDENTIALS['email'],
+                'password': SUPABASE_TEST_CREDENTIALS['password']
+            })
+            
+            if result.session:
+                self.supabase_token = result.session.access_token
+                self.supabase_headers = {"Authorization": f"Bearer {self.supabase_token}"}
+                self.log_result("Supabase Authentication", True, f"Successfully logged in as {SUPABASE_TEST_CREDENTIALS['email']}")
+                return True
+            else:
+                self.log_result("Supabase Authentication", False, "No session returned")
+                return False
+                
+        except Exception as e:
+            self.log_result("Supabase Authentication", False, f"Supabase auth error: {str(e)}")
+            return False
+    
     def test_get_all_deals(self):
         """Test GET /api/deals - should return existing deals"""
         try:
