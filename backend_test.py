@@ -1934,11 +1934,11 @@ class BackendTester:
             contact_ids = self.test_create_test_contacts()
         print()
         
-        # Test 6: Send Campaign
+        # Test 7: Send Campaign
         self.test_send_campaign(campaign_id, contact_ids)
         print()
         
-        # Test 7: Campaign Error Handling
+        # Test 8: Campaign Error Handling
         self.test_campaign_error_handling()
         print()
         
