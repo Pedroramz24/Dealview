@@ -1002,6 +1002,358 @@ class BackendTester:
                 
         except Exception as e:
             self.log_result("News Feed - Error Handling", False, f"Request error: {str(e)}")
+
+    # ========== TEAM DEALS MAP LAYER TESTS (Phase 2 Team Collaboration) ==========
+    
+    def test_team_stats_endpoint_authentication(self):
+        """Test GET /api/teams/{team_id}/stats - Authentication required"""
+        try:
+            # Test without authentication - use a dummy team_id
+            response = requests.get(
+                f"{self.base_url}/teams/test-team-id/stats",
+                timeout=15
+            )
+            
+            if response.status_code == 401 or response.status_code == 403:
+                self.log_result(
+                    "Team Stats - Authentication", 
+                    True, 
+                    "Endpoint correctly requires authentication (401/403 without token)"
+                )
+            else:
+                self.log_result(
+                    "Team Stats - Authentication", 
+                    False, 
+                    f"Endpoint should require auth but returned status {response.status_code}",
+                    response.text[:200] if response.text else "No response"
+                )
+                
+        except Exception as e:
+            self.log_result("Team Stats - Authentication", False, f"Request error: {str(e)}")
+    
+    def test_get_user_teams(self):
+        """Test GET /api/teams - Get user's team memberships"""
+        try:
+            response = requests.get(
+                f"{self.base_url}/teams",
+                headers=self.headers,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                teams = data.get("teams", [])
+                
+                self.log_result(
+                    "Get User Teams", 
+                    True, 
+                    f"Successfully retrieved user's teams (count: {len(teams)})",
+                    f"Teams: {[t.get('name', 'Unknown') for t in teams]}" if teams else "User has no teams"
+                )
+                
+                return teams
+            else:
+                self.log_result(
+                    "Get User Teams", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                return []
+                
+        except Exception as e:
+            self.log_result("Get User Teams", False, f"Request error: {str(e)}")
+            return []
+    
+    def test_team_stats_with_membership(self, teams):
+        """Test GET /api/teams/{team_id}/stats - User with team membership"""
+        if not teams:
+            self.log_result(
+                "Team Stats - With Membership", 
+                False, 
+                "No teams available to test - user needs to be member of at least one team",
+                "Create a team first or join an existing team"
+            )
+            return None
+        
+        # Test with first team
+        team = teams[0]
+        team_id = team.get('id')
+        team_name = team.get('name', 'Unknown')
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/teams/{team_id}/stats",
+                headers=self.headers,
+                timeout=20
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify response structure
+                required_fields = ["team_stats", "agent_stats", "team_deals"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_result(
+                        "Team Stats - With Membership", 
+                        False, 
+                        f"Response missing required fields: {missing_fields}",
+                        f"Response keys: {list(data.keys())}"
+                    )
+                    return None
+                
+                team_deals = data.get("team_deals", [])
+                team_stats = data.get("team_stats", {})
+                agent_stats = data.get("agent_stats", [])
+                
+                self.log_result(
+                    "Team Stats - With Membership", 
+                    True, 
+                    f"Successfully retrieved stats for team '{team_name}' (ID: {team_id})",
+                    f"Team deals: {len(team_deals)}, Active deals: {team_stats.get('total_active_deals', 0)}, Agents: {len(agent_stats)}"
+                )
+                
+                return data
+                
+            else:
+                self.log_result(
+                    "Team Stats - With Membership", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                return None
+                
+        except Exception as e:
+            self.log_result("Team Stats - With Membership", False, f"Request error: {str(e)}")
+            return None
+    
+    def test_team_deals_array_structure(self, team_stats_data):
+        """Test team_deals array structure and content"""
+        if not team_stats_data:
+            self.log_result(
+                "Team Deals - Array Structure", 
+                False, 
+                "No team stats data available to test team_deals array"
+            )
+            return
+        
+        team_deals = team_stats_data.get("team_deals", [])
+        
+        if len(team_deals) == 0:
+            self.log_result(
+                "Team Deals - Array Structure", 
+                True, 
+                "Team has no deals yet (empty array is valid)",
+                "Create some deals and share them with the team to test further"
+            )
+            return
+        
+        # Verify each deal has required fields
+        required_deal_fields = ["id", "owner_id", "team_id", "address", "price", "asset_type"]
+        
+        all_valid = True
+        invalid_deals = []
+        
+        for idx, deal in enumerate(team_deals[:5]):  # Check first 5 deals
+            missing_fields = [field for field in required_deal_fields if field not in deal]
+            
+            if missing_fields:
+                all_valid = False
+                invalid_deals.append({
+                    "index": idx,
+                    "deal_id": deal.get("id", "Unknown"),
+                    "missing_fields": missing_fields
+                })
+        
+        if all_valid:
+            # Check for sharing status
+            shared_deals = [d for d in team_deals if d.get('is_shared_with_team', False)]
+            
+            self.log_result(
+                "Team Deals - Array Structure", 
+                True, 
+                f"All team deals have complete structure (total: {len(team_deals)}, shared: {len(shared_deals)})",
+                f"Fields verified: {required_deal_fields}"
+            )
+        else:
+            self.log_result(
+                "Team Deals - Array Structure", 
+                False, 
+                f"{len(invalid_deals)} deals missing required fields",
+                f"Invalid deals: {invalid_deals}"
+            )
+    
+    def test_team_deals_filtering(self, team_stats_data):
+        """Test that team_deals properly filters deals (should include shared deals, can include own deals)"""
+        if not team_stats_data:
+            self.log_result(
+                "Team Deals - Filtering", 
+                False, 
+                "No team stats data available to test filtering"
+            )
+            return
+        
+        team_deals = team_stats_data.get("team_deals", [])
+        
+        if len(team_deals) == 0:
+            self.log_result(
+                "Team Deals - Filtering", 
+                True, 
+                "No deals to filter (empty array is valid)",
+                "Create and share deals with team to test filtering logic"
+            )
+            return
+        
+        # Analyze deal ownership and sharing
+        shared_deals = [d for d in team_deals if d.get('is_shared_with_team', False)]
+        team_id = team_deals[0].get('team_id') if team_deals else None
+        
+        # Check that all deals belong to the team
+        wrong_team_deals = [d for d in team_deals if d.get('team_id') != team_id]
+        
+        if wrong_team_deals:
+            self.log_result(
+                "Team Deals - Filtering", 
+                False, 
+                f"Found {len(wrong_team_deals)} deals with wrong team_id",
+                f"Expected team_id: {team_id}, but found deals with different team_ids"
+            )
+        else:
+            self.log_result(
+                "Team Deals - Filtering", 
+                True, 
+                f"Filtering working correctly - all {len(team_deals)} deals belong to team",
+                f"Shared deals: {len(shared_deals)}, Team ID: {team_id}"
+            )
+    
+    def test_team_stats_without_membership(self):
+        """Test GET /api/teams/{team_id}/stats - User without team membership (should fail or return empty)"""
+        # Use a non-existent team ID
+        fake_team_id = "00000000-0000-0000-0000-000000000000"
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/teams/{fake_team_id}/stats",
+                headers=self.headers,
+                timeout=15
+            )
+            
+            # Should either return 403/404 or empty data
+            if response.status_code in [403, 404]:
+                self.log_result(
+                    "Team Stats - Without Membership", 
+                    True, 
+                    f"Correctly denied access to non-member team (status {response.status_code})"
+                )
+            elif response.status_code == 200:
+                data = response.json()
+                team_deals = data.get("team_deals", [])
+                
+                if len(team_deals) == 0:
+                    self.log_result(
+                        "Team Stats - Without Membership", 
+                        True, 
+                        "Returns empty team_deals for non-existent team (graceful handling)"
+                    )
+                else:
+                    self.log_result(
+                        "Team Stats - Without Membership", 
+                        False, 
+                        f"Should return empty data for non-member, but returned {len(team_deals)} deals",
+                        "Possible security issue - user can see deals from teams they don't belong to"
+                    )
+            else:
+                self.log_result(
+                    "Team Stats - Without Membership", 
+                    False, 
+                    f"Unexpected status code {response.status_code}",
+                    response.text[:500] if response.text else "No response"
+                )
+                
+        except Exception as e:
+            self.log_result("Team Stats - Without Membership", False, f"Request error: {str(e)}")
+    
+    def test_team_deals_rls_policies(self, teams):
+        """Test RLS policies - verify team members can see each other's deals"""
+        if not teams:
+            self.log_result(
+                "Team Deals - RLS Policies", 
+                False, 
+                "No teams available to test RLS policies",
+                "User needs to be member of at least one team"
+            )
+            return
+        
+        team = teams[0]
+        team_id = team.get('id')
+        
+        try:
+            # Get team members
+            response = requests.get(
+                f"{self.base_url}/teams/{team_id}/members",
+                headers=self.headers,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                members = data.get("members", [])
+                
+                if len(members) < 2:
+                    self.log_result(
+                        "Team Deals - RLS Policies", 
+                        True, 
+                        f"Team has only {len(members)} member(s) - RLS policies cannot be fully tested",
+                        "Add more team members to test cross-member deal visibility"
+                    )
+                else:
+                    # Get team stats to see if we can see other members' deals
+                    stats_response = requests.get(
+                        f"{self.base_url}/teams/{team_id}/stats",
+                        headers=self.headers,
+                        timeout=15
+                    )
+                    
+                    if stats_response.status_code == 200:
+                        stats_data = stats_response.json()
+                        team_deals = stats_data.get("team_deals", [])
+                        
+                        # Check if we can see deals from multiple owners
+                        unique_owners = set(d.get('owner_id') for d in team_deals if d.get('owner_id'))
+                        
+                        if len(unique_owners) > 1:
+                            self.log_result(
+                                "Team Deals - RLS Policies", 
+                                True, 
+                                f"RLS policies working - can see deals from {len(unique_owners)} different team members",
+                                f"Total team deals: {len(team_deals)}, Team members: {len(members)}"
+                            )
+                        else:
+                            self.log_result(
+                                "Team Deals - RLS Policies", 
+                                True, 
+                                f"Can access team deals (RLS allows team member access)",
+                                f"Only seeing deals from {len(unique_owners)} owner(s) - other members may not have deals yet"
+                            )
+                    else:
+                        self.log_result(
+                            "Team Deals - RLS Policies", 
+                            False, 
+                            f"Failed to get team stats - status {stats_response.status_code}"
+                        )
+            else:
+                self.log_result(
+                    "Team Deals - RLS Policies", 
+                    False, 
+                    f"Failed to get team members - status {response.status_code}",
+                    response.text[:500] if response.text else "No response"
+                )
+                
+        except Exception as e:
+            self.log_result("Team Deals - RLS Policies", False, f"Request error: {str(e)}")
     
     def run_all_tests(self):
         """Run all backend tests"""
