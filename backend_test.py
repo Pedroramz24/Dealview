@@ -1278,7 +1278,7 @@ class BackendTester:
         try:
             response = requests.get(
                 f"{self.base_url}/teams/{fake_team_id}/stats",
-                headers=self.headers,
+                headers=self.supabase_headers,
                 timeout=15
             )
             
