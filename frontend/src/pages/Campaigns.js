@@ -657,6 +657,22 @@ const Campaigns = () => {
           >
             Templates
           </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            style={{
+              padding: '10px 24px',
+              background: activeTab === 'settings' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'settings' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              borderRadius: '10px',
+              color: activeTab === 'settings' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            Settings
+          </button>
         </div>
 
         {/* CAMPAIGNS TAB */}
