@@ -9,7 +9,8 @@ root.render(
   <React.StrictMode>
     <App />
     <Toaster 
-      position="top-right" 
+      position="top-right"
+      duration={3000}
       toastOptions={{
         style: {
           background: 'rgba(10, 10, 10, 0.95)',
