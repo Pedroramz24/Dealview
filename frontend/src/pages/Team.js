@@ -554,39 +554,42 @@ const MembersTab = ({ members, user, canManage, invites, handleRevokeInvite, set
                           {/* Change Role Section */}
                           <div style={{ padding: '8px 12px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
                             <div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>Change Role</div>
-                            {['admin', 'agent', 'viewer'].filter(role => role !== member.role).map(role => (
-                              <button
-                                key={role}
-                                onClick={() => handleUpdateRole(member.user_id, role)}
-                                style={{
-                                  width: '100%',
-                                  padding: '6px 10px',
-                                  background: 'transparent',
-                                  border: 'none',
-                                  borderRadius: '4px',
-                                  color: 'rgba(255, 255, 255, 0.8)',
-                                  fontSize: '13px',
-                                  textAlign: 'left',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '8px',
-                                  transition: 'all 0.15s ease',
-                                  marginBottom: '2px'
-                                }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
-                                  e.currentTarget.style.color = '#00b8d4';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.background = 'transparent';
-                                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
-                                }}
-                              >
-                                {getRoleIcon(role)({ size: 12 })}
-                                <span style={{ textTransform: 'capitalize' }}>{role}</span>
-                              </button>
-                            ))}
+                            {['admin', 'agent', 'viewer'].filter(role => role !== member.role).map(role => {
+                              const RoleIconComponent = getRoleIcon(role);
+                              return (
+                                <button
+                                  key={role}
+                                  onClick={() => handleUpdateRole(member.user_id, role)}
+                                  style={{
+                                    width: '100%',
+                                    padding: '6px 10px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    color: 'rgba(255, 255, 255, 0.8)',
+                                    fontSize: '13px',
+                                    textAlign: 'left',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    transition: 'all 0.15s ease',
+                                    marginBottom: '2px'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                                    e.currentTarget.style.color = '#00b8d4';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = 'transparent';
+                                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                                  }}
+                                >
+                                  <RoleIconComponent size={12} />
+                                  <span style={{ textTransform: 'capitalize' }}>{role}</span>
+                                </button>
+                              );
+                            })}
                           </div>
                           
                           {/* Remove Member */}
