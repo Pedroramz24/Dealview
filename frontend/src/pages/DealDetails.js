@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import DealTimeline from '../components/DealTimeline';
 import EmailComposeModal from '../components/EmailComposeModal';
+import TeamCollaborationPanel from '../components/TeamCollaborationPanel';
 import EmailActivityTimeline from '../components/EmailActivityTimeline';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
