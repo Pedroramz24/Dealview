@@ -31,9 +31,21 @@ def test_contacts_query_with_name_field():
         
         log("Creating test user and contacts...", "INFO")
         
-        # Create a test user with proper UUID
-        import uuid
-        test_user_id = str(uuid.uuid4())
+        # Use existing test user from earlier test
+        # We'll authenticate to get a real user_id
+        test_email = "emailtest@test.com"
+        test_password = "TestPassword123!"
+        
+        try:
+            result = supabase.auth.sign_in_with_password({
+                'email': test_email,
+                'password': test_password
+            })
+            test_user_id = result.user.id
+            log(f"Using existing test user: {test_email} (ID: {test_user_id})", "INFO")
+        except Exception as e:
+            log(f"❌ Could not authenticate test user: {str(e)}", "FAIL")
+            return False
         
         # Create test contacts with 'name' field
         test_contacts = [
