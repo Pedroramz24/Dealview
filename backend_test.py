@@ -1490,6 +1490,326 @@ class BackendTester:
         except Exception as e:
             self.log_result("Team Deals - RLS Policies", False, f"Request error: {str(e)}")
     
+
+    # ========== EMAIL CAMPAIGN TESTS (Encryption & SendGrid Integration) ==========
+    
+    def test_encryption_key_exists(self):
+        """Test that ENCRYPTION_KEY exists in backend/.env"""
+        try:
+            from dotenv import load_dotenv
+            import os
+            
+            load_dotenv('/app/backend/.env')
+            encryption_key = os.environ.get('ENCRYPTION_KEY')
+            
+            if encryption_key:
+                self.log_result(
+                    "Encryption Key - Exists",
+                    True,
+                    f"ENCRYPTION_KEY found in backend/.env (length: {len(encryption_key)} chars)"
+                )
+                return encryption_key
+            else:
+                self.log_result(
+                    "Encryption Key - Exists",
+                    False,
+                    "ENCRYPTION_KEY not found in backend/.env - required for API key encryption"
+                )
+                return None
+        except Exception as e:
+            self.log_result("Encryption Key - Exists", False, f"Error checking encryption key: {str(e)}")
+            return None
+    
+    def test_encryption_decryption(self, encryption_key):
+        """Test encryption and decryption of SendGrid API key"""
+        if not encryption_key:
+            self.log_result(
+                "Encryption/Decryption",
+                False,
+                "Cannot test encryption - ENCRYPTION_KEY not available"
+            )
+            return False
+        
+        try:
+            from cryptography.fernet import Fernet
+            
+            # Test API key from review request
+            test_api_key = "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"
+            
+            # Encrypt
+            if isinstance(encryption_key, str):
+                encryption_key = encryption_key.encode()
+            cipher = Fernet(encryption_key)
+            encrypted = cipher.encrypt(test_api_key.encode()).decode()
+            
+            # Decrypt
+            decrypted = cipher.decrypt(encrypted.encode()).decode()
+            
+            # Verify
+            if decrypted == test_api_key:
+                self.log_result(
+                    "Encryption/Decryption",
+                    True,
+                    "✅ Encryption and decryption working correctly - decrypted key matches original",
+                    f"Encrypted length: {len(encrypted)} chars, Original length: {len(test_api_key)} chars"
+                )
+                return True
+            else:
+                self.log_result(
+                    "Encryption/Decryption",
+                    False,
+                    "❌ Decrypted key does not match original",
+                    f"Original: {test_api_key[:20]}..., Decrypted: {decrypted[:20]}..."
+                )
+                return False
+        except Exception as e:
+            self.log_result("Encryption/Decryption", False, f"Encryption/decryption error: {str(e)}")
+            return False
+    
+    def test_sendgrid_connection(self):
+        """Test POST /api/email/test-connection with new SendGrid API key"""
+        try:
+            test_api_key = "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"
+            
+            response = requests.post(
+                f"{self.base_url}/email/test-connection",
+                json={"api_key": test_api_key},
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                is_valid = data.get('valid', False)
+                message = data.get('message', '')
+                
+                if is_valid:
+                    self.log_result(
+                        "SendGrid Connection Test",
+                        True,
+                        f"✅ SendGrid API key is valid and working: {message}"
+                    )
+                    return True
+                else:
+                    self.log_result(
+                        "SendGrid Connection Test",
+                        False,
+                        f"❌ SendGrid API key validation failed: {message}"
+                    )
+                    return False
+            else:
+                self.log_result(
+                    "SendGrid Connection Test",
+                    False,
+                    f"Failed with status {response.status_code}",
+                    response.text[:500] if response.text else "No response"
+                )
+                return False
+        except Exception as e:
+            self.log_result("SendGrid Connection Test", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_create_email_campaign(self):
+        """Test creating an email campaign"""
+        try:
+            campaign_data = {
+                "name": "Test Campaign - Backend API Test",
+                "subject": "Test Email Campaign",
+                "html_content": "<html><body><h1>Test Campaign</h1><p>This is a test email campaign from backend API testing.</p></body></html>",
+                "plain_text_content": "Test Campaign\\n\\nThis is a test email campaign from backend API testing.",
+                "status": "draft"
+            }
+            
+            response = requests.post(
+                f"{self.base_url}/email/campaigns",
+                json=campaign_data,
+                headers=self.supabase_headers,
+                timeout=15
+            )
+            
+            if response.status_code == 201:
+                data = response.json()
+                campaign = data.get('campaign', {})
+                campaign_id = campaign.get('id')
+                
+                self.log_result(
+                    "Create Email Campaign",
+                    True,
+                    f"✅ Successfully created test campaign (ID: {campaign_id})",
+                    f"Name: {campaign.get('name')}, Subject: {campaign.get('subject')}"
+                )
+                return campaign_id
+            else:
+                self.log_result(
+                    "Create Email Campaign",
+                    False,
+                    f"Failed with status {response.status_code}",
+                    response.text[:500] if response.text else "No response"
+                )
+                return None
+        except Exception as e:
+            self.log_result("Create Email Campaign", False, f"Request error: {str(e)}")
+            return None
+    
+    def test_send_campaign(self, campaign_id, contact_ids):
+        """Test POST /api/email/campaigns/send - Send campaign to contacts"""
+        if not campaign_id:
+            self.log_result(
+                "Send Campaign",
+                False,
+                "Cannot test campaign sending - no campaign ID available"
+            )
+            return False
+        
+        if not contact_ids or len(contact_ids) == 0:
+            self.log_result(
+                "Send Campaign",
+                False,
+                "Cannot test campaign sending - no contact IDs available"
+            )
+            return False
+        
+        try:
+            send_data = {
+                "campaign_id": campaign_id,
+                "contact_ids": contact_ids
+            }
+            
+            response = requests.post(
+                f"{self.base_url}/email/campaigns/send",
+                json=send_data,
+                headers=self.supabase_headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                success = data.get('success', False)
+                message = data.get('message', '')
+                results = data.get('results', {})
+                total_sent = results.get('total_sent', 0)
+                total_failed = results.get('total_failed', 0)
+                
+                if success and total_sent > 0:
+                    self.log_result(
+                        "Send Campaign",
+                        True,
+                        f"✅ Campaign sent successfully: {message}",
+                        f"Total sent: {total_sent}, Total failed: {total_failed}"
+                    )
+                    return True
+                else:
+                    self.log_result(
+                        "Send Campaign",
+                        False,
+                        f"❌ Campaign sending failed or no emails sent: {message}",
+                        f"Total sent: {total_sent}, Total failed: {total_failed}"
+                    )
+                    return False
+            else:
+                error_text = response.text[:500] if response.text else "No response"
+                self.log_result(
+                    "Send Campaign",
+                    False,
+                    f"❌ Failed with status {response.status_code}",
+                    error_text
+                )
+                return False
+        except Exception as e:
+            self.log_result("Send Campaign", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_campaign_error_handling(self):
+        """Test error handling for campaign sending"""
+        try:
+            # Test 1: Non-existent campaign
+            response1 = requests.post(
+                f"{self.base_url}/email/campaigns/send",
+                json={
+                    "campaign_id": "00000000-0000-0000-0000-000000000000",
+                    "contact_ids": ["test-contact-id"]
+                },
+                headers=self.supabase_headers,
+                timeout=15
+            )
+            
+            if response1.status_code == 404:
+                self.log_result(
+                    "Campaign Error Handling - Not Found",
+                    True,
+                    "✅ Correctly returns 404 for non-existent campaign"
+                )
+            else:
+                self.log_result(
+                    "Campaign Error Handling - Not Found",
+                    False,
+                    f"Expected 404, got {response1.status_code}"
+                )
+            
+            # Test 2: Empty contact list
+            # First create a campaign
+            campaign_response = requests.post(
+                f"{self.base_url}/email/campaigns",
+                json={
+                    "name": "Error Test Campaign",
+                    "subject": "Test",
+                    "html_content": "<p>Test</p>",
+                    "status": "draft"
+                },
+                headers=self.supabase_headers,
+                timeout=15
+            )
+            
+            if campaign_response.status_code == 201:
+                campaign_id = campaign_response.json().get('campaign', {}).get('id')
+                
+                response2 = requests.post(
+                    f"{self.base_url}/email/campaigns/send",
+                    json={
+                        "campaign_id": campaign_id,
+                        "contact_ids": []
+                    },
+                    headers=self.supabase_headers,
+                    timeout=15
+                )
+                
+                if response2.status_code == 400:
+                    self.log_result(
+                        "Campaign Error Handling - No Contacts",
+                        True,
+                        "✅ Correctly returns 400 for empty contact list"
+                    )
+                else:
+                    self.log_result(
+                        "Campaign Error Handling - No Contacts",
+                        False,
+                        f"Expected 400, got {response2.status_code}"
+                    )
+            
+            # Test 3: No authentication
+            response3 = requests.post(
+                f"{self.base_url}/email/campaigns/send",
+                json={
+                    "campaign_id": "test-id",
+                    "contact_ids": ["test-contact"]
+                },
+                timeout=15
+            )
+            
+            if response3.status_code == 401 or response3.status_code == 403:
+                self.log_result(
+                    "Campaign Error Handling - Authentication",
+                    True,
+                    f"✅ Correctly requires authentication (status {response3.status_code})"
+                )
+            else:
+                self.log_result(
+                    "Campaign Error Handling - Authentication",
+                    False,
+                    f"Expected 401/403, got {response3.status_code}"
+                )
+        except Exception as e:
+            self.log_result("Campaign Error Handling", False, f"Request error: {str(e)}")
+
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
