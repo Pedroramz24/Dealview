@@ -937,20 +937,38 @@ const Contacts = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenEdit(contact);
-                        }}
-                        className="p-2 rounded-lg transition-all"
-                        style={{
-                          background: 'var(--glass-bg)',
-                          border: '1px solid var(--glass-border)',
-                          color: 'var(--accent)'
-                        }}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenEdit(contact);
+                          }}
+                          className="p-2 rounded-lg transition-all"
+                          style={{
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--accent)'
+                          }}
+                          title="Edit Contact"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteContact(contact);
+                          }}
+                          className="p-2 rounded-lg transition-all"
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            color: '#ef4444'
+                          }}
+                          title="Delete Contact"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
