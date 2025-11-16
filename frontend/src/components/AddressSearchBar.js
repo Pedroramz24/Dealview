@@ -102,11 +102,11 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
 
   return (
     <div ref={searchRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Search Input - Flush with Header */}
+      {/* Search Input - Flush with Header (No separate background) */}
       <div style={{
         height: '44px',
-        background: 'rgba(0, 0, 0, 0.3)',
-        border: '1px solid rgba(255, 255, 255, 0.15)',
+        background: 'transparent',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
         borderRadius: '8px',
         display: 'flex',
         alignItems: 'center',
