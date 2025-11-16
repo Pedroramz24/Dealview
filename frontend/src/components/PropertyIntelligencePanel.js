@@ -440,7 +440,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
         background: 'rgba(11, 12, 14, 0.95)',
         backdropFilter: 'blur(20px)',
         borderRight: '1px solid rgba(255, 255, 255, 0.1)',
-        zIndex: 1000,
+        zIndex: 1050,
         transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
