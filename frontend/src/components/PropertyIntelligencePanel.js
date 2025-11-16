@@ -433,7 +433,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     <div
       style={{
         position: 'fixed',
-        top: 0,
+        top: '64px',
         left: isOpen ? 0 : '-500px',
         width: '500px',
         height: '100vh',
@@ -1815,7 +1815,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
       {showDeleteConfirm && (
         <div style={{
           position: 'fixed',
-          top: 0,
+          top: '64px',
           left: 0,
           width: '100vw',
           height: '100vh',
