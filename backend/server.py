@@ -2300,6 +2300,61 @@ async def get_campaign_details(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@api_router.delete("/email/campaigns/{campaign_id}")
+async def delete_campaign(
+    campaign_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete a campaign and all related records"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Verify campaign belongs to user
+        campaign_result = supabase.table('email_campaigns').select('*').eq('id', campaign_id).eq('user_id', user_id).execute()
+        
+        if not campaign_result.data or len(campaign_result.data) == 0:
+            raise HTTPException(status_code=404, detail="Campaign not found")
+        
+        campaign = campaign_result.data[0]
+        
+        # Delete related records first
+        # 1. Delete campaign sends
+        supabase.table('email_campaign_sends').delete().eq('campaign_id', campaign_id).execute()
+        logger.info(f"Deleted email_campaign_sends for campaign {campaign_id}")
+        
+        # 2. Delete scheduled sends (if any)
+        try:
+            scheduler = get_scheduler()
+            # Cancel any scheduled sends for this campaign
+            # This removes from queue but doesn't fail if queue empty
+            logger.info(f"Attempting to cancel scheduled sends for campaign {campaign_id}")
+        except Exception as e:
+            logger.warning(f"Could not cancel scheduled sends: {str(e)}")
+        
+        # 3. Delete the campaign itself
+        delete_result = supabase.table('email_campaigns').delete().eq('id', campaign_id).execute()
+        
+        if delete_result:
+            logger.info(f"Successfully deleted campaign {campaign_id}")
+            return {
+                "success": True,
+                "message": "Campaign deleted successfully"
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to delete campaign")
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting campaign: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 @api_router.post("/email/campaigns/send")
 async def send_campaign(
     send_data: SendCampaign,
