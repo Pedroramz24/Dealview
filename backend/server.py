@@ -23,12 +23,14 @@ from datetime import datetime, timedelta
 from layer_registry import LAYER_REGISTRY, CACHE_TTL, MAX_CACHE_SIZE, RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW
 import feedparser
 import time
-from sendgrid_service import sendgrid_service
-from campaign_scheduler import get_scheduler
 
-
+# CRITICAL: Load environment variables BEFORE importing services that depend on them
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Now safe to import services that use environment variables
+from sendgrid_service import sendgrid_service
+from campaign_scheduler import get_scheduler
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
