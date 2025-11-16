@@ -874,7 +874,7 @@ const MapView = () => {
                 background: measurementMode === 'area' 
                   ? 'rgba(168, 85, 247, 0.15)' 
                   : 'rgba(255, 255, 255, 0.05)',
-                border: `1px solid ${measurementMode === 'area' ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255, 255, 255, 0.1)'}',
+                border: `1px solid ${measurementMode === 'area' ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
                 borderRadius: '8px',
                 color: measurementMode === 'area' ? '#a855f7' : '#FFFFFF',
                 cursor: 'pointer',
