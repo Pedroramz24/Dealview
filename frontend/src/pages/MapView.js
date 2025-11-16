@@ -1184,6 +1184,56 @@ const MapView = () => {
             </Marker>
           ))}
 
+          {/* Searched Address Marker - Green pin for searched locations */}
+          {searchedAddress && searchedAddress.latitude && searchedAddress.longitude && (
+            <Marker
+              longitude={searchedAddress.longitude}
+              latitude={searchedAddress.latitude}
+              anchor="bottom"
+            >
+              <div style={{
+                position: 'relative',
+                width: '48px',
+                height: '48px',
+                cursor: 'pointer',
+                filter: 'drop-shadow(0 4px 12px rgba(16, 185, 129, 0.6))',
+                animation: 'bounce-in 0.6s ease-out'
+              }}>
+                {/* Pulsing outer ring - green for searched address */}
+                <div style={{
+                  position: 'absolute',
+                  top: '0',
+                  left: '0',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: 'rgba(16, 185, 129, 0.4)',
+                  animation: 'pulse 2s ease-out infinite'
+                }}></div>
+                {/* Main marker circle - green */}
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '8px',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '3px solid #ffffff'
+                }}>
+                  {/* Search/Location icon */}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+              </div>
+            </Marker>
+          )}
+
           {selectedDeal && (
             <Popup
               longitude={selectedDeal.longitude}
