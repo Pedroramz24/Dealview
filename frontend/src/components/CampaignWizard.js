@@ -7,7 +7,8 @@ import {
   ArrowRight, ArrowLeft, Send, Calendar, Zap, Tag, Users, 
   CheckSquare, Square, Filter, Eye, Save, Loader2, X, Monitor, Smartphone, Clock
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { smartToast } from '../utils/smartToast';
+import { useAsyncAction } from '../hooks/useAsyncAction';
 
 const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initialTemplate = null }) => {
   const [currentStep, setCurrentStep] = useState(1); // 1: Design, 2: Configure & Send
