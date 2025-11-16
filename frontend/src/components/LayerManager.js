@@ -254,7 +254,7 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
             bottom: 0,
             background: 'rgba(0, 0, 0, 0.6)',
             backdropFilter: 'blur(4px)',
-            zIndex: 998,
+            zIndex: 1049,
             transition: 'opacity 200ms ease-in-out',
           }}
           className="lg:hidden"
