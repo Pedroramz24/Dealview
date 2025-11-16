@@ -1218,7 +1218,7 @@ const Campaigns = () => {
                             </div>
 
                             {/* Actions Menu */}
-                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'flex-end', paddingLeft: '12px' }} onClick={(e) => e.stopPropagation()}>
+                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'flex-end', paddingLeft: '12px' }} onClick={(e) => e.stopPropagation()} data-campaign-menu>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
