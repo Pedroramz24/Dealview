@@ -269,7 +269,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
       if (!createResponse.ok) {
         const errorText = await createResponse.text();
-        console.error('❌ Create campaign failed:', errorText);
+        console.error('Create campaign failed:', errorText);
         throw new Error(`Failed to create campaign: ${errorText}`);
       }
 
@@ -298,12 +298,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         console.log('📥 Send result:', sendResult);
         
         if (sendResponse.ok) {
-          toast.success(`🎉 Campaign sent to ${sendResult.results.total_sent} recipients!`);
+          toast.success(`Campaign sent to ${sendResult.results.total_sent} recipients!`);
           console.log('✅ Campaign sent successfully');
           onComplete && onComplete();
           onClose();
         } else {
-          console.error('❌ Send failed:', sendResult);
+          console.error('Send failed:', sendResult);
           throw new Error(sendResult.detail || 'Failed to send campaign');
         }
       } 
@@ -328,11 +328,11 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         console.log('📥 Schedule result:', scheduleResult);
         
         if (scheduleResponse.ok) {
-          toast.success(`📅 Campaign scheduled for ${campaignConfig.scheduleDate.toLocaleString()}!`);
+          toast.success(`Campaign scheduled for ${campaignConfig.scheduleDate.toLocaleString()}!`);
           onComplete && onComplete();
           onClose();
         } else {
-          console.error('❌ Schedule failed:', scheduleResult);
+          console.error('Schedule failed:', scheduleResult);
           throw new Error(scheduleResult.detail || 'Failed to schedule campaign');
         }
       }
@@ -362,12 +362,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
           onComplete && onComplete();
           onClose();
         } else {
-          console.error('❌ Batch schedule failed:', batchResult);
+          console.error('Batch schedule failed:', batchResult);
           throw new Error(batchResult.detail || 'Failed to schedule batch campaign');
         }
       }
     } catch (error) {
-      console.error('❌ Error in handleFinalSend:', error);
+      console.error('Error in handleFinalSend:', error);
       toast.dismiss(); // Clear any existing toasts
       toast.error(error.message || 'Failed to send campaign', { duration: 4000 });
     } finally {
@@ -402,7 +402,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         
         if (userError || !user) {
-          console.error('❌ User error:', userError);
+          console.error('User error:', userError);
           throw new Error('You must be logged in to save templates');
         }
         
@@ -425,18 +425,18 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
           .single();
         
         if (error) {
-          console.error('❌ Supabase error:', error);
+          console.error('Supabase error:', error);
           throw error;
         }
         
-        console.log('✅ Template saved:', templateData);
-        toast.success(`✅ Template "${templateName}" saved!`);
+        console.log('Template saved:', templateData);
+        toast.success(`Template "${templateName}" saved!`);
         setTemplateName('');
         setShowTemplateNameInput(false);
         setEmailDesign(JSON.stringify(design));
         setEmailHTML(html);
       } catch (error) {
-        console.error('❌ Error saving template:', error);
+        console.error('Error saving template:', error);
         toast.error(`Failed to save template: ${error.message || 'Unknown error'}`);
       }
     });
@@ -1277,36 +1277,36 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       
                       // Validate required fields
                       if (!campaignConfig.name || !campaignConfig.name.trim()) {
-                        console.log('❌ Validation failed: Campaign name missing');
-                        toast.error('❌ Please enter a Campaign Name');
+                        console.log('Validation failed: Campaign name missing');
+                        toast.error('Please enter a Campaign Name');
                         return;
                       }
                       if (!campaignConfig.subject || !campaignConfig.subject.trim()) {
-                        console.log('❌ Validation failed: Subject line missing');
-                        toast.error('❌ Please enter a Subject Line');
+                        console.log('Validation failed: Subject line missing');
+                        toast.error('Please enter a Subject Line');
                         return;
                       }
                       if (campaignConfig.selectedContacts.length === 0) {
-                        console.log('❌ Validation failed: No contacts selected');
-                        toast.error('❌ Please select at least one recipient');
+                        console.log('Validation failed: No contacts selected');
+                        toast.error('Please select at least one recipient');
                         return;
                       }
                       
                       // Check if email design exists
                       if (!emailHTML || !emailHTML.trim()) {
-                        console.log('❌ Validation failed: No email content');
-                        toast.error('❌ Please design an email first (go back to Step 1)');
+                        console.log('Validation failed: No email content');
+                        toast.error('Please design an email first (go back to Step 1)');
                         return;
                       }
                       
                       // Validate scheduling fields
                       if (campaignConfig.sendOption === 'schedule' && !campaignConfig.scheduleDate) {
-                        console.log('❌ Validation failed: Schedule date missing');
+                        console.log('Validation failed: Schedule date missing');
                         toast.error('Please select a date and time for scheduled send');
                         return;
                       }
                       if (campaignConfig.sendOption === 'batch' && (!campaignConfig.batchSchedule.startDate || !campaignConfig.batchSchedule.endDate)) {
-                        console.log('❌ Validation failed: Batch schedule dates missing');
+                        console.log('Validation failed: Batch schedule dates missing');
                         toast.error('Please select start and end dates for batch schedule');
                         return;
                       }
@@ -1315,7 +1315,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       // Call handleFinalSend directly
                       await handleFinalSend();
                     } catch (error) {
-                      console.error('❌ Error in Send Campaign button (top):', error);
+                      console.error('Error in Send Campaign button (top):', error);
                       toast.error(`Error: ${error.message}`);
                     }
                   }}
@@ -1906,36 +1906,36 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       
                       // Validate required fields
                       if (!campaignConfig.name || !campaignConfig.name.trim()) {
-                        console.log('❌ Validation failed: Campaign name missing');
-                        toast.error('❌ Please enter a Campaign Name');
+                        console.log('Validation failed: Campaign name missing');
+                        toast.error('Please enter a Campaign Name');
                         return;
                       }
                       if (!campaignConfig.subject || !campaignConfig.subject.trim()) {
-                        console.log('❌ Validation failed: Subject line missing');
-                        toast.error('❌ Please enter a Subject Line');
+                        console.log('Validation failed: Subject line missing');
+                        toast.error('Please enter a Subject Line');
                         return;
                       }
                       if (campaignConfig.selectedContacts.length === 0) {
-                        console.log('❌ Validation failed: No contacts selected');
-                        toast.error('❌ Please select at least one recipient');
+                        console.log('Validation failed: No contacts selected');
+                        toast.error('Please select at least one recipient');
                         return;
                       }
                       
                       // Check if email design exists
                       if (!emailHTML || !emailHTML.trim()) {
-                        console.log('❌ Validation failed: No email content');
-                        toast.error('❌ Please design an email first (go back to Step 1)');
+                        console.log('Validation failed: No email content');
+                        toast.error('Please design an email first (go back to Step 1)');
                         return;
                       }
                       
                       // Validate scheduling fields
                       if (campaignConfig.sendOption === 'schedule' && !campaignConfig.scheduleDate) {
-                        console.log('❌ Validation failed: Schedule date missing');
+                        console.log('Validation failed: Schedule date missing');
                         toast.error('Please select a date and time for scheduled send');
                         return;
                       }
                       if (campaignConfig.sendOption === 'batch' && (!campaignConfig.batchSchedule.startDate || !campaignConfig.batchSchedule.endDate)) {
-                        console.log('❌ Validation failed: Batch schedule dates missing');
+                        console.log('Validation failed: Batch schedule dates missing');
                         toast.error('Please select start and end dates for batch schedule');
                         return;
                       }
@@ -1944,7 +1944,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       // Call handleFinalSend directly
                       await handleFinalSend();
                     } catch (error) {
-                      console.error('❌ Error in Send Campaign button:', error);
+                      console.error('Error in Send Campaign button:', error);
                       toast.error(`Error: ${error.message}`);
                     }
                   }}
