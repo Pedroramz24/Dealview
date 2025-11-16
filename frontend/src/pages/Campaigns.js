@@ -1041,7 +1041,7 @@ const Campaigns = () => {
                     {/* Table Header */}
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr',
+                      gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr auto',
                       padding: '18px 24px',
                       background: 'rgba(255, 255, 255, 0.02)',
                       borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
