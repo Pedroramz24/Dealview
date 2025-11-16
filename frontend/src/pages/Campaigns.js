@@ -78,6 +78,17 @@ const Campaigns = () => {
     filterCampaigns();
   }, [campaigns, searchTerm, statusFilter, tagFilter]);
 
+  // Close campaign menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (campaignMenuOpen && !e.target.closest('[data-campaign-menu]')) {
+        setCampaignMenuOpen(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [campaignMenuOpen]);
+
   const checkEmailSettings = async () => {
     if (!token) return;
     try {
