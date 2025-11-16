@@ -1934,6 +1934,100 @@ const Campaigns = () => {
         BACKEND_URL={BACKEND_URL}
         initialTemplate={selectedTemplate}
       />
+
+      {/* Delete Campaign Confirmation Modal */}
+      {campaignToDelete && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ background: 'rgba(0, 0, 0, 0.85)', backdropFilter: 'blur(8px)' }}
+          onClick={() => setCampaignToDelete(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '16px',
+              padding: '32px',
+              maxWidth: '480px',
+              width: '90%',
+              boxShadow: '0 24px 48px rgba(0, 0, 0, 0.5)'
+            }}
+          >
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Trash2 size={24} style={{ color: '#ef4444' }} />
+                </div>
+                <div>
+                  <h3 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: 700 }}>Delete Campaign?</h3>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', marginTop: '4px' }}>This action cannot be undone</p>
+                </div>
+              </div>
+              
+              <div style={{
+                padding: '16px',
+                background: 'rgba(239, 68, 68, 0.05)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                borderRadius: '8px',
+                marginTop: '16px'
+              }}>
+                <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px', marginBottom: '8px' }}>
+                  <strong>{campaignToDelete.name}</strong>
+                </p>
+                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px' }}>
+                  This will permanently delete the campaign and all associated data including send records and analytics.
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => setCampaignToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: '12px 20px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px',
+                  color: '#FFFFFF',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteCampaign(campaignToDelete)}
+                style={{
+                  flex: 1,
+                  padding: '12px 20px',
+                  background: '#ef4444',
+                  border: 'none',
+                  borderRadius: '8px',
+                  color: '#FFFFFF',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Delete Campaign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
