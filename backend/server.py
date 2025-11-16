@@ -2300,6 +2300,97 @@ async def get_campaign_details(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@api_router.get("/email/campaigns/{campaign_id}/metrics")
+async def get_campaign_metrics(
+    campaign_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get detailed metrics for a campaign from email_events table"""
+    try:
+        user_response = supabase.auth.get_user(credentials.credentials)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+        
+        user_id = user_response.user.id
+        
+        # Verify campaign belongs to user
+        campaign_result = supabase.table('email_campaigns').select('*').eq('id', campaign_id).eq('user_id', user_id).execute()
+        
+        if not campaign_result.data or len(campaign_result.data) == 0:
+            raise HTTPException(status_code=404, detail="Campaign not found")
+        
+        campaign = campaign_result.data[0]
+        
+        # Get all events for this campaign
+        events_result = supabase.table('email_events').select('*').eq('campaign_id', campaign_id).execute()
+        events = events_result.data or []
+        
+        # Count unique events by type
+        unique_emails = set()
+        unique_opens = set()
+        unique_clicks = set()
+        
+        metrics = {
+            'total_sent': campaign.get('total_sent', 0),
+            'delivered': 0,
+            'opens': 0,
+            'unique_opens': 0,
+            'clicks': 0,
+            'unique_clicks': 0,
+            'bounces': 0,
+            'spam_reports': 0,
+            'unsubscribes': 0
+        }
+        
+        for event in events:
+            event_type = event.get('event_type')
+            email = event.get('email')
+            
+            if event_type == 'delivered':
+                metrics['delivered'] += 1
+                unique_emails.add(email)
+            elif event_type == 'open':
+                metrics['opens'] += 1
+                unique_opens.add(email)
+            elif event_type == 'click':
+                metrics['clicks'] += 1
+                unique_clicks.add(email)
+            elif event_type == 'bounce':
+                metrics['bounces'] += 1
+            elif event_type == 'spam_report':
+                metrics['spam_reports'] += 1
+            elif event_type == 'unsubscribe':
+                metrics['unsubscribes'] += 1
+        
+        metrics['unique_opens'] = len(unique_opens)
+        metrics['unique_clicks'] = len(unique_clicks)
+        
+        # Calculate rates
+        total_sent = metrics['total_sent'] or 1  # Avoid division by zero
+        delivered = metrics['delivered'] or 1
+        
+        rates = {
+            'delivery_rate': (metrics['delivered'] / total_sent) * 100 if total_sent > 0 else 0,
+            'open_rate': (metrics['unique_opens'] / delivered) * 100 if delivered > 0 else 0,
+            'click_rate': (metrics['unique_clicks'] / metrics['unique_opens']) * 100 if metrics['unique_opens'] > 0 else 0,
+            'bounce_rate': (metrics['bounces'] / total_sent) * 100 if total_sent > 0 else 0,
+            'unsubscribe_rate': (metrics['unsubscribes'] / delivered) * 100 if delivered > 0 else 0
+        }
+        
+        return {
+            "campaign_id": campaign_id,
+            "metrics": metrics,
+            "rates": rates
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching campaign metrics: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 @api_router.delete("/email/campaigns/{campaign_id}")
 async def delete_campaign(
     campaign_id: str,
