@@ -265,7 +265,7 @@ const LayerManager = ({ isOpen, onClose, showStreetLabels, onToggleStreetLabels,
       <div
         style={{
           position: 'fixed',
-          top: '64px',
+          top: 0,
           left: (() => {
             if (isOpen && propertyPanelOpen) {
               // Both panels open: Layer sits next to Property panel (500px fixed)

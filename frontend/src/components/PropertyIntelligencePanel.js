@@ -433,7 +433,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
     <div
       style={{
         position: 'fixed',
-        top: '64px',
+        top: 0,
         left: isOpen ? 0 : '-500px',
         width: '500px',
         height: '100vh',
