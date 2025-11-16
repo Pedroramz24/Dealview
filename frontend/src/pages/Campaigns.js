@@ -1061,6 +1061,7 @@ const Campaigns = () => {
                       <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', textAlign: 'right' }}>
                         Updated
                       </p>
+                      <p></p>
                     </div>
 
                     {/* Table Rows */}
