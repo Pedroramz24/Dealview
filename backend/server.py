@@ -1127,11 +1127,10 @@ async def search_addresses(
 # Perplexity AI Chat
 # =====================================================
 
-# Import Perplexity service
-from perplexity_service import perplexity_service
-    except Exception as e:
-        logger.error(f"[Address Search] Error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Address search failed")
+
+# =====================================================
+# Perplexity AI Chat
+# =====================================================
 
 # Import Perplexity service
 from perplexity_service import perplexity_service
