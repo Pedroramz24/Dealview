@@ -2321,6 +2321,22 @@ async def send_campaign(
         
         campaign = campaign_result.data[0]
         
+        # IDEMPOTENCY CHECK: Prevent duplicate sends
+        if campaign.get('status') in ['sent', 'sending']:
+            logger.warning(f"Campaign {send_data.campaign_id} already in {campaign.get('status')} state, skipping duplicate send")
+            return {
+                "success": True,
+                "message": f"Campaign already {campaign.get('status')}",
+                "results": {
+                    "total_sent": campaign.get('total_sent', 0),
+                    "total_failed": campaign.get('total_failed', 0)
+                },
+                "duplicate_send_prevented": True
+            }
+        
+        # Mark campaign as 'sending' to prevent concurrent sends
+        supabase.table('email_campaigns').update({'status': 'sending'}).eq('id', send_data.campaign_id).execute()
+        
         # Get user's email settings
         settings_result = supabase.table('email_settings').select('*').eq('user_id', user_id).execute()
         if not settings_result.data or len(settings_result.data) == 0:
