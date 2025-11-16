@@ -252,18 +252,18 @@ class SendGridService:
                             Content("text/html", html_content)
                         ]
                     
-                    # Add custom args for tracking
-                    message.custom_arg = {
-                        "campaign_id": campaign_id or "",
-                        "contact_id": recipient.get('id', ''),
-                        "type": "campaign"
-                    }
+                    # Add custom args for tracking (correct format)
+                    if campaign_id:
+                        from sendgrid.helpers.mail import CustomArg
+                        message.add_custom_arg(CustomArg("campaign_id", campaign_id))
+                        message.add_custom_arg(CustomArg("contact_id", recipient.get('id', '')))
+                        message.add_custom_arg(CustomArg("type", "campaign"))
                     
-                    # Enable tracking
-                    message.tracking_settings = {
-                        "click_tracking": {"enable": True, "enable_text": True},
-                        "open_tracking": {"enable": True}
-                    }
+                    # Enable tracking (correct format for SendGrid v6+)
+                    from sendgrid.helpers.mail import ClickTracking, OpenTracking, TrackingSettings
+                    message.tracking_settings = TrackingSettings()
+                    message.tracking_settings.click_tracking = ClickTracking(enable=True, enable_text=True)
+                    message.tracking_settings.open_tracking = OpenTracking(enable=True)
                     
                     logger.info(f"[SendGrid] Calling sg.send() for {recipient['email']}")
                     response = sg.send(message)
