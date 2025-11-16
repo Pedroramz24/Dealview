@@ -146,11 +146,13 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
         setSelectedContacts([]);
         fetchCampaignDetails(); // Refresh stats
       } else {
-        toast.error(result.detail || 'Failed to send campaign');
+        toast.dismiss();
+        toast.error(result.detail || 'Failed to send campaign', { duration: 4000 });
       }
     } catch (error) {
       console.error('Error sending campaign:', error);
-      toast.error('Failed to send campaign');
+      toast.dismiss();
+      toast.error('Failed to send campaign', { duration: 4000 });
     } finally {
       setSending(false);
     }
