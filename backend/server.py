@@ -1100,7 +1100,7 @@ async def search_addresses(
     """
     try:
         if not query or len(query) < 2:
-            return {"addresses": []}
+            return {"addresses": [], "count": 0}
         
         logger.info(f"[Address Search] Query: '{query}', user: {current_user.id}")
         
@@ -1111,12 +1111,20 @@ async def search_addresses(
             limit=limit
         )
         
+        logger.info(f"[Address Search] Found {len(addresses)} results")
+        
         return {
             "addresses": addresses,
             "count": len(addresses)
         }
+    
+    except Exception as e:
+        logger.error(f"[Address Search] Error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Address search failed")
 
 
+# =====================================================
+# Perplexity AI Chat
 # =====================================================
 # Address Search Endpoints (Radar.io)
 # =====================================================
