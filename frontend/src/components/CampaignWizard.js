@@ -59,7 +59,9 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
   const [contacts, setContacts] = useState([]);
   const [allTags, setAllTags] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
-  const [saving, setSaving] = useState(false);
+  
+  // Use async action hook for send/schedule operations
+  const { execute: executeSend, isLoading: isSending } = useAsyncAction();
 
   // Load initial template if provided
   useEffect(() => {
