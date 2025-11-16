@@ -2167,12 +2167,12 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   }}
                   onMouseEnter={() => console.log('🖱️ Mouse entered Send Campaign button')}
                   onMouseDown={() => console.log('🖱️ Mouse down on Send Campaign button')}
-                  disabled={saving}
+                  disabled={isSending}
                   style={{
                     width: '100%',
                     padding: '16px 24px',
-                    background: saving ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
-                    color: saving ? 'rgba(255, 255, 255, 0.3)' : '#000',
+                    background: isSending ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                    color: isSending ? 'rgba(255, 255, 255, 0.3)' : '#000',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '16px',
@@ -2186,7 +2186,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     zIndex: 10
                   }}
                 >
-                  {saving ? (
+                  {isSending ? (
                     <>
                       <Loader2 size={20} className="animate-spin" />
                       Sending...
@@ -2200,7 +2200,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 </button>
                 <button
                   onClick={() => setCurrentStep(2)}
-                  disabled={saving}
+                  disabled={isSending}
                   style={{
                     width: '100%',
                     padding: '12px 20px',
