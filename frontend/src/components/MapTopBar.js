@@ -25,28 +25,11 @@ const MapTopBar = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '0 20px',
+      gap: '20px',
       boxShadow: '0 2px 12px rgba(0, 0, 0, 0.3)'
     }}>
-      {/* Left Section: App Logo + Layer Manager */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: '0 0 auto' }}>
-        {/* App Logo/Icon */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          padding: '8px 12px',
-          borderRadius: '8px',
-          background: 'rgba(0, 184, 212, 0.1)',
-          border: '1px solid rgba(0, 184, 212, 0.2)'
-        }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="#00b8d4" strokeWidth="2" fill="none"/>
-            <circle cx="12" cy="10" r="3" fill="#00b8d4"/>
-          </svg>
-          <span style={{ color: '#00b8d4', fontSize: '16px', fontWeight: 700 }}>DealView</span>
-        </div>
-
-        {/* Layer Manager Button */}
+      {/* Left: Layer Manager Button Only */}
+      <div style={{ flex: '0 0 auto' }}>
         <button
           onClick={onToggleLayersPanel}
           style={{
@@ -68,12 +51,12 @@ const MapTopBar = ({
         </button>
       </div>
 
-      {/* Center Section: Address Search Bar (passed as component) */}
-      <div style={{ flex: '1 1 auto', maxWidth: '600px', margin: '0 24px' }}>
+      {/* Center: Address Search Bar - Flush with header */}
+      <div style={{ flex: '1 1 auto', maxWidth: '600px' }}>
         {searchBarComponent}
       </div>
 
-      {/* Right Section: Tools (Icons Only) */}
+      {/* Right: Tools (Icons Only) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '0 0 auto' }}>
         {/* Measure Distance */}
         <button
