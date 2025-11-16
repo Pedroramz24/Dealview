@@ -148,7 +148,7 @@ const EmailComposeModal = ({
 
       if (response.ok) {
         const result = await response.json();
-        toast.success('✅ Email sent successfully!');
+        toast.success('Email sent successfully!');
         onSend && onSend(result);
         onClose();
       } else {

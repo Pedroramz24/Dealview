@@ -141,7 +141,7 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success(`✅ Campaign sent to ${result.results.total_sent} contacts!`);
+        toast.success(`Campaign sent to ${result.results.total_sent} contacts!`);
         setShowContactSelector(false);
         setSelectedContacts([]);
         fetchCampaignDetails(); // Refresh stats
