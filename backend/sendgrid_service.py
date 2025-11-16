@@ -8,9 +8,12 @@ import json
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Email, To, Content, Personalization
+from sendgrid.helpers.mail import Mail, Email, To, Content, Personalization, CustomArg, ClickTracking, OpenTracking, TrackingSettings
 from cryptography.fernet import Fernet
 import base64
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SendGridService:
@@ -55,63 +58,24 @@ class SendGridService:
                     headers=headers,
                     timeout=10.0
                 )
-                
-                if response.status_code == 200:
-                    scopes = response.json().get('scopes', [])
-                    
-                    # Check if it has mail send permission
-                    has_mail_send = any('mail.send' in scope for scope in scopes)
-                    
-                    if has_mail_send or 'admin' in str(scopes).lower():
-                        return {
-                            "valid": True,
-                            "message": "✅ SendGrid API key is valid and has email sending permissions!"
-                        }
-                    else:
-                        return {
-                            "valid": False,
-                            "message": "API key is valid but lacks 'Mail Send' permissions. Please edit your API key in SendGrid and grant 'Full Access' or 'Mail Send' permission."
-                        }
-                elif response.status_code == 401:
-                    return {
-                        "valid": False,
-                        "message": "Invalid API key. Please verify you copied the complete key (it should start with 'SG.')."
-                    }
-                elif response.status_code == 403:
-                    return {
-                        "valid": False,
-                        "message": "API key doesn't have sufficient permissions. In SendGrid, edit your API key and select 'Full Access' or grant 'Mail Send' permission."
-                    }
-                else:
-                    return {
-                        "valid": False,
-                        "message": f"Unexpected response from SendGrid (Status {response.status_code}). Please verify your API key."
-                    }
-                    
-        except httpx.TimeoutException:
-            return {
-                "valid": False,
-                "message": "Connection timeout. Please check your internet connection and try again."
-            }
-        except Exception as e:
-            error_msg = str(e)
             
-            # Provide helpful error messages
-            if 'forbidden' in error_msg.lower() or '403' in error_msg:
+            if response.status_code == 200:
                 return {
-                    "valid": False,
-                    "message": "Permission denied. Your API key needs 'Full Access' or 'Mail Send' permissions. Edit the key in SendGrid → Settings → API Keys."
-                }
-            elif 'unauthorized' in error_msg.lower() or '401' in error_msg:
-                return {
-                    "valid": False,
-                    "message": "Invalid API key. Please copy the complete key from SendGrid (starts with 'SG.')."
+                    "valid": True,
+                    "message": "SendGrid API key is valid",
+                    "scopes": response.json().get('scopes', [])
                 }
             else:
                 return {
                     "valid": False,
-                    "message": f"Connection failed: {error_msg}"
+                    "message": f"Invalid API key (Status: {response.status_code})"
                 }
+        
+        except Exception as e:
+            return {
+                "valid": False,
+                "message": f"Connection test failed: {str(e)}"
+            }
     
     async def send_transactional_email(
         self,
@@ -122,68 +86,60 @@ class SendGridService:
         to_name: Optional[str],
         subject: str,
         html_content: str,
-        plain_text_content: Optional[str] = None,
-        cc_emails: Optional[List[str]] = None,
-        bcc_emails: Optional[List[str]] = None,
-        custom_args: Optional[Dict[str, str]] = None
+        plain_text_content: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Send a single transactional email
         Returns: {
             "success": bool,
-            "message_id": str (if success),
-            "error": str (if failure)
+            "message_id": str (if successful),
+            "error": str (if failed)
         }
         """
         try:
-            sg = SendGridAPIClient(api_key)
+            import httpx
             
-            # Create message
-            message = Mail(
-                from_email=Email(from_email, from_name),
-                to_emails=To(to_email, to_name),
-                subject=subject,
-                html_content=Content("text/html", html_content)
-            )
-            
-            # Add plain text version if provided
-            if plain_text_content:
-                message.content = [
-                    Content("text/plain", plain_text_content),
-                    Content("text/html", html_content)
-                ]
-            
-            # Add CC emails
-            if cc_emails:
-                for cc_email in cc_emails:
-                    message.add_cc(Email(cc_email))
-            
-            # Add BCC emails
-            if bcc_emails:
-                for bcc_email in bcc_emails:
-                    message.add_bcc(Email(bcc_email))
-            
-            # Add custom args for tracking
-            if custom_args:
-                message.custom_arg = custom_args
-            
-            # Enable click tracking
-            message.tracking_settings = {
-                "click_tracking": {"enable": True, "enable_text": True},
-                "open_tracking": {"enable": True}
+            # Build SendGrid API request
+            headers = {
+                'Authorization': f'Bearer {api_key}',
+                'Content-Type': 'application/json'
             }
             
-            # Send email
-            response = sg.send(message)
+            # Prepare email data
+            personalizations = [{
+                "to": [{"email": to_email, "name": to_name or ""}],
+                "subject": subject
+            }]
+            
+            content = []
+            if plain_text_content:
+                content.append({"type": "text/plain", "value": plain_text_content})
+            content.append({"type": "text/html", "value": html_content})
+            
+            data = {
+                "personalizations": personalizations,
+                "from": {"email": from_email, "name": from_name},
+                "content": content,
+                "tracking_settings": {
+                    "click_tracking": {"enable": True, "enable_text": True},
+                    "open_tracking": {"enable": True}
+                }
+            }
+            
+            # Send via SendGrid API
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    'https://api.sendgrid.com/v3/mail/send',
+                    headers=headers,
+                    json=data,
+                    timeout=30.0
+                )
             
             if response.status_code in [200, 202]:
-                # Extract message ID from response headers
                 message_id = response.headers.get('X-Message-Id', '')
-                
                 return {
                     "success": True,
-                    "message_id": message_id,
-                    "status_code": response.status_code
+                    "message_id": message_id
                 }
             else:
                 return {
@@ -211,7 +167,7 @@ class SendGridService:
     ) -> Dict[str, Any]:
         """
         Send email to multiple recipients (campaign)
-        Uses personalizations to send individual emails
+        Uses SendGrid API v3 with proper format
         Returns: {
             "success": bool,
             "results": List[Dict],  # Per-recipient results
@@ -219,8 +175,6 @@ class SendGridService:
             "total_failed": int
         }
         """
-        import logging
-        logger = logging.getLogger(__name__)
         logger.info(f"[SendGrid] Starting campaign send to {len(recipients)} recipients")
         logger.info(f"[SendGrid] From: {from_email} ({from_name})")
         logger.info(f"[SendGrid] Subject: {subject}")
@@ -230,48 +184,66 @@ class SendGridService:
         total_failed = 0
         
         try:
-            logger.info(f"[SendGrid] Initializing SendGrid client with API key (length: {len(api_key)})")
-            sg = SendGridAPIClient(api_key)
-            logger.info(f"[SendGrid] Client initialized successfully")
+            import httpx
             
-            # Send to each recipient individually (better for tracking)
+            logger.info(f"[SendGrid] Using API key (length: {len(api_key)})")
+            
+            # Send to each recipient individually for better tracking
             for recipient in recipients:
                 logger.info(f"[SendGrid] Sending to: {recipient['email']} ({recipient.get('name', 'No name')})")
+                
                 try:
-                    message = Mail(
-                        from_email=Email(from_email, from_name),
-                        to_emails=To(recipient['email'], recipient.get('name')),
-                        subject=subject,
-                        html_content=Content("text/html", html_content)
-                    )
+                    # Build SendGrid API request using proper v3 format
+                    headers = {
+                        'Authorization': f'Bearer {api_key}',
+                        'Content-Type': 'application/json'
+                    }
                     
-                    # Add plain text version
-                    if plain_text_content:
-                        message.content = [
-                            Content("text/plain", plain_text_content),
-                            Content("text/html", html_content)
-                        ]
+                    # Prepare email data
+                    personalizations = [{
+                        "to": [{"email": recipient['email'], "name": recipient.get('name', '')}],
+                        "subject": subject
+                    }]
                     
-                    # Add custom args for tracking (correct format)
+                    # Add custom args if campaign_id provided
                     if campaign_id:
-                        from sendgrid.helpers.mail import CustomArg
-                        message.add_custom_arg(CustomArg("campaign_id", campaign_id))
-                        message.add_custom_arg(CustomArg("contact_id", recipient.get('id', '')))
-                        message.add_custom_arg(CustomArg("type", "campaign"))
+                        personalizations[0]["custom_args"] = {
+                            "campaign_id": campaign_id,
+                            "contact_id": recipient.get('id', ''),
+                            "type": "campaign"
+                        }
                     
-                    # Enable tracking (correct format for SendGrid v6+)
-                    from sendgrid.helpers.mail import ClickTracking, OpenTracking, TrackingSettings
-                    message.tracking_settings = TrackingSettings()
-                    message.tracking_settings.click_tracking = ClickTracking(enable=True, enable_text=True)
-                    message.tracking_settings.open_tracking = OpenTracking(enable=True)
+                    content = []
+                    if plain_text_content:
+                        content.append({"type": "text/plain", "value": plain_text_content})
+                    content.append({"type": "text/html", "value": html_content})
                     
-                    logger.info(f"[SendGrid] Calling sg.send() for {recipient['email']}")
-                    response = sg.send(message)
+                    data = {
+                        "personalizations": personalizations,
+                        "from": {"email": from_email, "name": from_name},
+                        "content": content,
+                        "tracking_settings": {
+                            "click_tracking": {"enable": True, "enable_text": True},
+                            "open_tracking": {"enable": True}
+                        }
+                    }
+                    
+                    logger.info(f"[SendGrid] Calling SendGrid API for {recipient['email']}")
+                    
+                    # Send via SendGrid API
+                    async with httpx.AsyncClient() as client:
+                        response = await client.post(
+                            'https://api.sendgrid.com/v3/mail/send',
+                            headers=headers,
+                            json=data,
+                            timeout=30.0
+                        )
+                    
                     logger.info(f"[SendGrid] Response status: {response.status_code}")
                     
                     if response.status_code in [200, 202]:
                         message_id = response.headers.get('X-Message-Id', '')
-                        logger.info(f"[SendGrid] ✅ Email sent successfully. Message ID: {message_id}")
+                        logger.info(f"[SendGrid] Email sent successfully. Message ID: {message_id}")
                         results.append({
                             "contact_id": recipient.get('id'),
                             "email": recipient['email'],
@@ -280,17 +252,18 @@ class SendGridService:
                         })
                         total_sent += 1
                     else:
-                        logger.error(f"[SendGrid] ❌ Failed with status {response.status_code}")
+                        error_body = response.text
+                        logger.error(f"[SendGrid] Failed with status {response.status_code}: {error_body}")
                         results.append({
                             "contact_id": recipient.get('id'),
                             "email": recipient['email'],
                             "success": False,
-                            "error": f"Status {response.status_code}"
+                            "error": f"Status {response.status_code}: {error_body[:100]}"
                         })
                         total_failed += 1
                 
                 except Exception as e:
-                    logger.error(f"[SendGrid] ❌ Exception sending to {recipient['email']}: {str(e)}")
+                    logger.error(f"[SendGrid] Exception sending to {recipient['email']}: {str(e)}")
                     logger.error(f"[SendGrid] Exception type: {type(e).__name__}")
                     import traceback
                     logger.error(f"[SendGrid] Traceback: {traceback.format_exc()}")
@@ -311,75 +284,15 @@ class SendGridService:
             }
         
         except Exception as e:
+            logger.error(f"[SendGrid] Fatal error in send_campaign_email: {str(e)}")
             return {
                 "success": False,
-                "error": str(e),
-                "results": results,
-                "total_sent": total_sent,
-                "total_failed": total_failed
+                "results": [],
+                "total_sent": 0,
+                "total_failed": len(recipients),
+                "error": str(e)
             }
-    
-    def process_webhook_event(self, event_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Process SendGrid webhook event
-        Event types: delivered, open, click, bounce, dropped, etc.
-        Returns normalized event data
-        """
-        try:
-            event_type = event_data.get('event', '')
-            message_id = event_data.get('sg_message_id', '')
-            email = event_data.get('email', '')
-            timestamp = event_data.get('timestamp', 0)
-            
-            # Extract custom args (campaign_id, contact_id)
-            custom_args = {}
-            if isinstance(event_data.get('campaign_id'), str):
-                custom_args['campaign_id'] = event_data['campaign_id']
-            if isinstance(event_data.get('contact_id'), str):
-                custom_args['contact_id'] = event_data['contact_id']
-            
-            # Normalize event type
-            status_mapping = {
-                'delivered': 'delivered',
-                'open': 'opened',
-                'click': 'clicked',
-                'bounce': 'bounced',
-                'dropped': 'failed',
-                'deferred': 'pending',
-                'processed': 'sent'
-            }
-            
-            return {
-                "event_type": event_type,
-                "status": status_mapping.get(event_type, event_type),
-                "message_id": message_id,
-                "email": email,
-                "timestamp": datetime.fromtimestamp(timestamp),
-                "custom_args": custom_args,
-                "raw_data": event_data
-            }
-        
-        except Exception as e:
-            return {
-                "error": str(e),
-                "raw_data": event_data
-            }
-    
-    def replace_merge_fields(self, content: str, data: Dict[str, str]) -> str:
-        """
-        Replace merge fields in email content
-        Example: {{firstName}} -> John
-        """
-        for key, value in data.items():
-            placeholder = f"{{{{{key}}}}}"
-            content = content.replace(placeholder, str(value))
-        return content
-    
-    def generate_unsubscribe_link(self, user_id: str, contact_id: str, base_url: str) -> str:
-        """Generate unsubscribe link for campaigns"""
-        # This would include a secure token in production
-        return f"{base_url}/unsubscribe?user={user_id}&contact={contact_id}"
 
 
-# Global instance
+# Singleton instance
 sendgrid_service = SendGridService()
