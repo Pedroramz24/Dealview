@@ -223,11 +223,11 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
     }));
   };
 
-  // Step 3: Final send
+  // Step 3: Final send - wrapped with async action protection
   const handleFinalSend = async () => {
-    try {
-      console.log('🚀 handleFinalSend called');
-      console.log('📋 Final campaign data:', {
+    await executeSend(async () => {
+      console.log('handleFinalSend called');
+      console.log('Final campaign data:', {
         name: campaignConfig.name,
         subject: campaignConfig.subject,
         selectedContacts: campaignConfig.selectedContacts,
@@ -237,16 +237,13 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       });
       
       if (campaignConfig.selectedContacts.length === 0) {
-        toast.error('Please select at least one recipient');
-        return;
+        smartToast.error('Please select at least one recipient');
+        throw new Error('No recipients selected');
       }
 
-      setSaving(true);
-      console.log('💾 Setting saving state to true');
-
-      console.log('📤 Creating campaign...');
-      console.log('🔗 Backend URL:', BACKEND_URL);
-      console.log('🔑 Token exists:', !!token);
+      console.log('Creating campaign...');
+      console.log('Backend URL:', BACKEND_URL);
+      console.log('Token exists:', !!token);
       
       // Create campaign
       const createResponse = await fetch(`${BACKEND_URL}/api/email/campaigns`, {
@@ -268,22 +265,24 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         })
       });
 
-      console.log('📥 Create campaign response status:', createResponse.status);
+      console.log('Create campaign response status:', createResponse.status);
 
       if (!createResponse.ok) {
-        const errorText = await createResponse.text();
-        console.error('Create campaign failed:', errorText);
-        throw new Error(`Failed to create campaign: ${errorText}`);
+        const errorData = await createResponse.json().catch(() => ({}));
+        const errorMsg = errorData.detail || `Failed to create campaign (${createResponse.status})`;
+        console.error('Create campaign failed:', errorMsg);
+        smartToast.error(errorMsg);
+        throw new Error(errorMsg);
       }
 
       const createResult = await createResponse.json();
       const campaignId = createResult.campaign.id;
-      console.log('✅ Campaign created:', campaignId);
+      console.log('Campaign created:', campaignId);
 
       // Handle different send options
       if (campaignConfig.sendOption === 'now') {
-        console.log('📧 Sending immediately to:', campaignConfig.selectedContacts);
-        // Send immediately
+        console.log('Sending immediately to:', campaignConfig.selectedContacts);
+        
         const sendResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/send`, {
           method: 'POST',
           headers: {
@@ -296,23 +295,25 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
           })
         });
 
-        console.log('📥 Send response status:', sendResponse.status);
+        console.log('Send response status:', sendResponse.status);
         const sendResult = await sendResponse.json();
-        console.log('📥 Send result:', sendResult);
+        console.log('Send result:', sendResult);
         
-        if (sendResponse.ok) {
-          toast.success(`Campaign sent to ${sendResult.results.total_sent} recipients!`);
-          console.log('✅ Campaign sent successfully');
+        if (sendResponse.ok && sendResult.success) {
+          smartToast.success(`Campaign sent to ${sendResult.results.total_sent} recipients!`);
+          console.log('Campaign sent successfully');
           onComplete && onComplete();
           onClose();
         } else {
-          console.error('Send failed:', sendResult);
-          throw new Error(sendResult.detail || 'Failed to send campaign');
+          const errorMsg = sendResult.detail || `Failed to send campaign (${sendResponse.status})`;
+          console.error('Send failed:', errorMsg);
+          smartToast.error(errorMsg);
+          throw new Error(errorMsg);
         }
       } 
       else if (campaignConfig.sendOption === 'schedule') {
-        console.log('📅 Scheduling campaign for:', campaignConfig.scheduleDate);
-        // Schedule for specific time
+        console.log('Scheduling campaign for:', campaignConfig.scheduleDate);
+        
         const scheduleResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/schedule`, {
           method: 'POST',
           headers: {
@@ -328,20 +329,22 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         });
 
         const scheduleResult = await scheduleResponse.json();
-        console.log('📥 Schedule result:', scheduleResult);
+        console.log('Schedule result:', scheduleResult);
         
         if (scheduleResponse.ok) {
-          toast.success(`Campaign scheduled for ${campaignConfig.scheduleDate.toLocaleString()}!`);
+          smartToast.success(`Campaign scheduled for ${campaignConfig.scheduleDate.toLocaleString()}!`);
           onComplete && onComplete();
           onClose();
         } else {
-          console.error('Schedule failed:', scheduleResult);
-          throw new Error(scheduleResult.detail || 'Failed to schedule campaign');
+          const errorMsg = scheduleResult.detail || `Failed to schedule campaign (${scheduleResponse.status})`;
+          console.error('Schedule failed:', errorMsg);
+          smartToast.error(errorMsg);
+          throw new Error(errorMsg);
         }
       }
       else if (campaignConfig.sendOption === 'batch') {
-        console.log('🔄 Batch scheduling campaign...');
-        // Batch schedule over time
+        console.log('Batch scheduling campaign...');
+        
         const batchResponse = await fetch(`${BACKEND_URL}/api/email/campaigns/schedule/batch`, {
           method: 'POST',
           headers: {
@@ -358,27 +361,20 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
         });
 
         const batchResult = await batchResponse.json();
-        console.log('📥 Batch result:', batchResult);
+        console.log('Batch result:', batchResult);
         
         if (batchResponse.ok) {
-          toast.success(`🔄 Batch campaign scheduled: ${batchResult.queued_count} emails over ${batchResult.days} days!`);
+          smartToast.success(`Batch campaign scheduled: ${batchResult.queued_count} emails over ${batchResult.days} days!`);
           onComplete && onComplete();
           onClose();
         } else {
-          console.error('Batch schedule failed:', batchResult);
-          throw new Error(batchResult.detail || 'Failed to schedule batch campaign');
+          const errorMsg = batchResult.detail || `Failed to schedule batch campaign (${batchResponse.status})`;
+          console.error('Batch schedule failed:', errorMsg);
+          smartToast.error(errorMsg);
+          throw new Error(errorMsg);
         }
       }
-    } catch (error) {
-      console.error('Error in handleFinalSend:', error);
-      toast.dismiss();
-      // Show detailed error message from backend
-      const errorMsg = error.response?.data?.detail || error.message || 'Failed to send campaign';
-      toast.error(errorMsg, { duration: 5000 });
-    } finally {
-      setSaving(false);
-      console.log('Setting saving state to false');
-    }
+    });
   };
 
   // Email builder state
