@@ -1132,7 +1132,7 @@ const DataPrivacySection = () => {
   const handleExportData = async () => {
     toast.info('⏳ Preparing your data export...');
     setTimeout(() => {
-      toast.success('📧 Export will be sent to your email within 24 hours');
+      toast.success('Export will be sent to your email within 24 hours');
     }, 1500);
   };
 

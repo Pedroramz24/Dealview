@@ -191,7 +191,7 @@ const Campaigns = () => {
       });
       const result = await response.json();
       if (result.valid) {
-        toast.success('✅ SendGrid connection successful!');
+        toast.success('SendGrid connection successful!');
         setSetupStep(2);
       } else {
         toast.error(result.message || 'Invalid API key');
@@ -222,7 +222,7 @@ const Campaigns = () => {
         })
       });
       if (response.ok) {
-        toast.success('🎉 Email setup complete!');
+        toast.success('Email setup complete!');
         setEmailSettingsConfigured(true);
         setSetupStep(1);
         setSetupData({ apiKey: '', senderEmail: '', senderName: '', testing: false });
