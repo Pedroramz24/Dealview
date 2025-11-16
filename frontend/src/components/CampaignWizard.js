@@ -368,11 +368,13 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       }
     } catch (error) {
       console.error('Error in handleFinalSend:', error);
-      toast.dismiss(); // Clear any existing toasts
-      toast.error(error.message || 'Failed to send campaign', { duration: 4000 });
+      toast.dismiss();
+      // Show detailed error message from backend
+      const errorMsg = error.response?.data?.detail || error.message || 'Failed to send campaign';
+      toast.error(errorMsg, { duration: 5000 });
     } finally {
       setSaving(false);
-      console.log('💾 Setting saving state to false');
+      console.log('Setting saving state to false');
     }
   };
 
