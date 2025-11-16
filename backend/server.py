@@ -1087,22 +1087,22 @@ class ChatResponse(BaseModel):
 
 # Address Search Endpoint using Radar.io
 @api_router.get("/address-search")
-async def search_addresses(
+async def search_addresses_api(
     query: str,
     latitude: Optional[float] = None,
     longitude: Optional[float] = None,
-    limit: int = 10,
-    current_user = Depends(get_current_user_supabase)
+    limit: int = 10
 ):
     """
     Search for addresses using Radar.io geocoding
     Returns list of addresses with coordinates
+    Note: Public endpoint for map search functionality
     """
     try:
         if not query or len(query) < 2:
             return {"addresses": [], "count": 0}
         
-        logger.info(f"[Address Search] Query: '{query}', user: {current_user.id}")
+        logger.info(f"[Address Search] Query: '{query}'")
         
         addresses = await radar_service.search_addresses(
             query=query,
@@ -1120,6 +1120,7 @@ async def search_addresses(
     
     except Exception as e:
         logger.error(f"[Address Search] Error: {str(e)}")
+        logger.error(f"[Address Search] Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail="Address search failed")
 
 
