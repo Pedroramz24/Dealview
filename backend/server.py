@@ -2630,14 +2630,43 @@ async def sendgrid_webhook(request: Dict[str, Any]):
                 logger.error(f"Error processing webhook event: {processed_event['error']}")
                 continue
             
-            # Update email activity or campaign send based on custom args
+            # Extract event details
             custom_args = processed_event.get('custom_args', {})
             message_id = processed_event.get('message_id')
             status = processed_event.get('status')
             timestamp = processed_event.get('timestamp')
+            event_type = event_data.get('event', 'unknown')
+            email = event_data.get('email', '')
             
+            # Store event in email_events table for analytics
             if custom_args.get('type') == 'campaign' and custom_args.get('campaign_id'):
-                # Update campaign send
+                try:
+                    event_record = {
+                        'campaign_id': custom_args.get('campaign_id'),
+                        'contact_id': custom_args.get('contact_id'),
+                        'event_type': event_type,
+                        'email': email,
+                        'sendgrid_message_id': message_id,
+                        'sendgrid_event_id': event_data.get('sg_event_id'),
+                        'timestamp': timestamp.isoformat() if timestamp else datetime.now(timezone.utc).isoformat(),
+                        'url': event_data.get('url'),
+                        'user_agent': event_data.get('useragent'),
+                        'ip_address': event_data.get('ip'),
+                        'bounce_reason': event_data.get('reason'),
+                        'bounce_type': event_data.get('type') if event_type == 'bounce' else None,
+                        'raw_event': event_data
+                    }
+                    
+                    # Insert event (ignore duplicates based on sendgrid_event_id unique constraint)
+                    supabase.table('email_events').insert(event_record).execute()
+                    logger.info(f"Stored {event_type} event for campaign {custom_args.get('campaign_id')}")
+                    
+                except Exception as event_error:
+                    # Don't fail the webhook if event storage fails
+                    logger.error(f"Failed to store event in email_events: {str(event_error)}")
+            
+            # Update campaign send status (existing logic)
+            if custom_args.get('type') == 'campaign' and custom_args.get('campaign_id'):
                 update_data = {'status': status}
                 
                 if status == 'delivered':
