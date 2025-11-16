@@ -1205,6 +1205,77 @@ const Campaigns = () => {
                                 {formatDate(campaign.updated_at || campaign.created_at)}
                               </p>
                             </div>
+
+                            {/* Actions Menu */}
+                            <div style={{ position: 'relative', display: 'flex', justifyContent: 'flex-end', paddingLeft: '12px' }} onClick={(e) => e.stopPropagation()}>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setCampaignMenuOpen(campaignMenuOpen === campaign.id ? null : campaign.id);
+                                }}
+                                style={{
+                                  padding: '6px',
+                                  background: campaignMenuOpen === campaign.id ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.04)',
+                                  border: `1px solid ${campaignMenuOpen === campaign.id ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                                  borderRadius: '6px',
+                                  color: campaignMenuOpen === campaign.id ? '#00b8d4' : 'rgba(255, 255, 255, 0.5)',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s ease'
+                                }}
+                              >
+                                <MoreVertical size={16} />
+                              </button>
+
+                              {/* Dropdown Menu */}
+                              {campaignMenuOpen === campaign.id && (
+                                <div style={{
+                                  position: 'absolute',
+                                  top: '100%',
+                                  right: 0,
+                                  marginTop: '4px',
+                                  background: 'rgba(20, 22, 25, 0.98)',
+                                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                                  borderRadius: '8px',
+                                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
+                                  backdropFilter: 'blur(12px)',
+                                  minWidth: '160px',
+                                  zIndex: 9999,
+                                  overflow: 'hidden'
+                                }}>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setCampaignToDelete(campaign);
+                                      setCampaignMenuOpen(null);
+                                    }}
+                                    style={{
+                                      width: '100%',
+                                      padding: '10px 14px',
+                                      background: 'transparent',
+                                      border: 'none',
+                                      color: '#ef4444',
+                                      fontSize: '13px',
+                                      fontWeight: 500,
+                                      textAlign: 'left',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '10px',
+                                      transition: 'all 0.15s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.background = 'transparent';
+                                    }}
+                                  >
+                                    <Trash2 size={14} />
+                                    Delete Campaign
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         );
                       })}
