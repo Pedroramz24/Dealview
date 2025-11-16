@@ -7,7 +7,7 @@ import {
   Search, X, TrendingUp, MousePointerClick, AlertTriangle,
   Calendar, Tag, Users, BarChart3, Trash2, Edit3, MoreVertical, Copy, CheckSquare
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { smartToast } from '../utils/smartToast';
 
 const Campaigns = () => {
   const { user } = useContext(AuthContext);
