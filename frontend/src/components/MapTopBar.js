@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layers, Sparkles, Ruler, Square } from 'lucide-react';
-import AddressSearchBar from './AddressSearchBar';
+import AddressSearchBar from '../components/AddressSearchBar';
 
 const MapTopBar = ({
   mapRef,
