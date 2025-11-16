@@ -102,7 +102,7 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
         background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%)',
         backdropFilter: 'blur(20px)',
         borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
-        zIndex: 999,
+        zIndex: 1050,
         transition: 'right 300ms cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
