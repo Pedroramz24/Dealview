@@ -230,10 +230,13 @@ class SendGridService:
         total_failed = 0
         
         try:
+            logger.info(f"[SendGrid] Initializing SendGrid client with API key (length: {len(api_key)})")
             sg = SendGridAPIClient(api_key)
+            logger.info(f"[SendGrid] Client initialized successfully")
             
             # Send to each recipient individually (better for tracking)
             for recipient in recipients:
+                logger.info(f"[SendGrid] Sending to: {recipient['email']} ({recipient.get('name', 'No name')})")
                 try:
                     message = Mail(
                         from_email=Email(from_email, from_name),
@@ -262,10 +265,13 @@ class SendGridService:
                         "open_tracking": {"enable": True}
                     }
                     
+                    logger.info(f"[SendGrid] Calling sg.send() for {recipient['email']}")
                     response = sg.send(message)
+                    logger.info(f"[SendGrid] Response status: {response.status_code}")
                     
                     if response.status_code in [200, 202]:
                         message_id = response.headers.get('X-Message-Id', '')
+                        logger.info(f"[SendGrid] ✅ Email sent successfully. Message ID: {message_id}")
                         results.append({
                             "contact_id": recipient.get('id'),
                             "email": recipient['email'],
@@ -274,6 +280,7 @@ class SendGridService:
                         })
                         total_sent += 1
                     else:
+                        logger.error(f"[SendGrid] ❌ Failed with status {response.status_code}")
                         results.append({
                             "contact_id": recipient.get('id'),
                             "email": recipient['email'],
@@ -283,6 +290,10 @@ class SendGridService:
                         total_failed += 1
                 
                 except Exception as e:
+                    logger.error(f"[SendGrid] ❌ Exception sending to {recipient['email']}: {str(e)}")
+                    logger.error(f"[SendGrid] Exception type: {type(e).__name__}")
+                    import traceback
+                    logger.error(f"[SendGrid] Traceback: {traceback.format_exc()}")
                     results.append({
                         "contact_id": recipient.get('id'),
                         "email": recipient['email'],
@@ -291,6 +302,7 @@ class SendGridService:
                     })
                     total_failed += 1
             
+            logger.info(f"[SendGrid] Campaign complete. Sent: {total_sent}, Failed: {total_failed}")
             return {
                 "success": total_sent > 0,
                 "results": results,
