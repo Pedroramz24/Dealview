@@ -59,13 +59,10 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
         params.longitude = center.lng;
       }
 
-      console.log('[AddressSearch] Fetching:', searchQuery);
-
       const response = await axios.get(`${BACKEND_URL}/api/address-search`, {
         params
       });
 
-      console.log('[AddressSearch] Results:', response.data.count);
       setSuggestions(response.data.addresses || []);
       setShowSuggestions(true);
     } catch (error) {
@@ -101,18 +98,12 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
   };
 
   return (
-    <div ref={searchRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Search Input - Flush with Header (No separate background) */}
+    <div ref={searchRef} style={{ position: 'relative', width: '100%' }}>
+      {/* Search Input - Completely Flush (No container styling) */}
       <div style={{
-        height: '44px',
-        background: 'transparent',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '8px',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 14px',
-        gap: '10px',
-        transition: 'all 0.2s ease'
+        gap: '10px'
       }}>
         <Search size={18} style={{ color: 'rgba(255, 255, 255, 0.5)', flexShrink: 0 }} />
         
@@ -129,7 +120,8 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
             outline: 'none',
             color: '#FFFFFF',
             fontSize: '14px',
-            fontWeight: 500
+            fontWeight: 500,
+            height: '44px'
           }}
         />
         
@@ -163,7 +155,7 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
       {showSuggestions && suggestions.length > 0 && (
         <div style={{
           position: 'absolute',
-          top: 'calc(100% + 8px)',
+          top: 'calc(100% + 12px)',
           left: 0,
           right: 0,
           background: 'rgba(20, 22, 25, 0.98)',
@@ -225,7 +217,7 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
       {showSuggestions && query.length >= 3 && suggestions.length === 0 && !loading && (
         <div style={{
           position: 'absolute',
-          top: 'calc(100% + 8px)',
+          top: 'calc(100% + 12px)',
           left: 0,
           right: 0,
           background: 'rgba(20, 22, 25, 0.98)',
