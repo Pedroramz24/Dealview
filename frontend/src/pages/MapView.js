@@ -883,23 +883,155 @@ const MapView = () => {
           </button>
         </div>
 
-        {/* Address Search Bar - Centered at Top */}
+        {/* Land.ID-Style Top Navigation Bar */}
         <div style={{
           position: 'absolute',
-          top: '24px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 900,
-          width: '100%',
-          maxWidth: '500px',
-          padding: '0 20px'
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '64px',
+          background: 'rgba(11, 12, 14, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 24px',
+          gap: '24px',
+          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.3)'
         }}>
-          <AddressSearchBar 
-            mapRef={mapRef}
-            onSelectAddress={(address) => {
-              console.log('[MapView] Address selected:', address);
+          {/* Left: Address Search */}
+          <div style={{ flex: 1, maxWidth: '500px' }}>
+            <AddressSearchBar 
+              mapRef={mapRef}
+              onSelectAddress={(address) => {
+                console.log('[MapView] Address selected:', address);
+                setSearchedAddress(address);
+              }}
+            />
+          </div>
+
+          {/* Right: Map Tools */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Measure Distance Tool */}
+            <button
+              onClick={() => setMeasurementMode(measurementMode === 'distance' ? null : 'distance')}
+              style={{
+                padding: '10px 16px',
+                background: measurementMode === 'distance' 
+                  ? 'rgba(168, 85, 247, 0.15)' 
+                  : 'rgba(255, 255, 255, 0.05)',
+                border: `1px solid ${measurementMode === 'distance' ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+                borderRadius: '8px',
+                color: measurementMode === 'distance' ? '#a855f7' : '#FFFFFF',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.2s ease'
+              }}
+              title="Measure Distance"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 8v12c0 1-1 2-2 2H5c-1 0-2-1-2-2V8"></path>
+                <path d="M1 3h22v5H1z"></path>
+                <line x1="10" y1="12" x2="14" y2="12"></line>
+              </svg>
+              Distance
+            </button>
+
+            {/* Measure Area Tool */}
+            <button
+              onClick={() => setMeasurementMode(measurementMode === 'area' ? null : 'area')}
+              style={{
+                padding: '10px 16px',
+                background: measurementMode === 'area' 
+                  ? 'rgba(168, 85, 247, 0.15)' 
+                  : 'rgba(255, 255, 255, 0.05)',
+                border: `1px solid ${measurementMode === 'area' ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255, 255, 255, 0.1)'}',
+                borderRadius: '8px',
+                color: measurementMode === 'area' ? '#a855f7' : '#FFFFFF',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.2s ease'
+              }}
+              title="Measure Area"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              </svg>
+              Area
+            </button>
+          </div>
+        </div>
+
+        {/* Secondary Controls - Below Top Bar */}
+        <div style={{
+          position: 'absolute',
+          top: '76px',
+          left: '24px',
+          zIndex: 900,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          {/* Layers Button */}
+          <button
+            onClick={toggleLayersPanel}
+            style={{
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: layersPanelOpen ? '#00d4aa' : '#FFFFFF',
+              backgroundColor: layersPanelOpen ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255,255,255,0.05)',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              border: `1px solid ${layersPanelOpen ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255,255,255,0.15)'}`,
+              backdropFilter: 'blur(12px)',
+              transition: 'all 0.3s ease',
+              boxShadow: layersPanelOpen ? '0 0 24px rgba(0, 184, 212, 0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
             }}
-          />
+            title="Layers & Intelligence"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+          </button>
+
+          {/* AI Research Button */}
+          <button
+            onClick={() => setAiResearchPanelOpen(!aiResearchPanelOpen)}
+            style={{
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: aiResearchPanelOpen ? '#d946ef' : '#FFFFFF',
+              backgroundColor: aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255,255,255,0.05)',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              border: `1px solid ${aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255,255,255,0.15)'}`,
+              backdropFilter: 'blur(12px)',
+              transition: 'all 0.3s ease',
+              boxShadow: aiResearchPanelOpen ? '0 0 24px rgba(168, 85, 247, 0.3)' : '0 2px 8px rgba(0,0,0,0.3)'
+            }}
+            title="AI Market Research"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
+            </svg>
+          </button>
         </div>
 
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
