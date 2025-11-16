@@ -31,6 +31,7 @@ load_dotenv(ROOT_DIR / '.env')
 # Now safe to import services that use environment variables
 from sendgrid_service import sendgrid_service
 from campaign_scheduler import get_scheduler
+from radar_service import radar_service
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
