@@ -882,7 +882,20 @@ const MapView = () => {
           </button>
         </div>
 
-        {/* Map Controls - Top Right - Removed Street/Satellite button (moved to Layer Manager) */}
+        {/* Map Controls - Top Right - Address Search */}
+        <div style={{
+          position: 'absolute',
+          top: '24px',
+          right: '24px',
+          zIndex: 900
+        }}>
+          <AddressSearchBar 
+            mapRef={mapRef}
+            onSelectAddress={(address) => {
+              console.log('Address selected:', address);
+            }}
+          />
+        </div>
 
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
           <Map
