@@ -147,10 +147,39 @@ const Campaigns = () => {
         .eq('id', templateId);
       
       if (error) throw error;
-      toast.success('Template deleted');
+      smartToast.success('Template deleted');
       fetchTemplates();
     } catch (error) {
-      toast.error('Failed to delete template');
+      smartToast.error('Failed to delete template');
+    }
+  };
+
+  const deleteCampaign = async (campaign) => {
+    setCampaignToDelete(null);
+    setCampaignMenuOpen(null);
+    
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/email/campaigns/${campaign.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        smartToast.success('Campaign deleted successfully');
+        fetchCampaigns();
+        
+        // Close analytics panel if viewing deleted campaign
+        if (selectedCampaign?.id === campaign.id) {
+          setShowAnalyticsPanel(false);
+          setSelectedCampaign(null);
+        }
+      } else {
+        const data = await response.json();
+        smartToast.error(data.detail || 'Failed to delete campaign');
+      }
+    } catch (error) {
+      console.error('Error deleting campaign:', error);
+      smartToast.error('Failed to delete campaign');
     }
   };
 
