@@ -12,6 +12,7 @@ import PropertyIntelligencePanel from '../components/PropertyIntelligencePanel';
 import CreateDealPanel from '../components/CreateDealPanel';
 import ParcelPopup from '../components/ParcelPopup';
 import AIResearchPanel from '../components/AIResearchPanel';
+import AddressSearchBar from '../components/AddressSearchBar';
 import reportallService from '../services/reportallService';
 import REPORTALL_CONFIG from '../config/reportall';
 import 'maplibre-gl/dist/maplibre-gl.css';
