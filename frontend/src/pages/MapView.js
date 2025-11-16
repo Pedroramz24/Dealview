@@ -821,6 +821,15 @@ const MapView = () => {
           onToggleAIResearch={() => setAiResearchPanelOpen(!aiResearchPanelOpen)}
           measurementMode={measurementMode}
           onSetMeasurementMode={setMeasurementMode}
+          searchBarComponent={
+            <AddressSearchBar 
+              mapRef={mapRef}
+              onSelectAddress={(address) => {
+                console.log('[MapView] Address selected:', address);
+                setSearchedAddress(address);
+              }}
+            />
+          }
         />
 
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
