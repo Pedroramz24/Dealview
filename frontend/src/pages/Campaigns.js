@@ -24,6 +24,8 @@ const Campaigns = () => {
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [showAnalyticsPanel, setShowAnalyticsPanel] = useState(false);
+  const [campaignMenuOpen, setCampaignMenuOpen] = useState(null);
+  const [campaignToDelete, setCampaignToDelete] = useState(null);
   
   // Templates
   const [templates, setTemplates] = useState([]);
