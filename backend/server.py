@@ -1083,6 +1083,43 @@ class ChatResponse(BaseModel):
     citations: List[Citation] = []
     related_questions: List[str] = []
 
+
+
+# Address Search Endpoint using Radar.io
+@api_router.get("/address-search")
+async def search_addresses(
+    query: str,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None,
+    limit: int = 10,
+    current_user = Depends(get_current_user_supabase)
+):
+    """
+    Search for addresses using Radar.io geocoding
+    Returns list of addresses with coordinates
+    """
+    try:
+        if not query or len(query) < 2:
+            return {"addresses": []}
+        
+        logger.info(f"[Address Search] Query: '{query}', user: {current_user.id}")
+        
+        addresses = await radar_service.search_addresses(
+            query=query,
+            latitude=latitude,
+            longitude=longitude,
+            limit=limit
+        )
+        
+        return {
+            "addresses": addresses,
+            "count": len(addresses)
+        }
+    
+    except Exception as e:
+        logger.error(f"[Address Search] Error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Address search failed")
+
 # Import Perplexity service
 from perplexity_service import perplexity_service
 
