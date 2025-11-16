@@ -1082,12 +1082,13 @@ const Campaigns = () => {
                             }}
                             style={{
                               display: 'grid',
-                              gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr',
+                              gridTemplateColumns: '2.5fr 1.5fr 1fr 2.5fr 1fr auto',
                               padding: '20px 24px',
                               borderBottom: index === filteredCampaigns.length - 1 ? 'none' : '1px solid rgba(255, 255, 255, 0.05)',
                               borderLeft: '3px solid transparent',
                               cursor: 'pointer',
-                              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                              position: 'relative'
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = 'rgba(0, 184, 212, 0.04)';
