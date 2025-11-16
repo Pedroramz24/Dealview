@@ -53,6 +53,7 @@ const MapView = () => {
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
   const [createDealLocation, setCreateDealLocation] = useState(null); // Location for new deal
   const [createDealParcelData, setCreateDealParcelData] = useState(null); // Parcel data for new deal
+  const [searchedAddress, setSearchedAddress] = useState(null); // Address from search bar
   
   const { user } = useContext(AuthContext);
   const viewStateRef = useRef({
