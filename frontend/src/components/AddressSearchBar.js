@@ -23,17 +23,20 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Debounced search
+  // Debounced search - starts after 3 characters
   useEffect(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
-    if (query.length < 2) {
+    if (query.length < 3) {
       setSuggestions([]);
+      setLoading(false);
       return;
     }
 
+    setLoading(true);
+    
     debounceRef.current = setTimeout(async () => {
       await fetchSuggestions(query);
     }, 500); // 500ms debounce
@@ -46,7 +49,6 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
   }, [query]);
 
   const fetchSuggestions = async (searchQuery) => {
-    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       
@@ -60,15 +62,18 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
         params.longitude = center.lng;
       }
 
+      console.log('[AddressSearch] Fetching suggestions for:', searchQuery, params);
+
       const response = await axios.get(`${BACKEND_URL}/api/address-search`, {
         params,
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      console.log('[AddressSearch] Results:', response.data);
       setSuggestions(response.data.addresses || []);
       setShowSuggestions(true);
     } catch (error) {
-      console.error('Address search error:', error);
+      console.error('[AddressSearch] Error:', error);
       setSuggestions([]);
     } finally {
       setLoading(false);
@@ -76,14 +81,15 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
   };
 
   const handleSelectAddress = (address) => {
+    // Set input to full formatted address
     setQuery(address.formatted_address);
     setShowSuggestions(false);
     
-    // Fly map to selected location
+    // Fly map to selected location with smooth animation
     if (mapRef?.current && address.latitude && address.longitude) {
       mapRef.current.flyTo({
         center: [address.longitude, address.latitude],
-        zoom: 16,
+        zoom: 17,
         duration: 2000,
         essential: true
       });
@@ -100,20 +106,28 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
     setShowSuggestions(false);
   };
 
+  const handleKeyDown = (e) => {
+    // Allow clearing with Escape key
+    if (e.key === 'Escape') {
+      setShowSuggestions(false);
+    }
+  };
+
   return (
-    <div ref={searchRef} style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
+    <div ref={searchRef} style={{ position: 'relative', width: '100%' }}>
       {/* Search Input */}
       <div style={{
         position: 'relative',
         background: 'rgba(11, 12, 14, 0.95)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '12px',
+        borderRadius: showSuggestions && suggestions.length > 0 ? '12px 12px 0 0' : '12px',
         display: 'flex',
         alignItems: 'center',
-        padding: '12px 16px',
+        padding: '14px 16px',
         gap: '10px',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.3)'
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.3)',
+        transition: 'all 0.2s ease'
       }}>
         <Search size={20} style={{ color: '#00b8d4', flexShrink: 0 }} />
         
@@ -122,14 +136,15 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-          placeholder="Search address..."
+          onKeyDown={handleKeyDown}
+          placeholder="Search address or place..."
           style={{
             flex: 1,
             background: 'transparent',
             border: 'none',
             outline: 'none',
             color: '#FFFFFF',
-            fontSize: '14px',
+            fontSize: '15px',
             fontWeight: 500
           }}
         />
@@ -145,13 +160,21 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '6px',
-              padding: '4px',
+              padding: '6px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               color: 'rgba(255, 255, 255, 0.6)',
               transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
             }}
           >
             <X size={16} />
@@ -163,52 +186,69 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
       {showSuggestions && suggestions.length > 0 && (
         <div style={{
           position: 'absolute',
-          top: 'calc(100% + 8px)',
+          top: 'calc(100% - 1px)',
           left: 0,
           right: 0,
           background: 'rgba(11, 12, 14, 0.98)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '12px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+          borderBottomLeftRadius: '12px',
+          borderBottomRightRadius: '12px',
           overflow: 'hidden',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
           zIndex: 10000,
           maxHeight: '400px',
           overflowY: 'auto'
-        }}>
+        }}
+        className="custom-scrollbar"
+        >
           {suggestions.map((address, index) => (
             <div
               key={index}
               onClick={() => handleSelectAddress(address)}
               style={{
-                padding: '12px 16px',
+                padding: '14px 16px',
                 borderBottom: index < suggestions.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
                 cursor: 'pointer',
                 transition: 'background 0.15s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)'}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
             >
-              <div style={{ display: 'flex', alignItems: 'start', gap: '10px' }}>
-                <MapPin size={16} style={{ color: '#00b8d4', marginTop: '2px', flexShrink: 0 }} />
+              <div style={{ display: 'flex', alignItems: 'start', gap: '12px' }}>
+                <MapPin size={18} style={{ color: '#00b8d4', marginTop: '2px', flexShrink: 0 }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
+                  {/* Street Address - Primary */}
                   <div style={{
                     color: '#FFFFFF',
                     fontSize: '14px',
-                    fontWeight: 500,
-                    marginBottom: '2px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
+                    fontWeight: 600,
+                    marginBottom: '4px',
+                    lineHeight: '1.3'
                   }}>
                     {address.street || address.formatted_address}
                   </div>
+                  
+                  {/* City, State, ZIP - Secondary */}
                   {address.city && (
                     <div style={{
                       color: 'rgba(255, 255, 255, 0.5)',
-                      fontSize: '12px'
+                      fontSize: '13px',
+                      lineHeight: '1.2'
                     }}>
                       {[address.city, address.state_code, address.postal_code].filter(Boolean).join(', ')}
+                    </div>
+                  )}
+                  
+                  {/* Country (if not US) */}
+                  {address.country && address.country_code !== 'US' && (
+                    <div style={{
+                      color: 'rgba(255, 255, 255, 0.4)',
+                      fontSize: '12px',
+                      marginTop: '2px'
+                    }}>
+                      {address.country}
                     </div>
                   )}
                 </div>
@@ -218,24 +258,46 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
         </div>
       )}
 
-      {/* No Results */}
-      {showSuggestions && query.length >= 2 && suggestions.length === 0 && !loading && (
+      {/* No Results Message */}
+      {showSuggestions && query.length >= 3 && suggestions.length === 0 && !loading && (
         <div style={{
           position: 'absolute',
-          top: 'calc(100% + 8px)',
+          top: 'calc(100% - 1px)',
           left: 0,
           right: 0,
           background: 'rgba(11, 12, 14, 0.98)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '12px',
-          padding: '20px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+          borderBottomLeftRadius: '12px',
+          borderBottomRightRadius: '12px',
+          padding: '24px',
           textAlign: 'center',
           color: 'rgba(255, 255, 255, 0.4)',
           fontSize: '14px',
-          zIndex: 10000
+          zIndex: 10000,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)'
         }}>
-          No addresses found
+          No addresses found for "{query}"
+        </div>
+      )}
+
+      {/* Helper Text - Type more characters */}
+      {query.length > 0 && query.length < 3 && (
+        <div style={{
+          position: 'absolute',
+          top: 'calc(100% + 8px)',
+          left: 0,
+          right: 0,
+          padding: '10px 14px',
+          background: 'rgba(168, 85, 247, 0.1)',
+          border: '1px solid rgba(168, 85, 247, 0.2)',
+          borderRadius: '8px',
+          color: '#a855f7',
+          fontSize: '13px',
+          textAlign: 'center'
+        }}>
+          Type at least 3 characters to search
         </div>
       )}
     </div>
