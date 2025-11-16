@@ -368,7 +368,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
       }
     } catch (error) {
       console.error('❌ Error in handleFinalSend:', error);
-      toast.error(error.message || 'Failed to send campaign');
+      toast.dismiss(); // Clear any existing toasts
+      toast.error(error.message || 'Failed to send campaign', { duration: 4000 });
     } finally {
       setSaving(false);
       console.log('💾 Setting saving state to false');
