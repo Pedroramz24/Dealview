@@ -50,8 +50,6 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
 
   const fetchSuggestions = async (searchQuery) => {
     try {
-      const token = localStorage.getItem('token');
-      
       // Get current map center for location bias
       let params = { query: searchQuery, limit: 10 };
       
@@ -65,8 +63,7 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
       console.log('[AddressSearch] Fetching suggestions for:', searchQuery, params);
 
       const response = await axios.get(`${BACKEND_URL}/api/address-search`, {
-        params,
-        headers: { Authorization: `Bearer ${token}` }
+        params
       });
 
       console.log('[AddressSearch] Results:', response.data);
@@ -74,6 +71,7 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
       setShowSuggestions(true);
     } catch (error) {
       console.error('[AddressSearch] Error:', error);
+      console.error('[AddressSearch] Error details:', error.response?.data);
       setSuggestions([]);
     } finally {
       setLoading(false);
