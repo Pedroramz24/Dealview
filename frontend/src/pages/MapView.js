@@ -882,17 +882,21 @@ const MapView = () => {
           </button>
         </div>
 
-        {/* Map Controls - Top Right - Address Search */}
+        {/* Address Search Bar - Centered at Top */}
         <div style={{
           position: 'absolute',
           top: '24px',
-          right: '24px',
-          zIndex: 900
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 900,
+          width: '100%',
+          maxWidth: '500px',
+          padding: '0 20px'
         }}>
           <AddressSearchBar 
             mapRef={mapRef}
             onSelectAddress={(address) => {
-              console.log('Address selected:', address);
+              console.log('[MapView] Address selected:', address);
             }}
           />
         </div>
