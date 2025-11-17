@@ -904,7 +904,8 @@ const MapView = () => {
             ref={mapRef}
             interactiveLayerIds={[
               ...(showParcels ? ['parcels-fill', 'parcels-line'] : []),
-              ...(showReportAllParcels ? ['reportall-parcels-fill', 'reportall-parcels-line'] : [])
+              ...(showReportAllParcels ? ['reportall-parcels-fill', 'reportall-parcels-line'] : []),
+              ...(showBexarParcels ? ['bexar-parcels-line'] : [])
             ]}
             dragRotate={false}
             touchZoomRotate={false}
