@@ -1132,7 +1132,7 @@ async def search_addresses_api(
 async def get_intelligence_layer(
     layer_type: str,
     bbox: Optional[str] = None,
-    limit: int = 5000
+    limit: int = 10000
 ):
     """
     Proxy endpoint for property intelligence layers
@@ -1140,7 +1140,7 @@ async def get_intelligence_layer(
     
     layer_type: 'sa-zoning', 'austin-zoning', 'sa-water-sewer'
     bbox: 'minLng,minLat,maxLng,maxLat' (optional, for viewport filtering)
-    limit: max features to return (default 5000 for better coverage)
+    limit: max features to return (default 10000 for complete coverage)
     """
     try:
         # Define layer endpoints - VERIFIED WORKING URLs
