@@ -273,7 +273,6 @@ const MapView = () => {
     if (!measurementMode) {
       setMeasurementPoints([]);
       setMeasurementResult(null);
-      setMeasurementPanelPosition({ x: null, y: 80 });
     }
   }, [measurementMode]);
 
