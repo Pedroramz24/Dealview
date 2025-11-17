@@ -359,7 +359,7 @@ const MapView = () => {
         bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
       }
       
-      const url = `${API}/intelligence/layer/austin-zoning${bbox ? `?bbox=${bbox}&limit=500` : '?limit=500'}`;
+      const url = `${API}/intelligence/layer/austin-zoning${bbox ? `?bbox=${bbox}&limit=5000` : '?limit=5000'}`;
       
       fetch(url)
         .then(res => {
@@ -369,7 +369,7 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] Austin Zoning data loaded:', data.features?.length, 'features');
           setAustinZoningData(data);
-          toast.success(`Loaded ${data.features?.length || 0} Austin zoning boundaries`);
+          toast.success(`Loaded ${data.features?.length || 0} Austin zoning parcels`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching Austin zoning:', err);
@@ -391,7 +391,7 @@ const MapView = () => {
         bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
       }
       
-      const url = `${API}/intelligence/layer/sa-water-sewer${bbox ? `?bbox=${bbox}&limit=500` : '?limit=500'}`;
+      const url = `${API}/intelligence/layer/sa-water-sewer${bbox ? `?bbox=${bbox}&limit=5000` : '?limit=5000'}`;
       
       fetch(url)
         .then(res => {
