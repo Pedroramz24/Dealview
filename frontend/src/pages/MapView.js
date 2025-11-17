@@ -321,6 +321,14 @@ const MapView = () => {
 
   // SA Zoning now uses PMTiles - loads automatically from /tiles/sa_zoning.pmtiles
   // No fetch logic needed - MapLibre handles tile loading via pmtiles:// protocol
+  
+  // Log when SA Zoning layer toggles for debugging
+  useEffect(() => {
+    console.log('[MapView] SA Zoning layer toggle:', showSAZoning ? 'ON' : 'OFF');
+    if (showSAZoning) {
+      console.log('[MapView] Loading PMTiles from:', `${window.location.origin}/tiles/sa_zoning.pmtiles`);
+    }
+  }, [showSAZoning]);
 
   // Fetch Austin Zoning data when layer is toggled ON
   useEffect(() => {
