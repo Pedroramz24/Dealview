@@ -85,6 +85,14 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
         latitude: location?.lat || parcelData?.latitude || null,
         longitude: location?.lng || parcelData?.longitude || null,
         zoning: parcelData?.zoning || null,
+        annual_income: grossIncomeRef.current?.value ? parseFloat(grossIncomeRef.current.value.replace(/,/g, '')) : null,
+        annual_expenses: operatingExpensesRef.current?.value ? parseFloat(operatingExpensesRef.current.value.replace(/,/g, '')) : null,
+        noi: grossIncomeRef.current?.value && operatingExpensesRef.current?.value 
+          ? parseFloat(grossIncomeRef.current.value.replace(/,/g, '')) - parseFloat(operatingExpensesRef.current.value.replace(/,/g, ''))
+          : null,
+        cap_rate: (grossIncomeRef.current?.value && operatingExpensesRef.current?.value && priceRef.current?.value)
+          ? ((parseFloat(grossIncomeRef.current.value.replace(/,/g, '')) - parseFloat(operatingExpensesRef.current.value.replace(/,/g, ''))) / parseFloat(priceRef.current.value.replace(/,/g, ''))) * 100
+          : null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
