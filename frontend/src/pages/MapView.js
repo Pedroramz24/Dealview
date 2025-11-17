@@ -920,7 +920,7 @@ const MapView = () => {
               maxzoom={REPORTALL_CONFIG.maxZoom}
               promoteId={parcelPromoteId}
               scheme="xyz"
-              tileSize={256}
+              tileSize={512}
             >
               <Layer
                 id="reportall-parcels-fill"
