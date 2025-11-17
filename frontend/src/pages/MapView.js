@@ -1111,6 +1111,30 @@ const MapView = () => {
             </Source>
           )}
 
+          {/* Bexar County CAD Parcels - Free Parcel Intelligence */}
+          {showBexarParcels && (
+            <Source
+              id="bexar-parcels"
+              type="vector"
+              url={`pmtiles://${window.location.origin}/tiles/bexar_parcels.pmtiles`}
+              tileSize={512}
+            >
+              {/* Parcel outlines only - show at zoom 14+ */}
+              <Layer
+                id="bexar-parcels-line"
+                type="line"
+                source-layer="parcels"
+                minzoom={14}
+                maxzoom={22}
+                paint={{
+                  'line-color': '#06b6d4',  // Cyan for parcels
+                  'line-width': 1.5,
+                  'line-opacity': 0.8
+                }}
+              />
+            </Source>
+          )}
+
           {/* Austin Zoning Layer - Color-coded by type */}
           {showAustinZoning && (
             <Source
