@@ -353,6 +353,7 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
               onChange={(e) => {
                 const formatted = formatNumberWithCommas(e.target.value);
                 e.target.value = formatted;
+                calculateMetrics();
               }}
               style={{
                 width: '100%',
