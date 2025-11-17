@@ -984,96 +984,165 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* San Antonio Zoning Layer - PMTiles for TerraVault-level performance */}
+          {/* San Antonio Zoning Layer - PMTiles with Zoom-Based Performance Optimization */}
           {showSAZoning && (
             <Source
               id="sa-zoning"
               type="vector"
               url={`pmtiles://${window.location.origin}/tiles/sa_zoning.pmtiles`}
             >
+              {/* Parcel-Level Detail - Only at Close Zooms (15+) */}
               <Layer
-                id="sa-zoning-fill"
+                id="sa-zoning-fill-detail"
                 type="fill"
                 source-layer="zoning"
+                minzoom={15}
+                maxzoom={24}
                 paint={{
                   'fill-color': [
                     'match',
                     ['get', 'Base'],
-                    // Residential zones - Green shades
-                    'R-4', '#4ade80',
+                    // Residential - Green family (softer, more natural)
+                    'R-4', '#86efac',
                     'R-5', '#86efac',
-                    'R-6', '#bbf7d0',
+                    'R-6', '#86efac',
                     'RM-4', '#6ee7b7',
-                    'RM-5', '#a7f3d0',
-                    'RM-6', '#d1fae5',
-                    // Commercial zones - Red/Orange shades
-                    'C-1', '#fb923c',
-                    'C-2', '#f97316',
-                    'C-3', '#ea580c',
-                    'NC', '#fdba74',
-                    'HC', '#dc2626',
-                    // Industrial zones - Purple/Blue shades
-                    'I-1', '#a78bfa',
-                    'I-2', '#8b5cf6',
-                    'IL', '#7c3aed',
-                    // Mixed Use - Yellow/Amber
-                    'MXD', '#fbbf24',
-                    'TOD', '#f59e0b',
-                    // Office/Business - Cyan
-                    'BP', '#06b6d4',
-                    'OP', '#0891b2',
-                    // Special districts - Pink/Magenta
-                    'IDZ', '#ec4899',
-                    'MU', '#d946ef',
-                    // Outside City Limits - Gray
-                    'OCL', '#6b7280',
-                    // Default fallback - Light amber
-                    '#fde68a'
+                    'RM-5', '#6ee7b7',
+                    'RM-6', '#6ee7b7',
+                    // Commercial - Warm orange/coral family
+                    'C-1', '#fdba74',
+                    'C-2', '#fb923c',
+                    'C-3', '#f97316',
+                    'NC', '#fcd34d',
+                    'HC', '#f59e0b',
+                    // Industrial - Cool purple family
+                    'I-1', '#c4b5fd',
+                    'I-2', '#a78bfa',
+                    'IL', '#8b5cf6',
+                    // Mixed Use - Amber family
+                    'MXD', '#fde68a',
+                    'TOD', '#fcd34d',
+                    // Office - Soft cyan family
+                    'BP', '#a5f3fc',
+                    'OP', '#67e8f9',
+                    // Special - Rose/pink family
+                    'IDZ', '#f9a8d4',
+                    'MU', '#f472b6',
+                    // Outside City Limits - Light gray
+                    'OCL', '#d1d5db',
+                    // No zoning/null/empty - White with very low opacity
+                    '', '#ffffff',
+                    null, '#ffffff',
+                    // Default - White (for any unmapped codes)
+                    '#ffffff'
                   ],
-                  'fill-opacity': 0.3
+                  'fill-opacity': [
+                    'match',
+                    ['get', 'Base'],
+                    '', 0.05,  // Nearly invisible for empty/null
+                    null, 0.05,
+                    'OCL', 0.1,  // Very light for outside city limits
+                    0.25  // Normal opacity for actual zoning
+                  ]
                 }}
               />
               <Layer
-                id="sa-zoning-line"
+                id="sa-zoning-line-detail"
                 type="line"
                 source-layer="zoning"
+                minzoom={15}
+                maxzoom={24}
                 paint={{
-                  'line-color': [
+                  'line-color': '#334155',  // Subtle dark gray for all parcels
+                  'line-width': 0.5,
+                  'line-opacity': 0.4
+                }}
+              />
+              
+              {/* Mid-Zoom Simplified View (12-14) - No outlines, just color blocks */}
+              <Layer
+                id="sa-zoning-fill-mid"
+                type="fill"
+                source-layer="zoning"
+                minzoom={12}
+                maxzoom={15}
+                paint={{
+                  'fill-color': [
                     'match',
                     ['get', 'Base'],
-                    // Residential - Dark green
-                    'R-4', '#22c55e',
-                    'R-5', '#22c55e',
-                    'R-6', '#22c55e',
-                    'RM-4', '#10b981',
-                    'RM-5', '#10b981',
-                    'RM-6', '#10b981',
-                    // Commercial - Dark orange/red
-                    'C-1', '#f97316',
-                    'C-2', '#ea580c',
-                    'C-3', '#dc2626',
-                    'NC', '#f97316',
-                    'HC', '#b91c1c',
-                    // Industrial - Dark purple
-                    'I-1', '#8b5cf6',
-                    'I-2', '#7c3aed',
-                    'IL', '#6d28d9',
-                    // Mixed Use - Dark amber
-                    'MXD', '#f59e0b',
-                    'TOD', '#d97706',
-                    // Office - Dark cyan
-                    'BP', '#0891b2',
-                    'OP', '#0e7490',
-                    // Special - Dark pink
-                    'IDZ', '#db2777',
-                    'MU', '#c026d3',
-                    // OCL - Dark gray
-                    'OCL', '#4b5563',
-                    // Default
-                    '#fbbf24'
+                    'R-4', '#86efac',
+                    'R-5', '#86efac',
+                    'R-6', '#86efac',
+                    'RM-4', '#6ee7b7',
+                    'RM-5', '#6ee7b7',
+                    'RM-6', '#6ee7b7',
+                    'C-1', '#fdba74',
+                    'C-2', '#fb923c',
+                    'C-3', '#f97316',
+                    'NC', '#fcd34d',
+                    'HC', '#f59e0b',
+                    'I-1', '#c4b5fd',
+                    'I-2', '#a78bfa',
+                    'IL', '#8b5cf6',
+                    'MXD', '#fde68a',
+                    'TOD', '#fcd34d',
+                    'BP', '#a5f3fc',
+                    'OP', '#67e8f9',
+                    'IDZ', '#f9a8d4',
+                    'MU', '#f472b6',
+                    'OCL', '#d1d5db',
+                    '', '#ffffff',
+                    null, '#ffffff',
+                    '#ffffff'
                   ],
-                  'line-width': 1,
-                  'line-opacity': 0.8
+                  'fill-opacity': [
+                    'match',
+                    ['get', 'Base'],
+                    '', 0.03,
+                    null, 0.03,
+                    'OCL', 0.08,
+                    0.15  // Lower opacity at mid zoom
+                  ]
+                }}
+              />
+              
+              {/* City-Wide View (10-11) - Ultra-light zoning mask */}
+              <Layer
+                id="sa-zoning-fill-wide"
+                type="fill"
+                source-layer="zoning"
+                minzoom={10}
+                maxzoom={12}
+                paint={{
+                  'fill-color': [
+                    'match',
+                    ['get', 'Base'],
+                    'R-4', '#86efac',
+                    'R-5', '#86efac',
+                    'R-6', '#86efac',
+                    'RM-4', '#6ee7b7',
+                    'RM-5', '#6ee7b7',
+                    'RM-6', '#6ee7b7',
+                    'C-1', '#fdba74',
+                    'C-2', '#fb923c',
+                    'C-3', '#f97316',
+                    'NC', '#fcd34d',
+                    'HC', '#f59e0b',
+                    'I-1', '#c4b5fd',
+                    'I-2', '#a78bfa',
+                    'IL', '#8b5cf6',
+                    'MXD', '#fde68a',
+                    'TOD', '#fcd34d',
+                    'BP', '#a5f3fc',
+                    'OP', '#67e8f9',
+                    'IDZ', '#f9a8d4',
+                    'MU', '#f472b6',
+                    'OCL', '#d1d5db',
+                    '', '#ffffff',
+                    null, '#ffffff',
+                    '#ffffff'
+                  ],
+                  'fill-opacity': 0.08  // Very subtle at city-wide zoom
                 }}
               />
             </Source>
