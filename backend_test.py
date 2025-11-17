@@ -2093,7 +2093,11 @@ class BackendTester:
             supabase_url = os.environ['SUPABASE_URL']
             supabase_key = os.environ['SUPABASE_ANON_KEY']
             
+            # Create client and set auth header
             supabase = create_client(supabase_url, supabase_key)
+            
+            # Set the auth token for RLS
+            supabase.postgrest.auth(self.supabase_token)
             
             # Get current user ID from session
             user_response = supabase.auth.get_user(self.supabase_token)
@@ -2108,7 +2112,7 @@ class BackendTester:
             user_id = user_response.user.id
             deal_for_validation['owner_id'] = str(user_id)
             
-            # Insert deal into Supabase
+            # Insert deal into Supabase with auth token
             response = supabase.table('deals').insert(deal_for_validation).execute()
             
             if response.data and len(response.data) > 0:
