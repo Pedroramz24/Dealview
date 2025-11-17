@@ -83,6 +83,23 @@ const MapView = () => {
     // No setState = no re-render = no flicker
   }, []);
   
+  // Register PMTiles protocol for vector tiles
+  useEffect(() => {
+    if (!mapRef.current) return;
+    
+    const map = mapRef.current.getMap();
+    if (!map) return;
+    
+    // Add PMTiles protocol to MapLibre
+    map.addProtocol('pmtiles', pmtilesProtocol.tile);
+    
+    console.log('[MapView] PMTiles protocol registered');
+    
+    return () => {
+      map.removeProtocol('pmtiles');
+    };
+  }, []);
+  
   // Add street labels to map - using proper event listeners
   useEffect(() => {
     if (!mapRef.current) return;
