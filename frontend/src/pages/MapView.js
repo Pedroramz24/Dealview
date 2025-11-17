@@ -1574,65 +1574,6 @@ const MapView = () => {
           )}
         </Map>
         </div>
-                        background: '#00d4aa'
-                      }}></div>
-                      <p style={{ color: '#00d4aa', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase' }}>
-                        Geodesic Calculation
-                      </p>
-                    </div>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '9px', lineHeight: '1.3' }}>
-                      Accuracy: ±0.5-2% • Turf.js GIS-grade
-                    </p>
-                  </div>
-
-                  {/* Disclaimer */}
-                  <div style={{
-                    padding: '8px',
-                    background: 'rgba(245, 158, 11, 0.1)',
-                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                    borderRadius: '6px',
-                    marginBottom: '12px'
-                  }}>
-                    <p style={{ color: 'rgba(245, 158, 11, 0.9)', fontSize: '9px', lineHeight: '1.4', fontWeight: '500' }}>
-                      For reference only. Verify critical measurements with licensed surveyor.
-                    </p>
-                  </div>
-                  
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setMeasurementMode(null);
-                      setMeasurementPoints([]);
-                      setMeasurementResult(null);
-                    }}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    style={{
-                      padding: '10px 16px',
-                      background: 'rgba(239, 68, 68, 0.15)',
-                      border: '1px solid rgba(239, 68, 68, 0.3)',
-                      borderRadius: '6px',
-                      color: '#ef4444',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      width: '100%',
-                      transition: 'all 150ms ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.25)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
-                    }}
-                  >
-                    Clear Measurement
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-        </Map>
-        </div>
 
         {/* ReportAll Parcel Popup */}
         {reportAllParcel && (
