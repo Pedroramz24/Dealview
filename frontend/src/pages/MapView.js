@@ -760,16 +760,26 @@ const MapView = () => {
     
     // Get map instance once at the start
     const map = mapRef.current?.getMap();
+    if (!map) {
+      console.log('[MapView] Map not available');
+      return;
+    }
+    
+    console.log('[MapView] Map clicked at zoom:', map.getZoom(), 'showBexarParcels:', showBexarParcels);
     
     // Check for Bexar CAD parcels click (if enabled)
-    if (showBexarParcels && map && map.getZoom() >= 14) {
+    if (showBexarParcels && map.getZoom() >= 14) {
+      console.log('[Bexar CAD] Checking for parcel click at point:', event.point);
+      
       const features = map.queryRenderedFeatures(event.point, {
         layers: ['bexar-parcels-line']
       });
       
+      console.log('[Bexar CAD] Features found:', features?.length || 0);
+      
       if (features && features.length > 0) {
         const parcel = features[0].properties;
-        console.log('[Bexar CAD] Clicked parcel:', parcel);
+        console.log('[Bexar CAD] Clicked parcel data:', parcel);
         
         // Format parcel data for PropertyIntelligencePanel
         const parcelData = {
@@ -782,13 +792,16 @@ const MapView = () => {
           land_value: parcel.LandVal,
           improvement_value: parcel.ImprVal,
           total_value: parcel.TotVal,
+          price: parcel.TotVal,  // Use total value as price
           
           // Parcel Details
           legal_acres: parcel.LglAcres,
           calculated_acres: parcel.Acres,
+          lot_size: parcel.LglAcres,  // Map to lot_size for panel
           year_built: parcel.YrBlt,
           gba: parcel.GBA,
           total_gba: parcel.TOT_GBA,
+          size: parcel.TOT_GBA,  // Map to building size
           stories: parcel.Stories,
           
           // Other
@@ -803,9 +816,12 @@ const MapView = () => {
           isBexarCAD: true  // Flag for Bexar CAD data
         };
         
+        console.log('[Bexar CAD] Opening property panel with data:', parcelData);
         togglePropertyPanel(parcelData);
         toast.success('Bexar CAD parcel loaded');
         return;
+      } else {
+        console.log('[Bexar CAD] No parcel features found at click point');
       }
     }
     
