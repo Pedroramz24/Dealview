@@ -619,14 +619,23 @@ agent_communication:
 
   - task: "Texas Property Intelligence System (Phase 1)"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/services/propertyIntelligenceService.js, /app/frontend/src/components/LayerManager.js, /app/frontend/src/pages/MapView.js"
-    stuck_count: 0
-    priority: "high"
+    stuck_count: 1
+    priority: "critical"
     needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "✅ PROPERTY INTELLIGENCE LAYERS IMPLEMENTED (Phase 1): Created TerraVault-style intelligence system with free government data. NEW SERVICE CREATED: propertyIntelligenceService.js with APIs for San Antonio/Austin open data portals and FEMA flood service. LAYER MANAGER ENHANCEMENTS: Added new 'Property Intelligence' section with 4 toggleable layers - (1) San Antonio Zoning (amber/yellow theme), (2) Austin Zoning (purple theme), (3) FEMA Flood Zones (blue theme), (4) Water & Sewer SA (cyan theme). Each toggle styled with icon, description, and ON/OFF button. MAPVIEW INTEGRATION: (1) Added 4 new state variables for intelligence layers. (2) Integrated FEMA Flood Zones as raster WMS tiles from FEMA NFHL MapServer. (3) Added GeoJSON sources for SA Zoning, Austin Zoning, and Water/Sewer (ready for data loading). (4) Configured layer styling - zoning with fill/line, flood zones with 60% opacity, water/sewer as colored lines. DATA SOURCES: (1) FEMA Flood: https://hazards.fema.gov (raster tiles, nationwide coverage). (2) SA Zoning: San Antonio COSA Zoning ArcGIS Feature Service. (3) Austin Zoning: Austin Planning/Zoning MapServer. (4) SA Water/Sewer: San Antonio Stormwater Infrastructure service. IMPLEMENTATION: Phase 1 focuses on Layer Manager UI and map rendering structure. FEMA flood zones work immediately (raster tiles). Zoning/utility layers render with placeholder empty GeoJSON - will populate dynamically in Phase 2 based on map viewport. Frontend compiled successfully with hot reload. READY FOR TESTING: (1) Open Layer Manager, (2) Toggle FEMA Flood Zones to see nationwide flood data overlay, (3) Toggle other layers to verify UI controls work, (4) Phase 2 will add dynamic data fetching for zoning/utilities based on visible map area."
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED CRITICAL ISSUE: NO map layers are rendering at all when toggled ON. All layers fail including zoning, parcels, water/sewer, and intelligence layers. Toggle switches change state visually but map never updates or displays data from San Antonio/Austin datasets. Tested all required zoom levels (12+ parcels, 13+ street labels, 14+ reportall) - nothing loads. All free datasets are valid, issue is implementation-side. Layers need to render correctly as soon as toggled ON with proper visibility at correct zoom levels."
+      - working: "NA"
+        agent: "troubleshoot"
+        comment: "🔍 ROOT CAUSE IDENTIFIED (10-step investigation): Complete layer failure due to INCOMPLETE IMPLEMENTATION. CRITICAL FINDINGS: (1) propertyIntelligenceService.js NEVER IMPORTED into MapView.js. (2) ZERO useEffect hooks to fetch GeoJSON data when layers toggle ON. (3) NO state variables to store fetched layer data. (4) All intelligence layers render EMPTY FeatureCollections (features: []). (5) Toggle switches work but have no data to display. COMPARISON: ReportAll parcels work because they use pre-configured vector tile URLs (no client-side fetching needed). Intelligence layers designed to fetch GeoJSON from ArcGIS REST APIs but fetching step never implemented. REQUIRED FIXES: Import service, add state variables (saZoningData, austinZoningData, waterSewerData), add 3 useEffect hooks to fetch data, update Source data props to use fetched data, handle potential CORS issues."
+      - working: "NA"
+        agent: "main"
+        comment: "✅ CRITICAL DATA FETCHING FIX IMPLEMENTED: Applied all fixes identified by troubleshoot agent. CHANGES: (1) IMPORTED propertyIntelligenceService into MapView.js (line 19). (2) ADDED 3 state variables for layer data: saZoningData, austinZoningData, waterSewerData (after line 44). (3) ADDED 3 useEffect hooks (after line 314) to fetch GeoJSON when layers toggle ON - each hook checks if layer enabled and data empty, fetches from ArcGIS REST API, logs success/failure, displays toast on error. (4) UPDATED Source data props for all 3 vector layers: sa-zoning uses saZoningData, austin-zoning uses austinZoningData, sa-water-sewer uses waterSewerData. (5) Added comprehensive error handling and console logging for debugging. IMPLEMENTATION DETAILS: Each useEffect triggered by layer toggle state (showSAZoning, showAustinZoning, showWaterSewer), fetches only once per session (checks features.length === 0), validates HTTP response status, parses JSON response, updates component state with GeoJSON data. FEMA flood zones already configured as raster WMS (no fetching needed). Frontend compiled successfully with hot reload active. TESTING REQUIRED: Open DevTools Console + Network tab, toggle each layer ON, verify API calls to ArcGIS endpoints appear in Network tab, check for GeoJSON responses with 200 status, verify layers render on map, monitor for CORS errors (may need backend proxy if blocked)."
 
 
