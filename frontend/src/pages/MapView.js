@@ -772,7 +772,7 @@ const MapView = () => {
       console.log('[Bexar CAD] Checking for parcel click at point:', event.point);
       
       const features = map.queryRenderedFeatures(event.point, {
-        layers: ['bexar-parcels-line']
+        layers: ['bexar-parcels-fill', 'bexar-parcels-line']
       });
       
       console.log('[Bexar CAD] Features found:', features?.length || 0);
