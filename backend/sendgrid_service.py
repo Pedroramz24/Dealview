@@ -86,10 +86,17 @@ class SendGridService:
         to_name: Optional[str],
         subject: str,
         html_content: str,
-        plain_text_content: Optional[str] = None
+        plain_text_content: Optional[str] = None,
+        cc_emails: Optional[List[str]] = None,
+        bcc_emails: Optional[List[str]] = None,
+        custom_args: Optional[Dict[str, str]] = None
     ) -> Dict[str, Any]:
         """
         Send a single transactional email
+        Args:
+            cc_emails: List of CC email addresses
+            bcc_emails: List of BCC email addresses
+            custom_args: Custom arguments for tracking
         Returns: {
             "success": bool,
             "message_id": str (if successful),
@@ -110,6 +117,18 @@ class SendGridService:
                 "to": [{"email": to_email, "name": to_name or ""}],
                 "subject": subject
             }]
+            
+            # Add CC emails if provided
+            if cc_emails and len(cc_emails) > 0:
+                personalizations[0]["cc"] = [{"email": email} for email in cc_emails]
+            
+            # Add BCC emails if provided
+            if bcc_emails and len(bcc_emails) > 0:
+                personalizations[0]["bcc"] = [{"email": email} for email in bcc_emails]
+            
+            # Add custom args if provided
+            if custom_args:
+                personalizations[0]["custom_args"] = custom_args
             
             content = []
             if plain_text_content:
