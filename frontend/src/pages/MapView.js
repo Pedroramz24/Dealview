@@ -1183,6 +1183,7 @@ const MapView = () => {
           {/* Bexar County CAD Parcels - Free Parcel Intelligence */}
           {showBexarParcels && (
             <Source
+              key="bexar-parcels-source"
               id="bexar-parcels"
               type="vector"
               url={`pmtiles://${window.location.origin}/tiles/bexar_parcels.pmtiles`}
