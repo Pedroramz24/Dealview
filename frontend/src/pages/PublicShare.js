@@ -132,55 +132,59 @@ const PublicShare = () => {
     <div style={{ minHeight: '100vh', background: '#000000' }}>
       {/* Header with Logo */}
       <div style={{
-        padding: '16px 40px',
+        padding: '16px 20px',
         background: 'rgba(11, 12, 14, 0.95)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(20px)'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <img 
-            src="/dealview-logo.svg" 
-            alt="Dealview"
-            style={{ height: '40px', width: 'auto' }}
-          />
+          <h2 style={{ color: '#00b8d4', fontSize: '24px', fontWeight: '700', margin: 0 }}>DealView</h2>
         </div>
       </div>
 
-      {/* Centered Title Section */}
+      {/* Centered Title Section - Responsive */}
       <div style={{ 
-        padding: '56px 40px 40px',
+        padding: '40px 20px 32px',
         textAlign: 'center',
         borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
       }}>
         <h1 style={{ 
           color: '#FFFFFF', 
-          fontSize: '52px', 
+          fontSize: 'clamp(28px, 5vw, 52px)',
           fontWeight: '700', 
           marginBottom: '16px', 
           letterSpacing: '-0.03em',
-          lineHeight: '1.1'
+          lineHeight: '1.1',
+          padding: '0 16px'
         }}>
           {deal.title || deal.address}
         </h1>
         <div style={{ 
           color: 'rgba(255,255,255,0.5)', 
-          fontSize: '14px',
+          fontSize: 'clamp(13px, 2vw, 14px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '6px'
+          gap: '6px',
+          flexWrap: 'wrap'
         }}>
           <MapPin size={14} style={{ color: 'rgba(255,255,255,0.4)' }} />
-          {deal.address}
-          {deal.city && `, ${deal.city}`}
-          {deal.state && `, ${deal.state}`}
-          {deal.zip_code && ` ${deal.zip_code}`}
+          <span>
+            {deal.address}
+            {deal.city && `, ${deal.city}`}
+            {deal.state && `, ${deal.state}`}
+            {deal.zip_code && ` ${deal.zip_code}`}
+          </span>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '32px' }}>
+      {/* Main Content - Responsive Grid */}
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+          gap: '24px'
+        }}>
           
           {/* Left Column - Main Details */}
           <div>
