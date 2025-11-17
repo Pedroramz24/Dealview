@@ -2413,12 +2413,20 @@ class BackendTester:
         
         print()
         
-        # Step 2: Authenticate with Supabase (for email endpoints)
-        if not self.authenticate_supabase():
-            print("❌ Supabase authentication failed - cannot test email endpoints")
-            print("⚠️  Email endpoints require Supabase authentication")
-            return False
+        # ========== PROPERTY INTELLIGENCE LAYER TESTS ==========
+        print("PROPERTY INTELLIGENCE LAYER TESTS (SA Zoning Proxy)")
+        print("-" * 60)
         
+        # Test 1: SA Zoning with bbox (downtown SA)
+        self.test_intelligence_layer_sa_zoning_with_bbox()
+        print()
+        
+        # Test 2: SA Zoning without bbox (limited results)
+        self.test_intelligence_layer_sa_zoning_without_bbox()
+        print()
+        
+        # Test 3: Invalid layer type (should return 400)
+        self.test_intelligence_layer_invalid_type()
         print()
         
         # ========== FINANCIAL METRICS TESTS (CREATE DEAL ENDPOINT) ==========
