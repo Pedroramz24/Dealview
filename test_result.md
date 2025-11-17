@@ -586,11 +586,11 @@ agent_communication:
 
   - task: "Transactional Email CC/BCC Support"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/sendgrid_service.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "user"
@@ -598,5 +598,23 @@ agent_communication:
       - working: "NA"
         agent: "main"
         comment: "✅ PARAMETER MISMATCH FIXED: The backend endpoint (server.py line 2142-2143) was passing cc_emails and bcc_emails parameters to send_transactional_email(), but the function signature didn't accept these parameters. FIX APPLIED: Modified send_transactional_email() in sendgrid_service.py (line 80) to accept optional parameters: (1) cc_emails: Optional[List[str]] = None - for CC recipients. (2) bcc_emails: Optional[List[str]] = None - for BCC recipients. (3) custom_args: Optional[Dict[str, str]] = None - for tracking metadata. IMPLEMENTATION: Added conditional logic to include CC/BCC in SendGrid personalizations only when provided. Custom args added to personalizations for user_id, contact_id, deal_id tracking. Backend restarted with hot reload. Ready for user testing - transactional emails from Contacts tab should now send successfully."
+      - working: true
+        agent: "user"
+        comment: "USER CONFIRMED: Transactional email feature is now working correctly. User successfully sent email from Contacts tab."
+
+  - task: "Vector Tiles Performance & Rendering Optimization"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED TWO ISSUES: (1) Vector tiles loading slowly - need performance optimization. (2) Dark/cropped tiles appearing on edges - rendering artifacts visible in map view."
+      - working: "NA"
+        agent: "main"
+        comment: "✅ TILE RENDERING & PERFORMANCE FIXES APPLIED: ROOT CAUSE IDENTIFIED: (1) tileSize was set to 512 but ReportAll serves standard 256px tiles - this mismatch caused browser to scale tiles incorrectly, creating dark edges and rendering artifacts. (2) buffer=0 removed overdraw but caused gaps between tiles. (3) fadeDuration=0 caused abrupt tile loading. (4) antialias=false reduced rendering quality. FIXES APPLIED: (1) Changed tileSize from 512 to 256 to match actual tile dimensions from ReportAll API. (2) Removed buffer=0 setting - using default buffer for seamless tile edges. (3) Changed fadeDuration from 0 to 100ms for smooth tile transitions without flickering. (4) Enabled antialias=true for smoother edges. (5) Added preserveDrawingBuffer=false for better memory management. (6) Added refreshExpiredTiles=false to prevent unnecessary reloads. EXPECTED RESULTS: (1) No more dark edges or tile artifacts. (2) Faster tile loading with correct size. (3) Smooth transitions between tiles. (4) Better rendering quality with antialiasing. Frontend compiled successfully with hot reload. Ready for user testing - tiles should load faster with no dark edges."
 
 
