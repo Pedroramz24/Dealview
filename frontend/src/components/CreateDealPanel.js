@@ -1,5 +1,5 @@
-import React, { useState, useRef, useContext } from 'react';
-import { X, Save, MapPin, DollarSign, Building2 } from 'lucide-react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
+import { X, Save, MapPin, DollarSign, Building2, TrendingUp, Calculator } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
 import { toast } from 'sonner';
@@ -19,6 +19,13 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
   const sizeRef = useRef(null);
   const lotSizeRef = useRef(null);
   const notesRef = useRef(null);
+  const grossIncomeRef = useRef(null);
+  const operatingExpensesRef = useRef(null);
+
+  // State for calculated values
+  const [psf, setPsf] = useState('N/A');
+  const [noi, setNoi] = useState('N/A');
+  const [capRate, setCapRate] = useState('N/A');
 
   if (!isOpen) return null;
 
