@@ -34,6 +34,12 @@ const MapView = () => {
   const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
   const [selectedParcelId, setSelectedParcelId] = useState(null); // Track selected parcel for highlighting
   
+  // Property Intelligence layers
+  const [showSAZoning, setShowSAZoning] = useState(false);
+  const [showAustinZoning, setShowAustinZoning] = useState(false);
+  const [showFloodZones, setShowFloodZones] = useState(false);
+  const [showWaterSewer, setShowWaterSewer] = useState(false);
+  
   // Panel Management System - Independent panel states
   const [propertyPanelOpen, setPropertyPanelOpen] = useState(false);
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
