@@ -2033,15 +2033,15 @@ async def get_email_settings(
         
         user_id = user_response.user.id
         
-        # Query settings including encrypted_api_key to check if it exists
-        result = supabase.table('email_settings').select('id, sender_email, sender_name, is_verified, last_tested_at, encrypted_api_key').eq('user_id', user_id).execute()
+        # Query settings including sendgrid_api_key to check if it exists
+        result = supabase.table('email_settings').select('id, sender_email, sender_name, is_verified, last_tested_at, sendgrid_api_key').eq('user_id', user_id).execute()
         
         if result.data and len(result.data) > 0:
             settings = result.data[0]
-            # Check if encrypted_api_key actually exists and is not empty
-            has_api_key = settings.get('encrypted_api_key') is not None and settings.get('encrypted_api_key') != ''
+            # Check if sendgrid_api_key actually exists and is not empty
+            has_api_key = settings.get('sendgrid_api_key') is not None and settings.get('sendgrid_api_key') != ''
             
-            # Remove encrypted_api_key from response (security)
+            # Remove sendgrid_api_key from response (security)
             settings_response = {
                 'id': settings.get('id'),
                 'sender_email': settings.get('sender_email'),
