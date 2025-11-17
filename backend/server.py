@@ -1143,11 +1143,11 @@ async def get_intelligence_layer(
     limit: max features to return (default 1000)
     """
     try:
-        # Define layer endpoints
+        # Define layer endpoints - NOTE: Layer numbers matter!
         layer_endpoints = {
-            'sa-zoning': 'https://opendata-cosagis.opendata.arcgis.com/datasets/CoSAGIS::cosa-zoning/FeatureServer/0/query',
+            'sa-zoning': 'https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/COSA_Zoning/FeatureServer/12/query',
             'austin-zoning': 'https://maps.austintexas.gov/arcgis/rest/services/Shared/Zoning_1/MapServer/0/query',
-            'sa-water-sewer': 'https://opendata-cosagis.opendata.arcgis.com/datasets/CoSAGIS::stormwater-infrastructure/FeatureServer/0/query'
+            'sa-water-sewer': 'https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/Stormwater_Infrastructure/FeatureServer/0/query'
         }
         
         if layer_type not in layer_endpoints:
