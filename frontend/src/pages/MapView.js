@@ -41,6 +41,11 @@ const MapView = () => {
   const [showFloodZones, setShowFloodZones] = useState(false);
   const [showWaterSewer, setShowWaterSewer] = useState(false);
   
+  // Property Intelligence data
+  const [saZoningData, setSaZoningData] = useState({ type: 'FeatureCollection', features: [] });
+  const [austinZoningData, setAustinZoningData] = useState({ type: 'FeatureCollection', features: [] });
+  const [waterSewerData, setWaterSewerData] = useState({ type: 'FeatureCollection', features: [] });
+  
   // Panel Management System - Independent panel states
   const [propertyPanelOpen, setPropertyPanelOpen] = useState(false);
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
