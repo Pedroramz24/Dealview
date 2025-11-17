@@ -975,10 +975,7 @@ const MapView = () => {
             <Source
               id="sa-zoning"
               type="geojson"
-              data={{
-                type: 'FeatureCollection',
-                features: []
-              }}
+              data={saZoningData}
             >
               <Layer
                 id="sa-zoning-fill"
