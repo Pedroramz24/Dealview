@@ -27,7 +27,9 @@ const LayerManager = ({
   showFloodZones,
   onToggleFloodZones,
   showWaterSewer,
-  onToggleWaterSewer
+  onToggleWaterSewer,
+  showBexarParcels,
+  onToggleBexarParcels
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({
