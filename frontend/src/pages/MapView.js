@@ -1003,7 +1003,7 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* San Antonio Zoning Layer - Will load dynamically */}
+          {/* San Antonio Zoning Layer - Color-coded by type */}
           {showSAZoning && (
             <Source
               id="sa-zoning"
@@ -1014,16 +1014,82 @@ const MapView = () => {
                 id="sa-zoning-fill"
                 type="fill"
                 paint={{
-                  'fill-color': '#fbbf24',
-                  'fill-opacity': 0.2
+                  'fill-color': [
+                    'match',
+                    ['get', 'Base'],
+                    // Residential zones - Green shades
+                    'R-4', '#4ade80',
+                    'R-5', '#86efac',
+                    'R-6', '#bbf7d0',
+                    'RM-4', '#6ee7b7',
+                    'RM-5', '#a7f3d0',
+                    'RM-6', '#d1fae5',
+                    // Commercial zones - Red/Orange shades
+                    'C-1', '#fb923c',
+                    'C-2', '#f97316',
+                    'C-3', '#ea580c',
+                    'NC', '#fdba74',
+                    'HC', '#dc2626',
+                    // Industrial zones - Purple/Blue shades
+                    'I-1', '#a78bfa',
+                    'I-2', '#8b5cf6',
+                    'IL', '#7c3aed',
+                    // Mixed Use - Yellow/Amber
+                    'MXD', '#fbbf24',
+                    'TOD', '#f59e0b',
+                    // Office/Business - Cyan
+                    'BP', '#06b6d4',
+                    'OP', '#0891b2',
+                    // Special districts - Pink/Magenta
+                    'IDZ', '#ec4899',
+                    'MU', '#d946ef',
+                    // Outside City Limits - Gray
+                    'OCL', '#6b7280',
+                    // Default fallback - Light amber
+                    '#fde68a'
+                  ],
+                  'fill-opacity': 0.3
                 }}
               />
               <Layer
                 id="sa-zoning-line"
                 type="line"
                 paint={{
-                  'line-color': '#fbbf24',
-                  'line-width': 1.5,
+                  'line-color': [
+                    'match',
+                    ['get', 'Base'],
+                    // Residential - Dark green
+                    'R-4', '#22c55e',
+                    'R-5', '#22c55e',
+                    'R-6', '#22c55e',
+                    'RM-4', '#10b981',
+                    'RM-5', '#10b981',
+                    'RM-6', '#10b981',
+                    // Commercial - Dark orange/red
+                    'C-1', '#f97316',
+                    'C-2', '#ea580c',
+                    'C-3', '#dc2626',
+                    'NC', '#f97316',
+                    'HC', '#b91c1c',
+                    // Industrial - Dark purple
+                    'I-1', '#8b5cf6',
+                    'I-2', '#7c3aed',
+                    'IL', '#6d28d9',
+                    // Mixed Use - Dark amber
+                    'MXD', '#f59e0b',
+                    'TOD', '#d97706',
+                    // Office - Dark cyan
+                    'BP', '#0891b2',
+                    'OP', '#0e7490',
+                    // Special - Dark pink
+                    'IDZ', '#db2777',
+                    'MU', '#c026d3',
+                    // OCL - Dark gray
+                    'OCL', '#4b5563',
+                    // Default
+                    '#fbbf24'
+                  ],
+                  'line-width': 1,
                   'line-opacity': 0.8
                 }}
               />
