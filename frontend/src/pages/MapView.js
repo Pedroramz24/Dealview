@@ -990,6 +990,7 @@ const MapView = () => {
               id="sa-zoning"
               type="vector"
               url={`pmtiles://${window.location.origin}/tiles/sa_zoning.pmtiles`}
+              tileSize={512}
             >
               {/* Parcel-Level Detail - Only at Close Zooms (15+) */}
               <Layer
