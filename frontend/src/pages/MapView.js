@@ -46,6 +46,7 @@ const MapView = () => {
   const [showAustinZoning, setShowAustinZoning] = useState(false);
   const [showFloodZones, setShowFloodZones] = useState(false);
   const [showWaterSewer, setShowWaterSewer] = useState(false);
+  const [showBexarParcels, setShowBexarParcels] = useState(false);  // Bexar CAD parcels
   
   // Property Intelligence data
   const [saZoningData, setSaZoningData] = useState({ type: 'FeatureCollection', features: [] });
