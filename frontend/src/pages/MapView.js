@@ -802,10 +802,12 @@ const MapView = () => {
             touchZoomRotate={false}
             dragPan={{ inertia: 500 }}
             maxZoom={19}
-            fadeDuration={0}
+            fadeDuration={100}
             renderWorldCopies={false}
             crossSourceCollisions={false}
-            antialias={false}
+            antialias={true}
+            preserveDrawingBuffer={false}
+            refreshExpiredTiles={false}
           >
           <NavigationControl position="top-right" />
           <ScaleControl />
