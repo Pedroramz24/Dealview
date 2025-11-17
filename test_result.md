@@ -584,4 +584,19 @@ agent_communication:
         agent: "main"
         comment: "✅ ROOT CAUSE IDENTIFIED & FIXED: The GET /api/email/settings endpoint was returning 'configured: true' simply because a row existed in email_settings table, WITHOUT checking if sendgrid_api_key field actually had a value. Investigation revealed: (1) Column is named 'sendgrid_api_key' (not encrypted_api_key). (2) Database contains 2 records with valid encrypted keys (184 chars each). (3) Endpoint was querying 'id, sender_email, sender_name, is_verified, last_tested_at' but NOT checking sendgrid_api_key existence. FIX APPLIED: Modified get_email_settings() endpoint (line 2025-2065) to: (1) Query sendgrid_api_key field from database. (2) Check if sendgrid_api_key is not None AND not empty string. (3) Return 'configured: true' ONLY if API key actually exists. (4) Remove sendgrid_api_key from response for security. This ensures users don't lose their saved API key configuration status. Backend restarted. Ready for user testing - saved SendGrid keys should now be recognized correctly."
 
+  - task: "Transactional Email CC/BCC Support"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/sendgrid_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED ERROR: When clicking 'Send Email' from Contacts tab and filling in subject/body, email fails to send with error: 'SendGridService.send_transactional_email() got an unexpected keyword argument cc_emails'."
+      - working: "NA"
+        agent: "main"
+        comment: "✅ PARAMETER MISMATCH FIXED: The backend endpoint (server.py line 2142-2143) was passing cc_emails and bcc_emails parameters to send_transactional_email(), but the function signature didn't accept these parameters. FIX APPLIED: Modified send_transactional_email() in sendgrid_service.py (line 80) to accept optional parameters: (1) cc_emails: Optional[List[str]] = None - for CC recipients. (2) bcc_emails: Optional[List[str]] = None - for BCC recipients. (3) custom_args: Optional[Dict[str, str]] = None - for tracking metadata. IMPLEMENTATION: Added conditional logic to include CC/BCC in SendGrid personalizations only when provided. Custom args added to personalizations for user_id, contact_id, deal_id tracking. Backend restarted with hot reload. Ready for user testing - transactional emails from Contacts tab should now send successfully."
+
 
