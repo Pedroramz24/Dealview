@@ -357,10 +357,12 @@ const MapView = () => {
           maxzoom: 18,
           attribution: '&copy; Esri'
         },
-        'osm-labels': {
-          type: 'vector',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.pbf'],
-          maxzoom: 14
+        'esri-labels': {
+          type: 'raster',
+          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'],
+          tileSize: 256,
+          maxzoom: 18,
+          attribution: '&copy; Esri'
         }
       },
       layers: [
@@ -368,6 +370,13 @@ const MapView = () => {
           id: 'satellite',
           type: 'raster',
           source: 'esri-satellite',
+          minzoom: 0,
+          maxzoom: 18
+        },
+        {
+          id: 'labels',
+          type: 'raster',
+          source: 'esri-labels',
           minzoom: 0,
           maxzoom: 18
         }
