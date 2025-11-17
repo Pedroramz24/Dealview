@@ -1006,19 +1006,16 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* San Antonio Zoning Layer - Using Vector Tiles for Performance */}
+          {/* San Antonio Zoning Layer - Color-coded by type */}
           {showSAZoning && (
             <Source
               id="sa-zoning"
-              type="vector"
-              tiles={['https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/COSA_Zoning/VectorTileServer/tile/{z}/{x}/{y}.pbf']}
-              minzoom={0}
-              maxzoom={18}
+              type="geojson"
+              data={saZoningData}
             >
               <Layer
                 id="sa-zoning-fill"
                 type="fill"
-                source-layer="COSA_Zoning"
                 paint={{
                   'fill-color': [
                     'match',
@@ -1060,7 +1057,6 @@ const MapView = () => {
               <Layer
                 id="sa-zoning-line"
                 type="line"
-                source-layer="COSA_Zoning"
                 paint={{
                   'line-color': [
                     'match',
