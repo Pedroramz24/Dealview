@@ -194,7 +194,11 @@ const PublicShare = () => {
                 <img
                   src={images[currentImageIndex]}
                   alt="Property"
-                  style={{ width: '100%', height: '400px', objectFit: 'cover' }}
+                  style={{ 
+                    width: '100%', 
+                    height: 'clamp(250px, 50vw, 400px)',
+                    objectFit: 'cover' 
+                  }}
                 />
                 
                 {/* Carousel Controls */}
