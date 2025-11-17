@@ -377,7 +377,7 @@ const MapView = () => {
           id: 'labels',
           type: 'raster',
           source: 'esri-labels',
-          minzoom: 0,
+          minzoom: 14,
           maxzoom: 18
         }
       ]
