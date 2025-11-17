@@ -1426,6 +1426,8 @@ const LayerRow = ({ layer, state, onToggle, onOpacityChange }) => {
         </div>
       )}
     </div>
+    {/* Close Scrollable Content Area */}
+    </div>
   );
 };
 
