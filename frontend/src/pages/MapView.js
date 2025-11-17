@@ -1096,7 +1096,7 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* Austin Zoning Layer - Will load dynamically */}
+          {/* Austin Zoning Layer - Color-coded by type */}
           {showAustinZoning && (
             <Source
               id="austin-zoning"
@@ -1107,8 +1107,31 @@ const MapView = () => {
                 id="austin-zoning-fill"
                 type="fill"
                 paint={{
-                  'fill-color': '#8b5cf6',
-                  'fill-opacity': 0.2
+                  'fill-color': [
+                    'match',
+                    ['get', 'ZONING_ZTYPE'],
+                    // Residential - Green shades
+                    'SF', '#4ade80',
+                    'MF', '#86efac',
+                    'RR', '#bbf7d0',
+                    // Commercial - Orange/Red
+                    'CS', '#f97316',
+                    'LR', '#fb923c',
+                    'GR', '#ea580c',
+                    'NO', '#fdba74',
+                    // Industrial - Purple
+                    'LI', '#a78bfa',
+                    'MI', '#8b5cf6',
+                    // Mixed Use - Amber
+                    'MU', '#fbbf24',
+                    'CBD', '#f59e0b',
+                    // Office - Cyan
+                    'LO', '#06b6d4',
+                    'GO', '#0891b2',
+                    // Default - Light purple
+                    '#c4b5fd'
+                  ],
+                  'fill-opacity': 0.3
                 }}
               />
               <Layer
@@ -1116,8 +1139,8 @@ const MapView = () => {
                 type="line"
                 paint={{
                   'line-color': '#8b5cf6',
-                  'line-width': 1.5,
-                  'line-opacity': 0.8
+                  'line-width': 1,
+                  'line-opacity': 0.6
                 }}
               />
             </Source>
