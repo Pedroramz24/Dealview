@@ -75,7 +75,9 @@ const LayerManager = ({
     showFloodZones,
     onToggleFloodZones,
     showWaterSewer,
-    onToggleWaterSewer
+    onToggleWaterSewer,
+    showBexarParcels,
+    onToggleBexarParcels
   };
 
   // Debug logging
