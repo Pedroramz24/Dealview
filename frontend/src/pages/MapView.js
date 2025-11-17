@@ -1189,7 +1189,19 @@ const MapView = () => {
               url={`pmtiles://${window.location.origin}/tiles/bexar_parcels.pmtiles`}
               tileSize={512}
             >
-              {/* Parcel outlines only - show at zoom 14+ */}
+              {/* Invisible fill layer for easier clicking */}
+              <Layer
+                id="bexar-parcels-fill"
+                type="fill"
+                source-layer="parcels"
+                minzoom={14}
+                maxzoom={22}
+                paint={{
+                  'fill-color': '#06b6d4',
+                  'fill-opacity': 0.0001  // Nearly invisible but clickable
+                }}
+              />
+              {/* Parcel outlines - visible layer */}
               <Layer
                 id="bexar-parcels-line"
                 type="line"
