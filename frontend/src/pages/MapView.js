@@ -326,7 +326,8 @@ const MapView = () => {
         bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
       }
       
-      const url = `${API}/intelligence/layer/sa-zoning${bbox ? `?bbox=${bbox}&limit=500` : '?limit=500'}`;
+      // Increase limit to 5000 for better coverage (SA has 729k total parcels)
+      const url = `${API}/intelligence/layer/sa-zoning${bbox ? `?bbox=${bbox}&limit=5000` : '?limit=5000'}`;
       
       fetch(url)
         .then(res => {
@@ -336,7 +337,7 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] SA Zoning data loaded:', data.features?.length, 'features');
           setSaZoningData(data);
-          toast.success(`Loaded ${data.features?.length || 0} SA zoning boundaries`);
+          toast.success(`Loaded ${data.features?.length || 0} SA zoning parcels`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching SA zoning:', err);
