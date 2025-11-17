@@ -20,6 +20,9 @@ import propertyIntelligenceService from '../services/propertyIntelligenceService
 import { PMTiles, Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+// Register PMTiles protocol for MapLibre
+let pmtilesProtocol = new Protocol();
+
 const MapView = () => {
   const [deals, setDeals] = useState([]);
   const [teamDeals, setTeamDeals] = useState([]);
