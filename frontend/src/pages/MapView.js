@@ -1031,16 +1031,17 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* San Antonio Zoning Layer - Color-coded by type */}
+          {/* San Antonio Zoning Layer - PMTiles for TerraVault-level performance */}
           {showSAZoning && (
             <Source
               id="sa-zoning"
-              type="geojson"
-              data={saZoningData}
+              type="vector"
+              url="pmtiles:///tiles/sa_zoning.pmtiles"
             >
               <Layer
                 id="sa-zoning-fill"
                 type="fill"
+                source-layer="zoning"
                 paint={{
                   'fill-color': [
                     'match',
@@ -1082,6 +1083,7 @@ const MapView = () => {
               <Layer
                 id="sa-zoning-line"
                 type="line"
+                source-layer="zoning"
                 paint={{
                   'line-color': [
                     'match',
