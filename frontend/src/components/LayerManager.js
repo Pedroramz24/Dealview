@@ -64,7 +64,16 @@ const LayerManager = ({
     onToggleMapStyle,
     measurementMode: measurementMode || null,
     onSetMeasurementMode,
-    currentZoom: getCurrentZoom()
+    currentZoom: getCurrentZoom(),
+    // Property Intelligence
+    showSAZoning,
+    onToggleSAZoning,
+    showAustinZoning,
+    onToggleAustinZoning,
+    showFloodZones,
+    onToggleFloodZones,
+    showWaterSewer,
+    onToggleWaterSewer
   };
 
   // Debug logging
