@@ -1125,6 +1125,83 @@ async def search_addresses_api(
 
 
 # =====================================================
+# Property Intelligence Layer Proxy
+# =====================================================
+
+@api_router.get("/intelligence/layer/{layer_type}")
+async def get_intelligence_layer(
+    layer_type: str,
+    bbox: Optional[str] = None,
+    limit: int = 1000
+):
+    """
+    Proxy endpoint for property intelligence layers
+    Handles CORS and adds bbox filtering for performance
+    
+    layer_type: 'sa-zoning', 'austin-zoning', 'sa-water-sewer'
+    bbox: 'minLng,minLat,maxLng,maxLat' (optional, for viewport filtering)
+    limit: max features to return (default 1000)
+    """
+    try:
+        # Define layer endpoints
+        layer_endpoints = {
+            'sa-zoning': 'https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/COSA_Zoning/FeatureServer/0/query',
+            'austin-zoning': 'https://services.austintexas.gov/arcgis/rest/services/Planning/Zoning/MapServer/0/query',
+            'sa-water-sewer': 'https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/Stormwater_Infrastructure/FeatureServer/0/query'
+        }
+        
+        if layer_type not in layer_endpoints:
+            raise HTTPException(status_code=400, detail=f"Unknown layer type: {layer_type}")
+        
+        base_url = layer_endpoints[layer_type]
+        
+        # Build query parameters
+        params = {
+            'where': '1=1',
+            'outFields': '*',
+            'returnGeometry': 'true',
+            'f': 'geojson',
+            'resultRecordCount': str(limit)
+        }
+        
+        # Add bbox filtering if provided (significantly reduces data size)
+        if bbox:
+            try:
+                min_lng, min_lat, max_lng, max_lat = map(float, bbox.split(','))
+                # ArcGIS uses envelope geometry for bbox
+                params['geometry'] = f'{min_lng},{min_lat},{max_lng},{max_lat}'
+                params['geometryType'] = 'esriGeometryEnvelope'
+                params['spatialRel'] = 'esriSpatialRelIntersects'
+                params['inSR'] = '4326'  # WGS84
+                logger.info(f"[Intelligence Layer] {layer_type} with bbox: {bbox}")
+            except ValueError:
+                logger.warning(f"[Intelligence Layer] Invalid bbox format: {bbox}, ignoring")
+        else:
+            logger.info(f"[Intelligence Layer] {layer_type} without bbox (full dataset - may be large)")
+        
+        # Fetch data from ArcGIS REST API
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(base_url, params=params)
+            response.raise_for_status()
+            
+            data = response.json()
+            
+            # Log results
+            feature_count = len(data.get('features', []))
+            logger.info(f"[Intelligence Layer] {layer_type} returned {feature_count} features")
+            
+            return data
+    
+    except httpx.HTTPError as e:
+        logger.error(f"[Intelligence Layer] HTTP error fetching {layer_type}: {str(e)}")
+        raise HTTPException(status_code=502, detail=f"Failed to fetch layer data: {str(e)}")
+    except Exception as e:
+        logger.error(f"[Intelligence Layer] Error: {str(e)}")
+        logger.error(f"[Intelligence Layer] Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail="Intelligence layer fetch failed")
+
+
+# =====================================================
 # Perplexity AI Chat
 # =====================================================
 
