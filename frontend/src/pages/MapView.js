@@ -886,7 +886,6 @@ const MapView = () => {
           <Map
             initialViewState={viewStateRef.current}
             onMoveEnd={handleMoveEnd}
-            onLoad={handleMapLoad}
             onClick={combinedMapClick}
             style={{ width: '100%', height: '100%', willChange: 'transform' }}
             mapStyle={mapStyles[mapStyle]}
