@@ -989,7 +989,7 @@ const MapView = () => {
             <Source
               id="sa-zoning"
               type="vector"
-              url="pmtiles:///tiles/sa_zoning.pmtiles"
+              url={`pmtiles://${window.location.origin}/tiles/sa_zoning.pmtiles`}
             >
               <Layer
                 id="sa-zoning-fill"
