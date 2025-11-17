@@ -190,3 +190,4 @@ frontend/node_modules/.cache/default-development/19.pack
 # Environment files
 *.env
 *.env.*
+tiles/sa_zoning_complete.geojson
