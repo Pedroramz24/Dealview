@@ -493,8 +493,18 @@ const LayerManager = ({
           </div>
         </div>
 
-        {/* Base Map Controls Section */}
+        {/* Scrollable Content Area - Contains all controls and layers */}
         <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            minHeight: 0
+          }}
+          className="custom-scrollbar"
+        >
+          {/* Base Map Controls Section */}
+          <div
           style={{
             padding: '12px 24px 16px',
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
