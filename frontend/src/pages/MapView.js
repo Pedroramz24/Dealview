@@ -881,6 +881,108 @@ const MapView = () => {
             </Source>
           )}
 
+          {/* FEMA Flood Zones Layer - Raster WMS */}
+          {showFloodZones && (
+            <Source
+              id="fema-flood-zones"
+              type="raster"
+              tiles={[
+                'https://hazards.fema.gov/gis/nfhl/rest/services/public/NFHL/MapServer/export?bbox={bbox-epsg-3857}&size=256,256&format=png&transparent=true&f=image&layers=show:28'
+              ]}
+              tileSize={256}
+            >
+              <Layer
+                id="fema-flood-layer"
+                type="raster"
+                paint={{
+                  'raster-opacity': 0.6
+                }}
+              />
+            </Source>
+          )}
+
+          {/* San Antonio Zoning Layer - Will load dynamically */}
+          {showSAZoning && (
+            <Source
+              id="sa-zoning"
+              type="geojson"
+              data={{
+                type: 'FeatureCollection',
+                features: []
+              }}
+            >
+              <Layer
+                id="sa-zoning-fill"
+                type="fill"
+                paint={{
+                  'fill-color': '#fbbf24',
+                  'fill-opacity': 0.2
+                }}
+              />
+              <Layer
+                id="sa-zoning-line"
+                type="line"
+                paint={{
+                  'line-color': '#fbbf24',
+                  'line-width': 1.5,
+                  'line-opacity': 0.8
+                }}
+              />
+            </Source>
+          )}
+
+          {/* Austin Zoning Layer - Will load dynamically */}
+          {showAustinZoning && (
+            <Source
+              id="austin-zoning"
+              type="geojson"
+              data={{
+                type: 'FeatureCollection',
+                features: []
+              }}
+            >
+              <Layer
+                id="austin-zoning-fill"
+                type="fill"
+                paint={{
+                  'fill-color': '#8b5cf6',
+                  'fill-opacity': 0.2
+                }}
+              />
+              <Layer
+                id="austin-zoning-line"
+                type="line"
+                paint={{
+                  'line-color': '#8b5cf6',
+                  'line-width': 1.5,
+                  'line-opacity': 0.8
+                }}
+              />
+            </Source>
+          )}
+
+          {/* San Antonio Water/Sewer Infrastructure - Will load dynamically */}
+          {showWaterSewer && (
+            <Source
+              id="sa-water-sewer"
+              type="geojson"
+              data={{
+                type: 'FeatureCollection',
+                features: []
+              }}
+            >
+              <Layer
+                id="sa-water-sewer-line"
+                type="line"
+                paint={{
+                  'line-color': '#06b6d4',
+                  'line-width': 2,
+                  'line-opacity': 0.7
+                }}
+              />
+            </Source>
+          )}
+
           {deals.map((deal) => (
             <Marker
               key={deal.id}
