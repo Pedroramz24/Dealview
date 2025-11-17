@@ -110,9 +110,43 @@ const Campaigns = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
-      setCampaigns(data.campaigns || []);
+      const campaigns = data.campaigns || [];
+      
+      // Fetch real metrics for each campaign that has been sent
+      const campaignsWithMetrics = await Promise.all(
+        campaigns.map(async (campaign) => {
+          // Only fetch metrics for sent campaigns
+          if (campaign.status === 'sent' && campaign.total_sent > 0) {
+            try {
+              const metricsResponse = await fetch(
+                `${BACKEND_URL}/api/email/campaigns/${campaign.id}/metrics`,
+                { headers: { 'Authorization': `Bearer ${token}` } }
+              );
+              
+              if (metricsResponse.ok) {
+                const metricsData = await metricsResponse.json();
+                // Merge real metrics into campaign object
+                return {
+                  ...campaign,
+                  total_delivered: metricsData.metrics.delivered || 0,
+                  total_opened: metricsData.metrics.unique_opens || 0,
+                  total_clicked: metricsData.metrics.unique_clicks || 0,
+                  total_bounced: metricsData.metrics.bounces || 0,
+                  unsubscribes: metricsData.metrics.unsubscribes || 0,
+                  _hasRealMetrics: true
+                };
+              }
+            } catch (metricsError) {
+              console.error(`Failed to fetch metrics for campaign ${campaign.id}:`, metricsError);
+            }
+          }
+          return campaign;
+        })
+      );
+      
+      setCampaigns(campaignsWithMetrics);
     } catch (error) {
-      toast.error('Failed to load campaigns');
+      smartToast.error('Failed to load campaigns');
     }
   };
 
