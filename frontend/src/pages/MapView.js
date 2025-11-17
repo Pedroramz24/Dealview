@@ -313,38 +313,8 @@ const MapView = () => {
     };
   }, [measurementResult, measurementMode, measurementPoints]);
 
-  // Fetch San Antonio Zoning data when layer is toggled ON
-  useEffect(() => {
-    if (showSAZoning && saZoningData.features.length === 0) {
-      console.log('[MapView] Fetching San Antonio zoning data...');
-      
-      // Get current map bounds for bbox filtering
-      let bbox = null;
-      if (mapRef.current) {
-        const map = mapRef.current.getMap();
-        const bounds = map.getBounds();
-        bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
-      }
-      
-      // Increase limit to 5000 for better coverage (SA has 729k total parcels)
-      const url = `${API}/intelligence/layer/sa-zoning${bbox ? `?bbox=${bbox}&limit=5000` : '?limit=5000'}`;
-      
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          console.log('[MapView] SA Zoning data loaded:', data.features?.length, 'features');
-          setSaZoningData(data);
-          toast.success(`Loaded ${data.features?.length || 0} SA zoning parcels`);
-        })
-        .catch(err => {
-          console.error('[MapView] Error fetching SA zoning:', err);
-          toast.error('Failed to load San Antonio zoning data');
-        });
-    }
-  }, [showSAZoning, saZoningData.features.length]);
+  // SA Zoning now uses vector tiles - no fetching needed!
+  // Removed useEffect hook - tiles load automatically from ArcGIS VectorTileServer
 
   // Fetch Austin Zoning data when layer is toggled ON
   useEffect(() => {
