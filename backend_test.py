@@ -2242,6 +2242,28 @@ class BackendTester:
         
         print()
         
+        # ========== FINANCIAL METRICS TESTS (CREATE DEAL ENDPOINT) ==========
+        print("FINANCIAL METRICS TESTS (Create Deal with Auto-Calculation)")
+        print("-" * 60)
+        
+        # Test 1: Create deal with all financial metrics
+        deal_with_metrics = self.test_create_deal_with_financial_metrics()
+        print()
+        
+        # Test 2: Create deal without financial metrics (NULL values)
+        deal_without_metrics = self.test_create_deal_without_financial_metrics()
+        print()
+        
+        # Test 3: Validate calculated values
+        deal_for_validation = self.test_validate_calculated_values()
+        print()
+        
+        # Test 4: Query back the deal with metrics to verify storage
+        if deal_with_metrics:
+            self.test_query_deal_with_financial_metrics(deal_with_metrics.get('id'))
+        print()
+
+        
         # ========== EMAIL CAMPAIGN TESTS (HIGH PRIORITY) ==========
         print("EMAIL CAMPAIGN TESTS (Encryption & SendGrid Integration)")
         print("-" * 60)
