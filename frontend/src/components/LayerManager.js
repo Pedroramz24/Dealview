@@ -749,6 +749,254 @@ const LayerManager = ({
           </div>
         </div>
 
+        {/* Property Intelligence Section */}
+        <div
+          style={{
+            padding: '12px 24px 16px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'rgba(251, 191, 36, 0.03)'
+          }}
+        >
+          <div style={{ marginBottom: '8px' }}>
+            <span style={{
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: '11px',
+              fontWeight: '600',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase'
+            }}>
+              Property Intelligence
+            </span>
+          </div>
+
+          {/* San Antonio Zoning Toggle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            marginBottom: '8px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                background: 'rgba(251, 191, 36, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </div>
+              <div>
+                <div style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                  San Antonio Zoning
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>
+                  COSA zoning boundaries
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={props.onToggleSAZoning}
+              disabled={!props.onToggleSAZoning}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: props.showSAZoning ? 
+                  'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
+                  'rgba(255, 255, 255, 0.08)',
+                color: props.showSAZoning ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onToggleSAZoning ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: !props.onToggleSAZoning ? 0.5 : 1
+              }}
+            >
+              {props.showSAZoning ? 'ON' : 'OFF'}
+            </button>
+          </div>
+
+          {/* Austin Zoning Toggle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            marginBottom: '8px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                background: 'rgba(139, 92, 246, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </div>
+              <div>
+                <div style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                  Austin Zoning
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>
+                  Austin zoning boundaries
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={props.onToggleAustinZoning}
+              disabled={!props.onToggleAustinZoning}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: props.showAustinZoning ? 
+                  'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' : 
+                  'rgba(255, 255, 255, 0.08)',
+                color: props.showAustinZoning ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onToggleAustinZoning ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: !props.onToggleAustinZoning ? 0.5 : 1
+              }}
+            >
+              {props.showAustinZoning ? 'ON' : 'OFF'}
+            </button>
+          </div>
+
+          {/* FEMA Flood Zones Toggle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            marginBottom: '8px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                background: 'rgba(59, 130, 246, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <div style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                  FEMA Flood Zones
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>
+                  100-year & 500-year zones
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={props.onToggleFloodZones}
+              disabled={!props.onToggleFloodZones}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: props.showFloodZones ? 
+                  'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 
+                  'rgba(255, 255, 255, 0.08)',
+                color: props.showFloodZones ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onToggleFloodZones ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: !props.onToggleFloodZones ? 0.5 : 1
+              }}
+            >
+              {props.showFloodZones ? 'ON' : 'OFF'}
+            </button>
+          </div>
+
+          {/* Water & Sewer Toggle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                background: 'rgba(6, 182, 212, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="8"></line>
+                </svg>
+              </div>
+              <div>
+                <div style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                  Water & Sewer (SA)
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>
+                  Stormwater infrastructure
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={props.onToggleWaterSewer}
+              disabled={!props.onToggleWaterSewer}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: props.showWaterSewer ? 
+                  'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' : 
+                  'rgba(255, 255, 255, 0.08)',
+                color: props.showWaterSewer ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onToggleWaterSewer ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: !props.onToggleWaterSewer ? 0.5 : 1
+              }}
+            >
+              {props.showWaterSewer ? 'ON' : 'OFF'}
+            </button>
+          </div>
+        </div>
+
         {/* Measurement Tools Section */}
         <div style={{ padding: '0 24px', marginTop: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
