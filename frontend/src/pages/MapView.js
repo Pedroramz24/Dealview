@@ -992,7 +992,7 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* San Antonio Zoning Layer - Color-Coded by Zoning Type */}
+          {/* San Antonio Zoning Layer - TerraVault Color Specification */}
           {showSAZoning && (
             <Source
               id="sa-zoning"
@@ -1000,7 +1000,7 @@ const MapView = () => {
               url={`pmtiles://${window.location.origin}/tiles/sa_zoning.pmtiles`}
               tileSize={512}
             >
-              {/* Fill Layer with Zoning Color Classification */}
+              {/* Fill Layer with TerraVault Color Classification */}
               <Layer
                 id="sa-zoning-fill"
                 type="fill"
@@ -1011,41 +1011,63 @@ const MapView = () => {
                   'fill-color': [
                     'match',
                     ['get', 'Base'],
-                    // Residential - Soft green family
-                    'R-4', '#86efac',
-                    'R-5', '#86efac',
-                    'R-6', '#86efac',
-                    'RM-4', '#6ee7b7',
-                    'RM-5', '#6ee7b7',
-                    'RM-6', '#6ee7b7',
-                    // Commercial - Warm orange/coral family
-                    'C-1', '#fdba74',
-                    'C-2', '#fb923c',
-                    'C-3', '#f97316',
-                    'NC', '#fcd34d',
-                    'HC', '#f59e0b',
-                    // Industrial - Cool purple family
-                    'I-1', '#c4b5fd',
+                    // RESIDENTIAL - Yellow
+                    'R-4', '#fde047',
+                    'R-5', '#fde047',
+                    'R-6', '#fde047',
+                    // MULTI-FAMILY - Orange
+                    'RM-4', '#fb923c',
+                    'RM-5', '#fb923c',
+                    'RM-6', '#fb923c',
+                    // COMMERCIAL - Red
+                    'C-1', '#ef4444',
+                    'C-2', '#ef4444',
+                    'C-3', '#dc2626',
+                    'NC', '#f87171',
+                    'HC', '#b91c1c',
+                    // INDUSTRIAL - Purple
+                    'I-1', '#a78bfa',
                     'I-2', '#a78bfa',
                     'IL', '#8b5cf6',
-                    // Mixed Use - Amber family
-                    'MXD', '#fde68a',
-                    'TOD', '#fcd34d',
-                    // Office - Soft cyan family
-                    'BP', '#a5f3fc',
-                    'OP', '#67e8f9',
-                    // Special - Rose/pink family
-                    'IDZ', '#f9a8d4',
-                    'MU', '#f472b6',
-                    // Outside City Limits - Light gray
-                    'OCL', '#d1d5db',
-                    // Default - Light blue for any unmapped codes
-                    '#93c5fd'
+                    // MIXED USE - Dark Purple
+                    'MXD', '#7c3aed',
+                    'TOD', '#7c3aed',
+                    'MU', '#6d28d9',
+                    // PUD - Dark Cyan
+                    'PD', '#0891b2',
+                    'PUD', '#0891b2',
+                    // OFFICE/BUSINESS PARK - Dark Cyan
+                    'BP', '#0891b2',
+                    'OP', '#0891b2',
+                    // URBAN - Salmon
+                    'UD', '#fda4af',
+                    // RURAL - Dark Yellow
+                    'RU', '#ca8a04',
+                    // AGRICULTURAL - Green
+                    'AG', '#22c55e',
+                    'A', '#22c55e',
+                    // DEVELOPMENT AGREEMENT - Brown
+                    'DA', '#92400e',
+                    'IDZ', '#92400e',
+                    // UNKNOWN/ROADS - White
+                    'OCL', '#ffffff',
+                    '', '#ffffff',
+                    null, '#ffffff',
+                    // Default - White
+                    '#ffffff'
                   ],
-                  'fill-opacity': 0.35
+                  'fill-opacity': [
+                    'match',
+                    ['get', 'Base'],
+                    '', 0.05,  // Nearly invisible for empty
+                    null, 0.05,
+                    'OCL', 0.08,  // Very light for outside city
+                    '#ffffff', 0.05,  // White zones very subtle
+                    0.35  // Normal zones visible
+                  ]
                 }}
               />
-              {/* Line Layer - Subtle outlines, hide at low zoom for performance */}
+              {/* Line Layer - Only at zoom 14+ for performance */}
               <Layer
                 id="sa-zoning-line"
                 type="line"
@@ -1055,7 +1077,7 @@ const MapView = () => {
                 paint={{
                   'line-color': '#ffffff',
                   'line-width': 0.5,
-                  'line-opacity': 0.4
+                  'line-opacity': 0.3
                 }}
               />
             </Source>
