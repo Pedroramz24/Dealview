@@ -1029,10 +1029,7 @@ const MapView = () => {
             <Source
               id="sa-water-sewer"
               type="geojson"
-              data={{
-                type: 'FeatureCollection',
-                features: []
-              }}
+              data={waterSewerData}
             >
               <Layer
                 id="sa-water-sewer-line"
