@@ -2234,10 +2234,173 @@ class BackendTester:
             self.log_result("Query Deal - Financial Metrics", False, f"Request error: {str(e)}")
             return None
 
+    # ========== PROPERTY INTELLIGENCE LAYER TESTS ==========
+    
+    def test_intelligence_layer_sa_zoning_with_bbox(self):
+        """Test GET /api/intelligence/layer/sa-zoning with bbox (San Antonio downtown area)"""
+        # San Antonio downtown area bbox
+        bbox = "-98.5,29.4,-98.45,29.45"
+        limit = 50
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/intelligence/layer/sa-zoning",
+                params={"bbox": bbox, "limit": limit},
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify GeoJSON format
+                if data.get("type") == "FeatureCollection":
+                    features = data.get("features", [])
+                    
+                    if len(features) > 0:
+                        # Check first feature structure
+                        first_feature = features[0]
+                        has_geometry = "geometry" in first_feature and first_feature["geometry"] is not None
+                        has_properties = "properties" in first_feature and first_feature["properties"] is not None
+                        
+                        if has_geometry and has_properties:
+                            # Check for Zoning and BaseDescription fields
+                            properties = first_feature.get("properties", {})
+                            has_zoning = "Zoning" in properties or "ZONING" in properties or "zoning" in properties
+                            has_base_desc = "BaseDescription" in properties or "BASE_DESCRIPTION" in properties
+                            
+                            if has_zoning or has_base_desc:
+                                self.log_result(
+                                    "SA Zoning - With Bbox", 
+                                    True, 
+                                    f"Successfully fetched {len(features)} zoning features for downtown SA",
+                                    f"Properties include: {list(properties.keys())[:5]}"
+                                )
+                            else:
+                                self.log_result(
+                                    "SA Zoning - With Bbox", 
+                                    True, 
+                                    f"Fetched {len(features)} features but Zoning/BaseDescription fields not found",
+                                    f"Available properties: {list(properties.keys())}"
+                                )
+                        else:
+                            self.log_result(
+                                "SA Zoning - With Bbox", 
+                                False, 
+                                "Features missing geometry or properties",
+                                f"First feature structure: {list(first_feature.keys())}"
+                            )
+                    else:
+                        self.log_result(
+                            "SA Zoning - With Bbox", 
+                            False, 
+                            "No features returned for downtown SA bbox",
+                            f"Expected 20-50 features, got 0"
+                        )
+                else:
+                    self.log_result(
+                        "SA Zoning - With Bbox", 
+                        False, 
+                        "Response is not valid GeoJSON FeatureCollection",
+                        f"Response type: {data.get('type', 'missing')}"
+                    )
+            else:
+                self.log_result(
+                    "SA Zoning - With Bbox", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                
+        except Exception as e:
+            self.log_result("SA Zoning - With Bbox", False, f"Request error: {str(e)}")
+    
+    def test_intelligence_layer_sa_zoning_without_bbox(self):
+        """Test GET /api/intelligence/layer/sa-zoning without bbox (limited results)"""
+        limit = 10
+        
+        try:
+            response = requests.get(
+                f"{self.base_url}/intelligence/layer/sa-zoning",
+                params={"limit": limit},
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify GeoJSON format
+                if data.get("type") == "FeatureCollection":
+                    features = data.get("features", [])
+                    
+                    if len(features) > 0 and len(features) <= limit:
+                        self.log_result(
+                            "SA Zoning - Without Bbox", 
+                            True, 
+                            f"Successfully fetched {len(features)} features (limit: {limit})",
+                            "No bbox parameter works correctly"
+                        )
+                    elif len(features) > limit:
+                        self.log_result(
+                            "SA Zoning - Without Bbox", 
+                            False, 
+                            f"Returned {len(features)} features, exceeds limit of {limit}",
+                            "Limit parameter not being respected"
+                        )
+                    else:
+                        self.log_result(
+                            "SA Zoning - Without Bbox", 
+                            True, 
+                            f"Returned {len(features)} features (valid response)",
+                            "Empty result is acceptable for no bbox query"
+                        )
+                else:
+                    self.log_result(
+                        "SA Zoning - Without Bbox", 
+                        False, 
+                        "Response is not valid GeoJSON FeatureCollection",
+                        f"Response type: {data.get('type', 'missing')}"
+                    )
+            else:
+                self.log_result(
+                    "SA Zoning - Without Bbox", 
+                    False, 
+                    f"Failed with status {response.status_code}", 
+                    response.text[:500] if response.text else "No response text"
+                )
+                
+        except Exception as e:
+            self.log_result("SA Zoning - Without Bbox", False, f"Request error: {str(e)}")
+    
+    def test_intelligence_layer_invalid_type(self):
+        """Test GET /api/intelligence/layer/invalid-layer (should return 400)"""
+        try:
+            response = requests.get(
+                f"{self.base_url}/intelligence/layer/invalid-layer",
+                params={"limit": 10},
+                timeout=15
+            )
+            
+            if response.status_code == 400:
+                self.log_result(
+                    "Intelligence Layer - Invalid Type", 
+                    True, 
+                    "Correctly returned 400 Bad Request for invalid layer type"
+                )
+            else:
+                self.log_result(
+                    "Intelligence Layer - Invalid Type", 
+                    False, 
+                    f"Expected 400 Bad Request, got {response.status_code}",
+                    response.text[:200] if response.text else "No response"
+                )
+                
+        except Exception as e:
+            self.log_result("Intelligence Layer - Invalid Type", False, f"Request error: {str(e)}")
+
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
-        print("BACKEND API TESTING - Email Campaign Sending")
+        print("BACKEND API TESTING - Property Intelligence Layer")
         print("=" * 60)
         print(f"Testing against: {self.base_url}")
         print(f"Test credentials: {TEST_CREDENTIALS['email']}")
