@@ -1860,6 +1860,364 @@ class BackendTester:
         except Exception as e:
             self.log_result("Campaign Error Handling", False, f"Request error: {str(e)}")
 
+
+    # ========== FINANCIAL METRICS TESTS (CREATE DEAL ENDPOINT) ==========
+    
+    def test_create_deal_with_financial_metrics(self):
+        """Test POST to Supabase deals table - Create deal with financial metrics (annual_income, annual_expenses, noi, cap_rate)"""
+        
+        # Scenario 1: Create deal with all financial metrics
+        deal_with_metrics = {
+            "title": "Financial Metrics Test Deal",
+            "address": "456 Finance St, San Antonio, TX 78201",
+            "city": "San Antonio",
+            "state": "TX",
+            "zip_code": "78201",
+            "asset_type": "Office",
+            "size": 10000.0,
+            "price": 2500000.0,
+            "latitude": 29.4241,
+            "longitude": -98.4936,
+            "annual_income": 500000.0,
+            "annual_expenses": 200000.0,
+            "noi": 300000.0,
+            "cap_rate": 12.0,
+            "description": "Test deal with financial metrics for auto-calculation feature"
+        }
+        
+        try:
+            from supabase import create_client
+            import os
+            from dotenv import load_dotenv
+            
+            load_dotenv('/app/backend/.env')
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_ANON_KEY']
+            
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Get current user ID from session
+            user_response = supabase.auth.get_user(self.supabase_token)
+            if not user_response or not user_response.user:
+                self.log_result(
+                    "Create Deal - With Financial Metrics",
+                    False,
+                    "Could not get current user from Supabase session"
+                )
+                return None
+            
+            user_id = user_response.user.id
+            deal_with_metrics['owner_id'] = str(user_id)
+            
+            # Insert deal into Supabase
+            response = supabase.table('deals').insert(deal_with_metrics).execute()
+            
+            if response.data and len(response.data) > 0:
+                created_deal = response.data[0]
+                deal_id = created_deal.get('id')
+                
+                # Verify all financial fields were stored correctly
+                financial_fields = {
+                    'annual_income': 500000.0,
+                    'annual_expenses': 200000.0,
+                    'noi': 300000.0,
+                    'cap_rate': 12.0
+                }
+                
+                all_match = True
+                mismatches = []
+                
+                for field, expected_value in financial_fields.items():
+                    actual_value = created_deal.get(field)
+                    if actual_value != expected_value:
+                        all_match = False
+                        mismatches.append({
+                            'field': field,
+                            'expected': expected_value,
+                            'actual': actual_value
+                        })
+                
+                if all_match:
+                    self.log_result(
+                        "Create Deal - With Financial Metrics", 
+                        True, 
+                        f"Successfully created deal with all financial metrics (ID: {deal_id})",
+                        f"All 4 financial fields stored correctly: annual_income={created_deal.get('annual_income')}, annual_expenses={created_deal.get('annual_expenses')}, noi={created_deal.get('noi')}, cap_rate={created_deal.get('cap_rate')}"
+                    )
+                    return created_deal
+                else:
+                    self.log_result(
+                        "Create Deal - With Financial Metrics", 
+                        False, 
+                        f"Deal created but financial fields don't match",
+                        f"Mismatches: {mismatches}"
+                    )
+                    return None
+            else:
+                self.log_result(
+                    "Create Deal - With Financial Metrics", 
+                    False, 
+                    "Failed to create deal - no data returned from Supabase"
+                )
+                return None
+                
+        except Exception as e:
+            self.log_result("Create Deal - With Financial Metrics", False, f"Request error: {str(e)}")
+            return None
+    
+    def test_create_deal_without_financial_metrics(self):
+        """Test POST to Supabase deals table - Create deal WITHOUT financial metrics (should work with NULL values)"""
+        
+        # Scenario 2: Create deal without financial metrics
+        deal_without_metrics = {
+            "title": "Basic Deal Without Metrics",
+            "address": "789 Basic St, Austin, TX 78701",
+            "city": "Austin",
+            "state": "TX",
+            "zip_code": "78701",
+            "asset_type": "Retail",
+            "size": 5000.0,
+            "price": 1200000.0,
+            "latitude": 30.2672,
+            "longitude": -97.7431,
+            "description": "Test deal without financial metrics - should accept NULL values"
+        }
+        
+        try:
+            from supabase import create_client
+            import os
+            from dotenv import load_dotenv
+            
+            load_dotenv('/app/backend/.env')
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_ANON_KEY']
+            
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Get current user ID from session
+            user_response = supabase.auth.get_user(self.supabase_token)
+            if not user_response or not user_response.user:
+                self.log_result(
+                    "Create Deal - Without Financial Metrics",
+                    False,
+                    "Could not get current user from Supabase session"
+                )
+                return None
+            
+            user_id = user_response.user.id
+            deal_without_metrics['owner_id'] = str(user_id)
+            
+            # Insert deal into Supabase
+            response = supabase.table('deals').insert(deal_without_metrics).execute()
+            
+            if response.data and len(response.data) > 0:
+                created_deal = response.data[0]
+                deal_id = created_deal.get('id')
+                
+                # Verify financial fields are NULL or not present
+                financial_fields = ['annual_income', 'annual_expenses', 'noi', 'cap_rate']
+                
+                null_fields = []
+                for field in financial_fields:
+                    value = created_deal.get(field)
+                    if value is None:
+                        null_fields.append(field)
+                
+                if len(null_fields) == 4:
+                    self.log_result(
+                        "Create Deal - Without Financial Metrics", 
+                        True, 
+                        f"Successfully created deal without financial metrics (ID: {deal_id})",
+                        f"All 4 financial fields are NULL as expected"
+                    )
+                    return created_deal
+                else:
+                    self.log_result(
+                        "Create Deal - Without Financial Metrics", 
+                        True, 
+                        f"Deal created successfully (ID: {deal_id})",
+                        f"Financial fields: {[(f, created_deal.get(f)) for f in financial_fields]}"
+                    )
+                    return created_deal
+            else:
+                self.log_result(
+                    "Create Deal - Without Financial Metrics", 
+                    False, 
+                    "Failed to create deal - no data returned from Supabase"
+                )
+                return None
+                
+        except Exception as e:
+            self.log_result("Create Deal - Without Financial Metrics", False, f"Request error: {str(e)}")
+            return None
+    
+    def test_validate_calculated_values(self):
+        """Test POST to Supabase deals table - Validate calculated values (noi = annual_income - annual_expenses, cap_rate = (noi/price)*100)"""
+        
+        # Scenario 3: Create deal with specific values to validate calculations
+        deal_for_validation = {
+            "title": "Calculation Validation Deal",
+            "address": "321 Math St, San Antonio, TX 78205",
+            "city": "San Antonio",
+            "state": "TX",
+            "zip_code": "78205",
+            "asset_type": "Industrial",
+            "size": 10000.0,
+            "price": 2500000.0,
+            "latitude": 29.4241,
+            "longitude": -98.4936,
+            "annual_income": 500000.0,
+            "annual_expenses": 200000.0,
+            "noi": 300000.0,  # Should be 500000 - 200000 = 300000
+            "cap_rate": 12.0,  # Should be (300000 / 2500000) * 100 = 12.0
+            "description": "Test deal to validate NOI and Cap Rate calculations"
+        }
+        
+        try:
+            from supabase import create_client
+            import os
+            from dotenv import load_dotenv
+            
+            load_dotenv('/app/backend/.env')
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_ANON_KEY']
+            
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Get current user ID from session
+            user_response = supabase.auth.get_user(self.supabase_token)
+            if not user_response or not user_response.user:
+                self.log_result(
+                    "Validate Calculated Values",
+                    False,
+                    "Could not get current user from Supabase session"
+                )
+                return None
+            
+            user_id = user_response.user.id
+            deal_for_validation['owner_id'] = str(user_id)
+            
+            # Insert deal into Supabase
+            response = supabase.table('deals').insert(deal_for_validation).execute()
+            
+            if response.data and len(response.data) > 0:
+                created_deal = response.data[0]
+                deal_id = created_deal.get('id')
+                
+                # Verify calculations
+                annual_income = created_deal.get('annual_income', 0) or 0
+                annual_expenses = created_deal.get('annual_expenses', 0) or 0
+                noi = created_deal.get('noi', 0) or 0
+                price = created_deal.get('price', 1) or 1
+                cap_rate = created_deal.get('cap_rate', 0) or 0
+                
+                # Expected values
+                expected_noi = annual_income - annual_expenses
+                expected_cap_rate = (noi / price) * 100 if price > 0 else 0
+                
+                # Check if stored values match expected calculations
+                noi_matches = abs(noi - expected_noi) < 0.01  # Allow small floating point difference
+                cap_rate_matches = abs(cap_rate - expected_cap_rate) < 0.01
+                
+                if noi_matches and cap_rate_matches:
+                    self.log_result(
+                        "Validate Calculated Values", 
+                        True, 
+                        f"Calculated values are correct (ID: {deal_id})",
+                        f"NOI: {noi} (expected: {expected_noi}), Cap Rate: {cap_rate}% (expected: {expected_cap_rate:.2f}%)"
+                    )
+                else:
+                    issues = []
+                    if not noi_matches:
+                        issues.append(f"NOI mismatch: stored={noi}, expected={expected_noi}")
+                    if not cap_rate_matches:
+                        issues.append(f"Cap Rate mismatch: stored={cap_rate}, expected={expected_cap_rate:.2f}")
+                    
+                    self.log_result(
+                        "Validate Calculated Values", 
+                        False, 
+                        f"Calculated values don't match expected",
+                        f"Issues: {issues}"
+                    )
+                
+                return created_deal
+            else:
+                self.log_result(
+                    "Validate Calculated Values", 
+                    False, 
+                    "Failed to create deal - no data returned from Supabase"
+                )
+                return None
+                
+        except Exception as e:
+            self.log_result("Validate Calculated Values", False, f"Request error: {str(e)}")
+            return None
+    
+    def test_query_deal_with_financial_metrics(self, deal_id):
+        """Test querying deal from Supabase - Verify financial fields are stored correctly"""
+        
+        if not deal_id:
+            self.log_result(
+                "Query Deal - Financial Metrics", 
+                False, 
+                "No deal ID provided to query"
+            )
+            return None
+        
+        try:
+            from supabase import create_client
+            import os
+            from dotenv import load_dotenv
+            
+            load_dotenv('/app/backend/.env')
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_ANON_KEY']
+            
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Query deal from Supabase
+            response = supabase.table('deals').select('*').eq('id', deal_id).execute()
+            
+            if response.data and len(response.data) > 0:
+                deal = response.data[0]
+                
+                # Verify financial fields are present
+                financial_fields = ['annual_income', 'annual_expenses', 'noi', 'cap_rate']
+                present_fields = [f for f in financial_fields if f in deal]
+                
+                if len(present_fields) == 4:
+                    self.log_result(
+                        "Query Deal - Financial Metrics", 
+                        True, 
+                        f"Successfully queried deal {deal_id} - all financial fields present",
+                        f"Values: annual_income={deal.get('annual_income')}, annual_expenses={deal.get('annual_expenses')}, noi={deal.get('noi')}, cap_rate={deal.get('cap_rate')}"
+                    )
+                    return deal
+                else:
+                    missing = [f for f in financial_fields if f not in deal]
+                    self.log_result(
+                        "Query Deal - Financial Metrics", 
+                        False, 
+                        f"Deal queried but missing financial fields: {missing}",
+                        f"Present fields: {present_fields}"
+                    )
+                    return None
+            else:
+                self.log_result(
+                    "Query Deal - Financial Metrics", 
+                    False, 
+                    f"Deal not found in Supabase: {deal_id}"
+                )
+                return None
+                
+        except Exception as e:
+            self.log_result("Query Deal - Financial Metrics", False, f"Request error: {str(e)}")
+            return None
+
     def run_all_tests(self):
         """Run all backend tests"""
         print("=" * 60)
