@@ -346,57 +346,6 @@ const MapView = () => {
   const parcelTiles = useMemo(() => [REPORTALL_CONFIG.vectorTilesUrl], []);
   const parcelPromoteId = useMemo(() => ({ parcels: 'robust_id' }), []);
 
-  // Handle measurement panel dragging
-  const handlePanelMouseDown = (e) => {
-    if (!measurementPanelRef.current) return;
-    
-    isDraggingRef.current = true;
-    const panel = measurementPanelRef.current;
-    const rect = panel.getBoundingClientRect();
-    
-    dragOffsetRef.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
-    
-    // Add dragging class for cursor
-    panel.style.cursor = 'grabbing';
-    panel.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.7)';
-  };
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (isDraggingRef.current && measurementPanelRef.current) {
-        const newX = e.clientX - dragOffsetRef.current.x;
-        const newY = e.clientY - dragOffsetRef.current.y;
-        
-        // Update position directly via style (no re-render)
-        measurementPanelRef.current.style.left = `${newX}px`;
-        measurementPanelRef.current.style.top = `${newY}px`;
-        measurementPanelRef.current.style.transform = 'none';
-      }
-    };
-
-    const handleMouseUp = () => {
-      if (isDraggingRef.current && measurementPanelRef.current) {
-        isDraggingRef.current = false;
-        measurementPanelRef.current.style.cursor = 'grab';
-        measurementPanelRef.current.style.boxShadow = '0 4px 24px rgba(0, 0, 0, 0.5)';
-        
-        // DON'T update state - keep position via direct DOM manipulation
-        // This prevents the jump on release
-      }
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, []);
-
   // Map style configurations
   const mapStyles = {
     satellite: {
