@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext, useMemo, useCallback } 
 import Map, { Marker, Popup, NavigationControl, ScaleControl, Source, Layer } from 'react-map-gl/maplibre';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { AuthContext } from '../App';
+import { AuthContext, API } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { calculateArea, calculateDistance, formatMeasurement } from '../utils/measurementUtils';
