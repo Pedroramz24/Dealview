@@ -27,6 +27,40 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
   const [noi, setNoi] = useState('N/A');
   const [capRate, setCapRate] = useState('N/A');
 
+  // Calculate metrics in real-time
+  const calculateMetrics = () => {
+    // Get values from refs
+    const price = priceRef.current?.value ? parseFormattedNumber(priceRef.current.value) : null;
+    const buildingSize = sizeRef.current?.value ? parseFormattedNumber(sizeRef.current.value) : null;
+    const grossIncome = grossIncomeRef.current?.value ? parseFormattedNumber(grossIncomeRef.current.value) : null;
+    const operatingExpenses = operatingExpensesRef.current?.value ? parseFormattedNumber(operatingExpensesRef.current.value) : null;
+
+    // Calculate PSF (Price per Square Foot)
+    if (price && buildingSize && buildingSize > 0) {
+      const psfValue = price / buildingSize;
+      setPsf(`$${psfValue.toFixed(2)}`);
+    } else {
+      setPsf('N/A');
+    }
+
+    // Calculate NOI (Net Operating Income)
+    let noiValue = null;
+    if (grossIncome !== null && operatingExpenses !== null) {
+      noiValue = grossIncome - operatingExpenses;
+      setNoi(`$${noiValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`);
+    } else {
+      setNoi('N/A');
+    }
+
+    // Calculate Cap Rate
+    if (noiValue !== null && price && price > 0) {
+      const capRateValue = (noiValue / price) * 100;
+      setCapRate(`${capRateValue.toFixed(2)}%`);
+    } else {
+      setCapRate('N/A');
+    }
+  };
+
   if (!isOpen) return null;
 
   const handleCreateDeal = async () => {
