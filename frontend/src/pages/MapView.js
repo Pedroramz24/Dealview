@@ -313,6 +313,69 @@ const MapView = () => {
     };
   }, [measurementResult, measurementMode, measurementPoints]);
 
+  // Fetch San Antonio Zoning data when layer is toggled ON
+  useEffect(() => {
+    if (showSAZoning && saZoningData.features.length === 0) {
+      console.log('[MapView] Fetching San Antonio zoning data...');
+      const url = propertyIntelligenceService.getSanAntonioZoningTiles();
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          console.log('[MapView] SA Zoning data loaded:', data.features?.length, 'features');
+          setSaZoningData(data);
+        })
+        .catch(err => {
+          console.error('[MapView] Error fetching SA zoning:', err);
+          toast.error('Failed to load San Antonio zoning data');
+        });
+    }
+  }, [showSAZoning, saZoningData.features.length]);
+
+  // Fetch Austin Zoning data when layer is toggled ON
+  useEffect(() => {
+    if (showAustinZoning && austinZoningData.features.length === 0) {
+      console.log('[MapView] Fetching Austin zoning data...');
+      const url = propertyIntelligenceService.getAustinZoningTiles();
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          console.log('[MapView] Austin Zoning data loaded:', data.features?.length, 'features');
+          setAustinZoningData(data);
+        })
+        .catch(err => {
+          console.error('[MapView] Error fetching Austin zoning:', err);
+          toast.error('Failed to load Austin zoning data');
+        });
+    }
+  }, [showAustinZoning, austinZoningData.features.length]);
+
+  // Fetch Water/Sewer data when layer is toggled ON
+  useEffect(() => {
+    if (showWaterSewer && waterSewerData.features.length === 0) {
+      console.log('[MapView] Fetching SA Water/Sewer data...');
+      const url = propertyIntelligenceService.getSanAntonioWaterSewerTiles();
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          console.log('[MapView] Water/Sewer data loaded:', data.features?.length, 'features');
+          setWaterSewerData(data);
+        })
+        .catch(err => {
+          console.error('[MapView] Error fetching water/sewer:', err);
+          toast.error('Failed to load water/sewer data');
+        });
+    }
+  }, [showWaterSewer, waterSewerData.features.length]);
+
   // Memoize parcel layer paint properties to prevent flickering during map drag
   const parcelFillPaint = useMemo(() => ({
     'fill-color': [
