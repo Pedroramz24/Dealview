@@ -859,6 +859,8 @@ const MapView = () => {
           onToggleFloodZones={() => setShowFloodZones(!showFloodZones)}
           showWaterSewer={showWaterSewer}
           onToggleWaterSewer={() => setShowWaterSewer(!showWaterSewer)}
+          showBexarParcels={showBexarParcels}
+          onToggleBexarParcels={() => setShowBexarParcels(!showBexarParcels)}
         />
 
         {/* AI Research Panel (Opens at 1000px - third panel) */}
