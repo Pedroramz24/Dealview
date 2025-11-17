@@ -18,10 +18,12 @@ import reportallService from '../services/reportallService';
 import REPORTALL_CONFIG from '../config/reportall';
 import propertyIntelligenceService from '../services/propertyIntelligenceService';
 import { PMTiles, Protocol } from 'pmtiles';
+import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Register PMTiles protocol for MapLibre
-let pmtilesProtocol = new Protocol();
+// Register PMTiles protocol globally with MapLibre (before any Map renders)
+const pmtilesProtocol = new Protocol();
+maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
 
 const MapView = () => {
   const [deals, setDeals] = useState([]);
