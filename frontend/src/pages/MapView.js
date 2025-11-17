@@ -992,7 +992,7 @@ const MapView = () => {
             </Source>
           )}
 
-          {/* San Antonio Zoning Layer - SIMPLIFIED FOR DEBUGGING */}
+          {/* San Antonio Zoning Layer - Color-Coded by Zoning Type */}
           {showSAZoning && (
             <Source
               id="sa-zoning"
@@ -1000,7 +1000,7 @@ const MapView = () => {
               url={`pmtiles://${window.location.origin}/tiles/sa_zoning.pmtiles`}
               tileSize={512}
             >
-              {/* Simple Fill Layer - Bright Cyan for Visibility */}
+              {/* Fill Layer with Zoning Color Classification */}
               <Layer
                 id="sa-zoning-fill"
                 type="fill"
@@ -1008,21 +1008,54 @@ const MapView = () => {
                 minzoom={10}
                 maxzoom={22}
                 paint={{
-                  'fill-color': '#00bcd4',  // Bright cyan
-                  'fill-opacity': 0.4
+                  'fill-color': [
+                    'match',
+                    ['get', 'Base'],
+                    // Residential - Soft green family
+                    'R-4', '#86efac',
+                    'R-5', '#86efac',
+                    'R-6', '#86efac',
+                    'RM-4', '#6ee7b7',
+                    'RM-5', '#6ee7b7',
+                    'RM-6', '#6ee7b7',
+                    // Commercial - Warm orange/coral family
+                    'C-1', '#fdba74',
+                    'C-2', '#fb923c',
+                    'C-3', '#f97316',
+                    'NC', '#fcd34d',
+                    'HC', '#f59e0b',
+                    // Industrial - Cool purple family
+                    'I-1', '#c4b5fd',
+                    'I-2', '#a78bfa',
+                    'IL', '#8b5cf6',
+                    // Mixed Use - Amber family
+                    'MXD', '#fde68a',
+                    'TOD', '#fcd34d',
+                    // Office - Soft cyan family
+                    'BP', '#a5f3fc',
+                    'OP', '#67e8f9',
+                    // Special - Rose/pink family
+                    'IDZ', '#f9a8d4',
+                    'MU', '#f472b6',
+                    // Outside City Limits - Light gray
+                    'OCL', '#d1d5db',
+                    // Default - Light blue for any unmapped codes
+                    '#93c5fd'
+                  ],
+                  'fill-opacity': 0.35
                 }}
               />
-              {/* Simple Line Layer - White Outline */}
+              {/* Line Layer - Subtle outlines, hide at low zoom for performance */}
               <Layer
                 id="sa-zoning-line"
                 type="line"
                 source-layer="zoning"
-                minzoom={10}
+                minzoom={14}
                 maxzoom={22}
                 paint={{
-                  'line-color': '#ffffff',  // White
-                  'line-width': 1,
-                  'line-opacity': 0.6
+                  'line-color': '#ffffff',
+                  'line-width': 0.5,
+                  'line-opacity': 0.4
                 }}
               />
             </Source>
