@@ -361,7 +361,9 @@ const MapView = () => {
         bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
       }
       
-      const url = `${API}/intelligence/layer/austin-zoning${bbox ? `?bbox=${bbox}&limit=5000` : '?limit=5000'}`;
+      const url = `${API}/intelligence/layer/austin-zoning${bbox ? `?bbox=${bbox}&limit=10000` : '?limit=10000'}`;
+      
+      toast.info('Loading Austin zoning data...');
       
       fetch(url)
         .then(res => {
@@ -393,7 +395,9 @@ const MapView = () => {
         bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
       }
       
-      const url = `${API}/intelligence/layer/sa-water-sewer${bbox ? `?bbox=${bbox}&limit=5000` : '?limit=5000'}`;
+      const url = `${API}/intelligence/layer/sa-water-sewer${bbox ? `?bbox=${bbox}&limit=10000` : '?limit=10000'}`;
+      
+      toast.info('Loading water/sewer infrastructure...');
       
       fetch(url)
         .then(res => {
