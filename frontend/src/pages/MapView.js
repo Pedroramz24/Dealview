@@ -17,6 +17,7 @@ import MapTopBar from '../components/MapTopBar';
 import reportallService from '../services/reportallService';
 import REPORTALL_CONFIG from '../config/reportall';
 import propertyIntelligenceService from '../services/propertyIntelligenceService';
+import { PMTiles, Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapView = () => {
