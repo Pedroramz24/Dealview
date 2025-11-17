@@ -391,6 +391,127 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
             />
           </div>
 
+          {/* Financial Metrics Section Header */}
+          <div style={{ 
+            marginTop: '32px', 
+            marginBottom: '16px', 
+            paddingBottom: '8px', 
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <Calculator size={16} style={{ color: '#00b8d4' }} />
+            <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600' }}>
+              Financial Metrics
+            </span>
+          </div>
+
+          {/* Gross Annual Income */}
+          <div>
+            <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', display: 'block', marginBottom: '8px' }}>
+              Gross Annual Income
+            </label>
+            <input
+              ref={grossIncomeRef}
+              type="text"
+              placeholder="500,000"
+              onChange={(e) => {
+                const formatted = formatNumberWithCommas(e.target.value);
+                e.target.value = formatted;
+                calculateMetrics();
+              }}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px',
+              }}
+            />
+          </div>
+
+          {/* Operating Expenses */}
+          <div>
+            <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', display: 'block', marginBottom: '8px' }}>
+              Annual Operating Expenses
+            </label>
+            <input
+              ref={operatingExpensesRef}
+              type="text"
+              placeholder="200,000"
+              onChange={(e) => {
+                const formatted = formatNumberWithCommas(e.target.value);
+                e.target.value = formatted;
+                calculateMetrics();
+              }}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px',
+              }}
+            />
+          </div>
+
+          {/* Calculated Metrics Display */}
+          <div style={{
+            marginTop: '16px',
+            padding: '16px',
+            background: 'rgba(0, 184, 212, 0.05)',
+            border: '1px solid rgba(0, 184, 212, 0.2)',
+            borderRadius: '8px',
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              marginBottom: '12px' 
+            }}>
+              <TrendingUp size={14} style={{ color: '#00b8d4' }} />
+              <span style={{ color: '#00b8d4', fontSize: '12px', fontWeight: '600' }}>
+                Auto-Calculated
+              </span>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+              {/* PSF */}
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
+                  Price/SF
+                </div>
+                <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                  {psf}
+                </div>
+              </div>
+
+              {/* NOI */}
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
+                  NOI
+                </div>
+                <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                  {noi}
+                </div>
+              </div>
+
+              {/* Cap Rate */}
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
+                  Cap Rate
+                </div>
+                <div style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>
+                  {capRate}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Notes */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', display: 'block', marginBottom: '8px' }}>
