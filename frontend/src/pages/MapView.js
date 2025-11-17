@@ -758,6 +758,54 @@ const MapView = () => {
     setIdentifyTooltip(null);
     setReportAllParcel(null);
     
+    // Check for Bexar CAD parcels click (if enabled)
+    if (showBexarParcels && map && map.getZoom() >= 14) {
+      const features = map.queryRenderedFeatures(event.point, {
+        layers: ['bexar-parcels-line']
+      });
+      
+      if (features && features.length > 0) {
+        const parcel = features[0].properties;
+        console.log('[Bexar CAD] Clicked parcel:', parcel);
+        
+        // Format parcel data for PropertyIntelligencePanel
+        const parcelData = {
+          // Property Info
+          address: parcel.Situs || 'No Address',
+          owner: parcel.Owner || 'Unknown Owner',
+          property_type: 'CAD Parcel',
+          
+          // Values
+          land_value: parcel.LandVal,
+          improvement_value: parcel.ImprVal,
+          total_value: parcel.TotVal,
+          
+          // Parcel Details
+          legal_acres: parcel.LglAcres,
+          calculated_acres: parcel.Acres,
+          year_built: parcel.YrBlt,
+          gba: parcel.GBA,
+          total_gba: parcel.TOT_GBA,
+          stories: parcel.Stories,
+          
+          // Other
+          account_number: parcel.AcctNumb,
+          legal_description: parcel.LglDesc,
+          neighborhood: parcel.Nbhd,
+          
+          // Location
+          latitude: event.lngLat.lat,
+          longitude: event.lngLat.lng,
+          isParcel: true,
+          isBexarCAD: true  // Flag for Bexar CAD data
+        };
+        
+        togglePropertyPanel(parcelData);
+        toast.success('Bexar CAD parcel loaded');
+        return;
+      }
+    }
+    
     // Only query ReportAll parcels if zoom level is 14+ and parcels are shown
     const map = mapRef.current?.getMap();
     if (map && map.getZoom() >= REPORTALL_CONFIG.minZoom && showReportAllParcels) {
