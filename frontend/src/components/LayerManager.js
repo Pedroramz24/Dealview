@@ -1009,6 +1009,64 @@ const LayerManager = ({
               {props.showWaterSewer ? 'ON' : 'OFF'}
             </button>
           </div>
+
+          {/* Bexar CAD Parcels Toggle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                background: 'rgba(34, 197, 94, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </div>
+              <div>
+                <div style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                  Bexar CAD Parcels
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginTop: '2px' }}>
+                  Free parcel intelligence
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={props.onToggleBexarParcels}
+              disabled={!props.onToggleBexarParcels}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: props.showBexarParcels ? 
+                  'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' : 
+                  'rgba(255, 255, 255, 0.08)',
+                color: props.showBexarParcels ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: !props.onToggleBexarParcels ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: !props.onToggleBexarParcels ? 0.5 : 1
+              }}
+            >
+              {props.showBexarParcels ? 'ON' : 'OFF'}
+            </button>
+          </div>
         </div>
 
         {/* Measurement Tools Section */}
