@@ -1145,9 +1145,9 @@ async def get_intelligence_layer(
     try:
         # Define layer endpoints
         layer_endpoints = {
-            'sa-zoning': 'https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/COSA_Zoning/FeatureServer/0/query',
-            'austin-zoning': 'https://services.austintexas.gov/arcgis/rest/services/Planning/Zoning/MapServer/0/query',
-            'sa-water-sewer': 'https://services.arcgis.com/g1fRTDLeMgspWrYp/arcgis/rest/services/Stormwater_Infrastructure/FeatureServer/0/query'
+            'sa-zoning': 'https://opendata-cosagis.opendata.arcgis.com/datasets/CoSAGIS::cosa-zoning/FeatureServer/0/query',
+            'austin-zoning': 'https://maps.austintexas.gov/arcgis/rest/services/Shared/Zoning_1/MapServer/0/query',
+            'sa-water-sewer': 'https://opendata-cosagis.opendata.arcgis.com/datasets/CoSAGIS::stormwater-infrastructure/FeatureServer/0/query'
         }
         
         if layer_type not in layer_endpoints:
@@ -1168,11 +1168,17 @@ async def get_intelligence_layer(
         if bbox:
             try:
                 min_lng, min_lat, max_lng, max_lat = map(float, bbox.split(','))
-                # ArcGIS uses envelope geometry for bbox
-                params['geometry'] = f'{min_lng},{min_lat},{max_lng},{max_lat}'
+                # ArcGIS uses JSON format for envelope geometry
+                envelope_json = {
+                    "xmin": min_lng,
+                    "ymin": min_lat,
+                    "xmax": max_lng,
+                    "ymax": max_lat,
+                    "spatialReference": {"wkid": 4326}
+                }
+                params['geometry'] = json.dumps(envelope_json)
                 params['geometryType'] = 'esriGeometryEnvelope'
                 params['spatialRel'] = 'esriSpatialRelIntersects'
-                params['inSR'] = '4326'  # WGS84
                 logger.info(f"[Intelligence Layer] {layer_type} with bbox: {bbox}")
             except ValueError:
                 logger.warning(f"[Intelligence Layer] Invalid bbox format: {bbox}, ignoring")
