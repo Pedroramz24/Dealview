@@ -85,20 +85,6 @@ const MapView = () => {
     // No setState = no re-render = no flicker
   }, []);
   
-  // Register PMTiles protocol when map loads (fixes race condition)
-  const handleMapLoad = useCallback(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) {
-      console.warn('[MapView] Map ref not available on load');
-      return;
-    }
-    
-    // Add PMTiles protocol to MapLibre
-    map.addProtocol('pmtiles', pmtilesProtocol.tile);
-    
-    console.log('[MapView] ✅ PMTiles protocol registered successfully');
-  }, []);
-  
   // Add street labels to map - using proper event listeners
   useEffect(() => {
     if (!mapRef.current) return;
