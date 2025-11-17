@@ -810,7 +810,6 @@ const MapView = () => {
     }
     
     // Only query ReportAll parcels if zoom level is 14+ and parcels are shown
-    const map = mapRef.current?.getMap();
     if (map && map.getZoom() >= REPORTALL_CONFIG.minZoom && showReportAllParcels) {
       console.log('[ReportAll] Querying parcel at:', event.lngLat);
       
