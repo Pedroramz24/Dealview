@@ -569,4 +569,19 @@ agent_communication:
         agent: "main"
         comment: "✅ AUTO-CALCULATION FEATURE IMPLEMENTED: Added real-time financial metrics calculations to Create Deal Panel. NEW FIELDS ADDED: (1) Gross Annual Income input field with comma formatting. (2) Annual Operating Expenses input field with comma formatting. (3) Financial Metrics section header with Calculator icon. AUTO-CALCULATED METRICS: (1) Price-per-Square-Foot (PSF) = Asking Price ÷ Building Size. Displays as '$X.XX' or 'N/A' if required fields empty. (2) Net Operating Income (NOI) = Gross Income - Operating Expenses. Displays as formatted currency with commas or 'N/A'. (3) Cap Rate = (NOI ÷ Asking Price) × 100. Displays as 'X.XX%' or 'N/A' if required fields empty. REAL-TIME UPDATES: calculateMetrics() function runs on every onChange event for price, building size, gross income, and operating expenses inputs. Uses formatNumberWithCommas() and parseFormattedNumber() utilities for proper number handling. DISPLAY: Added cyan-themed display box showing all three calculated metrics in a grid layout (PSF | NOI | Cap Rate) with TrendingUp icon and 'Auto-Calculated' label. DATABASE INTEGRATION: handleCreateDeal() saves annual_income, annual_expenses, noi, and cap_rate to Supabase deals table. Frontend compiled successfully with hot reload. Ready for testing: (1) Open Create Deal Panel, (2) Enter price (e.g., 2,500,000), (3) Enter building size (e.g., 10,000), (4) Enter gross income (e.g., 500,000), (5) Enter operating expenses (e.g., 200,000), (6) Verify PSF shows $250.00, NOI shows $300,000, Cap Rate shows 12.00%, (7) Verify calculations update in real-time as values change, (8) Verify 'N/A' displays when required fields are empty."
 
+  - task: "Email Settings API Key Persistence Fix"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "USER REPORTED ISSUE: Previously saved SendGrid API key configuration lost - system asking to add key again as if progress was lost. User concerned this shouldn't happen to actual users."
+      - working: "NA"
+        agent: "main"
+        comment: "✅ ROOT CAUSE IDENTIFIED & FIXED: The GET /api/email/settings endpoint was returning 'configured: true' simply because a row existed in email_settings table, WITHOUT checking if sendgrid_api_key field actually had a value. Investigation revealed: (1) Column is named 'sendgrid_api_key' (not encrypted_api_key). (2) Database contains 2 records with valid encrypted keys (184 chars each). (3) Endpoint was querying 'id, sender_email, sender_name, is_verified, last_tested_at' but NOT checking sendgrid_api_key existence. FIX APPLIED: Modified get_email_settings() endpoint (line 2025-2065) to: (1) Query sendgrid_api_key field from database. (2) Check if sendgrid_api_key is not None AND not empty string. (3) Return 'configured: true' ONLY if API key actually exists. (4) Remove sendgrid_api_key from response for security. This ensures users don't lose their saved API key configuration status. Backend restarted. Ready for user testing - saved SendGrid keys should now be recognized correctly."
+
 
