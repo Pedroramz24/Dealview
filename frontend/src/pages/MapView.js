@@ -759,6 +759,14 @@ const MapView = () => {
           propertyPanelOpen={propertyPanelOpen || createDealPanelOpen}
           measurementMode={measurementMode}
           onSetMeasurementMode={setMeasurementMode}
+          showSAZoning={showSAZoning}
+          onToggleSAZoning={() => setShowSAZoning(!showSAZoning)}
+          showAustinZoning={showAustinZoning}
+          onToggleAustinZoning={() => setShowAustinZoning(!showAustinZoning)}
+          showFloodZones={showFloodZones}
+          onToggleFloodZones={() => setShowFloodZones(!showFloodZones)}
+          showWaterSewer={showWaterSewer}
+          onToggleWaterSewer={() => setShowWaterSewer(!showWaterSewer)}
         />
 
         {/* AI Research Panel (Opens at 1000px - third panel) */}
