@@ -1009,61 +1009,88 @@ const MapView = () => {
                 maxzoom={22}
                 paint={{
                   'fill-color': [
-                    'match',
-                    ['get', 'Base'],
-                    // RESIDENTIAL - Yellow
-                    'R-4', '#fde047',
-                    'R-5', '#fde047',
-                    'R-6', '#fde047',
-                    // MULTI-FAMILY - Orange
-                    'RM-4', '#fb923c',
-                    'RM-5', '#fb923c',
-                    'RM-6', '#fb923c',
-                    // COMMERCIAL - Red
-                    'C-1', '#ef4444',
-                    'C-2', '#ef4444',
-                    'C-3', '#dc2626',
-                    'NC', '#f87171',
-                    'HC', '#b91c1c',
-                    // INDUSTRIAL - Purple
-                    'I-1', '#a78bfa',
-                    'I-2', '#a78bfa',
-                    'IL', '#8b5cf6',
+                    'case',
+                    // RESIDENTIAL - Yellow (starts with R-)
+                    ['==', ['slice', ['get', 'Base'], 0, 2], 'R-'],
+                    '#fde047',
+                    
+                    // MULTI-FAMILY - Orange (starts with RM or MF)
+                    ['any',
+                      ['==', ['slice', ['get', 'Base'], 0, 2], 'RM'],
+                      ['==', ['slice', ['get', 'Base'], 0, 2], 'MF']
+                    ],
+                    '#fb923c',
+                    
+                    // COMMERCIAL - Red (starts with C- or is NC/HC)
+                    ['any',
+                      ['==', ['slice', ['get', 'Base'], 0, 2], 'C-'],
+                      ['==', ['get', 'Base'], 'NC'],
+                      ['==', ['get', 'Base'], 'HC']
+                    ],
+                    '#ef4444',
+                    
+                    // INDUSTRIAL - Purple (starts with I- or MI)
+                    ['any',
+                      ['==', ['slice', ['get', 'Base'], 0, 2], 'I-'],
+                      ['==', ['slice', ['get', 'Base'], 0, 2], 'MI'],
+                      ['==', ['get', 'Base'], 'IL'],
+                      ['==', ['get', 'Base'], 'L']
+                    ],
+                    '#a78bfa',
+                    
                     // MIXED USE - Dark Purple
-                    'MXD', '#7c3aed',
-                    'TOD', '#7c3aed',
-                    'MU', '#6d28d9',
+                    ['in', ['get', 'Base'], ['literal', ['MXD', 'TOD', 'MU', 'MX']]],
+                    '#7c3aed',
+                    
                     // PUD - Dark Cyan
-                    'PD', '#0891b2',
-                    'PUD', '#0891b2',
-                    // OFFICE/BUSINESS PARK - Dark Cyan
-                    'BP', '#0891b2',
-                    'OP', '#0891b2',
-                    // URBAN - Salmon
-                    'UD', '#fda4af',
+                    ['in', ['get', 'Base'], ['literal', ['PD', 'PUD', 'BP', 'OP']]],
+                    '#0891b2',
+                    
+                    // OFFICE - Dark Cyan (starts with O-)
+                    ['==', ['slice', ['get', 'Base'], 0, 2], 'O-'],
+                    '#0891b2',
+                    
+                    // URBAN - Salmon (UZROW, UD, UZ*)
+                    ['any',
+                      ['==', ['get', 'Base'], 'UZROW'],
+                      ['==', ['slice', ['get', 'Base'], 0, 2], 'UD'],
+                      ['==', ['slice', ['get', 'Base'], 0, 2], 'UZ']
+                    ],
+                    '#fda4af',
+                    
                     // RURAL - Dark Yellow
-                    'RU', '#ca8a04',
-                    // AGRICULTURAL - Green
-                    'AG', '#22c55e',
-                    'A', '#22c55e',
+                    ['in', ['get', 'Base'], ['literal', ['RU', 'FR', 'RP', 'RE']]],
+                    '#ca8a04',
+                    
+                    // AGRICULTURAL - Green (AG, A)
+                    ['any',
+                      ['==', ['get', 'Base'], 'AG'],
+                      ['==', ['get', 'Base'], 'A']
+                    ],
+                    '#22c55e',
+                    
                     // DEVELOPMENT AGREEMENT - Brown
-                    'DA', '#92400e',
-                    'IDZ', '#92400e',
-                    // UNKNOWN/ROADS - White
-                    'OCL', '#ffffff',
-                    '', '#ffffff',
-                    null, '#ffffff',
-                    // Default - White
+                    ['in', ['get', 'Base'], ['literal', ['D', 'DA', 'IDZ']]],
+                    '#92400e',
+                    
+                    // OUTSIDE CITY LIMITS - White (OCL)
+                    ['==', ['get', 'Base'], 'OCL'],
+                    '#ffffff',
+                    
+                    // UNKNOWN/NULL - White
                     '#ffffff'
                   ],
                   'fill-opacity': [
-                    'match',
-                    ['get', 'Base'],
-                    '', 0.05,  // Nearly invisible for empty
-                    null, 0.05,
-                    'OCL', 0.08,  // Very light for outside city
-                    '#ffffff', 0.05,  // White zones very subtle
-                    0.35  // Normal zones visible
+                    'case',
+                    // White/unknown zones - very subtle
+                    ['any',
+                      ['==', ['get', 'Base'], 'OCL'],
+                      ['==', ['get', 'Base'], ''],
+                      ['==', ['get', 'Base'], null]
+                    ],
+                    0.05,
+                    // All other zones - visible
+                    0.4
                   ]
                 }}
               />
