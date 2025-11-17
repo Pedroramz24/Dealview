@@ -1113,11 +1113,8 @@ const LayerManager = ({
         {/* Layer Categories */}
         <div
           style={{
-            flex: 1,
-            overflowY: 'auto',
             padding: '16px 0',
           }}
-          className="custom-scrollbar"
         >
           {loading ? (
             <div
