@@ -150,6 +150,19 @@ backend:
         agent: "testing"
         comment: "✅ RE-TESTED (User Debug Request): Backend is working PERFECTLY. Endpoint returns 5 articles (all macro-economic: Fed rate cuts, Freddie Mac refinancing, Invesco AUM, medical properties). FILTERING VERIFIED: Backend checked 30 articles from RSS feeds, found 0 Texas/Local articles (none available in current feeds), found 5 macro-economic articles (Federal Reserve, interest rates, cap rates, national CRE trends). Backend logs show proper filtering: excluding NYC, LA, Miami, San Diego, Florida articles correctly. All 5 returned articles have relevanceType='macro' and complete structure (title, description, source, url, publishedAt). DIAGNOSIS: If user sees 'No articles found in San Antonio & Texas' message, the issue is NOT in the backend - it's in the FRONTEND. Backend is returning valid articles. Frontend may be: (1) filtering out macro-economic articles when it should show them, (2) only looking for relevanceType='local' and ignoring 'macro', or (3) not rendering articles correctly. RECOMMENDATION: Check frontend Dashboard.js news rendering logic and filtering."
 
+  - task: "Create Deal Endpoint - Financial Metrics Support"
+    implemented: true
+    working: true
+    file: "/app/supabase_migrations/001_create_schema.sql, /app/backend_test.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TESTING COMPLETE: Tested Create Deal endpoint with new financial metric fields (annual_income, annual_expenses, noi, cap_rate). SCHEMA VERIFICATION: ✅ Supabase deals table includes all 4 financial metric fields (lines 62-65 in 001_create_schema.sql). SCENARIO 1 - Create Deal WITH Financial Metrics: ✅ Successfully created deal with all financial metrics populated (annual_income: 500000, annual_expenses: 200000, noi: 300000, cap_rate: 12.0). All values stored correctly in database. SCENARIO 2 - Create Deal WITHOUT Financial Metrics: ✅ Successfully created deal with only basic fields (title, address, price, size). Financial metric fields correctly stored as NULL values. SCENARIO 3 - Validate Calculated Values: ✅ Created deal with price: 2500000, annual_income: 500000, annual_expenses: 200000. Verified stored values match expected calculations: NOI = 300000 (500000 - 200000), Cap Rate = 12.0% ((300000 / 2500000) * 100). SCENARIO 4 - Query Deal Back: ✅ Successfully queried deal from Supabase and verified all 4 financial fields are present and retrievable. RLS POLICIES: ✅ Row Level Security policies working correctly - deals can only be created with owner_id = auth.uid(). Used Supabase client with auth token (postgrest.auth()) to bypass RLS during testing. CONCLUSION: The Supabase deals table schema fully supports the new financial metric fields. Create Deal functionality works correctly with and without these fields. All test scenarios passed (4/4)."
+
+
 frontend:
   - task: "Dashboard Supabase Migration"
     implemented: true
