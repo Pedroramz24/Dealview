@@ -317,7 +317,17 @@ const MapView = () => {
   useEffect(() => {
     if (showSAZoning && saZoningData.features.length === 0) {
       console.log('[MapView] Fetching San Antonio zoning data...');
-      const url = propertyIntelligenceService.getSanAntonioZoningTiles();
+      
+      // Get current map bounds for bbox filtering
+      let bbox = null;
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        const bounds = map.getBounds();
+        bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+      }
+      
+      const url = `${API}/intelligence/layer/sa-zoning${bbox ? `?bbox=${bbox}&limit=500` : '?limit=500'}`;
+      
       fetch(url)
         .then(res => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -326,6 +336,7 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] SA Zoning data loaded:', data.features?.length, 'features');
           setSaZoningData(data);
+          toast.success(`Loaded ${data.features?.length || 0} SA zoning boundaries`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching SA zoning:', err);
@@ -338,7 +349,17 @@ const MapView = () => {
   useEffect(() => {
     if (showAustinZoning && austinZoningData.features.length === 0) {
       console.log('[MapView] Fetching Austin zoning data...');
-      const url = propertyIntelligenceService.getAustinZoningTiles();
+      
+      // Get current map bounds for bbox filtering
+      let bbox = null;
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        const bounds = map.getBounds();
+        bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+      }
+      
+      const url = `${API}/intelligence/layer/austin-zoning${bbox ? `?bbox=${bbox}&limit=500` : '?limit=500'}`;
+      
       fetch(url)
         .then(res => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -347,6 +368,7 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] Austin Zoning data loaded:', data.features?.length, 'features');
           setAustinZoningData(data);
+          toast.success(`Loaded ${data.features?.length || 0} Austin zoning boundaries`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching Austin zoning:', err);
@@ -359,7 +381,17 @@ const MapView = () => {
   useEffect(() => {
     if (showWaterSewer && waterSewerData.features.length === 0) {
       console.log('[MapView] Fetching SA Water/Sewer data...');
-      const url = propertyIntelligenceService.getSanAntonioWaterSewerTiles();
+      
+      // Get current map bounds for bbox filtering
+      let bbox = null;
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        const bounds = map.getBounds();
+        bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+      }
+      
+      const url = `${API}/intelligence/layer/sa-water-sewer${bbox ? `?bbox=${bbox}&limit=500` : '?limit=500'}`;
+      
       fetch(url)
         .then(res => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -368,6 +400,7 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] Water/Sewer data loaded:', data.features?.length, 'features');
           setWaterSewerData(data);
+          toast.success(`Loaded ${data.features?.length || 0} water/sewer features`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching water/sewer:', err);
