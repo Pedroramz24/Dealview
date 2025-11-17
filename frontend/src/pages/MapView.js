@@ -758,6 +758,9 @@ const MapView = () => {
     setIdentifyTooltip(null);
     setReportAllParcel(null);
     
+    // Get map instance once at the start
+    const map = mapRef.current?.getMap();
+    
     // Check for Bexar CAD parcels click (if enabled)
     if (showBexarParcels && map && map.getZoom() >= 14) {
       const features = map.queryRenderedFeatures(event.point, {
