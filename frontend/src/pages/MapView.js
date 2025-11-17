@@ -1480,21 +1480,17 @@ const MapView = () => {
                 <Marker
                   longitude={(() => {
                     if (measurementMode === 'area') {
-                      // Calculate centroid for polygon
                       const sumLng = measurementPoints.reduce((sum, p) => sum + p[0], 0);
                       return sumLng / measurementPoints.length;
                     } else {
-                      // Midpoint for distance
                       return (measurementPoints[0][0] + measurementPoints[measurementPoints.length - 1][0]) / 2;
                     }
                   })()}
                   latitude={(() => {
                     if (measurementMode === 'area') {
-                      // Calculate centroid for polygon
                       const sumLat = measurementPoints.reduce((sum, p) => sum + p[1], 0);
                       return sumLat / measurementPoints.length;
                     } else {
-                      // Midpoint for distance
                       return (measurementPoints[0][1] + measurementPoints[measurementPoints.length - 1][1]) / 2;
                     }
                   })()}
@@ -1515,9 +1511,11 @@ const MapView = () => {
                     pointerEvents: 'none',
                     letterSpacing: '-0.02em'
                   }}>
-                    {measurementMode === 'area' 
+                    {measurementMode === 'area' && measurementResult.acres
                       ? `${measurementResult.acres.toFixed(2)} ac`
-                      : `${measurementResult.feet.toLocaleString()} ft`}
+                      : measurementMode === 'distance' && measurementResult.feet
+                      ? `${measurementResult.feet.toLocaleString()} ft`
+                      : ''}
                   </div>
                 </Marker>
               )}
