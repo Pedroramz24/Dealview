@@ -1475,7 +1475,7 @@ const MapView = () => {
                 </Source>
               )}
 
-              {/* Measurement Label - On Map (Land.ID Style) */}
+              {/* Measurement Label - Text Only (Land.ID Style) */}
               {measurementResult && measurementPoints.length >= 2 && (
                 <Marker
                   longitude={(() => {
@@ -1501,71 +1501,23 @@ const MapView = () => {
                   anchor="center"
                 >
                   <div style={{
-                    padding: '12px 18px',
-                    background: 'rgba(168, 85, 247, 0.95)',
-                    backdropFilter: 'blur(10px)',
-                    border: '2px solid rgba(255, 255, 255, 0.9)',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.6)',
-                    pointerEvents: 'auto',
-                    cursor: 'default'
+                    color: '#FFFFFF',
+                    fontSize: measurementMode === 'area' ? '24px' : '18px',
+                    fontWeight: '700',
+                    textShadow: `
+                      -2px -2px 4px rgba(0, 0, 0, 0.9),
+                      2px -2px 4px rgba(0, 0, 0, 0.9),
+                      -2px 2px 4px rgba(0, 0, 0, 0.9),
+                      2px 2px 4px rgba(0, 0, 0, 0.9),
+                      0 0 8px rgba(0, 0, 0, 0.8)
+                    `,
+                    whiteSpace: 'nowrap',
+                    pointerEvents: 'none',
+                    letterSpacing: '-0.02em'
                   }}>
-                    {/* Primary Measurement */}
-                    <div style={{
-                      color: '#FFFFFF',
-                      fontSize: '20px',
-                      fontWeight: '700',
-                      lineHeight: '1',
-                      marginBottom: '4px',
-                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
-                    }}>
-                      {measurementMode === 'area' 
-                        ? `${measurementResult.acres.toFixed(2)} ac`
-                        : `${measurementResult.feet.toLocaleString()} ft`}
-                    </div>
-                    
-                    {/* Secondary Measurement */}
-                    <div style={{
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      fontSize: '13px',
-                      fontWeight: '500',
-                      textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
-                    }}>
-                      {measurementMode === 'area' 
-                        ? `${measurementResult.sqft.toLocaleString()} sq ft`
-                        : `${measurementResult.miles.toFixed(2)} mi`}
-                    </div>
-                    
-                    {/* Clear Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setMeasurementMode(null);
-                        setMeasurementPoints([]);
-                        setMeasurementResult(null);
-                      }}
-                      style={{
-                        marginTop: '10px',
-                        padding: '6px 12px',
-                        background: 'rgba(239, 68, 68, 0.2)',
-                        border: '1px solid rgba(239, 68, 68, 0.4)',
-                        borderRadius: '5px',
-                        color: '#FFFFFF',
-                        fontSize: '11px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        width: '100%',
-                        transition: 'all 0.15s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.3)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
-                      }}
-                    >
-                      Clear
-                    </button>
+                    {measurementMode === 'area' 
+                      ? `${measurementResult.acres.toFixed(2)} ac`
+                      : `${measurementResult.feet.toLocaleString()} ft`}
                   </div>
                 </Marker>
               )}
