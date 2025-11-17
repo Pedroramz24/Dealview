@@ -1531,93 +1531,104 @@ const MapView = () => {
                 </Source>
               )}
 
-              {/* Measurement Result Display */}
-              {measurementResult && (
-                <div 
-                  ref={measurementPanelRef}
-                  onMouseDown={handlePanelMouseDown}
-                  style={{
-                    position: 'absolute',
-                    top: measurementPanelPosition.x !== null ? `${measurementPanelPosition.y}px` : '80px',
-                    left: measurementPanelPosition.x !== null ? `${measurementPanelPosition.x}px` : '50%',
-                    transform: measurementPanelPosition.x !== null ? 'none' : 'translateX(-50%)',
-                    padding: '20px 24px',
-                    background: 'rgba(11, 12, 14, 0.97)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(168, 85, 247, 0.5)',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5)',
-                    zIndex: 1000,
-                    minWidth: '280px',
-                    maxWidth: '320px',
-                    textAlign: 'center',
-                    cursor: 'grab',
-                    userSelect: 'none',
-                    transition: 'box-shadow 150ms ease'
-                  }}>
-                  
-                  {/* Drag Handle Indicator */}
+              {/* Measurement Label - On Map (Land.ID Style) */}
+              {measurementResult && measurementPoints.length >= 2 && (
+                <Marker
+                  longitude={(() => {
+                    if (measurementMode === 'area') {
+                      // Calculate centroid for polygon
+                      const sumLng = measurementPoints.reduce((sum, p) => sum + p[0], 0);
+                      return sumLng / measurementPoints.length;
+                    } else {
+                      // Midpoint for distance
+                      return (measurementPoints[0][0] + measurementPoints[measurementPoints.length - 1][0]) / 2;
+                    }
+                  })()}
+                  latitude={(() => {
+                    if (measurementMode === 'area') {
+                      // Calculate centroid for polygon
+                      const sumLat = measurementPoints.reduce((sum, p) => sum + p[1], 0);
+                      return sumLat / measurementPoints.length;
+                    } else {
+                      // Midpoint for distance
+                      return (measurementPoints[0][1] + measurementPoints[measurementPoints.length - 1][1]) / 2;
+                    }
+                  })()}
+                  anchor="center"
+                >
                   <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginBottom: '8px',
-                    opacity: 0.3
+                    padding: '12px 18px',
+                    background: 'rgba(168, 85, 247, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(255, 255, 255, 0.9)',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.6)',
+                    pointerEvents: 'auto',
+                    cursor: 'default'
                   }}>
+                    {/* Primary Measurement */}
                     <div style={{
-                      width: '32px',
-                      height: '4px',
-                      borderRadius: '2px',
-                      background: 'rgba(255,255,255,0.5)'
-                    }}></div>
-                  </div>
-
-                  <div style={{
-                    display: 'inline-block',
-                    padding: '4px 10px',
-                    background: 'rgba(168, 85, 247, 0.15)',
-                    borderRadius: '6px',
-                    marginBottom: '12px'
-                  }}>
-                    <p style={{ color: '#a855f7', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      {measurementMode === 'area' ? 'Area Measurement' : 'Distance Measurement'}
-                    </p>
-                  </div>
-                  
-                  <div style={{ marginBottom: '12px' }}>
-                    <p style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '700', lineHeight: '1' }}>
+                      color: '#FFFFFF',
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      lineHeight: '1',
+                      marginBottom: '4px',
+                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                    }}>
                       {measurementMode === 'area' 
-                        ? measurementResult.sqft.toLocaleString() 
-                        : measurementResult.feet.toLocaleString()}
-                    </p>
-                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', marginTop: '4px', fontWeight: '500' }}>
-                      {measurementMode === 'area' ? 'Square Feet' : 'Feet'}
-                    </p>
-                  </div>
-                  
-                  <div style={{ marginBottom: '12px' }}>
-                    <p style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: '600' }}>
+                        ? `${measurementResult.acres.toFixed(2)} ac`
+                        : `${measurementResult.feet.toLocaleString()} ft`}
+                    </div>
+                    
+                    {/* Secondary Measurement */}
+                    <div style={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                    }}>
                       {measurementMode === 'area' 
-                        ? measurementResult.acres.toLocaleString() 
-                        : measurementResult.miles.toLocaleString()}
-                    </p>
-                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px', fontWeight: '500' }}>
-                      {measurementMode === 'area' ? 'Acres' : 'Miles'}
-                    </p>
+                        ? `${measurementResult.sqft.toLocaleString()} sq ft`
+                        : `${measurementResult.miles.toFixed(2)} mi`}
+                    </div>
+                    
+                    {/* Clear Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMeasurementMode(null);
+                        setMeasurementPoints([]);
+                        setMeasurementResult(null);
+                      }}
+                      style={{
+                        marginTop: '10px',
+                        padding: '6px 12px',
+                        background: 'rgba(239, 68, 68, 0.2)',
+                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                        borderRadius: '5px',
+                        color: '#FFFFFF',
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        width: '100%',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                      }}
+                    >
+                      Clear
+                    </button>
                   </div>
-
-                  {/* Accuracy Badge */}
-                  <div style={{
-                    padding: '8px 12px',
-                    background: 'rgba(0, 212, 170, 0.1)',
-                    border: '1px solid rgba(0, 212, 170, 0.3)',
-                    borderRadius: '6px',
-                    marginBottom: '12px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginBottom: '4px' }}>
-                      <div style={{
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
+                </Marker>
+              )}
+            </>
+          )}
+        </Map>
+        </div>
                         background: '#00d4aa'
                       }}></div>
                       <p style={{ color: '#00d4aa', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase' }}>
