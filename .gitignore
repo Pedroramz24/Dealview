@@ -194,3 +194,4 @@ tiles/sa_zoning_complete.geojson
 tiles/sa_zoning_complete.pmtiles
 frontend/public/tiles/sa_zoning.pmtiles
 tiles/sa_zoning_optimized.pmtiles
+tiles/bexar_parcels_complete.geojson
