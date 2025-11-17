@@ -1245,6 +1245,9 @@ const LayerManager = ({
             }
           `}
         </style>
+        {/* Close Scrollable Content Area */}
+      </div>
+      {/* Close Layer Manager Panel */}
       </div>
     </>
   );
