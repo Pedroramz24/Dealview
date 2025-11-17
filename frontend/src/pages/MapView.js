@@ -1011,7 +1011,6 @@ const MapView = () => {
                   'fill-color': '#00bcd4',  // Bright cyan
                   'fill-opacity': 0.4
                 }}
-                beforeId="road-label"
               />
               {/* Simple Line Layer - White Outline */}
               <Layer
@@ -1025,7 +1024,6 @@ const MapView = () => {
                   'line-width': 1,
                   'line-opacity': 0.6
                 }}
-                beforeId="road-label"
               />
             </Source>
           )}
