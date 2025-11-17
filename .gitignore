@@ -191,3 +191,4 @@ frontend/node_modules/.cache/default-development/19.pack
 *.env
 *.env.*
 tiles/sa_zoning_complete.geojson
+tiles/sa_zoning_complete.pmtiles
