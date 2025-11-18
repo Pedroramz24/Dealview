@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Complete Supabase migration: migrate all remaining pages (Dashboard, Contacts, Team, DealDetails, PublicShare) from MongoDB/FastAPI to Supabase PostgreSQL with Row Level Security. Ensure all functionality works correctly including authentication, data operations, and file uploads. Stabilize the system before adding new features."
+user_problem_statement: "Fix Bexar CAD Parcels layer click functionality - parcels should be clickable and display property information in the side panel. After this is verified working, proceed with debugging 42 pending bugs in the application."
 
 backend:
   - task: "Supabase Schema Setup"
