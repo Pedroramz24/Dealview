@@ -295,7 +295,7 @@ const Pipeline = () => {
 
   const getDealsByStage = (stageId) => {
     const filtered = getFilteredDeals();
-    let stageDeals = filtered.filter(deal => deal.stage === stageId);
+    let stageDeals = filtered.filter(deal => deal.pipeline_stage_id === stageId || deal.stage_id === stageId);
     
     // Sort deals
     if (sortBy === 'price') {
