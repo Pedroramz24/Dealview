@@ -5,7 +5,7 @@ Debug the counties identify issue
 
 import requests
 
-BASE_URL = "https://realestate-hub-285.preview.emergentagent.com/api"
+BASE_URL = "https://terraintel-map.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {"email": "pedro@test.com", "password": "password123"}
 
 # Authenticate
