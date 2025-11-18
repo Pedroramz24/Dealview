@@ -407,6 +407,82 @@ const Pipeline = () => {
         </div>
       </div>
 
+      {/* Pipeline Selector Tabs */}
+      <div className="px-8 pb-4">
+        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+          {pipelines.map((pipeline) => (
+            <button
+              key={pipeline.id}
+              onClick={() => {
+                setSelectedPipeline(pipeline);
+                setStages(pipeline.pipeline_stages || []);
+              }}
+              style={{
+                padding: '12px 20px',
+                borderRadius: '10px',
+                background: selectedPipeline?.id === pipeline.id ? `${pipeline.color}20` : 'rgba(255,255,255,0.03)',
+                border: selectedPipeline?.id === pipeline.id ? `2px solid ${pipeline.color}` : '2px solid rgba(255,255,255,0.1)',
+                color: selectedPipeline?.id === pipeline.id ? pipeline.color : 'rgba(255,255,255,0.6)',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedPipeline?.id === pipeline.id ? `0 0 20px ${pipeline.color}40` : 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (selectedPipeline?.id !== pipeline.id) {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedPipeline?.id !== pipeline.id) {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                }
+              }}
+            >
+              {pipeline.name}
+              {pipeline.is_default && (
+                <span style={{ 
+                  marginLeft: '8px', 
+                  fontSize: '10px', 
+                  padding: '2px 6px', 
+                  borderRadius: '4px',
+                  background: 'rgba(255,255,255,0.1)' 
+                }}>
+                  DEFAULT
+                </span>
+              )}
+            </button>
+          ))}
+          
+          {pipelines.length < 5 && (
+            <button
+              onClick={() => toast.info('Pipeline management coming soon!')}
+              style={{
+                padding: '12px 20px',
+                borderRadius: '10px',
+                background: 'rgba(255,255,255,0.03)',
+                border: '2px dashed rgba(255,255,255,0.2)',
+                color: 'rgba(255,255,255,0.4)',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Plus size={16} />
+              New Pipeline
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Metrics Bar */}
       <div className="px-8 pb-4">
         <div className="glass-surface p-4 flex flex-wrap gap-6">
