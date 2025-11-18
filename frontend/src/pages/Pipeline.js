@@ -271,6 +271,19 @@ const Pipeline = () => {
     return stageDeals;
   };
 
+  const getFilteredAndSortedDeals = () => {
+    const filtered = getFilteredDeals();
+    
+    // Sort deals
+    if (sortBy === 'price') {
+      return filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortBy === 'last_contact') {
+      return filtered.sort((a, b) => new Date(b.last_contact || 0) - new Date(a.last_contact || 0));
+    }
+    
+    return filtered;
+  };
+
   const calculateMetrics = () => {
     const filtered = getFilteredDeals();
     const totalValue = filtered.reduce((sum, deal) => sum + (deal.price || 0), 0);
