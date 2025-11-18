@@ -410,56 +410,85 @@ const Pipeline = () => {
       <div className="px-8 pb-4">
         <div className="flex items-center gap-3 overflow-x-auto pb-2">
           {pipelines.map((pipeline) => (
-            <button
-              key={pipeline.id}
-              onClick={() => {
-                setSelectedPipeline(pipeline);
-                setStages(pipeline.pipeline_stages || []);
-              }}
-              style={{
-                padding: '12px 20px',
-                borderRadius: '10px',
-                background: selectedPipeline?.id === pipeline.id ? `${pipeline.color}20` : 'rgba(255,255,255,0.03)',
-                border: selectedPipeline?.id === pipeline.id ? `2px solid ${pipeline.color}` : '2px solid rgba(255,255,255,0.1)',
-                color: selectedPipeline?.id === pipeline.id ? pipeline.color : 'rgba(255,255,255,0.6)',
-                fontWeight: '600',
-                fontSize: '14px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                whiteSpace: 'nowrap',
-                boxShadow: selectedPipeline?.id === pipeline.id ? `0 0 20px ${pipeline.color}40` : 'none'
-              }}
-              onMouseEnter={(e) => {
-                if (selectedPipeline?.id !== pipeline.id) {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedPipeline?.id !== pipeline.id) {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                }
-              }}
-            >
-              {pipeline.name}
-              {pipeline.is_default && (
-                <span style={{ 
-                  marginLeft: '8px', 
-                  fontSize: '10px', 
-                  padding: '2px 6px', 
-                  borderRadius: '4px',
-                  background: 'rgba(255,255,255,0.1)' 
-                }}>
-                  DEFAULT
-                </span>
+            <div key={pipeline.id} className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setSelectedPipeline(pipeline);
+                  setStages(pipeline.pipeline_stages || []);
+                }}
+                style={{
+                  padding: '12px 20px',
+                  borderRadius: '10px',
+                  background: selectedPipeline?.id === pipeline.id ? `${pipeline.color}20` : 'rgba(255,255,255,0.03)',
+                  border: selectedPipeline?.id === pipeline.id ? `2px solid ${pipeline.color}` : '2px solid rgba(255,255,255,0.1)',
+                  color: selectedPipeline?.id === pipeline.id ? pipeline.color : 'rgba(255,255,255,0.6)',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap',
+                  boxShadow: selectedPipeline?.id === pipeline.id ? `0 0 20px ${pipeline.color}40` : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedPipeline?.id !== pipeline.id) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedPipeline?.id !== pipeline.id) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                  }
+                }}
+              >
+                {pipeline.name}
+                {pipeline.is_default && (
+                  <span style={{ 
+                    marginLeft: '8px', 
+                    fontSize: '10px', 
+                    padding: '2px 6px', 
+                    borderRadius: '4px',
+                    background: 'rgba(255,255,255,0.1)' 
+                  }}>
+                    DEFAULT
+                  </span>
+                )}
+              </button>
+              
+              {selectedPipeline?.id === pipeline.id && (
+                <button
+                  onClick={() => setShowPipelineSettings(true)}
+                  style={{
+                    padding: '8px',
+                    borderRadius: '8px',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.6)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
+                    e.currentTarget.style.color = '#00b8d4';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                  }}
+                  title="Manage Pipeline"
+                >
+                  <Settings size={16} />
+                </button>
               )}
-            </button>
+            </div>
           ))}
           
           {pipelines.length < 5 && (
             <button
-              onClick={() => toast.info('Pipeline management coming soon!')}
+              onClick={() => toast.info('Pipeline creation coming soon!')}
               style={{
                 padding: '12px 20px',
                 borderRadius: '10px',
@@ -481,6 +510,20 @@ const Pipeline = () => {
           )}
         </div>
       </div>
+
+      {/* Pipeline Management Modal */}
+      <PipelineManagementModal
+        open={showPipelineSettings}
+        onClose={() => setShowPipelineSettings(false)}
+        pipeline={selectedPipeline}
+        onPipelineUpdated={() => {
+          fetchPipelines();
+          fetchDeals();
+        }}
+        onPipelineDeleted={() => {
+          fetchPipelines();
+        }}
+      />
 
       {/* Metrics Bar */}
       <div className="px-8 pb-4">
