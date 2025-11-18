@@ -2941,6 +2941,391 @@ async def sendgrid_webhook(request: Dict[str, Any]):
         return {"success": False, "error": str(e)}
 
 
+# ============================================================================
+# PIPELINE MANAGEMENT ENDPOINTS
+# ============================================================================
+
+@api_router.get("/pipelines")
+async def get_pipelines(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get all pipelines for the authenticated user"""
+    try:
+        # Get user from token
+        user = await get_current_user_supabase(credentials)
+        
+        # Fetch pipelines with stages
+        response = supabase.table('pipelines').select(
+            '*, pipeline_stages(*)'
+        ).eq('owner_id', user['id']).order('display_order').execute()
+        
+        return {
+            "success": True,
+            "pipelines": response.data
+        }
+    except Exception as e:
+        logger.error(f"Error fetching pipelines: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/pipelines")
+async def create_pipeline(
+    name: str = Form(...),
+    description: str = Form(None),
+    color: str = Form("#00b8d4"),
+    icon: str = Form("briefcase"),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Create a new pipeline (max 5 per user)"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Check if user already has 5 pipelines
+        count_response = supabase.table('pipelines').select(
+            'id', count='exact'
+        ).eq('owner_id', user['id']).execute()
+        
+        if count_response.count >= 5:
+            raise HTTPException(
+                status_code=400, 
+                detail="Maximum of 5 pipelines allowed per user"
+            )
+        
+        # Get current max display_order
+        max_order_response = supabase.table('pipelines').select(
+            'display_order'
+        ).eq('owner_id', user['id']).order('display_order', desc=True).limit(1).execute()
+        
+        next_order = 0
+        if max_order_response.data:
+            next_order = max_order_response.data[0]['display_order'] + 1
+        
+        # Create pipeline
+        pipeline_data = {
+            'owner_id': user['id'],
+            'name': name,
+            'description': description,
+            'color': color,
+            'icon': icon,
+            'display_order': next_order,
+            'is_active': True,
+            'is_default': False
+        }
+        
+        response = supabase.table('pipelines').insert(pipeline_data).execute()
+        
+        return {
+            "success": True,
+            "pipeline": response.data[0]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating pipeline: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.put("/pipelines/{pipeline_id}")
+async def update_pipeline(
+    pipeline_id: str,
+    name: str = Form(None),
+    description: str = Form(None),
+    color: str = Form(None),
+    icon: str = Form(None),
+    is_active: bool = Form(None),
+    display_order: int = Form(None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Update a pipeline"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Build update data (only include provided fields)
+        update_data = {}
+        if name is not None:
+            update_data['name'] = name
+        if description is not None:
+            update_data['description'] = description
+        if color is not None:
+            update_data['color'] = color
+        if icon is not None:
+            update_data['icon'] = icon
+        if is_active is not None:
+            update_data['is_active'] = is_active
+        if display_order is not None:
+            update_data['display_order'] = display_order
+        
+        # Update pipeline (RLS ensures user owns it)
+        response = supabase.table('pipelines').update(
+            update_data
+        ).eq('id', pipeline_id).eq('owner_id', user['id']).execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Pipeline not found")
+        
+        return {
+            "success": True,
+            "pipeline": response.data[0]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating pipeline: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.delete("/pipelines/{pipeline_id}")
+async def delete_pipeline(
+    pipeline_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete a pipeline (cannot delete default pipeline)"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Check if it's the default pipeline
+        check_response = supabase.table('pipelines').select(
+            'is_default'
+        ).eq('id', pipeline_id).eq('owner_id', user['id']).execute()
+        
+        if not check_response.data:
+            raise HTTPException(status_code=404, detail="Pipeline not found")
+        
+        if check_response.data[0]['is_default']:
+            raise HTTPException(
+                status_code=400, 
+                detail="Cannot delete default pipeline"
+            )
+        
+        # Delete pipeline (CASCADE will delete stages, deals will have pipeline_id set to NULL)
+        supabase.table('pipelines').delete().eq(
+            'id', pipeline_id
+        ).eq('owner_id', user['id']).execute()
+        
+        return {
+            "success": True,
+            "message": "Pipeline deleted successfully"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting pipeline: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# PIPELINE STAGES ENDPOINTS
+# ============================================================================
+
+@api_router.get("/pipelines/{pipeline_id}/stages")
+async def get_pipeline_stages(
+    pipeline_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get all stages for a pipeline"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Verify pipeline ownership and get stages
+        response = supabase.table('pipeline_stages').select(
+            '*'
+        ).eq('pipeline_id', pipeline_id).order('display_order').execute()
+        
+        return {
+            "success": True,
+            "stages": response.data
+        }
+    except Exception as e:
+        logger.error(f"Error fetching pipeline stages: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/pipelines/{pipeline_id}/stages")
+async def create_pipeline_stage(
+    pipeline_id: str,
+    name: str = Form(...),
+    color: str = Form(...),
+    stage_weight: float = Form(0.5),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Create a new stage for a pipeline (max 10 per pipeline)"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Verify pipeline ownership
+        pipeline_response = supabase.table('pipelines').select(
+            'id'
+        ).eq('id', pipeline_id).eq('owner_id', user['id']).execute()
+        
+        if not pipeline_response.data:
+            raise HTTPException(status_code=404, detail="Pipeline not found")
+        
+        # Check stage count
+        count_response = supabase.table('pipeline_stages').select(
+            'id', count='exact'
+        ).eq('pipeline_id', pipeline_id).execute()
+        
+        if count_response.count >= 10:
+            raise HTTPException(
+                status_code=400,
+                detail="Maximum of 10 stages allowed per pipeline"
+            )
+        
+        # Get current max display_order
+        max_order_response = supabase.table('pipeline_stages').select(
+            'display_order'
+        ).eq('pipeline_id', pipeline_id).order('display_order', desc=True).limit(1).execute()
+        
+        next_order = 0
+        if max_order_response.data:
+            next_order = max_order_response.data[0]['display_order'] + 1
+        
+        # Create stage
+        stage_data = {
+            'pipeline_id': pipeline_id,
+            'name': name,
+            'color': color,
+            'stage_weight': stage_weight,
+            'display_order': next_order
+        }
+        
+        response = supabase.table('pipeline_stages').insert(stage_data).execute()
+        
+        return {
+            "success": True,
+            "stage": response.data[0]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating pipeline stage: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.put("/stages/{stage_id}")
+async def update_pipeline_stage(
+    stage_id: str,
+    name: str = Form(None),
+    color: str = Form(None),
+    stage_weight: float = Form(None),
+    display_order: int = Form(None),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Update a pipeline stage"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Build update data
+        update_data = {}
+        if name is not None:
+            update_data['name'] = name
+        if color is not None:
+            update_data['color'] = color
+        if stage_weight is not None:
+            update_data['stage_weight'] = stage_weight
+        if display_order is not None:
+            update_data['display_order'] = display_order
+        
+        # Update stage (RLS ensures user owns the pipeline)
+        response = supabase.table('pipeline_stages').update(
+            update_data
+        ).eq('id', stage_id).execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Stage not found")
+        
+        return {
+            "success": True,
+            "stage": response.data[0]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating pipeline stage: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.delete("/stages/{stage_id}")
+async def delete_pipeline_stage(
+    stage_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete a pipeline stage"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Check if any deals are in this stage
+        deals_response = supabase.table('deals').select(
+            'id', count='exact'
+        ).eq('pipeline_stage_id', stage_id).execute()
+        
+        if deals_response.count > 0:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Cannot delete stage with {deals_response.count} deals. Move deals to another stage first."
+            )
+        
+        # Delete stage
+        supabase.table('pipeline_stages').delete().eq('id', stage_id).execute()
+        
+        return {
+            "success": True,
+            "message": "Stage deleted successfully"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting pipeline stage: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# DEAL MOVEMENT ENDPOINTS
+# ============================================================================
+
+@api_router.put("/deals/{deal_id}/move")
+async def move_deal(
+    deal_id: str,
+    pipeline_id: str = Form(None),
+    pipeline_stage_id: str = Form(...),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Move a deal to a different stage or pipeline"""
+    try:
+        user = await get_current_user_supabase(credentials)
+        
+        # Get current deal
+        deal_response = supabase.table('deals').select(
+            'id, pipeline_id'
+        ).eq('id', deal_id).eq('owner_id', user['id']).execute()
+        
+        if not deal_response.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        current_deal = deal_response.data[0]
+        
+        # If moving to different pipeline, update both fields
+        update_data = {
+            'pipeline_stage_id': pipeline_stage_id
+        }
+        
+        if pipeline_id and pipeline_id != current_deal['pipeline_id']:
+            update_data['pipeline_id'] = pipeline_id
+        
+        # Update deal
+        response = supabase.table('deals').update(
+            update_data
+        ).eq('id', deal_id).eq('owner_id', user['id']).execute()
+        
+        return {
+            "success": True,
+            "deal": response.data[0]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error moving deal: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 app.include_router(api_router)
 
 app.add_middleware(
