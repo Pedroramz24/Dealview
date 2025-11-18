@@ -324,13 +324,14 @@ const Pipeline = () => {
     const filtered = getFilteredDeals();
     const totalValue = filtered.reduce((sum, deal) => sum + (deal.price || 0), 0);
     const weightedValue = filtered.reduce((sum, deal) => {
-      const weight = stageWeights[deal.stage] || 0;
+      // Use stage_weight from pipeline_stages (already in deal object from join)
+      const weight = deal.pipeline_stages?.stage_weight || 0.5;
       return sum + (deal.price || 0) * weight;
     }, 0);
     
     const stageCounts = {};
     stages.forEach(stage => {
-      stageCounts[stage.id] = filtered.filter(d => d.stage === stage.id).length;
+      stageCounts[stage.id] = filtered.filter(d => d.pipeline_stage_id === stage.id || d.stage_id === stage.id).length;
     });
     
     return { totalValue, weightedValue, stageCounts, totalDeals: filtered.length };
