@@ -124,30 +124,46 @@ const Pipeline = () => {
     if (!result.destination) return;
 
     const dealId = result.draggableId;
-    const newStage = result.destination.droppableId;
-    const oldStage = result.source.droppableId;
+    const newStageId = result.destination.droppableId;
+    const oldStageId = result.source.droppableId;
 
-    if (newStage === oldStage) return;
+    if (newStageId === oldStageId) return;
+
+    // Find the new stage info
+    const newStage = stages.find(s => s.id === newStageId);
+    if (!newStage) return;
 
     // Optimistic update
     const updatedDeals = deals.map((deal) =>
-      deal.id === dealId ? { ...deal, stage: newStage } : deal
+      deal.id === dealId ? { 
+        ...deal, 
+        stage_id: newStageId,
+        pipeline_stage_id: newStageId,
+        stage_name: newStage.name,
+        stage_color: newStage.color
+      } : deal
     );
     setDeals(updatedDeals);
 
     try {
-      const { error } = await supabase
-        .from('deals')
-        .update({ stage: newStage, updated_at: new Date().toISOString() })
-        .eq('id', dealId);
-
-      if (error) throw error;
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      
+      // Use the new move API endpoint
+      const formData = new FormData();
+      formData.append('pipeline_stage_id', newStageId);
+      
+      await axios.put(`${API}/deals/${dealId}/move`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       
       toast.success('Deal moved successfully');
 
-      // Trigger automations based on stage
+      // Trigger automations based on stage name
       const deal = deals.find(d => d.id === dealId);
-      triggerAutomation(newStage, deal);
+      triggerAutomation(newStage.name, deal);
       
     } catch (error) {
       console.error('Error updating deal stage:', error);
@@ -156,28 +172,28 @@ const Pipeline = () => {
     }
   };
 
-  const triggerAutomation = (stage, deal) => {
-    switch(stage) {
-      case 'offer_sent':
-        setAutomationDialog({
-          open: true,
-          type: 'offer_sent',
-          deal: deal,
-          title: 'Offer Sent - Set Follow-up',
-          message: 'Would you like to set a follow-up date for this offer?'
-        });
-        break;
-      case 'under_contract':
-        setAutomationDialog({
-          open: true,
-          type: 'under_contract',
-          deal: deal,
-          title: 'Under Contract - Attach Key Documents',
-          message: 'Please attach key contract documents.'
-        });
-        break;
-      case 'closed_won':
-        setAutomationDialog({
+  const triggerAutomation = (stageName, deal) => {
+    // Trigger automations based on stage name instead of stage ID
+    const lowerStageName = stageName.toLowerCase();
+    
+    if (lowerStageName.includes('offer')) {
+      setAutomationDialog({
+        open: true,
+        type: 'offer_sent',
+        deal: deal,
+        title: 'Offer Sent - Set Follow-up',
+        message: 'Would you like to set a follow-up date for this offer?'
+      });
+    } else if (lowerStageName.includes('contract')) {
+      setAutomationDialog({
+        open: true,
+        type: 'under_contract',
+        deal: deal,
+        title: 'Under Contract - Attach Key Documents',
+        message: 'Please attach key contract documents.'
+      });
+    } else if (lowerStageName.includes('closed') || lowerStageName.includes('won')) {
+      setAutomationDialog({
           open: true,
           type: 'closed_won',
           deal: deal,
