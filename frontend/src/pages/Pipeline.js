@@ -56,6 +56,7 @@ const Pipeline = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [automationDialog, setAutomationDialog] = useState({ open: false, type: null, deal: null });
   const [automationData, setAutomationData] = useState({});
+  const [viewMode, setViewMode] = useState('pipeline'); // 'pipeline' or 'table'
   const boardRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
