@@ -109,10 +109,9 @@ function App() {
             <Route index element={<MapView />} />
             <Route path="map" element={<MapView />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="deals" element={<DealsList />} />
+            <Route path="deals" element={<Pipeline />} />
             <Route path="deals/:dealId" element={<DealDetails />} />
             <Route path="contacts" element={<Contacts />} />
-            <Route path="pipeline" element={<Pipeline />} />
             <Route path="campaigns" element={<Campaigns />} />
             <Route path="calendar" element={<CalendarView />} />
             <Route path="settings" element={<Settings />} />
