@@ -85,7 +85,7 @@ const Pipeline = () => {
   };
 
   const fetchDeals = async () => {
-    if (!user) {
+    if (!user || !selectedPipeline) {
       setLoading(false);
       return;
     }
@@ -93,15 +93,18 @@ const Pipeline = () => {
     try {
       const { data, error } = await supabase
         .from('deals')
-        .select('*')
+        .select('*, pipeline_stages!inner(id, name, color, stage_weight, display_order)')
+        .eq('pipeline_id', selectedPipeline.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      // Ensure all deals have a stage, default to 'need_to_contact'
+      // Ensure all deals have proper stage data
       const dealsWithStages = (data || []).map(deal => ({
         ...deal,
-        stage: deal.stage || 'need_to_contact',
+        stage_id: deal.pipeline_stage_id,
+        stage_name: deal.pipeline_stages?.name || 'Unknown',
+        stage_color: deal.pipeline_stages?.color || '#94a3b8',
         last_contact: deal.last_contact || deal.created_at,
         next_action: deal.next_action || 'call'
       }));
