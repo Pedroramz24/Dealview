@@ -59,30 +59,56 @@ class PipelineTester:
             
             supabase = create_client(supabase_url, supabase_key)
             
-            # Create unique test user if credentials not provided
+            # Use existing test user or provided credentials
             if not email:
+                # Try to use existing test user first
+                email = "pipelinetest@test.com"
+                password = "TestPassword123!"
+                
+                # Try to sign in first
+                try:
+                    result = supabase.auth.sign_in_with_password({
+                        'email': email,
+                        'password': password
+                    })
+                    
+                    if result.session:
+                        self.test_user_email = email
+                        self.token = result.session.access_token
+                        self.test_user_id = result.user.id
+                        self.headers = {"Authorization": f"Bearer {self.token}"}
+                        self.log_result("Supabase Authentication", True, f"Authenticated as existing user: {email}")
+                        return True
+                except:
+                    # User doesn't exist, try to create
+                    pass
+                
+                # Try to create new user
                 timestamp = int(datetime.now().timestamp())
                 email = f"pipeline_test_{timestamp}@test.com"
                 password = "TestPassword123!"
                 
-                # Sign up new user
-                result = supabase.auth.sign_up({
-                    'email': email,
-                    'password': password
-                })
-                
-                if not result.session:
-                    self.log_result("Supabase Signup", False, f"Failed to create test user {email}")
+                try:
+                    result = supabase.auth.sign_up({
+                        'email': email,
+                        'password': password
+                    })
+                    
+                    if result.session:
+                        self.test_user_email = email
+                        self.token = result.session.access_token
+                        self.test_user_id = result.user.id
+                        self.headers = {"Authorization": f"Bearer {self.token}"}
+                        self.log_result("Supabase Signup", True, f"Created and authenticated test user: {email}")
+                        return True
+                    else:
+                        self.log_result("Supabase Signup", False, f"Failed to create test user {email} - no session")
+                        return False
+                except Exception as signup_error:
+                    self.log_result("Supabase Signup", False, f"Signup failed: {str(signup_error)}")
                     return False
-                
-                self.test_user_email = email
-                self.token = result.session.access_token
-                self.test_user_id = result.user.id
-                self.headers = {"Authorization": f"Bearer {self.token}"}
-                self.log_result("Supabase Signup", True, f"Created and authenticated test user: {email}")
-                return True
             else:
-                # Sign in existing user
+                # Sign in with provided credentials
                 result = supabase.auth.sign_in_with_password({
                     'email': email,
                     'password': password
@@ -107,6 +133,8 @@ class PipelineTester:
                     
         except Exception as e:
             self.log_result("Supabase Authentication", False, f"Auth error: {str(e)}")
+            import traceback
+            print(f"Full error: {traceback.format_exc()}")
             return False
     
     def test_1_get_pipelines(self):
