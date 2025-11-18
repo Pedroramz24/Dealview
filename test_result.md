@@ -468,6 +468,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Unified Deals Tab with Pipeline/Table View Toggle"
     - "Team Deals Map Layer (Phase 2 Team Collaboration)"
   stuck_tasks: []
   test_all: false
