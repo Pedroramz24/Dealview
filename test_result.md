@@ -370,6 +370,18 @@ frontend:
 
 
 frontend:
+  - task: "Bexar CAD Parcels Click Functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Verified that all 4 fixes recommended by troubleshoot_agent are ALREADY implemented in the code: (1) key='bexar-parcels-source' prop exists on Source (line 1186), (2) Transparent fill layer with fill-opacity: 0.0001 exists for clickability (lines 1193-1203), (3) interactiveLayerIds includes both 'bexar-parcels-fill' and 'bexar-parcels-line' (line 974), (4) combinedMapClick queries both layers (line 775). The implementation looks complete. Need to test if the click functionality is actually working. Will perform manual verification that parcels are clickable at zoom 14+ and display property information in PropertyIntelligencePanel."
+
   - task: "DealsList Field Name Consistency"
     implemented: true
     working: true
