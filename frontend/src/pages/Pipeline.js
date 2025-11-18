@@ -302,10 +302,59 @@ const Pipeline = () => {
     <div className="flex flex-col h-screen" style={{ background: 'var(--bg-base)' }} data-testid="pipeline-page">
       {/* Header */}
       <div className="px-8 pt-8 pb-4">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-          Pipeline
-        </h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Visual deal flow with drag & drop</p>
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+              Deals
+            </h1>
+            <p style={{ color: 'var(--text-secondary)' }}>
+              {viewMode === 'pipeline' ? 'Visual deal flow with drag & drop' : 'Manage all your deals in table view'}
+            </p>
+          </div>
+          
+          {/* View Toggle Buttons */}
+          <div className="flex gap-2" style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '10px',
+            padding: '4px'
+          }}>
+            <button
+              onClick={() => setViewMode('pipeline')}
+              style={{
+                padding: '10px 24px',
+                borderRadius: '8px',
+                background: viewMode === 'pipeline' ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
+                border: viewMode === 'pipeline' ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+                color: viewMode === 'pipeline' ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: viewMode === 'pipeline' ? '0 0 20px rgba(0, 184, 212, 0.2)' : 'none'
+              }}
+            >
+              Pipeline
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              style={{
+                padding: '10px 24px',
+                borderRadius: '8px',
+                background: viewMode === 'table' ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
+                border: viewMode === 'table' ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+                color: viewMode === 'table' ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: viewMode === 'table' ? '0 0 20px rgba(0, 184, 212, 0.2)' : 'none'
+              }}
+            >
+              Table
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Metrics Bar */}
