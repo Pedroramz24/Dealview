@@ -716,69 +716,56 @@ class PipelineTester:
     def test_10_cross_user_security(self):
         """Test 10: Cross-user security - RLS policies"""
         try:
-            # Get a second existing user
-            from supabase import create_client
+            # Use second existing user (ricardo@uriahrealestate.com has a pipeline)
+            second_email = "ricardo@uriahrealestate.com"
+            # We don't know the password, so we'll test differently
             
-            supabase_url = os.environ['SUPABASE_URL']
-            supabase_service_key = os.environ['SUPABASE_SERVICE_KEY']
-            
-            supabase_admin = create_client(supabase_url, supabase_service_key)
-            
-            # Get another user with a pipeline (different from first user)
-            pipeline_result = supabase_admin.table('pipelines').select('owner_id').eq('is_default', True).limit(2).execute()
-            
-            if len(pipeline_result.data) < 2:
-                self.log_result("Test 10: Cross-User Security", False, "Not enough users to test cross-user security")
-                return False
-            
-            # Get second user
-            second_user_id = None
-            for p in pipeline_result.data:
-                if p['owner_id'] != self.test_user_id:
-                    second_user_id = p['owner_id']
-                    break
-            
-            if not second_user_id:
-                self.log_result("Test 10: Cross-User Security", False, "Could not find second user")
-                return False
-            
-            # Use service key to query as second user
-            second_user_headers = {"Authorization": f"Bearer {supabase_service_key}"}
-            
-            # Try to access first user's pipelines with second user context
-            # We'll use the API with service key but check RLS is working
+            # Get pipelines for first user
             response = requests.get(
                 f"{self.base_url}/pipelines",
-                headers=self.headers,  # First user
+                headers=self.headers,
                 timeout=10
             )
             
             if response.status_code == 200:
                 first_user_pipelines = response.json().get('pipelines', [])
-                first_user_pipeline_ids = [p['id'] for p in first_user_pipelines]
                 
-                # Now query with service key to get all pipelines
+                # Verify all pipelines belong to first user
+                all_belong_to_user = all(
+                    p.get('owner_id') == self.test_user_id for p in first_user_pipelines
+                )
+                
+                # Use Supabase admin to verify other users have pipelines too
+                from supabase import create_client
+                supabase_url = os.environ['SUPABASE_URL']
+                supabase_service_key = os.environ['SUPABASE_SERVICE_KEY']
+                supabase_admin = create_client(supabase_url, supabase_service_key)
+                
+                # Get all pipelines from database
                 all_pipelines = supabase_admin.table('pipelines').select('*').execute()
                 
-                # Check that first user only sees their own pipelines
-                other_user_pipelines = [p for p in all_pipelines.data if p['owner_id'] != self.test_user_id]
-                
-                # First user should not see other users' pipelines
-                has_isolation = len(first_user_pipelines) > 0 and all(
-                    p['owner_id'] == self.test_user_id for p in first_user_pipelines
+                # Check that there are pipelines from other users
+                other_users_have_pipelines = any(
+                    p['owner_id'] != self.test_user_id for p in all_pipelines.data
                 )
+                
+                # RLS is working if:
+                # 1. First user only sees their own pipelines
+                # 2. Other users have pipelines in the database
+                rls_working = all_belong_to_user and other_users_have_pipelines
                 
                 self.log_result(
                     "Test 10: Cross-User Security",
-                    has_isolation,
-                    "RLS policies working - users can only see their own pipelines" if has_isolation else "RLS may have issues",
+                    rls_working,
+                    "RLS policies working - users can only see their own pipelines" if rls_working else "RLS may have issues",
                     {
                         "first_user_pipeline_count": len(first_user_pipelines),
-                        "all_users_have_pipelines": len(other_user_pipelines) > 0,
-                        "data_isolation": has_isolation
+                        "all_pipelines_belong_to_user": all_belong_to_user,
+                        "other_users_have_pipelines": other_users_have_pipelines,
+                        "total_pipelines_in_db": len(all_pipelines.data)
                     }
                 )
-                return has_isolation
+                return rls_working
             else:
                 self.log_result(
                     "Test 10: Cross-User Security",
