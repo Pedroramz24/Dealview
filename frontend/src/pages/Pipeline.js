@@ -1,42 +1,19 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { supabase } from '../supabaseClient';
-import { AuthContext } from '../App';
+import { AuthContext, API } from '../App';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { 
   Search, Filter, SortAsc, DollarSign, Calendar, FileText, 
-  CheckSquare, Phone, Mail, Eye, Edit, Plus, X 
+  CheckSquare, Phone, Mail, Eye, Edit, Plus, X, Settings 
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-
-// Pipeline stages with proper configuration
-const stages = [
-  { id: 'need_to_contact', label: 'Need to Contact', color: '#94a3b8' },
-  { id: 'contacted', label: 'Contacted', color: '#60a5fa' },
-  { id: 'prospect', label: 'Prospect', color: '#a78bfa' },
-  { id: 'negotiations', label: 'Negotiations', color: '#ec4899' },
-  { id: 'offer_sent', label: 'Offer Sent', color: '#f59e0b' },
-  { id: 'under_contract', label: 'Under Contract', color: '#10b981' },
-  { id: 'closed_won', label: 'Closed Won', color: '#00d4aa' },
-  { id: 'overpriced', label: 'Overpriced', color: '#ef4444' }
-];
-
-// Stage weights for weighted pipeline calculation
-const stageWeights = {
-  'need_to_contact': 0.1,
-  'contacted': 0.2,
-  'prospect': 0.3,
-  'negotiations': 0.4,
-  'offer_sent': 0.5,
-  'under_contract': 0.8,
-  'closed_won': 1.0,
-  'overpriced': 0.05
-};
+import axios from 'axios';
 
 // Next action types
 const nextActionTypes = [
@@ -48,6 +25,12 @@ const nextActionTypes = [
 ];
 
 const Pipeline = () => {
+  // Pipeline state
+  const [pipelines, setPipelines] = useState([]);
+  const [selectedPipeline, setSelectedPipeline] = useState(null);
+  const [stages, setStages] = useState([]);
+  
+  // Deal state
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,15 +40,49 @@ const Pipeline = () => {
   const [automationDialog, setAutomationDialog] = useState({ open: false, type: null, deal: null });
   const [automationData, setAutomationData] = useState({});
   const [viewMode, setViewMode] = useState('pipeline'); // 'pipeline' or 'table'
+  
   const boardRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
+  // Fetch pipelines on mount
   useEffect(() => {
     if (user) {
-      fetchDeals();
+      fetchPipelines();
     }
   }, [user]);
+
+  // Fetch deals when pipeline changes
+  useEffect(() => {
+    if (selectedPipeline) {
+      fetchDeals();
+    }
+  }, [selectedPipeline]);
+
+  const fetchPipelines = async () => {
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const response = await axios.get(`${API}/pipelines`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data.success) {
+        setPipelines(response.data.pipelines);
+        
+        // Select default pipeline or first pipeline
+        const defaultPipeline = response.data.pipelines.find(p => p.is_default);
+        const pipelineToSelect = defaultPipeline || response.data.pipelines[0];
+        
+        if (pipelineToSelect) {
+          setSelectedPipeline(pipelineToSelect);
+          setStages(pipelineToSelect.pipeline_stages || []);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching pipelines:', error);
+      toast.error('Failed to load pipelines');
+    }
+  };
 
   const fetchDeals = async () => {
     if (!user) {
