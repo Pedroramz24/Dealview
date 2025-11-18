@@ -15,8 +15,7 @@ const MainLayout = () => {
 
   const navItems = [
     { path: '/', label: 'Map', icon: Map, exact: true },
-    { path: '/deals', label: 'Deals', icon: FileText },
-    { path: '/pipeline', label: 'Pipeline', icon: Trello },
+    { path: '/deals', label: 'Deals', icon: Trello },
     { path: '/contacts', label: 'Contacts', icon: Users },
     { path: '/campaigns', label: 'Campaigns', icon: Mail },
     { path: '/calendar', label: 'Calendar', icon: Calendar },
