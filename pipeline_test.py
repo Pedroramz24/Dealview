@@ -17,6 +17,10 @@ load_dotenv('/app/backend/.env')
 # Configuration
 BASE_URL = "https://terraintel-map.preview.emergentagent.com/api"
 
+# Use existing test user with known credentials
+TEST_USER_EMAIL = "teamtest@test.com"
+TEST_USER_PASSWORD = "TestPassword123!"
+
 class PipelineTester:
     def __init__(self):
         self.base_url = BASE_URL
