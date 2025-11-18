@@ -194,15 +194,12 @@ const Pipeline = () => {
       });
     } else if (lowerStageName.includes('closed') || lowerStageName.includes('won')) {
       setAutomationDialog({
-          open: true,
-          type: 'closed_won',
-          deal: deal,
-          title: 'Closed Won - Final Details',
-          message: 'Log final price and mark tasks as complete.'
-        });
-        break;
-      default:
-        break;
+        open: true,
+        type: 'closed_won',
+        deal: deal,
+        title: 'Closed Won - Final Details',
+        message: 'Log final price and mark tasks as complete.'
+      });
     }
   };
 
