@@ -467,7 +467,8 @@ const Pipeline = () => {
         </div>
       </div>
 
-      {/* Kanban Board */}
+      {/* PIPELINE VIEW - Kanban Board */}
+      {viewMode === 'pipeline' && (
       <div className="px-8 pb-8 flex-1" style={{ height: 'calc(100vh - 280px)' }}>
         <DragDropContext onDragEnd={onDragEnd}>
           <div 
