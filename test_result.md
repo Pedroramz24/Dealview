@@ -448,6 +448,18 @@ frontend:
         agent: "testing"
         comment: "✅ TEAM MEMBERS ENDPOINT FIX VERIFIED (10/10 tests passed): Fixed the GET /api/teams/{team_id}/members endpoint that was returning 500 error. ROOT CAUSE: The endpoint was using incorrect Supabase admin API method `supabase.auth.admin.get_user()` which doesn't exist. FIX APPLIED: Changed to correct method `supabase.auth.admin.get_user_by_id()` in /app/backend/server.py line 1483. TESTING RESULTS: ✅ Endpoint now returns 200 status (was 500 before). ✅ Response includes members array with complete structure. ✅ Each member has: id, user_id, role, joined_at. ✅ Profile data properly joined: full_name, email, phone, avatar_url, company. ✅ PostgREST join syntax working correctly: user_profiles(full_name, phone, avatar_url, company). ✅ Foreign key constraint from team_members.user_id to user_profiles.id is working as expected. ✅ All 10 backend tests passing. The fix enables the endpoint to retrieve team member details with their profile information, which is essential for displaying team member lists in the UI."
 
+  - task: "Unified Deals Tab with Pipeline/Table View Toggle"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/Pipeline.js, /app/frontend/src/components/MainLayout.js, /app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL BUG FOUND & FIXED: Comprehensive code review of unified Deals tab implementation revealed a CRITICAL JavaScript error that prevents Table view from working. BUG IDENTIFIED: Lines 724 and 817 in Pipeline.js call `getFilteredAndSortedDeals()` function, but this function is NOT DEFINED anywhere in the file. The file only has `getFilteredDeals()` (line 243) and `getDealsByStage()` (line 260). This causes a ReferenceError when user switches to Table view: 'getFilteredAndSortedDeals is not defined'. FIX APPLIED: Added missing `getFilteredAndSortedDeals()` function (lines 273-283) that filters deals using `getFilteredDeals()` and sorts them based on `sortBy` state (either by 'price' or 'last_contact'). Function returns filtered and sorted deals array for table view. CODE REVIEW FINDINGS: ✅ View toggle buttons implemented correctly (lines 316-356) with proper styling and state management. ✅ Default view is 'pipeline' (line 59). ✅ Subtitle changes based on viewMode (line 311). ✅ Pipeline view (Kanban board) renders when viewMode === 'pipeline' (lines 471-694). ✅ Table view renders when viewMode === 'table' (lines 697-827). ✅ Sidebar navigation correct - only one 'Deals' entry with Trello icon (MainLayout.js line 18), no separate 'Pipeline' entry. ✅ Route configured correctly in App.js (line 112): path='deals' element={<Pipeline />}. ✅ Shared functionality (search, filters, metrics) works in both views. TESTING LIMITATION: Unable to complete UI automation testing due to Supabase authentication issues (signup/login failing with 400 errors). However, the critical bug has been identified and fixed. Frontend service restarted successfully. EXPECTED BEHAVIOR AFTER FIX: (1) Default view shows Pipeline (Kanban board). (2) Clicking 'Table' button switches to table layout with columns: Address, Asset Type, Stage, Price, Size, Actions. (3) Clicking 'Pipeline' button switches back to Kanban board. (4) Both views share same data, search, and filters. (5) No JavaScript errors in console. RECOMMENDATION: Main agent should perform manual testing to verify: (1) Table view now loads without errors, (2) View toggle works smoothly, (3) All test scenarios from review request pass."
+
 metadata:
   created_by: "main_agent"
   version: "1.4"
