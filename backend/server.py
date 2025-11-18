@@ -2955,7 +2955,7 @@ async def get_pipelines(credentials: HTTPAuthorizationCredentials = Depends(secu
         # Fetch pipelines with stages
         response = supabase.table('pipelines').select(
             '*, pipeline_stages(*)'
-        ).eq('owner_id', user['id']).order('display_order').execute()
+        ).eq('owner_id', user.id).order('display_order').execute()
         
         return {
             "success": True,
@@ -2981,7 +2981,7 @@ async def create_pipeline(
         # Check if user already has 5 pipelines
         count_response = supabase.table('pipelines').select(
             'id', count='exact'
-        ).eq('owner_id', user['id']).execute()
+        ).eq('owner_id', user.id).execute()
         
         if count_response.count >= 5:
             raise HTTPException(
@@ -2992,7 +2992,7 @@ async def create_pipeline(
         # Get current max display_order
         max_order_response = supabase.table('pipelines').select(
             'display_order'
-        ).eq('owner_id', user['id']).order('display_order', desc=True).limit(1).execute()
+        ).eq('owner_id', user.id).order('display_order', desc=True).limit(1).execute()
         
         next_order = 0
         if max_order_response.data:
@@ -3000,7 +3000,7 @@ async def create_pipeline(
         
         # Create pipeline
         pipeline_data = {
-            'owner_id': user['id'],
+            'owner_id': user.id,
             'name': name,
             'description': description,
             'color': color,
@@ -3056,7 +3056,7 @@ async def update_pipeline(
         # Update pipeline (RLS ensures user owns it)
         response = supabase.table('pipelines').update(
             update_data
-        ).eq('id', pipeline_id).eq('owner_id', user['id']).execute()
+        ).eq('id', pipeline_id).eq('owner_id', user.id).execute()
         
         if not response.data:
             raise HTTPException(status_code=404, detail="Pipeline not found")
@@ -3084,7 +3084,7 @@ async def delete_pipeline(
         # Check if it's the default pipeline
         check_response = supabase.table('pipelines').select(
             'is_default'
-        ).eq('id', pipeline_id).eq('owner_id', user['id']).execute()
+        ).eq('id', pipeline_id).eq('owner_id', user.id).execute()
         
         if not check_response.data:
             raise HTTPException(status_code=404, detail="Pipeline not found")
@@ -3098,7 +3098,7 @@ async def delete_pipeline(
         # Delete pipeline (CASCADE will delete stages, deals will have pipeline_id set to NULL)
         supabase.table('pipelines').delete().eq(
             'id', pipeline_id
-        ).eq('owner_id', user['id']).execute()
+        ).eq('owner_id', user.id).execute()
         
         return {
             "success": True,
@@ -3153,7 +3153,7 @@ async def create_pipeline_stage(
         # Verify pipeline ownership
         pipeline_response = supabase.table('pipelines').select(
             'id'
-        ).eq('id', pipeline_id).eq('owner_id', user['id']).execute()
+        ).eq('id', pipeline_id).eq('owner_id', user.id).execute()
         
         if not pipeline_response.data:
             raise HTTPException(status_code=404, detail="Pipeline not found")
@@ -3295,7 +3295,7 @@ async def move_deal(
         # Get current deal
         deal_response = supabase.table('deals').select(
             'id, pipeline_id'
-        ).eq('id', deal_id).eq('owner_id', user['id']).execute()
+        ).eq('id', deal_id).eq('owner_id', user.id).execute()
         
         if not deal_response.data:
             raise HTTPException(status_code=404, detail="Deal not found")
@@ -3313,7 +3313,7 @@ async def move_deal(
         # Update deal
         response = supabase.table('deals').update(
             update_data
-        ).eq('id', deal_id).eq('owner_id', user['id']).execute()
+        ).eq('id', deal_id).eq('owner_id', user.id).execute()
         
         return {
             "success": True,
