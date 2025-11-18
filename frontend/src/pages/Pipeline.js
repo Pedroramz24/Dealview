@@ -691,6 +691,140 @@ const Pipeline = () => {
           </div>
         </DragDropContext>
       </div>
+      )}
+
+      {/* TABLE VIEW */}
+      {viewMode === 'table' && (
+        <div className="px-8 pb-8 flex-1 overflow-auto">
+          <div className="glass-surface rounded-xl overflow-hidden">
+            <table className="w-full">
+              <thead style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <tr>
+                  <th style={{ padding: '16px', textAlign: 'left', color: 'var(--text-muted)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Address
+                  </th>
+                  <th style={{ padding: '16px', textAlign: 'left', color: 'var(--text-muted)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Asset Type
+                  </th>
+                  <th style={{ padding: '16px', textAlign: 'left', color: 'var(--text-muted)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Stage
+                  </th>
+                  <th style={{ padding: '16px', textAlign: 'right', color: 'var(--text-muted)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Price
+                  </th>
+                  <th style={{ padding: '16px', textAlign: 'right', color: 'var(--text-muted)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Size
+                  </th>
+                  <th style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {getFilteredAndSortedDeals().map((deal, index) => (
+                  <tr 
+                    key={deal.id}
+                    style={{ 
+                      borderBottom: '1px solid rgba(255,255,255,0.05)',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <td style={{ padding: '16px' }}>
+                      <div style={{ color: 'var(--text-primary)', fontWeight: '500' }}>
+                        {deal.address || deal.title || 'Untitled Deal'}
+                      </div>
+                      {deal.title && deal.address && (
+                        <div style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
+                          {deal.title}
+                        </div>
+                      )}
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      <span 
+                        style={{
+                          display: 'inline-block',
+                          padding: '4px 12px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          background: `${getAssetTypeColor(deal.asset_type)}20`,
+                          color: getAssetTypeColor(deal.asset_type),
+                          border: `1px solid ${getAssetTypeColor(deal.asset_type)}40`
+                        }}
+                      >
+                        {deal.asset_type || 'N/A'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          padding: '4px 12px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          background: `${stages.find(s => s.id === deal.stage)?.color || '#94a3b8'}20`,
+                          color: stages.find(s => s.id === deal.stage)?.color || '#94a3b8',
+                          border: `1px solid ${stages.find(s => s.id === deal.stage)?.color || '#94a3b8'}40`
+                        }}
+                      >
+                        {stages.find(s => s.id === deal.stage)?.label || 'Need to Contact'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px', textAlign: 'right', color: 'var(--text-primary)', fontWeight: '600' }}>
+                      {deal.price ? formatPrice(deal.price) : '-'}
+                    </td>
+                    <td style={{ padding: '16px', textAlign: 'right', color: 'var(--text-secondary)' }}>
+                      {deal.size ? `${Number(deal.size).toLocaleString()} SF` : '-'}
+                    </td>
+                    <td style={{ padding: '16px', textAlign: 'center' }}>
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => navigate(`/deals/${deal.id}`)}
+                          style={{
+                            padding: '8px',
+                            borderRadius: '6px',
+                            background: 'rgba(0, 184, 212, 0.1)',
+                            border: '1px solid rgba(0, 184, 212, 0.3)',
+                            color: '#00b8d4',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.2)';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                        >
+                          <Eye size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            {getFilteredAndSortedDeals().length === 0 && (
+              <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+                <FileText size={48} style={{ color: 'var(--text-muted)', margin: '0 auto 16px' }} />
+                <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>
+                  {searchTerm || filterAssetType !== 'all' ? 'No deals match your filters' : 'No deals yet'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Automation Dialog */}
       <Dialog open={automationDialog.open} onOpenChange={(open) => !open && setAutomationDialog({ open: false, type: null, deal: null })}>
