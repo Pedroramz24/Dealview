@@ -105,6 +105,18 @@
 user_problem_statement: "Fix Bexar CAD Parcels layer click functionality - parcels should be clickable and display property information in the side panel. After this is verified working, proceed with debugging 42 pending bugs in the application."
 
 backend:
+  - task: "Pipeline Management API Endpoints"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL BUG FOUND: All 10 pipeline endpoints fail with 'User' object is not subscriptable error. ROOT CAUSE: The get_current_user_supabase() function returns a User object (line 423), but all pipeline endpoints try to access user['id'] as a dictionary (lines 2958, 2984, 2995, 3039, 3059, 3082, 3087, 3156, etc.). FIX REQUIRED: Change all occurrences of user['id'] to user.id in pipeline endpoints (lines 2948-3277). TESTING COMPLETED: Successfully authenticated with Supabase (teamtest@test.com), verified pipeline tables exist in database with 9 default pipelines across users, confirmed RLS policies are in place. All 10 endpoint tests failed due to this single bug. Once fixed, endpoints should work correctly as the database schema, RLS policies, and API structure are all correct."
+
   - task: "Supabase Schema Setup"
     implemented: true
     working: true
