@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { AuthContext, API } from '../App';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
@@ -16,6 +15,18 @@ import { Label } from '../components/ui/label';
 import PipelineManagementModal from '../components/PipelineManagementModal';
 import CreatePipelineModal from '../components/CreatePipelineModal';
 import axios from 'axios';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 // Next action types
 const nextActionTypes = [
