@@ -724,7 +724,7 @@ const Pipeline = () => {
                   {/* Droppable Column */}
                   <div className="flex-1 overflow-hidden">
                     <Droppable 
-                      droppableId={stage.id} 
+                      droppableId={String(stage.id)} 
                       isDropDisabled={false} 
                       isCombineEnabled={false}
                       ignoreContainerClipping={false}
@@ -742,7 +742,7 @@ const Pipeline = () => {
                           }}
                       >
                         {stageDeals.map((deal, index) => (
-                          <Draggable key={deal.id} draggableId={deal.id} index={index}>
+                          <Draggable key={deal.id} draggableId={String(deal.id)} index={index}>
                             {(provided, snapshot) => (
                               <div
                                 ref={provided.innerRef}
