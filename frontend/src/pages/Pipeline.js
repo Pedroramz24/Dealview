@@ -490,7 +490,7 @@ const Pipeline = () => {
           
           {pipelines.length < 5 && (
             <button
-              onClick={() => toast.info('Pipeline creation coming soon!')}
+              onClick={() => setShowCreatePipeline(true)}
               style={{
                 padding: '12px 20px',
                 borderRadius: '10px',
@@ -504,6 +504,16 @@ const Pipeline = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)';
+                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
+                e.currentTarget.style.color = '#00b8d4';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                e.currentTarget.style.color = 'rgba(255,255,255,0.4)';
               }}
             >
               <Plus size={16} />
