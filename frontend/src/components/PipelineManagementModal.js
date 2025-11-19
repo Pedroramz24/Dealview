@@ -463,7 +463,11 @@ const PipelineManagementModal = ({
       setPipelineColor(pipeline.color);
       setStages(pipeline.pipeline_stages || []);
     }
-  }, [pipeline, open]); 
+  }, [pipeline, open]);
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent 
         className="max-w-3xl max-h-[90vh] overflow-y-auto"
         style={{
           background: 'rgba(15, 23, 42, 0.95)',
