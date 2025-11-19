@@ -14,7 +14,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import PipelineManagementModal from '../components/PipelineManagementModal';
 import CreatePipelineModal from '../components/CreatePipelineModal';
-import { DroppableColumn, DraggableDealCard } from '../components/DndComponents';
+import { DroppableStageColumn, DraggableDealCard } from '../components/DndComponents';
 import axios from 'axios';
 import {
   DndContext,
