@@ -458,9 +458,17 @@ const PipelineManagementModal = ({
                     </div>
 
                     <div>
-                      <Label style={{ color: '#FFFFFF', marginBottom: '8px', display: 'block', fontSize: '12px' }}>
-                        Weight (0-1)
-                      </Label>
+                      <div className="flex items-center gap-2">
+                        <Label style={{ color: '#FFFFFF', marginBottom: '8px', display: 'block', fontSize: '12px' }}>
+                          Weight (0-1)
+                        </Label>
+                        <div 
+                          title="Weight represents the probability of closing a deal at this stage. Used for weighted pipeline calculations. 0 = 0% chance, 1 = 100% chance (closed)."
+                          style={{ cursor: 'help' }}
+                        >
+                          <HelpCircle size={14} style={{ color: 'rgba(255,255,255,0.4)' }} />
+                        </div>
+                      </div>
                       <Input
                         type="number"
                         step="0.1"
