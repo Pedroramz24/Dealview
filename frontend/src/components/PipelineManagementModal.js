@@ -25,251 +25,17 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-const PipelineManagementModal = ({ 
-  open, 
-  onClose, 
-  pipeline, 
-  onPipelineUpdated,
-  onPipelineDeleted 
-}) => {
-  const [editMode, setEditMode] = useState(null); // null, 'pipeline', or stage id
-  const [stages, setStages] = useState([]);
-  const [pipelineName, setPipelineName] = useState('');
-  const [pipelineColor, setPipelineColor] = useState('');
-  const [editingStage, setEditingStage] = useState(null);
-  const [newStage, setNewStage] = useState({ name: '', color: '#60a5fa', stage_weight: 0.5 });
-  const [showAddStage, setShowAddStage] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  // Setup dnd-kit sensors
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  useEffect(() => {
-    if (pipeline && open) {
-      setPipelineName(pipeline.name);
-      setPipelineColor(pipeline.color);
-      setStages(pipeline.pipeline_stages || []);
-    }
-  }, [pipeline, open]);
-
-  const handleUpdatePipeline = async () => {
-    setLoading(true);
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      const formData = new FormData();
-      formData.append('name', pipelineName);
-      formData.append('color', pipelineColor);
-
-      await axios.put(`${API}/pipelines/${pipeline.id}`, formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      toast.success('Pipeline updated successfully');
-      setEditMode(null);
-      onPipelineUpdated();
-    } catch (error) {
-      console.error('Error updating pipeline:', error);
-      toast.error('Failed to update pipeline');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAddStage = async () => {
-    if (!newStage.name.trim()) {
-      toast.error('Stage name is required');
-      return;
-    }
-
-    if (stages.length >= 10) {
-      toast.error('Maximum 10 stages per pipeline');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      const formData = new FormData();
-      formData.append('name', newStage.name);
-      formData.append('color', newStage.color);
-      formData.append('stage_weight', newStage.stage_weight);
-
-      const response = await axios.post(
-        `${API}/pipelines/${pipeline.id}/stages`,
-        formData,
-        {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      if (response.data.success) {
-        setStages([...stages, response.data.stage]);
-        setNewStage({ name: '', color: '#60a5fa', stage_weight: 0.5 });
-        setShowAddStage(false);
-        toast.success('Stage added successfully');
-        onPipelineUpdated();
-      }
-    } catch (error) {
-      console.error('Error adding stage:', error);
-      toast.error(error.response?.data?.detail || 'Failed to add stage');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdateStage = async (stage) => {
-    setLoading(true);
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      const formData = new FormData();
-      formData.append('name', stage.name);
-      formData.append('color', stage.color);
-      formData.append('stage_weight', stage.stage_weight);
-
-      await axios.put(`${API}/stages/${stage.id}`, formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      // Update local state immediately
-      setStages(stages.map(s => s.id === stage.id ? stage : s));
-
-      toast.success('Stage updated successfully');
-      setEditingStage(null);
-      onPipelineUpdated(); // This will refresh the pipeline data
-    } catch (error) {
-      console.error('Error updating stage:', error);
-      toast.error('Failed to update stage');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDragEnd = async (event) => {
-    const { active, over } = event;
-
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = stages.findIndex(s => s.id === active.id);
-    const newIndex = stages.findIndex(s => s.id === over.id);
-
-    // Reorder stages
-    const reorderedStages = arrayMove(stages, oldIndex, newIndex);
-
-    // Update display_order for all stages
-    const updatedStages = reorderedStages.map((stage, index) => ({
-      ...stage,
-      display_order: index
-    }));
-
-    // Optimistic update
-    setStages(updatedStages);
-
-    // Update each stage's display_order in the backend
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      
-      await Promise.all(
-        updatedStages.map(stage => {
-          const formData = new FormData();
-          formData.append('display_order', stage.display_order);
-          
-          return axios.put(`${API}/stages/${stage.id}`, formData, {
-            headers: { 
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data'
-            }
-          });
-        })
-      );
-
-      toast.success('Stages reordered successfully');
-      onPipelineUpdated();
-    } catch (error) {
-      console.error('Error reordering stages:', error);
-      toast.error('Failed to reorder stages');
-      // Revert on error
-      setStages(stages);
-    }
-  };
-
-  const handleDeleteStage = async (stageId) => {
-    if (!window.confirm('Are you sure you want to delete this stage? This cannot be undone.')) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      
-      await axios.delete(`${API}/stages/${stageId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      setStages(stages.filter(s => s.id !== stageId));
-      toast.success('Stage deleted successfully');
-      onPipelineUpdated();
-    } catch (error) {
-      console.error('Error deleting stage:', error);
-      toast.error(error.response?.data?.detail || 'Failed to delete stage');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeletePipeline = async () => {
-    if (pipeline.is_default) {
-      toast.error('Cannot delete default pipeline');
-      return;
-    }
-
-    if (!window.confirm(`Are you sure you want to delete "${pipeline.name}"? All deals will be moved to your default pipeline.`)) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token;
-      
-      await axios.delete(`${API}/pipelines/${pipeline.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      toast.success('Pipeline deleted successfully');
-      onPipelineDeleted();
-      onClose();
-    } catch (error) {
-      console.error('Error deleting pipeline:', error);
-      toast.error(error.response?.data?.detail || 'Failed to delete pipeline');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const colorOptions = [
-    { value: '#94a3b8', label: 'Slate' },
-    { value: '#60a5fa', label: 'Blue' },
-    { value: '#a78bfa', label: 'Purple' },
-    { value: '#ec4899', label: 'Pink' },
-    { value: '#f59e0b', label: 'Orange' },
-    { value: '#10b981', label: 'Green' },
-    { value: '#00d4aa', label: 'Teal' },
-    { value: '#ef4444', label: 'Red' },
-    { value: '#00b8d4', label: 'Cyan' },
-  ];
+const colorOptions = [
+  { value: '#94a3b8', label: 'Slate' },
+  { value: '#60a5fa', label: 'Blue' },
+  { value: '#a78bfa', label: 'Purple' },
+  { value: '#ec4899', label: 'Pink' },
+  { value: '#f59e0b', label: 'Orange' },
+  { value: '#10b981', label: 'Green' },
+  { value: '#00d4aa', label: 'Teal' },
+  { value: '#ef4444', label: 'Red' },
+  { value: '#00b8d4', label: 'Cyan' },
+];
 
 // Sortable Stage Item Component
 function SortableStageItem({ stage, index, editingStage, onEdit, onSave, onCancel, onDelete, loading }) {
@@ -440,7 +206,7 @@ const PipelineManagementModal = ({
   onPipelineUpdated,
   onPipelineDeleted 
 }) => {
-  const [editMode, setEditMode] = useState(null); // null, 'pipeline', or stage id
+  const [editMode, setEditMode] = useState(null);
   const [stages, setStages] = useState([]);
   const [pipelineName, setPipelineName] = useState('');
   const [pipelineColor, setPipelineColor] = useState('');
@@ -464,6 +230,207 @@ const PipelineManagementModal = ({
       setStages(pipeline.pipeline_stages || []);
     }
   }, [pipeline, open]);
+
+  const handleUpdatePipeline = async () => {
+    setLoading(true);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const formData = new FormData();
+      formData.append('name', pipelineName);
+      formData.append('color', pipelineColor);
+
+      await axios.put(`${API}/pipelines/${pipeline.id}`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      toast.success('Pipeline updated successfully');
+      setEditMode(null);
+      onPipelineUpdated();
+    } catch (error) {
+      console.error('Error updating pipeline:', error);
+      toast.error('Failed to update pipeline');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddStage = async () => {
+    if (!newStage.name.trim()) {
+      toast.error('Stage name is required');
+      return;
+    }
+
+    if (stages.length >= 10) {
+      toast.error('Maximum 10 stages per pipeline');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const formData = new FormData();
+      formData.append('name', newStage.name);
+      formData.append('color', newStage.color);
+      formData.append('stage_weight', newStage.stage_weight);
+
+      const response = await axios.post(
+        `${API}/pipelines/${pipeline.id}/stages`,
+        formData,
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      if (response.data.success) {
+        setStages([...stages, response.data.stage]);
+        setNewStage({ name: '', color: '#60a5fa', stage_weight: 0.5 });
+        setShowAddStage(false);
+        toast.success('Stage added successfully');
+        onPipelineUpdated();
+      }
+    } catch (error) {
+      console.error('Error adding stage:', error);
+      toast.error(error.response?.data?.detail || 'Failed to add stage');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateStage = async (stage) => {
+    setLoading(true);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const formData = new FormData();
+      formData.append('name', stage.name);
+      formData.append('color', stage.color);
+      formData.append('stage_weight', stage.stage_weight);
+
+      await axios.put(`${API}/stages/${stage.id}`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      // Update local state immediately
+      setStages(stages.map(s => s.id === stage.id ? stage : s));
+
+      toast.success('Stage updated successfully');
+      setEditingStage(null);
+      onPipelineUpdated();
+    } catch (error) {
+      console.error('Error updating stage:', error);
+      toast.error('Failed to update stage');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteStage = async (stageId) => {
+    if (!window.confirm('Are you sure you want to delete this stage? This cannot be undone.')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      
+      await axios.delete(`${API}/stages/${stageId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setStages(stages.filter(s => s.id !== stageId));
+      toast.success('Stage deleted successfully');
+      onPipelineUpdated();
+    } catch (error) {
+      console.error('Error deleting stage:', error);
+      toast.error(error.response?.data?.detail || 'Failed to delete stage');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePipeline = async () => {
+    if (pipeline.is_default) {
+      toast.error('Cannot delete default pipeline');
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete "${pipeline.name}"? All deals will be moved to your default pipeline.`)) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      
+      await axios.delete(`${API}/pipelines/${pipeline.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      toast.success('Pipeline deleted successfully');
+      onPipelineDeleted();
+      onClose();
+    } catch (error) {
+      console.error('Error deleting pipeline:', error);
+      toast.error(error.response?.data?.detail || 'Failed to delete pipeline');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = stages.findIndex(s => s.id === active.id);
+    const newIndex = stages.findIndex(s => s.id === over.id);
+
+    // Reorder stages
+    const reorderedStages = arrayMove(stages, oldIndex, newIndex);
+
+    // Update display_order for all stages
+    const updatedStages = reorderedStages.map((stage, index) => ({
+      ...stage,
+      display_order: index
+    }));
+
+    // Optimistic update
+    setStages(updatedStages);
+
+    // Update backend
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      
+      await Promise.all(
+        updatedStages.map(stage => {
+          const formData = new FormData();
+          formData.append('display_order', stage.display_order);
+          
+          return axios.put(`${API}/stages/${stage.id}`, formData, {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+        })
+      );
+
+      toast.success('Stages reordered successfully');
+      onPipelineUpdated();
+    } catch (error) {
+      console.error('Error reordering stages:', error);
+      toast.error('Failed to reorder stages');
+      setStages(stages);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -731,7 +698,7 @@ const PipelineManagementModal = ({
               </div>
             )}
 
-            {/* Stages List */}
+            {/* Stages List with Drag & Drop */}
             <DndContext 
               sensors={sensors}
               collisionDetection={closestCenter}
