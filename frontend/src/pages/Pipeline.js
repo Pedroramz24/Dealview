@@ -89,31 +89,40 @@ const Pipeline = () => {
       });
 
       if (response.data.success) {
-        setPipelines(response.data.pipelines);
+        // Sort pipeline_stages by display_order for each pipeline
+        const pipelinesWithSortedStages = response.data.pipelines.map(p => ({
+          ...p,
+          pipeline_stages: (p.pipeline_stages || []).sort((a, b) => a.display_order - b.display_order)
+        }));
+        
+        setPipelines(pipelinesWithSortedStages);
         
         // If we have a selected pipeline, update it with fresh data
         if (selectedPipeline) {
-          const updatedSelectedPipeline = response.data.pipelines.find(p => p.id === selectedPipeline.id);
+          const updatedSelectedPipeline = pipelinesWithSortedStages.find(p => p.id === selectedPipeline.id);
           if (updatedSelectedPipeline) {
             setSelectedPipeline(updatedSelectedPipeline);
-            setStages(updatedSelectedPipeline.pipeline_stages || []);
+            const sortedStages = (updatedSelectedPipeline.pipeline_stages || []).sort((a, b) => a.display_order - b.display_order);
+            setStages(sortedStages);
           } else {
             // Pipeline was deleted, select default or first
-            const defaultPipeline = response.data.pipelines.find(p => p.is_default);
-            const pipelineToSelect = defaultPipeline || response.data.pipelines[0];
+            const defaultPipeline = pipelinesWithSortedStages.find(p => p.is_default);
+            const pipelineToSelect = defaultPipeline || pipelinesWithSortedStages[0];
             if (pipelineToSelect) {
               setSelectedPipeline(pipelineToSelect);
-              setStages(pipelineToSelect.pipeline_stages || []);
+              const sortedStages = (pipelineToSelect.pipeline_stages || []).sort((a, b) => a.display_order - b.display_order);
+              setStages(sortedStages);
             }
           }
         } else {
           // No pipeline selected yet, select default or first
-          const defaultPipeline = response.data.pipelines.find(p => p.is_default);
-          const pipelineToSelect = defaultPipeline || response.data.pipelines[0];
+          const defaultPipeline = pipelinesWithSortedStages.find(p => p.is_default);
+          const pipelineToSelect = defaultPipeline || pipelinesWithSortedStages[0];
           
           if (pipelineToSelect) {
             setSelectedPipeline(pipelineToSelect);
-            setStages(pipelineToSelect.pipeline_stages || []);
+            const sortedStages = (pipelineToSelect.pipeline_stages || []).sort((a, b) => a.display_order - b.display_order);
+            setStages(sortedStages);
           }
         }
       }
