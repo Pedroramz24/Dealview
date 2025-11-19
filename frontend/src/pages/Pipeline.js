@@ -897,12 +897,11 @@ const Pipeline = () => {
                                 </div>
                               </div>
                             )}
-                          </Draggable>
+                          </DraggableDealCard>
                         ))}
-                        {provided.placeholder}
                         
                         {/* Empty State */}
-                        {stageDeals.length === 0 && !snapshot.isDraggingOver && (
+                        {stageDeals.length === 0 && (
                           <div 
                             className="flex items-center justify-center py-8 text-center rounded-xl"
                             style={{ 
@@ -915,15 +914,13 @@ const Pipeline = () => {
                             </p>
                           </div>
                         )}
-                      </div>
-                    )}
-                  </Droppable>
+                    </DroppableStageColumn>
                   </div>
                 </div>
               );
             })}
           </div>
-        </DragDropContext>
+        </DndContext>
       </div>
       )}
 
