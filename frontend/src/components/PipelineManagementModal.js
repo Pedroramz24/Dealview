@@ -439,7 +439,31 @@ const PipelineManagementModal = ({
   pipeline, 
   onPipelineUpdated,
   onPipelineDeleted 
-}) => { 
+}) => {
+  const [editMode, setEditMode] = useState(null); // null, 'pipeline', or stage id
+  const [stages, setStages] = useState([]);
+  const [pipelineName, setPipelineName] = useState('');
+  const [pipelineColor, setPipelineColor] = useState('');
+  const [editingStage, setEditingStage] = useState(null);
+  const [newStage, setNewStage] = useState({ name: '', color: '#60a5fa', stage_weight: 0.5 });
+  const [showAddStage, setShowAddStage] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Setup dnd-kit sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  useEffect(() => {
+    if (pipeline && open) {
+      setPipelineName(pipeline.name);
+      setPipelineColor(pipeline.color);
+      setStages(pipeline.pipeline_stages || []);
+    }
+  }, [pipeline, open]); 
         className="max-w-3xl max-h-[90vh] overflow-y-auto"
         style={{
           background: 'rgba(15, 23, 42, 0.95)',
