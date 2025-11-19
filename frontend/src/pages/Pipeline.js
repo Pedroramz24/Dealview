@@ -73,13 +73,30 @@ const Pipeline = () => {
       if (response.data.success) {
         setPipelines(response.data.pipelines);
         
-        // Select default pipeline or first pipeline
-        const defaultPipeline = response.data.pipelines.find(p => p.is_default);
-        const pipelineToSelect = defaultPipeline || response.data.pipelines[0];
-        
-        if (pipelineToSelect) {
-          setSelectedPipeline(pipelineToSelect);
-          setStages(pipelineToSelect.pipeline_stages || []);
+        // If we have a selected pipeline, update it with fresh data
+        if (selectedPipeline) {
+          const updatedSelectedPipeline = response.data.pipelines.find(p => p.id === selectedPipeline.id);
+          if (updatedSelectedPipeline) {
+            setSelectedPipeline(updatedSelectedPipeline);
+            setStages(updatedSelectedPipeline.pipeline_stages || []);
+          } else {
+            // Pipeline was deleted, select default or first
+            const defaultPipeline = response.data.pipelines.find(p => p.is_default);
+            const pipelineToSelect = defaultPipeline || response.data.pipelines[0];
+            if (pipelineToSelect) {
+              setSelectedPipeline(pipelineToSelect);
+              setStages(pipelineToSelect.pipeline_stages || []);
+            }
+          }
+        } else {
+          // No pipeline selected yet, select default or first
+          const defaultPipeline = response.data.pipelines.find(p => p.is_default);
+          const pipelineToSelect = defaultPipeline || response.data.pipelines[0];
+          
+          if (pipelineToSelect) {
+            setSelectedPipeline(pipelineToSelect);
+            setStages(pipelineToSelect.pipeline_stages || []);
+          }
         }
       }
     } catch (error) {
