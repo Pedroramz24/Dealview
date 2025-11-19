@@ -537,6 +537,15 @@ const Pipeline = () => {
         }}
       />
 
+      {/* Create Pipeline Modal */}
+      <CreatePipelineModal
+        open={showCreatePipeline}
+        onClose={() => setShowCreatePipeline(false)}
+        onPipelineCreated={() => {
+          fetchPipelines();
+        }}
+      />
+
       {/* Metrics Bar */}
       <div className="px-8 pb-4">
         <div className="glass-surface p-4 flex flex-wrap gap-6">
