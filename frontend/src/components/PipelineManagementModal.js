@@ -158,15 +158,19 @@ const PipelineManagementModal = ({
     }
   };
 
-  const handleDragEnd = async (result) => {
-    if (!result.destination) return;
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
 
-    const items = Array.from(stages);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    if (!over || active.id === over.id) return;
 
-    // Update display_order for all affected stages
-    const updatedStages = items.map((stage, index) => ({
+    const oldIndex = stages.findIndex(s => s.id === active.id);
+    const newIndex = stages.findIndex(s => s.id === over.id);
+
+    // Reorder stages
+    const reorderedStages = arrayMove(stages, oldIndex, newIndex);
+
+    // Update display_order for all stages
+    const updatedStages = reorderedStages.map((stage, index) => ({
       ...stage,
       display_order: index
     }));
