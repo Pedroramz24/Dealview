@@ -593,7 +593,7 @@ const Pipeline = () => {
           {stages.slice(0, 4).map(stage => (
             <div key={stage.id}>
               <p className="text-xs uppercase" style={{ color: 'var(--text-muted)', letterSpacing: '0.5px', marginBottom: '4px' }}>
-                {stage.label}
+                {stage.name}
               </p>
               <p className="text-xl font-semibold" style={{ color: stage.color }}>
                 {metrics.stageCounts[stage.id] || 0}
