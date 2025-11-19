@@ -32,6 +32,7 @@ const Pipeline = () => {
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [stages, setStages] = useState([]);
   const [showPipelineSettings, setShowPipelineSettings] = useState(false);
+  const [showCreatePipeline, setShowCreatePipeline] = useState(false);
   
   // Deal state
   const [deals, setDeals] = useState([]);
