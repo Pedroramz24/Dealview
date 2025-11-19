@@ -139,13 +139,16 @@ const Pipeline = () => {
     }
 
     try {
+      // Use left join instead of inner join to include deals without pipeline_stage_id
       const { data, error } = await supabase
         .from('deals')
-        .select('*, pipeline_stages!inner(id, name, color, stage_weight, display_order)')
+        .select('*, pipeline_stages(id, name, color, stage_weight, display_order)')
         .eq('pipeline_id', selectedPipeline.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      
+      console.log('[Pipeline] Fetched deals:', data?.length || 0, 'deals for pipeline:', selectedPipeline.name);
       
       // Ensure all deals have proper stage data
       const dealsWithStages = (data || []).map(deal => ({
@@ -157,6 +160,7 @@ const Pipeline = () => {
         next_action: deal.next_action || 'call'
       }));
       
+      console.log('[Pipeline] Processed deals with stages:', dealsWithStages.length);
       setDeals(dealsWithStages);
     } catch (error) {
       console.error('Error fetching deals:', error);
