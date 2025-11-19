@@ -55,10 +55,20 @@ const Pipeline = () => {
   const [automationDialog, setAutomationDialog] = useState({ open: false, type: null, deal: null });
   const [automationData, setAutomationData] = useState({});
   const [viewMode, setViewMode] = useState('pipeline'); // 'pipeline' or 'table'
+  const [activeDealId, setActiveDealId] = useState(null); // For drag overlay
   
   const boardRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+
+  // Setup dnd-kit sensors for deal cards
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before drag starts
+      },
+    })
+  );
 
   // Fetch pipelines on mount
   useEffect(() => {
