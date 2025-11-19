@@ -41,6 +41,14 @@ const PipelineManagementModal = ({
   const [showAddStage, setShowAddStage] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Setup dnd-kit sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   useEffect(() => {
     if (pipeline && open) {
       setPipelineName(pipeline.name);
