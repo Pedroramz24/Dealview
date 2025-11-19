@@ -424,11 +424,12 @@ const PipelineManagementModal = ({
       );
 
       toast.success('Stages reordered successfully');
-      onPipelineUpdated();
+      // DO NOT call onPipelineUpdated() here - it causes race condition
+      // The optimistic update is already correct
     } catch (error) {
       console.error('Error reordering stages:', error);
       toast.error('Failed to reorder stages');
-      setStages(stages);
+      setStages(stages); // Revert on error
     }
   };
 
