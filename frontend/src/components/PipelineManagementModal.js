@@ -433,21 +433,13 @@ function SortableStageItem({ stage, index, editingStage, onEdit, onSave, onCance
   );
 }
 
-const colorOptions = [
-  { value: '#94a3b8', label: 'Slate' },
-  { value: '#60a5fa', label: 'Blue' },
-  { value: '#a78bfa', label: 'Purple' },
-  { value: '#ec4899', label: 'Pink' },
-  { value: '#f59e0b', label: 'Orange' },
-  { value: '#10b981', label: 'Green' },
-  { value: '#00d4aa', label: 'Teal' },
-  { value: '#ef4444', label: 'Red' },
-  { value: '#00b8d4', label: 'Cyan' },
-];
-
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent 
+const PipelineManagementModal = ({ 
+  open, 
+  onClose, 
+  pipeline, 
+  onPipelineUpdated,
+  onPipelineDeleted 
+}) => { 
         className="max-w-3xl max-h-[90vh] overflow-y-auto"
         style={{
           background: 'rgba(15, 23, 42, 0.95)',
