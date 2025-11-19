@@ -8,7 +8,22 @@ import { API } from '../App';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Plus, Trash2, Edit2, GripVertical, X, Save } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const PipelineManagementModal = ({ 
   open, 
