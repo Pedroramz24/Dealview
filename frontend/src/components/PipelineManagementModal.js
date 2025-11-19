@@ -121,14 +121,61 @@ const PipelineManagementModal = ({
         }
       });
 
+      // Update local state immediately
+      setStages(stages.map(s => s.id === stage.id ? stage : s));
+
       toast.success('Stage updated successfully');
       setEditingStage(null);
-      onPipelineUpdated();
+      onPipelineUpdated(); // This will refresh the pipeline data
     } catch (error) {
       console.error('Error updating stage:', error);
       toast.error('Failed to update stage');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDragEnd = async (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(stages);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Update display_order for all affected stages
+    const updatedStages = items.map((stage, index) => ({
+      ...stage,
+      display_order: index
+    }));
+
+    // Optimistic update
+    setStages(updatedStages);
+
+    // Update each stage's display_order in the backend
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      
+      await Promise.all(
+        updatedStages.map(stage => {
+          const formData = new FormData();
+          formData.append('display_order', stage.display_order);
+          
+          return axios.put(`${API}/stages/${stage.id}`, formData, {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+        })
+      );
+
+      toast.success('Stages reordered successfully');
+      onPipelineUpdated();
+    } catch (error) {
+      console.error('Error reordering stages:', error);
+      toast.error('Failed to reorder stages');
+      // Revert on error
+      setStages(stages);
     }
   };
 
