@@ -704,7 +704,7 @@ const Pipeline = () => {
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-                        {stage.label}
+                        {stage.name}
                       </h3>
                       <span 
                         className="px-2 py-1 rounded-full text-xs font-semibold"
