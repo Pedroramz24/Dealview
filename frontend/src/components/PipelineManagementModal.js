@@ -7,7 +7,8 @@ import { supabase } from '../supabaseClient';
 import { API } from '../App';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Plus, Trash2, Edit2, GripVertical, X, Save } from 'lucide-react';
+import { Plus, Trash2, Edit2, GripVertical, X, Save, HelpCircle } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const PipelineManagementModal = ({ 
   open, 
