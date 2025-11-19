@@ -520,7 +520,7 @@ const PipelineManagementModal = ({
                     className="space-y-2"
                   >
                     {stages.map((stage, index) => (
-                      <Draggable key={stage.id} draggableId={stage.id} index={index}>
+                      <Draggable key={stage.id} draggableId={String(stage.id)} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
