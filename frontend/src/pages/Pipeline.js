@@ -975,12 +975,12 @@ const Pipeline = () => {
                           borderRadius: '6px',
                           fontSize: '12px',
                           fontWeight: '600',
-                          background: `${stages.find(s => s.id === deal.stage)?.color || '#94a3b8'}20`,
-                          color: stages.find(s => s.id === deal.stage)?.color || '#94a3b8',
-                          border: `1px solid ${stages.find(s => s.id === deal.stage)?.color || '#94a3b8'}40`
+                          background: `${deal.stage_color || '#94a3b8'}20`,
+                          color: deal.stage_color || '#94a3b8',
+                          border: `1px solid ${deal.stage_color || '#94a3b8'}40`
                         }}
                       >
-                        {stages.find(s => s.id === deal.stage)?.label || 'Need to Contact'}
+                        {deal.stage_name || 'Unknown'}
                       </span>
                     </td>
                     <td style={{ padding: '16px', textAlign: 'right', color: 'var(--text-primary)', fontWeight: '600' }}>
