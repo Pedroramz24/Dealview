@@ -708,7 +708,12 @@ const Pipeline = () => {
       {/* PIPELINE VIEW - Kanban Board */}
       {viewMode === 'pipeline' && (
       <div className="px-8 pb-8 flex-1" style={{ height: 'calc(100vh - 280px)' }}>
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={onDragEnd}
+        >
           <div 
             ref={boardRef}
             className="flex gap-4 overflow-x-auto pb-4"
@@ -755,26 +760,17 @@ const Pipeline = () => {
 
                   {/* Droppable Column */}
                   <div className="flex-1 overflow-hidden">
-                    <Droppable 
-                      droppableId={String(stage.id)} 
-                      isDropDisabled={false} 
-                      isCombineEnabled={false}
-                      ignoreContainerClipping={false}
+                    <DroppableStageColumn 
+                      stageId={stage.id}
+                      isOver={activeDealId && true}
                     >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className="flex flex-col p-2 rounded-xl transition-all duration-200 h-full"
-                          style={{
-                            background: snapshot.isDraggingOver ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
-                            border: snapshot.isDraggingOver ? '2px dashed var(--accent)' : '2px dashed transparent',
-                            overflowY: 'auto',
-                            overflowX: 'hidden'
-                          }}
-                      >
-                        {stageDeals.map((deal, index) => (
-                          <Draggable key={deal.id} draggableId={String(deal.id)} index={index}>
+                      {stageDeals.map((deal) => (
+                        <DraggableDealCard
+                          key={deal.id}
+                          dealId={deal.id}
+                          deal={deal}
+                          isDragging={activeDealId === deal.id}
+                        >
                             {(provided, snapshot) => (
                               <div
                                 ref={provided.innerRef}
