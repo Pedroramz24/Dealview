@@ -162,13 +162,23 @@ const Pipeline = () => {
     }
   };
 
-  const onDragEnd = async (result) => {
-    if (!result.destination) return;
+  const onDragEnd = async (event) => {
+    const { active, over } = event;
+    
+    setActiveDealId(null);
 
-    const dealId = result.draggableId;
-    const newStageId = result.destination.droppableId;
-    const oldStageId = result.source.droppableId;
+    if (!over) return;
 
+    const dealId = active.id;
+    const newStageId = over.id;
+
+    // Find the deal and its current stage
+    const deal = deals.find(d => d.id === dealId);
+    if (!deal) return;
+
+    const oldStageId = deal.pipeline_stage_id || deal.stage_id;
+
+    // Check if moving to a different stage
     if (newStageId === oldStageId) return;
 
     // Find the new stage info
@@ -176,14 +186,15 @@ const Pipeline = () => {
     if (!newStage) return;
 
     // Optimistic update
-    const updatedDeals = deals.map((deal) =>
-      deal.id === dealId ? { 
-        ...deal, 
+    const updatedDeals = deals.map((d) =>
+      d.id === dealId ? { 
+        ...d, 
         stage_id: newStageId,
         pipeline_stage_id: newStageId,
         stage_name: newStage.name,
-        stage_color: newStage.color
-      } : deal
+        stage_color: newStage.color,
+        pipeline_stages: newStage
+      } : d
     );
     setDeals(updatedDeals);
 
@@ -204,7 +215,6 @@ const Pipeline = () => {
       toast.success('Deal moved successfully');
 
       // Trigger automations based on stage name
-      const deal = deals.find(d => d.id === dealId);
       triggerAutomation(newStage.name, deal);
       
     } catch (error) {
@@ -212,6 +222,10 @@ const Pipeline = () => {
       toast.error('Failed to update deal stage');
       fetchDeals(); // Revert on error
     }
+  };
+
+  const handleDragStart = (event) => {
+    setActiveDealId(event.active.id);
   };
 
   const triggerAutomation = (stageName, deal) => {
