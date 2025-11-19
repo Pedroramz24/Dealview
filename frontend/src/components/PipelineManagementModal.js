@@ -259,6 +259,180 @@ const PipelineManagementModal = ({
     { value: '#00b8d4', label: 'Cyan' },
   ];
 
+// Sortable Stage Item Component
+function SortableStageItem({ stage, index, editingStage, onEdit, onSave, onCancel, onDelete, loading }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: stage.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    background: editingStage?.id === stage.id 
+      ? 'rgba(0, 184, 212, 0.05)' 
+      : isDragging 
+        ? 'rgba(0, 184, 212, 0.1)' 
+        : 'rgba(255,255,255,0.03)',
+    border: editingStage?.id === stage.id 
+      ? '1px solid rgba(0, 184, 212, 0.3)' 
+      : isDragging 
+        ? '1px solid rgba(0, 184, 212, 0.5)'
+        : '1px solid rgba(255,255,255,0.05)',
+    borderRadius: '8px',
+    padding: '12px',
+    marginBottom: '8px',
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {editingStage?.id === stage.id ? (
+        // Edit Mode
+        <div className="space-y-3">
+          <div>
+            <Input
+              value={editingStage.name}
+              onChange={(e) => onEdit({ ...editingStage, name: e.target.value })}
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#FFFFFF'
+              }}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <select
+              value={editingStage.color}
+              onChange={(e) => onEdit({ ...editingStage, color: e.target.value })}
+              style={{
+                padding: '8px',
+                borderRadius: '6px',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#FFFFFF'
+              }}
+            >
+              {colorOptions.map((color) => (
+                <option key={color.value} value={color.value}>
+                  {color.label}
+                </option>
+              ))}
+            </select>
+
+            <Input
+              type="number"
+              step="0.1"
+              min="0"
+              max="1"
+              value={editingStage.stage_weight}
+              onChange={(e) => onEdit({ ...editingStage, stage_weight: parseFloat(e.target.value) })}
+              placeholder="Weight (0-1)"
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#FFFFFF'
+              }}
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              onClick={() => onSave(editingStage)}
+              disabled={loading}
+              size="sm"
+              style={{
+                background: '#00b8d4',
+                color: '#FFFFFF'
+              }}
+            >
+              <Save size={14} className="mr-2" />
+              Save
+            </Button>
+            <Button
+              onClick={onCancel}
+              size="sm"
+              variant="outline"
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.6)'
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : (
+        // View Mode
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div {...attributes} {...listeners} style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
+              <GripVertical size={16} style={{ color: 'rgba(255,255,255,0.3)' }} />
+            </div>
+            <div
+              style={{
+                width: '8px',
+                height: '32px',
+                borderRadius: '4px',
+                background: stage.color
+              }}
+            />
+            <div>
+              <p style={{ color: '#FFFFFF', fontWeight: '600', fontSize: '14px' }}>
+                {stage.name}
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
+                Weight: {stage.stage_weight} • Order: {index + 1}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              onClick={() => onEdit({ ...stage })}
+              size="sm"
+              variant="ghost"
+              style={{
+                color: 'rgba(255,255,255,0.6)'
+              }}
+            >
+              <Edit2 size={14} />
+            </Button>
+            <Button
+              onClick={() => onDelete(stage.id)}
+              size="sm"
+              variant="ghost"
+              style={{
+                color: '#ef4444'
+              }}
+            >
+              <Trash2 size={14} />
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const colorOptions = [
+  { value: '#94a3b8', label: 'Slate' },
+  { value: '#60a5fa', label: 'Blue' },
+  { value: '#a78bfa', label: 'Purple' },
+  { value: '#ec4899', label: 'Pink' },
+  { value: '#f59e0b', label: 'Orange' },
+  { value: '#10b981', label: 'Green' },
+  { value: '#00d4aa', label: 'Teal' },
+  { value: '#ef4444', label: 'Red' },
+  { value: '#00b8d4', label: 'Cyan' },
+];
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent 
