@@ -917,6 +917,30 @@ const Pipeline = () => {
               );
             })}
           </div>
+          
+          {/* Drag Overlay - Renders dragged card on top of everything */}
+          <DragOverlay>
+            {activeDealId ? (
+              <div
+                className="rounded-xl overflow-hidden"
+                style={{
+                  boxShadow: '0 20px 50px rgba(0, 184, 212, 0.4), 0 0 0 2px var(--accent), 0 0 20px rgba(0, 184, 212, 0.3)',
+                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid var(--accent)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  width: '300px',
+                  transform: 'rotate(5deg)'
+                }}
+              >
+                <div className="p-4">
+                  <div className="text-center text-white font-semibold">
+                    {deals.find(d => d.id === activeDealId)?.title || deals.find(d => d.id === activeDealId)?.address || 'Moving...'}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </DragOverlay>
         </DndContext>
       </div>
       )}
