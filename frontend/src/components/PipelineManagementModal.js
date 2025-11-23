@@ -203,6 +203,7 @@ const PipelineManagementModal = ({
   open, 
   onClose, 
   pipeline, 
+  onStagesReordered,
   onPipelineUpdated,
   onPipelineDeleted 
 }) => {
