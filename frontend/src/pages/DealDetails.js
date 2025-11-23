@@ -442,8 +442,13 @@ const DealDetails = () => {
         title: titleRef.current?.value || deal.title,
         address: addressRef.current?.value || deal.address,
         asset_type: assetTypeRef.current?.value || deal.asset_type,
-        stage: stageRef.current?.value || deal.stage,
+        
+        // Pipeline & Stage - NEW
+        pipeline_id: selectedPipelineId,
+        pipeline_stage_id: selectedStageId,
+        stage: stageRef.current?.value || deal.stage, // Keep for backward compatibility
         status: stageRef.current?.value || deal.status,
+        
         priority: priorityRef.current?.value || 'Medium',
         owner_visibility: visibilityRef.current?.value || 'Team',
         
@@ -484,7 +489,6 @@ const DealDetails = () => {
       
       // Refresh deal data
       await fetchDeal();
-      setIsEditMode(false);
       toast.success('Deal updated successfully');
       
     } catch (error) {
