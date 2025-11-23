@@ -592,12 +592,12 @@ const Pipeline = () => {
         open={showPipelineSettings}
         onClose={() => {
           setShowPipelineSettings(false);
-          // Refresh to get latest stage order
-          if (selectedPipeline) {
-            fetchPipelines();
-          }
         }}
         pipeline={selectedPipeline}
+        onStagesReordered={(newStages) => {
+          // Update stages immediately without refetching
+          setStages(newStages);
+        }}
         onPipelineUpdated={() => {
           fetchPipelines();
           if (selectedPipeline) {
