@@ -360,6 +360,8 @@ const Pipeline = () => {
     const filtered = getFilteredDeals();
     let stageDeals = filtered.filter(deal => deal.pipeline_stage_id === stageId || deal.stage_id === stageId);
     
+    console.log('[getDealsByStage] Stage:', stageId, 'Found:', stageDeals.length, 'deals');
+    
     // Sort deals
     if (sortBy === 'price') {
       stageDeals.sort((a, b) => (b.price || 0) - (a.price || 0));
