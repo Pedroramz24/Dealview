@@ -590,11 +590,19 @@ const Pipeline = () => {
       {/* Pipeline Management Modal */}
       <PipelineManagementModal
         open={showPipelineSettings}
-        onClose={() => setShowPipelineSettings(false)}
+        onClose={() => {
+          setShowPipelineSettings(false);
+          // Refresh to get latest stage order
+          if (selectedPipeline) {
+            fetchPipelines();
+          }
+        }}
         pipeline={selectedPipeline}
         onPipelineUpdated={() => {
           fetchPipelines();
-          fetchDeals();
+          if (selectedPipeline) {
+            fetchDeals();
+          }
         }}
         onPipelineDeleted={() => {
           fetchPipelines();
