@@ -38,7 +38,7 @@ export function DraggableDealCard({ dealId, children }) {
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0 : 1, // Fully hide original card when dragging (overlay shows instead)
     cursor: isDragging ? 'grabbing' : 'grab',
     marginBottom: '12px',
   };
