@@ -224,8 +224,8 @@ const Pipeline = () => {
       
       toast.success('Deal moved successfully');
 
-      // Trigger automations based on stage name
-      triggerAutomation(newStage.name, deal);
+      // Trigger automations - TEMPORARILY DISABLED
+      // triggerAutomation(newStage.name, deal);
       
     } catch (error) {
       console.error('Error updating deal stage:', error);
