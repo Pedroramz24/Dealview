@@ -124,8 +124,40 @@ const DealDetails = () => {
       fetchDeal();
       fetchLinkedContacts();
       fetchAllContacts();
+      fetchPipelines();
     }
   }, [dealId, user]);
+  
+  // Update available stages when pipeline selection changes
+  useEffect(() => {
+    if (selectedPipelineId && pipelines.length > 0) {
+      const pipeline = pipelines.find(p => p.id === selectedPipelineId);
+      if (pipeline) {
+        const sortedStages = (pipeline.pipeline_stages || []).sort((a, b) => a.display_order - b.display_order);
+        setAvailableStages(sortedStages);
+      }
+    }
+  }, [selectedPipelineId, pipelines]);
+  
+  const fetchPipelines = async () => {
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/pipelines`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        const pipelinesWithSortedStages = data.pipelines.map(p => ({
+          ...p,
+          pipeline_stages: (p.pipeline_stages || []).sort((a, b) => a.display_order - b.display_order)
+        }));
+        setPipelines(pipelinesWithSortedStages);
+      }
+    } catch (error) {
+      console.error('Error fetching pipelines:', error);
+    }
+  };
   
   // Click away handler for contact dropdown
   useEffect(() => {
