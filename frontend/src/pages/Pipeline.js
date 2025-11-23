@@ -926,28 +926,62 @@ const Pipeline = () => {
             })}
           </div>
           
-          {/* Drag Overlay - Renders dragged card on top of everything */}
+          {/* Drag Overlay - Renders full dragged card on top of everything */}
           <DragOverlay>
-            {activeDealId ? (
-              <div
-                className="rounded-xl overflow-hidden"
-                style={{
-                  boxShadow: '0 20px 50px rgba(0, 184, 212, 0.4), 0 0 0 2px var(--accent), 0 0 20px rgba(0, 184, 212, 0.3)',
-                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid var(--accent)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  width: '300px',
-                  transform: 'rotate(5deg)'
-                }}
-              >
-                <div className="p-4">
-                  <div className="text-center text-white font-semibold">
-                    {deals.find(d => d.id === activeDealId)?.title || deals.find(d => d.id === activeDealId)?.address || 'Moving...'}
+            {activeDealId ? (() => {
+              const draggedDeal = deals.find(d => d.id === activeDealId);
+              if (!draggedDeal) return null;
+              
+              return (
+                <div
+                  className="rounded-xl overflow-hidden"
+                  style={{
+                    boxShadow: '0 20px 50px rgba(0, 184, 212, 0.4), 0 0 0 2px var(--accent), 0 0 20px rgba(0, 184, 212, 0.3)',
+                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid var(--accent)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    width: '300px',
+                    transform: 'rotate(3deg)'
+                  }}
+                >
+                  <div className="p-4">
+                    {/* Title & Address */}
+                    <div className="mb-3">
+                      <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: '#FFFFFF' }}>
+                        {draggedDeal.title || draggedDeal.address || 'Untitled Deal'}
+                      </h4>
+                      {draggedDeal.address && (
+                        <p className="text-xs line-clamp-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                          {draggedDeal.address}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Asset Type Badge */}
+                    <div className="mb-3">
+                      <span style={{ 
+                        padding: '4px 10px',
+                        background: getAssetTypeColor(draggedDeal.asset_type).bg,
+                        color: getAssetTypeColor(draggedDeal.asset_type).color,
+                        borderRadius: '6px',
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        border: `1px solid ${getAssetTypeColor(draggedDeal.asset_type).border}`,
+                        display: 'inline-block'
+                      }}>
+                        {draggedDeal.asset_type || 'N/A'}
+                      </span>
+                    </div>
+
+                    {/* Price */}
+                    <p className="text-lg font-bold" style={{ color: '#00b8d4' }}>
+                      {formatPrice(draggedDeal.price)}
+                    </p>
                   </div>
                 </div>
-              </div>
-            ) : null}
+              );
+            })() : null}
           </DragOverlay>
         </DndContext>
       </div>
