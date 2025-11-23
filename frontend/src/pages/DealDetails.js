@@ -48,8 +48,13 @@ const DealDetails = () => {
   const [uploading, setUploading] = useState(false);
   const { user } = useContext(AuthContext);
   
-  // Edit Mode State
-  const [isEditMode, setIsEditMode] = useState(false);
+  // Pipeline & Stage Management
+  const [pipelines, setPipelines] = useState([]);
+  const [availableStages, setAvailableStages] = useState([]);
+  const [selectedPipelineId, setSelectedPipelineId] = useState(null);
+  const [selectedStageId, setSelectedStageId] = useState(null);
+  
+  // Saving State
   const [isSaving, setIsSaving] = useState(false);
   
   // Contact Management
