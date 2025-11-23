@@ -667,41 +667,22 @@ const DealDetails = () => {
               BACK TO PROPERTIES
             </Button>
             
-            {/* Edit Mode Toggle */}
-            {!isEditMode ? (
-              <div className="flex gap-2">
-                {linkedContacts.length > 0 && linkedContacts[0].email && (
-                  <Button
-                    onClick={() => {
-                      setEmailRecipient({
-                        id: linkedContacts[0].id,
-                        email: linkedContacts[0].email,
-                        name: linkedContacts[0].full_name || linkedContacts[0].name
-                      });
-                      setShowEmailCompose(true);
-                    }}
-                    style={{
-                      background: 'rgba(139, 92, 246, 0.15)',
-                      border: '1px solid rgba(139, 92, 246, 0.3)',
-                      color: '#8b5cf6',
-                      padding: '8px 24px',
-                      borderRadius: '6px',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}
-                  >
-                    <Mail className="w-4 h-4 mr-2" />
-                    SEND EMAIL
-                  </Button>
-                )}
+            {/* Action Buttons - Always Show Save */}
+            <div className="flex gap-2">
+              {linkedContacts.length > 0 && linkedContacts[0].email && (
                 <Button
-                  onClick={handleEditMode}
+                  onClick={() => {
+                    setEmailRecipient({
+                      id: linkedContacts[0].id,
+                      email: linkedContacts[0].email,
+                      name: linkedContacts[0].full_name || linkedContacts[0].name
+                    });
+                    setShowEmailCompose(true);
+                  }}
                   style={{
-                    background: 'rgba(0, 184, 212, 0.15)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
-                    color: '#00b8d4',
+                    background: 'rgba(139, 92, 246, 0.15)',
+                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    color: '#8b5cf6',
                     padding: '8px 24px',
                     borderRadius: '6px',
                     fontSize: '13px',
@@ -710,65 +691,46 @@ const DealDetails = () => {
                     letterSpacing: '0.5px'
                   }}
                 >
-                  <Edit className="w-4 h-4 mr-2" />
-                  EDIT MODE
+                  <Mail className="w-4 h-4 mr-2" />
+                  SEND EMAIL
                 </Button>
-                <Button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  style={{
-                    background: 'rgba(239, 68, 68, 0.15)',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    color: '#ef4444',
-                    padding: '8px 24px',
-                    borderRadius: '6px',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  DELETE
-                </Button>
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleCancelEdit}
-                  disabled={isSaving}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    padding: '8px 20px',
-                    borderRadius: '6px',
-                    fontSize: '13px',
-                    fontWeight: '600'
-                  }}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  CANCEL
-                </Button>
-                <Button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  style={{
-                    background: '#00b8d4',
-                    border: '1px solid #00d4aa',
-                    color: '#FFFFFF',
-                    padding: '8px 24px',
-                    borderRadius: '6px',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {isSaving ? 'SAVING...' : 'SAVE CHANGES'}
-                </Button>
-              </div>
-            )}
+              )}
+              <Button
+                onClick={handleSave}
+                disabled={isSaving}
+                style={{
+                  background: '#00b8d4',
+                  border: '1px solid #00d4aa',
+                  color: '#FFFFFF',
+                  padding: '8px 24px',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {isSaving ? 'SAVING...' : 'SAVE CHANGES'}
+              </Button>
+              <Button
+                onClick={() => setShowDeleteConfirm(true)}
+                style={{
+                  background: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#ef4444',
+                  padding: '8px 24px',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                DELETE
+              </Button>
+            </div>
           </div>
 
           {/* Property Address - Centered */}
