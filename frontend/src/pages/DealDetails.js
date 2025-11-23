@@ -188,6 +188,10 @@ const DealDetails = () => {
       if (error) throw error;
       setDeal(data);
       
+      // Set pipeline and stage state
+      setSelectedPipelineId(data.pipeline_id);
+      setSelectedStageId(data.pipeline_stage_id);
+      
       // Set team states
       setIsSharedWithTeam(data.is_shared_with_team || false);
       setAssignedTo(data.assigned_to);
