@@ -786,134 +786,116 @@ const Pipeline = () => {
                           deal={deal}
                           isDragging={activeDealId === deal.id}
                         >
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="group relative mb-3"
-                                style={{
-                                  ...provided.draggableProps.style,
-                                  cursor: snapshot.isDragging ? 'grabbing' : 'grab'
-                                }}
-                              >
-                                {/* Deal Card */}
-                                <div
-                                  className="rounded-xl overflow-hidden transition-all duration-200"
-                                  style={{
-                                    transform: snapshot.isDragging ? 'scale(1.05)' : 'scale(1)',
-                                    boxShadow: snapshot.isDragging 
-                                      ? '0 20px 50px rgba(0, 184, 212, 0.4), 0 0 0 2px var(--accent), 0 0 20px rgba(0, 184, 212, 0.3)' 
-                                      : '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(100, 116, 139, 0.2)',
-                                    background: snapshot.isDragging
-                                      ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)'
-                                      : 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%)',
-                                    backdropFilter: 'blur(20px)',
-                                    border: snapshot.isDragging 
-                                      ? '1px solid var(--accent)' 
-                                      : '1px solid rgba(100, 116, 139, 0.3)',
-                                    WebkitBackdropFilter: 'blur(20px)'
-                                  }}
-                                >
-                                  {/* Card Content */}
-                                  <div className="p-4">
-                                    {/* Title & Address */}
-                                    <div className="mb-3">
-                                      <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
-                                        {deal.title || deal.address || 'Untitled Deal'}
-                                      </h4>
-                                      {deal.address && (
-                                        <p className="text-xs line-clamp-1" style={{ color: 'var(--text-secondary)' }}>
-                                          {deal.address}
-                                        </p>
-                                      )}
+                          {/* Deal Card */}
+                          <div
+                            className="rounded-xl overflow-hidden transition-all duration-200 group relative mb-3"
+                            style={{
+                              boxShadow: activeDealId === deal.id
+                                ? '0 20px 50px rgba(0, 184, 212, 0.4), 0 0 0 2px var(--accent), 0 0 20px rgba(0, 184, 212, 0.3)' 
+                                : '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(100, 116, 139, 0.2)',
+                              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%)',
+                              backdropFilter: 'blur(20px)',
+                              border: '1px solid rgba(100, 116, 139, 0.3)',
+                              WebkitBackdropFilter: 'blur(20px)'
+                            }}
+                          >
+                            {/* Card Content */}
+                            <div className="p-4">
+                              {/* Title & Address */}
+                              <div className="mb-3">
+                                <h4 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
+                                  {deal.title || deal.address || 'Untitled Deal'}
+                                </h4>
+                                {deal.address && (
+                                  <p className="text-xs line-clamp-1" style={{ color: 'var(--text-secondary)' }}>
+                                    {deal.address}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* Asset Type Badge */}
+                              <div className="mb-3">
+                                <span style={{ 
+                                  padding: '4px 10px',
+                                  background: getAssetTypeColor(deal.asset_type).bg,
+                                  color: getAssetTypeColor(deal.asset_type).color,
+                                  borderRadius: '6px',
+                                  fontSize: '11px',
+                                  fontWeight: '600',
+                                  border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
+                                  display: 'inline-block'
+                                }}>
+                                  {deal.asset_type || 'N/A'}
+                                </span>
+                              </div>
+
+                              {/* Price */}
+                              <p className="text-lg font-bold mb-3" style={{ color: 'var(--accent)' }}>
+                                {formatPrice(deal.price)}
+                              </p>
+
+                              {/* Meta Info */}
+                              <div className="flex items-center justify-between text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>{formatDate(deal.last_contact)}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  {deal.documents_count > 0 && (
+                                    <div className="flex items-center gap-1">
+                                      <FileText className="w-3 h-3" />
+                                      <span>{deal.documents_count}</span>
                                     </div>
-
-                                    {/* Asset Type Badge */}
-                                    <div className="mb-3">
-                                      <span style={{ 
-                                        padding: '4px 10px',
-                                        background: getAssetTypeColor(deal.asset_type).bg,
-                                        color: getAssetTypeColor(deal.asset_type).color,
-                                        borderRadius: '6px',
-                                        fontSize: '11px',
-                                        fontWeight: '600',
-                                        border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
-                                        display: 'inline-block'
-                                      }}>
-                                        {deal.asset_type || 'N/A'}
-                                      </span>
+                                  )}
+                                  {deal.tasks_count > 0 && (
+                                    <div className="flex items-center gap-1">
+                                      <CheckSquare className="w-3 h-3" />
+                                      <span>{deal.tasks_count}</span>
                                     </div>
-
-                                    {/* Price */}
-                                    <p className="text-lg font-bold mb-3" style={{ color: 'var(--accent)' }}>
-                                      {formatPrice(deal.price)}
-                                    </p>
-
-                                    {/* Meta Info */}
-                                    <div className="flex items-center justify-between text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-                                      <div className="flex items-center gap-1">
-                                        <Calendar className="w-3 h-3" />
-                                        <span>{formatDate(deal.last_contact)}</span>
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        {deal.documents_count > 0 && (
-                                          <div className="flex items-center gap-1">
-                                            <FileText className="w-3 h-3" />
-                                            <span>{deal.documents_count}</span>
-                                          </div>
-                                        )}
-                                        {deal.tasks_count > 0 && (
-                                          <div className="flex items-center gap-1">
-                                            <CheckSquare className="w-3 h-3" />
-                                            <span>{deal.tasks_count}</span>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-
-                                    {/* Owner Avatar */}
-                                    {deal.owner_email && (
-                                      <div className="mb-3 pb-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                                        <div className="flex items-center gap-2">
-                                          <div 
-                                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold"
-                                            style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}
-                                          >
-                                            {deal.owner_email.charAt(0).toUpperCase()}
-                                          </div>
-                                          <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                                            {deal.owner_email.split('@')[0]}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {/* View Details Button */}
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate(`/deals/${deal.id}`);
-                                      }}
-                                      className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-opacity-80"
-                                      style={{
-                                        background: 'rgba(59, 130, 246, 0.15)',
-                                        border: '1px solid rgba(59, 130, 246, 0.4)',
-                                        color: 'var(--accent)',
-                                        fontSize: '12px',
-                                        fontWeight: '600'
-                                      }}
-                                      onMouseDown={(e) => e.stopPropagation()}
-                                    >
-                                      <Eye className="w-3.5 h-3.5" />
-                                      View Details
-                                    </button>
-                                  </div>
+                                  )}
                                 </div>
                               </div>
-                            )}
-                          </DraggableDealCard>
-                        ))}
+
+                              {/* Owner Avatar */}
+                              {deal.owner_email && (
+                                <div className="mb-3 pb-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                                  <div className="flex items-center gap-2">
+                                    <div 
+                                      className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                                      style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}
+                                    >
+                                      {deal.owner_email.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                      {deal.owner_email.split('@')[0]}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* View Details Button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/deals/${deal.id}`);
+                                }}
+                                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-opacity-80"
+                                style={{
+                                  background: 'rgba(59, 130, 246, 0.15)',
+                                  border: '1px solid rgba(59, 130, 246, 0.4)',
+                                  color: 'var(--accent)',
+                                  fontSize: '12px',
+                                  fontWeight: '600'
+                                }}
+                                onMouseDown={(e) => e.stopPropagation()}
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                View Details
+                              </button>
+                            </div>
+                          </div>
+                        </DraggableDealCard>
+                      ))}
                         
                         {/* Empty State */}
                         {stageDeals.length === 0 && (
