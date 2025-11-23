@@ -468,94 +468,36 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
           {isDeal ? 'Deal Details' : 'Property Intelligence'}
         </h2>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          {/* Edit/Save buttons for deals */}
+          {/* Save button for deals - always visible */}
           {isDeal && (
-            <>
-              {!isEditing ? (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    background: 'rgba(0, 184, 212, 0.1)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
-                    color: '#00b8d4',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 150ms ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
-                  }}
-                >
-                  <Edit className="w-4 h-4" />
-                  Edit
-                </button>
-              ) : (
-                <>
-                  <button
-                    onClick={handleSave}
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
-                      border: 'none',
-                      color: '#FFFFFF',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 150ms ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  >
-                    <Save className="w-4 h-4" />
-                    Save
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditedData({ ...data });
-                      setIsEditing(false);
-                    }}
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      background: 'rgba(239, 68, 68, 0.1)',
-                      border: '1px solid rgba(239, 68, 68, 0.3)',
-                      color: '#ef4444',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 150ms ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </>
-              )}
-            </>
+            <button
+              onClick={handleSave}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '6px',
+                background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                border: 'none',
+                color: '#FFFFFF',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 150ms ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <Save className="w-4 h-4" />
+              Save
+            </button>
           )}
           {/* Create Deal button for parcels */}
           {!isDeal && onCreateDeal && (
