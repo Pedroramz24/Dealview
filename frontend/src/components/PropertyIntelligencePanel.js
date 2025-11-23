@@ -365,7 +365,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
       if (error) throw error;
       
       toast.success('✓ Deal updated successfully');
-      setIsEditing(false);
+      // Keep editing mode active - no setIsEditing(false)
       
       // Update the local data without reloading the page
       // This keeps the map position intact
