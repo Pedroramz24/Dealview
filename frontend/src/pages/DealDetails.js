@@ -887,81 +887,95 @@ const DealDetails = () => {
                   )}
                 </div>
                 <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Status</p>
-                  {isEditMode ? (
-                    <select
-                      ref={stageRef}
-                      defaultValue={deal.stage}
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(0, 184, 212, 0.3)',
-                        borderRadius: '6px',
-                        color: '#FFFFFF',
-                        fontSize: '14px'
-                      }}
-                    >
-                      <option value="need_to_contact">Need to Contact</option>
-                      <option value="contacted">Contacted</option>
-                      <option value="prospect">Prospect</option>
-                      <option value="negotiations">Negotiations</option>
-                      <option value="offer_sent">Offer Sent</option>
-                      <option value="under_contract">Under Contract</option>
-                      <option value="closed_won">Closed Won</option>
-                      <option value="overpriced">Overpriced</option>
-                    </select>
-                  ) : (
-                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.stage?.replace(/_/g, ' ') || 'N/A'}</p>
-                  )}
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Pipeline</p>
+                  <select
+                    value={selectedPipelineId || ''}
+                    onChange={(e) => {
+                      setSelectedPipelineId(e.target.value);
+                      setSelectedStageId(null); // Reset stage when pipeline changes
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(0, 184, 212, 0.3)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  >
+                    <option value="">Select Pipeline...</option>
+                    {pipelines.map((pipeline) => (
+                      <option key={pipeline.id} value={pipeline.id}>
+                        {pipeline.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Stage</p>
+                  <select
+                    value={selectedStageId || ''}
+                    onChange={(e) => setSelectedStageId(e.target.value)}
+                    disabled={!selectedPipelineId}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(0, 184, 212, 0.3)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px',
+                      opacity: selectedPipelineId ? 1 : 0.5
+                    }}
+                  >
+                    <option value="">Select Stage...</option>
+                    {availableStages.map((stage) => (
+                      <option key={stage.id} value={stage.id}>
+                        {stage.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Priority</p>
-                  {isEditMode ? (
-                    <select
-                      ref={priorityRef}
-                      defaultValue={deal.priority || 'Medium'}
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(0, 184, 212, 0.3)',
-                        borderRadius: '6px',
-                        color: '#FFFFFF',
-                        fontSize: '14px'
-                      }}
-                    >
-                      <option value="High">High</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Low">Low</option>
-                    </select>
-                  ) : (
-                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.priority || 'Medium'}</p>
-                  )}
+                  <select
+                    ref={priorityRef}
+                    defaultValue={deal.priority || 'Medium'}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(0, 184, 212, 0.3)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  >
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>Visibility</p>
-                  {isEditMode ? (
-                    <select
-                      ref={visibilityRef}
-                      defaultValue={deal.owner_visibility || 'Team'}
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(0, 184, 212, 0.3)',
-                        borderRadius: '6px',
-                        color: '#FFFFFF',
-                        fontSize: '14px'
-                      }}
-                    >
-                      <option value="Private">Private</option>
-                      <option value="Team">Team</option>
-                      <option value="Public">Public</option>
-                    </select>
-                  ) : (
-                    <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>{deal.owner_visibility || 'Team'}</p>
-                  )}
+                  <select
+                    ref={visibilityRef}
+                    defaultValue={deal.owner_visibility || 'Team'}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(0, 184, 212, 0.3)',
+                      borderRadius: '6px',
+                      color: '#FFFFFF',
+                      fontSize: '14px'
+                    }}
+                  >
+                    <option value="Private">Private</option>
+                    <option value="Team">Team</option>
+                    <option value="Public">Public</option>
+                  </select>
                 </div>
               </div>
             </div>
