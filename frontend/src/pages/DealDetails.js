@@ -427,22 +427,8 @@ const DealDetails = () => {
     toast.success('Share link copied to clipboard');
   };
   
-  // Edit Mode Handlers
-  const handleEditMode = () => {
-    setIsEditMode(true);
-  };
   
-  const handleCancelEdit = () => {
-    setIsEditMode(false);
-    // Reset dates to original values
-    if (deal.target_close_date) setTargetCloseDate(new Date(deal.target_close_date));
-    else setTargetCloseDate(null);
-    if (deal.next_action_date) setNextActionDate(new Date(deal.next_action_date));
-    else setNextActionDate(null);
-    if (deal.last_contact_date) setLastContactDate(new Date(deal.last_contact_date));
-    else setLastContactDate(null);
-  };
-  
+
   const handleSave = async () => {
     if (!user) {
       toast.error('You must be logged in to save changes');
