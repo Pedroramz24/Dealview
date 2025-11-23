@@ -425,8 +425,14 @@ const PipelineManagementModal = ({
       );
 
       toast.success('Stages reordered successfully');
+      
+      // Update parent component's stages immediately
+      if (onStagesReordered) {
+        onStagesReordered(updatedStages);
+      }
+      
       // DO NOT call onPipelineUpdated() here - it causes race condition
-      // The optimistic update is already correct
+      // The optimistic update + callback is already correct
     } catch (error) {
       console.error('Error reordering stages:', error);
       toast.error('Failed to reorder stages');
