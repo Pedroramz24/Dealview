@@ -143,7 +143,7 @@ const EditableTextarea = ({ label, value, field, isEditing, editedData, setEdite
 
 const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }) => {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true); // Always editing - all fields editable
   const [editedData, setEditedData] = useState(data || {});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [linkedContacts, setLinkedContacts] = useState([]);
