@@ -214,3 +214,7 @@ frontend/public/tiles/bexar_parcels.pmtiles
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
