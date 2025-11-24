@@ -2068,73 +2068,42 @@ const MapView = () => {
           {/* Text Annotations */}
           <MapTextAnnotation
             annotations={textAnnotations}
+            editingAnnotation={editingAnnotation}
             onAddAnnotation={(annotation) => {
               setTextAnnotations(prev => [...prev, annotation]);
-              setPendingAnnotation(null);
+              setEditingAnnotation(null);
               toast.success('Label added to map');
             }}
             onDeleteAnnotation={(id) => {
               setTextAnnotations(prev => prev.filter(a => a.id !== id));
               toast.success('Label removed');
             }}
+            onUpdateAnnotation={(updatedAnnotation) => {
+              setEditingAnnotation(updatedAnnotation);
+            }}
           />
-          
-          {/* Pending Annotation Input - Shows when user clicks in annotation mode */}
-          {pendingAnnotation && (
-            <Marker
-              longitude={pendingAnnotation.longitude}
-              latitude={pendingAnnotation.latitude}
-              anchor="center"
-            >
-              <div
-                style={{
-                  background: 'rgba(0, 0, 0, 0.95)',
-                  backdropFilter: 'blur(15px)',
-                  border: '2px solid #00b8d4',
-                  borderRadius: '10px',
-                  padding: '12px',
-                  boxShadow: '0 6px 24px rgba(0, 184, 212, 0.5)',
-                  minWidth: '220px'
-                }}
-              >
-                <input
-                  type="text"
-                  placeholder="Enter label..."
-                  autoFocus
-                  maxLength={50}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && e.target.value.trim()) {
-                      onAddAnnotation({
-                        id: Date.now(),
-                        text: e.target.value,
-                        latitude: pendingAnnotation.latitude,
-                        longitude: pendingAnnotation.longitude
-                      });
-                    } else if (e.key === 'Escape') {
-                      setPendingAnnotation(null);
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '6px',
-                    padding: '8px 10px',
-                    color: '#ffffff',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    outline: 'none',
-                    marginBottom: '8px'
-                  }}
-                />
-                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>
-                  Press Enter to save, Esc to cancel
-                </div>
-              </div>
-            </Marker>
-          )}
         </Map>
         </div>
+
+        {/* Text Formatting Toolbar - Shows when editing annotation */}
+        <TextFormattingToolbar
+          isVisible={editingAnnotation !== null}
+          currentFormat={editingAnnotation || {}}
+          onFormatChange={(formatChanges) => {
+            setEditingAnnotation(prev => ({ ...prev, ...formatChanges }));
+          }}
+          onRotate={() => {
+            setEditingAnnotation(prev => ({
+              ...prev,
+              rotation: ((prev.rotation || 0) + 45) % 360
+            }));
+          }}
+          onDelete={() => {
+            setEditingAnnotation(null);
+            setAnnotationMode(false);
+            toast.info('Text tool cancelled');
+          }}
+        />
 
         {/* ReportAll Parcel Popup */}
         {reportAllParcel && (
