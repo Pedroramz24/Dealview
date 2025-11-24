@@ -348,16 +348,16 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
 
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/avatar-${Date.now()}.${fileExt}`;
+      const fileName = `avatars/${user.id}/avatar-${Date.now()}.${fileExt}`;
 
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('avatars')
+        .from('property-images')
         .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
+        .from('property-images')
         .getPublicUrl(fileName);
 
       setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
@@ -371,10 +371,10 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
   const handleDeleteAvatar = async () => {
     try {
       if (profileData.avatar_url) {
-        const urlParts = profileData.avatar_url.split('/avatars/');
+        const urlParts = profileData.avatar_url.split('/property-images/');
         if (urlParts.length > 1) {
           const filePath = urlParts[1].split('?')[0];
-          await supabase.storage.from('avatars').remove([filePath]);
+          await supabase.storage.from('property-images').remove([filePath]);
         }
       }
       setProfileData(prev => ({ ...prev, avatar_url: '' }));
