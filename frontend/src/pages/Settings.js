@@ -662,7 +662,8 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
 
         {/* Add Another Email */}
         <button
-          onClick={() => toast.info('Add email coming soon')}
+          onClick={() => {}}
+          disabled={true}
           style={{
             padding: '9px 16px',
             background: 'rgba(255, 255, 255, 0.03)',
