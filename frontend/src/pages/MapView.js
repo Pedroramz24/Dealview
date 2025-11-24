@@ -805,9 +805,17 @@ const MapView = () => {
   const combinedMapClick = async (event) => {
     // Handle annotation mode clicks first
     if (annotationMode) {
-      setPendingAnnotation({
+      setEditingAnnotation({
+        id: Date.now(),
         latitude: event.lngLat.lat,
-        longitude: event.lngLat.lng
+        longitude: event.lngLat.lng,
+        text: '',
+        fontSize: 16,
+        bold: false,
+        italic: false,
+        color: '#ffffff',
+        uppercase: false,
+        rotation: 0
       });
       return;
     }
