@@ -1057,7 +1057,7 @@ const MapView = () => {
           onToggleAnnotationMode={() => {
             setAnnotationMode(!annotationMode);
             if (annotationMode) {
-              setPendingAnnotation(null);
+              setEditingAnnotation(null);
             }
           }}
           searchBarComponent={
