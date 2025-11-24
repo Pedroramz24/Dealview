@@ -1044,6 +1044,13 @@ const MapView = () => {
           onToggleAIResearch={() => setAiResearchPanelOpen(!aiResearchPanelOpen)}
           measurementMode={measurementMode}
           onSetMeasurementMode={setMeasurementMode}
+          annotationMode={annotationMode}
+          onToggleAnnotationMode={() => {
+            setAnnotationMode(!annotationMode);
+            if (annotationMode) {
+              setPendingAnnotation(null);
+            }
+          }}
           searchBarComponent={
             <AddressSearchBar 
               mapRef={mapRef}
