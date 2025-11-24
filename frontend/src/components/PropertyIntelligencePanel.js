@@ -563,7 +563,10 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
       >
         {/* Image Carousel */}
         {images.length > 0 && (
-          <div style={{ position: 'relative', width: '100%', height: '280px', background: '#000' }}>
+          <div 
+            style={{ position: 'relative', width: '100%', height: '280px', background: '#000' }}
+            className="property-image-carousel"
+          >
             <img
               src={images[currentImageIndex]}
               alt="Property"
@@ -575,47 +578,84 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
             />
             {images.length > 1 && (
               <>
+                {/* Left Arrow - More visible on hover */}
                 <button
                   onClick={prevImage}
+                  className="carousel-nav-button carousel-nav-left"
                   style={{
                     position: 'absolute',
-                    left: '12px',
+                    left: '16px',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    width: '40px',
-                    height: '40px',
+                    width: '48px',
+                    height: '48px',
                     borderRadius: '50%',
-                    background: 'rgba(0, 0, 0, 0.6)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    background: 'rgba(0, 0, 0, 0.7)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
                     color: '#FFFFFF',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                    opacity: 0.6,
+                    zIndex: 10,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.9)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 184, 212, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '0.6';
+                    e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
-                  <ChevronLeft size={20} />
+                  <ChevronLeft size={24} strokeWidth={3} />
                 </button>
+                
+                {/* Right Arrow - More visible on hover */}
                 <button
                   onClick={nextImage}
+                  className="carousel-nav-button carousel-nav-right"
                   style={{
                     position: 'absolute',
-                    right: '12px',
+                    right: '16px',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    width: '40px',
-                    height: '40px',
+                    width: '48px',
+                    height: '48px',
                     borderRadius: '50%',
-                    background: 'rgba(0, 0, 0, 0.6)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    background: 'rgba(0, 0, 0, 0.7)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
                     color: '#FFFFFF',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                    opacity: 0.6,
+                    zIndex: 10,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.9)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 184, 212, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '0.6';
+                    e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
-                  <ChevronRight size={20} />
+                  <ChevronRight size={24} strokeWidth={3} />
                 </button>
               </>
             )}
