@@ -644,9 +644,8 @@ const DealDetails = () => {
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
           {/* Clean Symmetrical Header */}
           <div style={{
-            padding: '32px 32px 40px 32px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-            marginBottom: '32px'
+            padding: '32px 32px 24px 32px',
+            marginBottom: '0'
           }}>
             {/* Action Bar - Symmetrical Layout */}
             <div style={{
