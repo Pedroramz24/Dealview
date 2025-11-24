@@ -333,19 +333,55 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleAvatarUpload = (e) => {
+  const handleAvatarUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      toast.info('Avatar upload with crop coming soon');
-      // TODO: Implement crop and upload
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB');
+      return;
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/avatar-${Date.now()}.${fileExt}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
+      toast.success('Avatar uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast.error(error.message || 'Failed to upload avatar');
     }
   };
 
   const handleDeleteAvatar = async () => {
     try {
+      if (profileData.avatar_url) {
+        const urlParts = profileData.avatar_url.split('/avatars/');
+        if (urlParts.length > 1) {
+          const filePath = urlParts[1].split('?')[0];
+          await supabase.storage.from('avatars').remove([filePath]);
+        }
+      }
       setProfileData(prev => ({ ...prev, avatar_url: '' }));
       toast.success('Avatar removed');
     } catch (error) {
+      console.error('Error removing avatar:', error);
       toast.error('Failed to remove avatar');
     }
   };
