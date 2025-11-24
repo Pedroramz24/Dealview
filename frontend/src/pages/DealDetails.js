@@ -911,9 +911,11 @@ const DealDetails = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Main Content Area */}
-          <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
+      {/* Main Content Area */}
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
         {/* Transaction Timeline */}
         {(deal.under_contract_date || deal.closing_date) && (
           <DealTimeline deal={deal} />
