@@ -790,7 +790,7 @@ const DealDetails = () => {
               </Button>
 
               {/* More Menu */}
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: 'relative' }} data-more-menu>
                 <Button
                   onClick={() => setShowMoreMenu(!showMoreMenu)}
                   style={{
