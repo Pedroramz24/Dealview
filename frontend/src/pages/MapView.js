@@ -1045,7 +1045,12 @@ const MapView = () => {
             initialViewState={viewStateRef.current}
             onMoveEnd={handleMoveEnd}
             onClick={combinedMapClick}
-            style={{ width: '100%', height: '100%', willChange: 'transform' }}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              willChange: 'transform',
+              cursor: measurementMode ? 'crosshair' : 'grab'
+            }}
             mapStyle={mapStyles[mapStyle]}
             data-testid="map-container"
             ref={mapRef}
