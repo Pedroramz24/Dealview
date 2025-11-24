@@ -2078,6 +2078,14 @@ const MapView = () => {
               setTextAnnotations(prev => prev.filter(a => a.id !== id));
               toast.success('Label removed');
             }}
+            onMoveAnnotation={(id, newLng, newLat) => {
+              setTextAnnotations(prev => prev.map(a => 
+                a.id === id 
+                  ? { ...a, longitude: newLng, latitude: newLat }
+                  : a
+              ));
+              toast.success('Label repositioned');
+            }}
             onUpdateAnnotation={(updatedAnnotation) => {
               setEditingAnnotation(updatedAnnotation);
             }}
