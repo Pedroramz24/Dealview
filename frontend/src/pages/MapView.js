@@ -286,8 +286,10 @@ const MapView = () => {
       setPropertyPanelOpen(false);
       setPropertyPanelData(null);
       setCreateDealPanelOpen(false); // Close create deal if switching
-      setSelectedParcelId(null); // Clear selected ReportAll parcel
-      setSelectedBexarParcelId(null); // Clear selected Bexar CAD parcel
+      setSelectedParcelIds([]); // Clear selected ReportAll parcels
+      setSelectedBexarParcelIds([]); // Clear selected Bexar CAD parcels
+      setMergedParcelGeometry(null); // Clear merged geometry
+      setSelectedParcelFeatures([]); // Clear parcel features
     } else {
       setPropertyPanelOpen(true);
       setPropertyPanelData(data);
