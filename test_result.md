@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1. Red Parcel Highlighting: When a parcel is clicked, it should be clearly highlighted in red so it's easy to see which one is active. 2. Dynamic Deal Pin Scaling: Deal pins are currently too large. With 100+ deals visible, the map becomes oversaturated. Make pin size dynamic and scaled so the map remains readable even when many deals are displayed."
+user_problem_statement: "1. Property Details Enhancements: Add Documents section to DealDetails page with upload/download/delete functionality. Replace single image with multi-image carousel (Swiper) with arrows and navigation dots. 2. Authentication Improvements: Add 'Forgot password?' link to Login page with email-based password reset flow. Expose 'Change Password' option in Settings (already exists). All components styled with dark glass-morphism theme and mobile responsive."
 
 backend:
   - task: "Pipeline Management API Endpoints"
