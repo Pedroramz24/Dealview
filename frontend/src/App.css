@@ -1649,6 +1649,35 @@ div[role="listbox"] {
 }
 
 /* Swiper button customization */
+
+
+/* Image Carousel Enhancements */
+.property-image-carousel {
+  position: relative;
+}
+
+.property-image-carousel .carousel-nav-button {
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.property-image-carousel:hover .carousel-nav-button {
+  opacity: 0.8;
+}
+
+.property-image-carousel .carousel-nav-button:hover {
+  opacity: 1 !important;
+}
+
+/* Measurement Tools Cursor */
+.maplibregl-canvas-container.maplibregl-interactive {
+  cursor: inherit;
+}
+
+.maplibregl-canvas-container.maplibregl-interactive[style*="crosshair"] {
+  cursor: crosshair !important;
+}
+
 .swiper-button-disabled {
   opacity: 0.3;
   cursor: not-allowed !important;
