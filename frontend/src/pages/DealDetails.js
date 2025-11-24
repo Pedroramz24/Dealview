@@ -57,6 +57,7 @@ const DealDetails = () => {
   // Saving State
   const [isSaving, setIsSaving] = useState(false);
   const isEditMode = true; // Always in edit mode - all fields editable
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
   
   // Contact Management
   const [allContacts, setAllContacts] = useState([]);
