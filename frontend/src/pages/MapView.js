@@ -2076,7 +2076,8 @@ const MapView = () => {
             }}
             onDeleteAnnotation={(id) => {
               setTextAnnotations(prev => prev.filter(a => a.id !== id));
-              toast.success('Label removed');
+              setEditingAnnotation(null);
+              toast.success('Label deleted');
             }}
             onMoveAnnotation={(id, newLng, newLat) => {
               setTextAnnotations(prev => prev.map(a => 
@@ -2084,7 +2085,13 @@ const MapView = () => {
                   ? { ...a, longitude: newLng, latitude: newLat }
                   : a
               ));
-              toast.success('Label repositioned');
+              // No toast notification for repositioning
+            }}
+            onEditAnnotation={(annotation) => {
+              // Convert saved annotation back to editing mode
+              setEditingAnnotation(annotation);
+              // Remove from saved list temporarily while editing
+              setTextAnnotations(prev => prev.filter(a => a.id !== annotation.id));
             }}
             onUpdateAnnotation={(updatedAnnotation) => {
               setEditingAnnotation(updatedAnnotation);
@@ -2109,7 +2116,7 @@ const MapView = () => {
           onDelete={() => {
             setEditingAnnotation(null);
             setAnnotationMode(false);
-            toast.info('Text tool cancelled');
+            // No toast for cancelling
           }}
         />
 
