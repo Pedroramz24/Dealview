@@ -333,65 +333,19 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleAvatarUpload = async (e) => {
+  const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file');
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size must be less than 5MB');
-      return;
-    }
-
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/avatar-${Date.now()}.${fileExt}`;
-
-      // Upload to Supabase storage
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
-
-      if (uploadError) throw uploadError;
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
-
-      // Update profile data
-      setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
-      toast.success('Avatar uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading avatar:', error);
-      toast.error(error.message || 'Failed to upload avatar');
+    if (file) {
+      toast.info('Avatar upload with crop coming soon');
+      // TODO: Implement crop and upload
     }
   };
 
   const handleDeleteAvatar = async () => {
     try {
-      // Delete from storage if exists
-      if (profileData.avatar_url) {
-        const urlParts = profileData.avatar_url.split('/avatars/');
-        if (urlParts.length > 1) {
-          const filePath = urlParts[1].split('?')[0];
-          await supabase.storage.from('avatars').remove([filePath]);
-        }
-      }
-      
       setProfileData(prev => ({ ...prev, avatar_url: '' }));
       toast.success('Avatar removed');
     } catch (error) {
-      console.error('Error removing avatar:', error);
       toast.error('Failed to remove avatar');
     }
   };
@@ -1656,4 +1610,38 @@ const ChangePasswordModal = ({ onClose }) => {
                 transition: 'all 0.15s ease'
               }}
               onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
-              onMouseLeave={
+              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: loading ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4',
+                border: 'none',
+                borderRadius: '7px',
+                color: '#000',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: loading ? 'none' : '0 2px 12px rgba(0, 184, 212, 0.3)'
+              }}
+            >
+              {loading && <Loader2 size={15} className="animate-spin" />}
+              Update Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Settings;
