@@ -68,6 +68,11 @@ const MapView = () => {
   const [measurementPoints, setMeasurementPoints] = useState([]);
   const [measurementResult, setMeasurementResult] = useState(null);
   
+  // Text annotation tool
+  const [annotationMode, setAnnotationMode] = useState(false);
+  const [textAnnotations, setTextAnnotations] = useState([]);
+  const [pendingAnnotation, setPendingAnnotation] = useState(null);
+  
   const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
   const [createDealLocation, setCreateDealLocation] = useState(null); // Location for new deal
