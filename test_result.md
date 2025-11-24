@@ -397,6 +397,31 @@ frontend:
         agent: "testing"
         comment: "✅ COMPREHENSIVE TESTING COMPLETED: Bexar CAD Parcels click functionality is CORRECTLY IMPLEMENTED and working as designed. TEST RESULTS: (1) ✅ Layer toggle found in Layer Manager under 'Property Intelligence' section. (2) ✅ Layer can be enabled/disabled successfully (toggle shows ON/OFF state). (3) ✅ PMTiles file loads correctly (GET request to /tiles/bexar_parcels.pmtiles detected). (4) ✅ Click handler is working - console logs show 'Map clicked at zoom: 12.4 showBexarParcels: true' confirming layer is enabled and handler executes. (5) ✅ Zoom level check is correctly implemented (line 771: if showBexarParcels && map.getZoom() >= 14). (6) ✅ All 4 recommended fixes are present: Source has key='bexar-parcels-source', transparent fill layer with fill-opacity: 0.0001, interactiveLayerIds includes both layer IDs, combinedMapClick queries both layers. (7) ✅ No console errors related to Bexar CAD parcels or PMTiles. CODE VERIFICATION: Lines 770-826 show complete implementation with proper data mapping (Situs→address, Owner, LandVal, ImprVal, TotVal, LglAcres, YrBlt, GBA, AcctNumb, etc.) and PropertyIntelligencePanel integration with toast notification. TESTING LIMITATION: Automated test could not zoom to level 14+ due to browser automation constraints (zoom controls blocked by overlays, mouse wheel zoom ineffective). However, code review confirms implementation is correct. USER MUST MANUALLY VERIFY: (1) Zoom to level 14+ in San Antonio area, (2) Click on cyan parcel lines, (3) Verify PropertyIntelligencePanel opens with parcel data (Address, Owner, Land Value, Total Value, Legal Acres, Year Built, Account Number), (4) Verify toast notification 'Bexar CAD parcel loaded' appears. The code is production-ready and follows all best practices."
 
+
+  - task: "Red Parcel Highlighting on Click"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Red highlighting for selected parcels. CHANGES: (1) Added selectedBexarParcelId state to track clicked Bexar CAD parcels (line 44). (2) Updated handleMoveEnd to also track currentZoom state for dynamic pin sizing (line 89). (3) Created bexarParcelFillPaint and bexarParcelLinePaint memoized paint properties (lines 487-523) that conditionally apply red color (#FF0000) with 0.4 opacity when parcel is selected. (4) Updated Bexar CAD click handler to set selectedBexarParcelId using AcctNumb as unique identifier (lines 823-826). (5) Updated togglePropertyPanel to clear both selectedParcelId and selectedBexarParcelId when panel closes (line 279). (6) Applied memoized paint properties to Bexar CAD parcel layers (lines 1287-1305). EXPECTED BEHAVIOR: When user clicks on any parcel (ReportAll or Bexar CAD), it should be clearly highlighted in red with increased opacity and thicker border (4px width). The red highlighting persists until the property panel is closed. ReportAll parcels already had this feature, now Bexar CAD parcels have it too. Frontend restarted. Needs testing."
+
+  - task: "Dynamic Deal Pin Scaling"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Dynamic deal pin sizing based on zoom level and deal count to prevent map oversaturation. CHANGES: (1) Added currentZoom state to track map zoom level (line 45). (2) Updated handleMoveEnd callback to set currentZoom on each moveend event (line 89). (3) Created calculatePinSize utility function (lines 93-113) that calculates pin dimensions based on: zoom level (16+zoom*2 for outer, 10+zoom*1.5 for inner, 4+zoom*0.6 for dot) AND deal density (100+ deals = 60% size, 50+ = 75%, 25+ = 85%, <25 = 100%). (4) Created pinSizes memoized value (lines 116-119) that recalculates when zoom or deal count changes. (5) Updated personal deal markers (lines 1387-1431) to use dynamic pinSizes for outer, inner, and dot dimensions with calculated offsets. (6) Updated team deal markers (lines 1460-1504) to use same dynamic pinSizes with scaled team icon. (7) Added smooth transitions (width 0.3s ease, height 0.3s ease) for pin size changes. SCALING LOGIC: At zoom 11.5 (default), pins are ~39px outer. At zoom 8, pins are ~32px. At zoom 15, pins are ~46px. With 100+ deals, all sizes reduced by 40%. This ensures the map remains readable even with many deals visible. Frontend restarted. Needs testing with various zoom levels and deal counts.
+
   - task: "DealsList Field Name Consistency"
     implemented: true
     working: true
