@@ -85,6 +85,8 @@ const MapView = () => {
   // Track viewState using ref to avoid re-renders during map interaction
   const handleMoveEnd = useCallback((evt) => {
     viewStateRef.current = evt.viewState;
+    // Update zoom level for dynamic pin sizing (only on moveend to avoid performance issues)
+    setCurrentZoom(evt.viewState.zoom);
     // No setState = no re-render = no flicker
   }, []);
   
