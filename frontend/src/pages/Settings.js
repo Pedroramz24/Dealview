@@ -990,7 +990,6 @@ const SecuritySection = ({ user }) => {
           <button 
             onClick={() => {
               setTwoFactorEnabled(!twoFactorEnabled);
-              toast.info('2FA will be enabled in a future update');
             }}
             style={{
               width: '52px',
