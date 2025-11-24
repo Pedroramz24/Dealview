@@ -802,7 +802,16 @@ const MapView = () => {
 
   // Map click handler - queries ReportAll for parcel data OR opens create deal panel
   const combinedMapClick = async (event) => {
-    // Handle measurement mode clicks first
+    // Handle annotation mode clicks first
+    if (annotationMode) {
+      setPendingAnnotation({
+        latitude: event.lngLat.lat,
+        longitude: event.lngLat.lng
+      });
+      return;
+    }
+    
+    // Handle measurement mode clicks
     if (measurementMode) {
       const newPoint = [event.lngLat.lng, event.lngLat.lat];
       
