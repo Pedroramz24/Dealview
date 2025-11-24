@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1. Fix Crosshair Cursor: The crosshair cursor still isn't appearing when using drawing tools—hand cursor is showing. Update so crosshair is always used while drawing lines or areas. 2. Auto-Switch Distance Units: Remove toggle button for miles/feet. Display in feet by default, automatically switch to miles only once distance exceeds one mile. 3. Clean Measurement Display: Remove the box background - distance should display directly on the line as text only."
+user_problem_statement: "1. Fix Profile Picture Upload: Avatar upload in Settings not working - implement actual upload/display. 2. Text Annotation Tool: Add click-to-type text labels on map with formatting toolbar (font size, bold, italic, color, uppercase/lowercase, rotation, delete). Remove white box - type directly on map. 3. Unified Button Styling: Create consistent styling for all primary buttons across app. 4. AI Response Formatting: Clean up AI assistant responses with proper typography, spacing, headings, lists for better readability."
 
 backend:
   - task: "Pipeline Management API Endpoints"
