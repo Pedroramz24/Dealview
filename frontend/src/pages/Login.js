@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
+import ForgotPasswordModal from '../components/ForgotPasswordModal';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,6 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { login, signup } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
