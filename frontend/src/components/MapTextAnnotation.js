@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Marker } from 'react-map-gl/maplibre';
-import { X } from 'lucide-react';
 
 const MapTextAnnotation = ({ 
   annotations, 
@@ -10,9 +9,20 @@ const MapTextAnnotation = ({
   editingAnnotation, 
   onUpdateAnnotation 
 }) => {
+  const inputRef = useRef(null);
+
+  // Focus input when editing annotation is created
+  useEffect(() => {
+    if (editingAnnotation && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 100);
+    }
+  }, [editingAnnotation]);
+
   return (
     <>
-      {/* Saved Annotations - Draggable */}
+      {/* Saved Annotations - Draggable, No Background */}
       {annotations.map((annotation) => (
         <Marker
           key={annotation.id}
@@ -26,7 +36,6 @@ const MapTextAnnotation = ({
         >
           <div
             style={{
-              position: 'relative',
               color: annotation.color || '#ffffff',
               fontSize: `${annotation.fontSize || 16}px`,
               fontWeight: annotation.bold ? '700' : '500',
@@ -34,19 +43,22 @@ const MapTextAnnotation = ({
               textTransform: annotation.uppercase ? 'uppercase' : 'none',
               transform: `rotate(${annotation.rotation || 0}deg)`,
               textShadow: `
-                -2px -2px 4px rgba(0, 0, 0, 1),
-                2px -2px 4px rgba(0, 0, 0, 1),
-                -2px 2px 4px rgba(0, 0, 0, 1),
-                2px 2px 4px rgba(0, 0, 0, 1),
-                0 0 8px rgba(0, 0, 0, 0.9),
-                0 0 16px rgba(0, 0, 0, 0.7)
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000,
+                -2px -2px 3px rgba(0, 0, 0, 0.9),
+                2px -2px 3px rgba(0, 0, 0, 0.9),
+                -2px 2px 3px rgba(0, 0, 0, 0.9),
+                2px 2px 3px rgba(0, 0, 0, 0.9),
+                0 0 6px rgba(0, 0, 0, 0.8)
               `,
               whiteSpace: 'nowrap',
               cursor: 'move',
               userSelect: 'none',
-              padding: '4px',
+              padding: '2px',
               letterSpacing: '0.5px',
-              lineHeight: '1.2'
+              lineHeight: '1'
             }}
           >
             {annotation.text}
@@ -54,7 +66,7 @@ const MapTextAnnotation = ({
         </Marker>
       ))}
 
-      {/* Currently Editing - Inline Input */}
+      {/* Editing Input - Clean, No Background */}
       {editingAnnotation && (
         <Marker
           longitude={editingAnnotation.longitude}
@@ -63,14 +75,20 @@ const MapTextAnnotation = ({
           draggable={false}
         >
           <div 
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
             style={{ 
+              position: 'relative',
               pointerEvents: 'auto',
-              cursor: 'text'
+              zIndex: 9999
+            }}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
             }}
           >
             <input
+              ref={inputRef}
               type="text"
               value={editingAnnotation.text}
               onChange={(e) => {
@@ -80,15 +98,17 @@ const MapTextAnnotation = ({
               onKeyDown={(e) => {
                 e.stopPropagation();
                 if (e.key === 'Enter' && editingAnnotation.text.trim()) {
+                  e.preventDefault();
                   onAddAnnotation(editingAnnotation);
                 } else if (e.key === 'Escape') {
+                  e.preventDefault();
                   onUpdateAnnotation(null);
                 }
               }}
-              onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              onFocus={(e) => e.stopPropagation()}
               placeholder="Type label..."
-              autoFocus
               maxLength={100}
               style={{
                 background: 'transparent',
@@ -101,19 +121,27 @@ const MapTextAnnotation = ({
                 textTransform: editingAnnotation.uppercase ? 'uppercase' : 'none',
                 transform: `rotate(${editingAnnotation.rotation || 0}deg)`,
                 textShadow: `
-                  -2px -2px 4px rgba(0, 0, 0, 1),
-                  2px -2px 4px rgba(0, 0, 0, 1),
-                  -2px 2px 4px rgba(0, 0, 0, 1),
-                  2px 2px 4px rgba(0, 0, 0, 1),
-                  0 0 8px rgba(0, 0, 0, 0.9),
-                  0 0 16px rgba(0, 0, 0, 0.7)
+                  -1px -1px 0 #000,
+                  1px -1px 0 #000,
+                  -1px 1px 0 #000,
+                  1px 1px 0 #000,
+                  -2px -2px 3px rgba(0, 0, 0, 0.9),
+                  2px -2px 3px rgba(0, 0, 0, 0.9),
+                  -2px 2px 3px rgba(0, 0, 0, 0.9),
+                  2px 2px 3px rgba(0, 0, 0, 0.9),
+                  0 0 6px rgba(0, 0, 0, 0.8)
                 `,
                 textAlign: 'center',
                 minWidth: '200px',
-                padding: '4px',
+                width: 'auto',
+                padding: '2px',
                 letterSpacing: '0.5px',
                 cursor: 'text',
-                pointerEvents: 'auto'
+                pointerEvents: 'auto',
+                WebkitUserSelect: 'text',
+                MozUserSelect: 'text',
+                msUserSelect: 'text',
+                userSelect: 'text'
               }}
             />
           </div>
