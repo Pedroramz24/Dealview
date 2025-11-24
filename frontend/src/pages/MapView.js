@@ -6,6 +6,7 @@ import { AuthContext, API } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { calculateArea, calculateDistance, formatMeasurement } from '../utils/measurementUtils';
+import * as turf from '@turf/turf';
 import { MapLayerProvider } from '../contexts/MapLayerContext';
 import LayerManager from '../components/LayerManager';
 import PropertyIntelligencePanel from '../components/PropertyIntelligencePanel';
