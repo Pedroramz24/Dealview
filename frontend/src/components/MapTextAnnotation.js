@@ -26,7 +26,7 @@ const MapTextAnnotation = ({
 
   return (
     <>
-      {/* Saved Annotations - Draggable and Editable */}
+      {/* Saved Annotations - Selectable, Draggable, Double-click to Edit */}
       {annotations.map((annotation) => (
         <Marker
           key={annotation.id}
@@ -40,6 +40,10 @@ const MapTextAnnotation = ({
         >
           <div
             onClick={(e) => {
+              e.stopPropagation();
+              onSelectAnnotation(annotation);
+            }}
+            onDoubleClick={(e) => {
               e.stopPropagation();
               onEditAnnotation(annotation);
             }}
@@ -71,47 +75,52 @@ const MapTextAnnotation = ({
               letterSpacing: '0.5px',
               lineHeight: '1',
               background: 'transparent',
-              border: 'none',
-              outline: 'none',
+              border: selectedAnnotation?.id === annotation.id ? '2px solid rgba(0, 184, 212, 0.6)' : 'none',
+              borderRadius: selectedAnnotation?.id === annotation.id ? '4px' : '0',
+              outline: selectedAnnotation?.id === annotation.id ? '2px solid rgba(0, 184, 212, 0.3)' : 'none',
+              outlineOffset: '2px',
               pointerEvents: 'auto'
             }}
           >
             {annotation.text}
-            {/* Delete button appears on hover */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteAnnotation(annotation.id);
-              }}
-              onMouseDown={(e) => e.stopPropagation()}
-              style={{
-                position: 'absolute',
-                top: '-12px',
-                right: '-12px',
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                background: '#ef4444',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#ffffff',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s',
-                opacity: 0,
-                pointerEvents: 'auto'
-              }}
-              className="annotation-delete-btn"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <X size={12} strokeWidth={3} />
-            </button>
+            {/* Delete button - visible when selected */}
+            {selectedAnnotation?.id === annotation.id && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteAnnotation(annotation.id);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                style={{
+                  position: 'absolute',
+                  top: '-14px',
+                  right: '-14px',
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  background: '#ef4444',
+                  border: '2px solid rgba(255, 255, 255, 0.9)',
+                  color: '#ffffff',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s',
+                  pointerEvents: 'auto',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.2)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.6)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.5)';
+                }}
+              >
+                <X size={14} strokeWidth={3} />
+              </button>
+            )}
           </div>
         </Marker>
       ))}
