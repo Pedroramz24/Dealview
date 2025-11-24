@@ -197,6 +197,15 @@ const DealDetails = () => {
       if (error) throw error;
       setDeal(data);
       
+      // Set property images - handle both legacy image_url and new image_urls array
+      if (data.image_urls && Array.isArray(data.image_urls)) {
+        setPropertyImages(data.image_urls);
+      } else if (data.image_url) {
+        setPropertyImages([data.image_url]);
+      } else {
+        setPropertyImages([]);
+      }
+      
       // Set pipeline and stage state
       setSelectedPipelineId(data.pipeline_id);
       setSelectedStageId(data.pipeline_stage_id);
