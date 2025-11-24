@@ -106,6 +106,27 @@ const MapTopBar = ({
           <Square size={20} />
         </button>
 
+        {/* Text Annotation Button */}
+        <button
+          onClick={onToggleAnnotationMode}
+          style={{
+            width: '44px',
+            height: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: annotationMode ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+            border: `1px solid ${annotationMode ? 'rgba(168, 85, 247, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`,
+            borderRadius: '8px',
+            color: annotationMode ? '#a855f7' : 'rgba(255, 255, 255, 0.7)',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          title="Add Text Label"
+        >
+          <Type size={20} />
+        </button>
+
         {/* AI Research Button */}
         <button
           onClick={onToggleAIResearch}
