@@ -72,7 +72,7 @@ const MapView = () => {
   // Text annotation tool
   const [annotationMode, setAnnotationMode] = useState(false);
   const [textAnnotations, setTextAnnotations] = useState([]);
-  const [pendingAnnotation, setPendingAnnotation] = useState(null);
+  const [editingAnnotation, setEditingAnnotation] = useState(null);
   
   const [propertyPanelData, setPropertyPanelData] = useState(null); // Data for property panel (deal or parcel)
   const [actionsPanelData, setActionsPanelData] = useState(null); // Data for actions panel
