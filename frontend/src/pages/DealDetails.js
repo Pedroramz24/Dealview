@@ -900,11 +900,6 @@ const DealDetails = () => {
               </div>
             </div>
           </div>
-            textAlign: 'center',
-            lineHeight: '1.2'
-          }}>
-            {deal.address}
-          </h1>
 
           {/* Asset Type Tag - Centered */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
