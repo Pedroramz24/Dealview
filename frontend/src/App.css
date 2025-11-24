@@ -1617,3 +1617,40 @@ div[role="listbox"] {
     opacity: 1;
   }
 }
+
+
+/* Swiper Carousel - Dark Glass Theme */
+.property-main-carousel .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px !important;
+  transition: all 0.3s;
+}
+
+.property-main-carousel .swiper-pagination-bullet-active {
+  background: #00b8d4;
+  width: 24px;
+  border-radius: 4px;
+}
+
+.property-main-carousel .swiper-pagination {
+  bottom: 12px !important;
+}
+
+.property-thumbs-carousel .swiper-slide-thumb-active .thumb-slide {
+  border: 2px solid #00b8d4 !important;
+  opacity: 1;
+}
+
+.property-thumbs-carousel .swiper-slide:not(.swiper-slide-thumb-active) .thumb-slide {
+  opacity: 0.5;
+}
+
+/* Swiper button customization */
+.swiper-button-disabled {
+  opacity: 0.3;
+  cursor: not-allowed !important;
+}
+
