@@ -177,6 +177,56 @@ backend:
 
 frontend:
 
+  - task: "Enhanced Image Carousel Navigation Arrows"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/ImageCarousel.js, /app/frontend/src/components/PropertyIntelligencePanel.js, /app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Enhanced carousel navigation arrows for better visibility and UX. CHANGES: (1) IMAGECAROUSEL.JS: Increased arrow size from 40px to 52px. Arrow icon size increased from 24px to 28px with strokeWidth=3 for bolder appearance. Initial opacity 0.6, becomes 1.0 on hover. Hover effect: cyan background (#00b8d4), scale(1.15), glow shadow. Stronger border (1px solid rgba(255,255,255,0.3)). (2) PROPERTYINTELLIGENCEPANEL.JS: Increased arrow size from 40px to 48px. Arrow icon size increased from 20px to 24px with strokeWidth=3. Same hover effects: opacity, cyan background, scale, glow. (3) APP.CSS: Added .property-image-carousel hover effects - arrows start at 50% opacity, become 80% on carousel hover, 100% on button hover. Added .carousel-nav-button classes for consistent styling. (4) Visual improvements: Arrows are more prominent, clear feedback on hover, cyan accent matches theme, smooth transitions. Frontend compiled successfully. Test by hovering over carousel images - arrows should become more visible and glow cyan."
+
+  - task: "Crosshair Cursor for Map Drawing Tools"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js, /app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Changed map cursor to crosshair during measurement drawing. CHANGES: (1) MAPVIEW.JS line 1050: Added cursor style to Map component - cursor: measurementMode ? 'crosshair' : 'grab'. When measurementMode is 'area' or 'distance', cursor becomes crosshair for precision. Default is grab cursor. (2) APP.CSS: Added maplibregl-canvas-container cursor override to ensure crosshair takes priority. (3) UX improvement: Users now have precise crosshair cursor when drawing measurements instead of hand/grab cursor. More accurate point placement for measurements. Frontend compiled successfully. Test by clicking 'Measure Distance' or 'Measure Area' buttons - cursor should change to crosshair immediately."
+
+  - task: "Enhanced Measurement Display with Feet/Miles Switching"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Enhanced distance measurement display with unit switching. CHANGES: (1) Added distanceUnit state ('feet' or 'miles') on line 69. (2) Redesigned measurement display marker (lines 2007-2096): Dark glass-morphism card with border and glow. Main measurement shows selected unit (feet or miles). Secondary display shows alternative unit in parentheses. 'Switch to Miles/Feet' button for easy toggling. (3) Display format: Primary: Large text with selected unit (e.g., '1,234 ft' or '0.234 mi'). Secondary: Smaller text with alternative unit (e.g., '(0.234 miles)' or '(1,234 feet)'). Button: Cyan themed, hover effects, uppercase text. (4) Area measurements still show acres + sq ft (unchanged). (5) Unit preference persists during measurement session. (6) Visual: Dark card (rgba(0,0,0,0.8)) with cyan border, backdrop blur, shadow glow. All measurements now show both units for complete information. Frontend compiled successfully. Test by drawing a distance measurement - should see both units and switch button."
+
+  - task: "PropertyIntelligencePanel Multiple Images Support"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PropertyIntelligencePanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Updated PropertyIntelligencePanel to support multiple images from image_urls array. CHANGES: (1) Line 277: Updated image handling logic to prioritize image_urls array over single image_url. Checks if data.image_urls exists, is array, and has length > 0. Falls back to data.image_url wrapped in array if no image_urls. Falls back to empty array if neither exists. (2) Carousel automatically works with image_urls array - arrows only show when images.length > 1. (3) Backward compatible with existing single image_url field. (4) When user clicks parcel/deal on map, if it has multiple images in image_urls array, side panel will show full carousel with enhanced arrows. Frontend compiled successfully. Test by clicking on a deal/parcel with multiple images - side panel should show carousel with navigation."
+
+
+
   - task: "Image Carousel with Multiple Upload"
     implemented: true
     working: "NA"
