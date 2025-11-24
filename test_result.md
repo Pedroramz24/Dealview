@@ -505,36 +505,33 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Unified Deals Tab with Pipeline/Table View Toggle"
-    - "Team Deals Map Layer (Phase 2 Team Collaboration)"
+    - "Red Parcel Highlighting on Click"
+    - "Dynamic Deal Pin Scaling"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
   backend_testing_notes: |
-    Backend testing for Supabase migration:
-    1. Verify Supabase connection is working ✅
-    2. Test RLS policies are enforcing user isolation ✅
-    3. Verify storage policies for file uploads ⚠️ (buckets created but uploads not tested)
+    No backend changes for this feature. All changes are frontend-only.
   frontend_testing_notes: |
-    COMPLETED TESTS (Latest Round):
-    1. ✅ Authentication: Signup with full name working, account creation successful
-    2. ✅ Dashboard: Stats display correctly ($0 for new user), charts render (14 SVG elements)
-    3. ✅ Deal Creation: Successfully created deal with all fields, form submission working
-    4. ✅ Deals List: Deal displays with correct address and price ($2,500,000 - NO $NaN!)
-    5. ❌ DealDetails: Field name mismatch (property_address vs address), asking price element not found
-    6. ❌ File Uploads: Could not locate upload inputs on DealDetails page (test timeout)
-    7. ⏭️ Pipeline: Not tested in this round
-    8. ⏭️ Contacts: Not tested in this round
+    CRITICAL TESTS NEEDED:
+    1. Red Parcel Highlighting:
+       - Enable Property Parcels layer (ReportAll) and zoom to level 14+
+       - Click on a cyan parcel polygon
+       - Verify parcel turns RED with higher opacity and thicker border (4px)
+       - Click another parcel, verify first parcel returns to cyan and new one turns red
+       - Enable Bexar CAD Parcels layer (zoom 14+, San Antonio area)
+       - Click on a Bexar CAD parcel
+       - Verify parcel turns RED with same highlighting as ReportAll parcels
+       - Close property panel, verify highlighting clears
     
-    CRITICAL ISSUES IDENTIFIED:
-    1. HIGH: DealDetails.js line 256 uses 'deal.property_address' but field is stored as 'address'
-    2. HIGH: File upload inputs not accessible/rendering on DealDetails page
-    3. MEDIUM: Console warnings about controlled/uncontrolled components (Select, Input)
-    
-    CORRECTION TO PREVIOUS REPORT:
-    - DealsList.js is WORKING CORRECTLY - no field mismatch
-    - The $NaN issue reported previously was INCORRECT
-    - Actual issue is in DealDetails.js, not DealsList.js
+    2. Dynamic Deal Pin Scaling:
+       - Test at different zoom levels (8, 11.5, 15, 18)
+       - Verify pins get larger at higher zoom levels
+       - Create multiple deals (or use existing) - test with <25, 25+, 50+, 100+ deals
+       - Verify pins scale down when many deals are visible (100+ should be ~60% size)
+       - Verify team deal pins (purple) also scale dynamically
+       - Verify pin transitions are smooth (0.3s ease)
+       - Verify map remains readable with many deals visible
 
 agent_communication:
   - agent: "testing"
