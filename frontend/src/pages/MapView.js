@@ -917,7 +917,6 @@ const MapView = () => {
         
         console.log('[Bexar CAD] Opening property panel with data:', parcelData);
         togglePropertyPanel(parcelData);
-        toast.success('Bexar CAD parcel loaded');
         return;
       } else {
         console.log('[Bexar CAD] No parcel features found at click point');
