@@ -2006,25 +2006,94 @@ const MapView = () => {
                   anchor="center"
                 >
                   <div style={{
-                    color: '#FFFFFF',
-                    fontSize: measurementMode === 'area' ? '24px' : '18px',
-                    fontWeight: '700',
-                    textShadow: `
-                      -2px -2px 4px rgba(0, 0, 0, 0.9),
-                      2px -2px 4px rgba(0, 0, 0, 0.9),
-                      -2px 2px 4px rgba(0, 0, 0, 0.9),
-                      2px 2px 4px rgba(0, 0, 0, 0.9),
-                      0 0 8px rgba(0, 0, 0, 0.8)
-                    `,
-                    whiteSpace: 'nowrap',
-                    pointerEvents: 'none',
-                    letterSpacing: '-0.02em'
+                    background: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(0, 184, 212, 0.6)',
+                    borderRadius: '12px',
+                    padding: '12px 20px',
+                    boxShadow: '0 4px 20px rgba(0, 184, 212, 0.3)',
+                    pointerEvents: 'auto'
                   }}>
-                    {measurementMode === 'area' && measurementResult.acres
-                      ? `${measurementResult.acres.toFixed(2)} ac`
-                      : measurementMode === 'distance' && measurementResult.feet
-                      ? `${measurementResult.feet.toLocaleString()} ft`
-                      : ''}
+                    {/* Main Measurement */}
+                    <div style={{
+                      color: '#FFFFFF',
+                      fontSize: measurementMode === 'area' ? '24px' : '20px',
+                      fontWeight: '700',
+                      textAlign: 'center',
+                      letterSpacing: '-0.02em',
+                      marginBottom: measurementMode === 'distance' ? '8px' : '0'
+                    }}>
+                      {measurementMode === 'area' && measurementResult.acres
+                        ? `${measurementResult.acres.toFixed(2)} ac`
+                        : measurementMode === 'distance' && measurementResult.feet
+                        ? distanceUnit === 'feet' 
+                          ? `${measurementResult.feet.toLocaleString()} ft`
+                          : `${measurementResult.miles.toFixed(3)} mi`
+                        : ''}
+                    </div>
+                    
+                    {/* Secondary Info & Unit Switcher for Distance */}
+                    {measurementMode === 'distance' && measurementResult.feet && (
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        alignItems: 'center'
+                      }}>
+                        {/* Alternative Unit Display */}
+                        <div style={{
+                          color: 'rgba(255, 255, 255, 0.6)',
+                          fontSize: '13px',
+                          fontWeight: '500'
+                        }}>
+                          {distanceUnit === 'feet' 
+                            ? `(${measurementResult.miles.toFixed(3)} miles)`
+                            : `(${measurementResult.feet.toLocaleString()} feet)`
+                          }
+                        </div>
+                        
+                        {/* Unit Switch Button */}
+                        <button
+                          onClick={() => setDistanceUnit(prev => prev === 'feet' ? 'miles' : 'feet')}
+                          style={{
+                            background: 'rgba(0, 184, 212, 0.2)',
+                            border: '1px solid rgba(0, 184, 212, 0.4)',
+                            borderRadius: '6px',
+                            padding: '4px 12px',
+                            color: '#00b8d4',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.3)';
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.2)';
+                            e.currentTarget.style.transform = 'scale(1)';
+                          }}
+                        >
+                          Switch to {distanceUnit === 'feet' ? 'Miles' : 'Feet'}
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* Area Secondary Info */}
+                    {measurementMode === 'area' && measurementResult.sqft && (
+                      <div style={{
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        textAlign: 'center',
+                        marginTop: '6px'
+                      }}>
+                        {measurementResult.sqft.toLocaleString()} sq ft
+                      </div>
+                    )}
                   </div>
                 </Marker>
               )}
