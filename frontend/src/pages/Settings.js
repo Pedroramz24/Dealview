@@ -122,7 +122,6 @@ const Settings = () => {
   const handleDiscard = () => {
     setProfileData(originalData);
     setIsDirty(false);
-    toast.info('Changes discarded');
   };
 
   const sections = [

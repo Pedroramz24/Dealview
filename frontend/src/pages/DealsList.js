@@ -475,7 +475,6 @@ const DealsList = () => {
     const hasContactChanges = selectedContacts.length > 0;
     
     if (changes.length === 0 && !hasContactChanges) {
-      toast.info('No changes to save');
       setShowEditPanel(false);
       return;
     }
@@ -1955,7 +1954,6 @@ const DealsList = () => {
                               onClick={() => {
                                 setShowEditPanel(false);
                                 navigate('/contacts');
-                                toast.info('Opening Contacts page to create new contact');
                               }}
                               className="bg-blue-600 hover:bg-blue-700"
                             >

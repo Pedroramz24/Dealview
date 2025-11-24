@@ -1654,7 +1654,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
                         <button
                           onClick={() => {
                             // Download logic here
-                            toast.info('Download feature coming soon');
                           }}
                           style={{
                             padding: '4px 8px',

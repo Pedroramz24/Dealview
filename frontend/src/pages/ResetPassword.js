@@ -65,7 +65,6 @@ const ResetPassword = () => {
       await supabase.auth.signOut();
       setTimeout(() => {
         navigate('/');
-        toast.info('Please sign in with your new password');
       }, 1500);
     } catch (error) {
       console.error('Error resetting password:', error);

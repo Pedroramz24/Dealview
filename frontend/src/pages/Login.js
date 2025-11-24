@@ -23,7 +23,6 @@ const Login = () => {
       if (isLogin) {
         // Login with Supabase
         await login(email, password);
-        toast.success('Welcome back!');
       } else {
         // Signup with Supabase
         await signup(email, password, { full_name: fullName });
