@@ -1270,30 +1270,23 @@ const MapView = () => {
               url={`pmtiles://${window.location.origin}/tiles/bexar_parcels.pmtiles`}
               tileSize={512}
             >
-              {/* Invisible fill layer for easier clicking */}
+              {/* Fill layer - invisible unless selected (red highlight) */}
               <Layer
                 id="bexar-parcels-fill"
                 type="fill"
                 source-layer="parcels"
                 minzoom={14}
                 maxzoom={22}
-                paint={{
-                  'fill-color': '#06b6d4',
-                  'fill-opacity': 0.0001  // Nearly invisible but clickable
-                }}
+                paint={bexarParcelFillPaint}
               />
-              {/* Parcel outlines - visible layer */}
+              {/* Parcel outlines - cyan normally, red when selected */}
               <Layer
                 id="bexar-parcels-line"
                 type="line"
                 source-layer="parcels"
                 minzoom={14}
                 maxzoom={22}
-                paint={{
-                  'line-color': '#06b6d4',  // Cyan for parcels
-                  'line-width': 1.5,
-                  'line-opacity': 0.8
-                }}
+                paint={bexarParcelLinePaint}
               />
             </Source>
           )}
