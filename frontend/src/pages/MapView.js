@@ -482,6 +482,43 @@ const MapView = () => {
   const parcelTiles = useMemo(() => [REPORTALL_CONFIG.vectorTilesUrl], []);
   const parcelPromoteId = useMemo(() => ({ parcels: 'robust_id' }), []);
 
+  // Memoize Bexar CAD parcel paint properties for red highlighting when selected
+  const bexarParcelFillPaint = useMemo(() => ({
+    'fill-color': [
+      'case',
+      ['==', ['get', 'AcctNumb'], selectedBexarParcelId || ''],
+      '#FF0000', // Red for selected Bexar parcel
+      '#06b6d4'  // Default cyan
+    ],
+    'fill-opacity': [
+      'case',
+      ['==', ['get', 'AcctNumb'], selectedBexarParcelId || ''],
+      0.4, // Higher opacity for selected
+      0.0001  // Nearly invisible but clickable for unselected
+    ]
+  }), [selectedBexarParcelId]);
+
+  const bexarParcelLinePaint = useMemo(() => ({
+    'line-color': [
+      'case',
+      ['==', ['get', 'AcctNumb'], selectedBexarParcelId || ''],
+      '#FF0000', // Bold red for selected Bexar parcel
+      '#06b6d4'  // Cyan for unselected
+    ],
+    'line-width': [
+      'case',
+      ['==', ['get', 'AcctNumb'], selectedBexarParcelId || ''],
+      4, // Thicker line for selected
+      1.5  // Normal width for unselected
+    ],
+    'line-opacity': [
+      'case',
+      ['==', ['get', 'AcctNumb'], selectedBexarParcelId || ''],
+      1, // Full opacity for selected
+      0.8  // Normal opacity for unselected
+    ]
+  }), [selectedBexarParcelId]);
+
   // Map style configurations
   const mapStyles = {
     satellite: {
