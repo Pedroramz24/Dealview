@@ -168,11 +168,15 @@ const DealDetails = () => {
         setShowContactDropdown(false);
         setContactSearchTerm('');
       }
+      // Close More menu when clicking outside
+      if (showMoreMenu && !event.target.closest('[data-more-menu]')) {
+        setShowMoreMenu(false);
+      }
     };
     
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [showMoreMenu]);
 
   const fetchDeal = async () => {
     if (!user) {
