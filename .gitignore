@@ -231,3 +231,4 @@ frontend/public/tiles/bexar_parcels.pmtiles
 *.env
 *.env.*
 frontend/build/tiles/bexar_parcels.pmtiles
+frontend/node_modules/.cache/default-development/2.pack_

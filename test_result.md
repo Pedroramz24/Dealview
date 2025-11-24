@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1. Image Carousel Navigation: Make left/right navigation arrows clearer with hover effects for both DealDetails page and PropertyIntelligencePanel side panel. 2. Drawing Cursor: Change cursor from hand to crosshair while drawing lines or area shapes on map for more precision. 3. Measurement Units: Enhance measurement tools to measure distances in both feet and miles with easy switching and display both units."
+user_problem_statement: "1. Fix Crosshair Cursor: The crosshair cursor still isn't appearing when using drawing tools—hand cursor is showing. Update so crosshair is always used while drawing lines or areas. 2. Auto-Switch Distance Units: Remove toggle button for miles/feet. Display in feet by default, automatically switch to miles only once distance exceeds one mile. 3. Clean Measurement Display: Remove the box background - distance should display directly on the line as text only."
 
 backend:
   - task: "Pipeline Management API Endpoints"
@@ -194,14 +194,14 @@ frontend:
     working: "NA"
     file: "/app/frontend/src/pages/MapView.js, /app/frontend/src/App.css"
     stuck_count: 0
-    priority: "medium"
+    priority: "high"
     needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
-        comment: "✅ IMPLEMENTED: Changed map cursor to crosshair during measurement drawing. CHANGES: (1) MAPVIEW.JS line 1050: Added cursor style to Map component - cursor: measurementMode ? 'crosshair' : 'grab'. When measurementMode is 'area' or 'distance', cursor becomes crosshair for precision. Default is grab cursor. (2) APP.CSS: Added maplibregl-canvas-container cursor override to ensure crosshair takes priority. (3) UX improvement: Users now have precise crosshair cursor when drawing measurements instead of hand/grab cursor. More accurate point placement for measurements. Frontend compiled successfully. Test by clicking 'Measure Distance' or 'Measure Area' buttons - cursor should change to crosshair immediately."
+        comment: "✅ FIXED: Crosshair cursor now properly displays during measurement drawing. ISSUE: Previous implementation used style.cursor instead of the cursor prop. React-map-gl requires the cursor prop at the Map component level, not in the style object. FIX: (1) MAPVIEW.JS line 1053: Moved cursor from style object to cursor prop - cursor={measurementMode ? 'crosshair' : 'grab'}. (2) Removed cursor from style object. (3) When measurementMode is 'area' or 'distance', cursor becomes crosshair. When null, cursor is default grab. (4) APP.CSS cursor overrides ensure crosshair takes priority over maplibre defaults. Frontend compiled successfully. Test by clicking 'Measure Distance' or 'Measure Area' - cursor should immediately change to crosshair and remain crosshair throughout drawing."
 
-  - task: "Enhanced Measurement Display with Feet/Miles Switching"
+  - task: "Auto-Switch Distance Units & Clean Display"
     implemented: true
     working: "NA"
     file: "/app/frontend/src/pages/MapView.js"
@@ -211,7 +211,7 @@ frontend:
     status_history:
       - working: "NA"
         agent: "main"
-        comment: "✅ IMPLEMENTED: Enhanced distance measurement display with unit switching. CHANGES: (1) Added distanceUnit state ('feet' or 'miles') on line 69. (2) Redesigned measurement display marker (lines 2007-2096): Dark glass-morphism card with border and glow. Main measurement shows selected unit (feet or miles). Secondary display shows alternative unit in parentheses. 'Switch to Miles/Feet' button for easy toggling. (3) Display format: Primary: Large text with selected unit (e.g., '1,234 ft' or '0.234 mi'). Secondary: Smaller text with alternative unit (e.g., '(0.234 miles)' or '(1,234 feet)'). Button: Cyan themed, hover effects, uppercase text. (4) Area measurements still show acres + sq ft (unchanged). (5) Unit preference persists during measurement session. (6) Visual: Dark card (rgba(0,0,0,0.8)) with cyan border, backdrop blur, shadow glow. All measurements now show both units for complete information. Frontend compiled successfully. Test by drawing a distance measurement - should see both units and switch button."
+        comment: "✅ IMPLEMENTED: Simplified distance measurement display with automatic unit switching. CHANGES: (1) REMOVED: distanceUnit state (line 69) - no longer needed. (2) REMOVED: Toggle button UI - entire switch button section deleted. (3) REMOVED: Dark glass box background - border, backdrop blur, padding removed. (4) AUTO-SWITCH LOGIC: Distance < 5280 feet (1 mile) = Display in feet with comma formatting (e.g., '1,234 ft'). Distance >= 5280 feet (1 mile) = Automatically switch to miles with 2 decimal places (e.g., '1.23 mi'). (5) CLEAN DISPLAY: Text now appears directly on the measurement line. Strong text shadow for readability (multi-layer black shadow + cyan glow). No background box - pure text overlay. fontSize 20px, fontWeight 700, white color. (6) Area measurements unchanged - still show acres + sq ft. (7) Measurement appears at center point of line. Frontend compiled successfully. Test by drawing short distance (<1 mile) - shows feet. Draw long distance (>1 mile) - automatically shows miles. Text appears directly on line with no box."
 
   - task: "PropertyIntelligencePanel Multiple Images Support"
     implemented: true
