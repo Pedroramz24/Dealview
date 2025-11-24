@@ -912,43 +912,8 @@ const DealDetails = () => {
             </div>
           </div>
 
-          {/* Asset Type Tag - Centered */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
-            <span style={{
-              padding: '10px 24px',
-              background: getAssetTypeColor(deal.asset_type).bg,
-              color: getAssetTypeColor(deal.asset_type).color,
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }}>
-              {deal.asset_type}
-            </span>
-            {deal.stage && (
-              <span style={{
-                padding: '10px 24px',
-                background: `${stageColors[deal.stage] || '#94a3b8'}`,
-                color: '#FFFFFF',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '600',
-                border: `1px solid ${stageColors[deal.stage] || '#94a3b8'}`,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                boxShadow: `0 0 20px ${stageColors[deal.stage] || '#94a3b8'}40`
-              }}>
-                {deal.stage.replace(/_/g, ' ')}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
+          {/* Main Content Area */}
+          <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
         {/* Transaction Timeline */}
         {(deal.under_contract_date || deal.closing_date) && (
           <DealTimeline deal={deal} />
