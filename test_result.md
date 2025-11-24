@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1. Fix Profile Picture Upload: Avatar upload in Settings not working - implement actual upload/display. 2. Text Annotation Tool: Add click-to-type text labels on map with formatting toolbar (font size, bold, italic, color, uppercase/lowercase, rotation, delete). Remove white box - type directly on map. 3. Unified Button Styling: Create consistent styling for all primary buttons across app. 4. AI Response Formatting: Clean up AI assistant responses with proper typography, spacing, headings, lists for better readability."
+user_problem_statement: "Update map text annotation tool: 1. Remove background boxes - just clean high-contrast text on map. 2. Fix typing issue - clicking to add label should immediately allow typing. 3. Make labels draggable after creation - grab and reposition without creating new label. 4. Keep styling minimal and focused on legibility over design."
 
 backend:
   - task: "Pipeline Management API Endpoints"
