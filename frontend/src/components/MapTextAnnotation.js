@@ -1,11 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { Marker } from 'react-map-gl/maplibre';
+import { X } from 'lucide-react';
 
 const MapTextAnnotation = ({ 
   annotations, 
   onAddAnnotation, 
   onDeleteAnnotation, 
   onMoveAnnotation,
+  onEditAnnotation,
   editingAnnotation, 
   onUpdateAnnotation 
 }) => {
@@ -22,7 +24,7 @@ const MapTextAnnotation = ({
 
   return (
     <>
-      {/* Saved Annotations - Draggable, No Background */}
+      {/* Saved Annotations - Draggable and Editable */}
       {annotations.map((annotation) => (
         <Marker
           key={annotation.id}
@@ -35,7 +37,12 @@ const MapTextAnnotation = ({
           }}
         >
           <div
+            onClick={(e) => {
+              e.stopPropagation();
+              onEditAnnotation(annotation);
+            }}
             style={{
+              position: 'relative',
               color: annotation.color || '#ffffff',
               fontSize: `${annotation.fontSize || 16}px`,
               fontWeight: annotation.bold ? '700' : '500',
@@ -56,12 +63,52 @@ const MapTextAnnotation = ({
               whiteSpace: 'nowrap',
               cursor: 'move',
               userSelect: 'none',
-              padding: '2px',
+              padding: 0,
+              margin: 0,
               letterSpacing: '0.5px',
-              lineHeight: '1'
+              lineHeight: '1',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              pointerEvents: 'auto'
             }}
           >
             {annotation.text}
+            {/* Delete button appears on hover */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteAnnotation(annotation.id);
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              style={{
+                position: 'absolute',
+                top: '-12px',
+                right: '-12px',
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                background: '#ef4444',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: '#ffffff',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s',
+                opacity: 0,
+                pointerEvents: 'auto'
+              }}
+              className="annotation-delete-btn"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <X size={12} strokeWidth={3} />
+            </button>
           </div>
         </Marker>
       ))}
@@ -78,14 +125,13 @@ const MapTextAnnotation = ({
             style={{ 
               position: 'relative',
               pointerEvents: 'auto',
-              zIndex: 9999
+              zIndex: 9999,
+              background: 'transparent',
+              padding: 0,
+              margin: 0
             }}
-            onMouseDown={(e) => {
-              e.stopPropagation();
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             <input
               ref={inputRef}
@@ -114,6 +160,8 @@ const MapTextAnnotation = ({
                 background: 'transparent',
                 border: 'none',
                 outline: 'none',
+                padding: 0,
+                margin: 0,
                 color: editingAnnotation.color || '#ffffff',
                 fontSize: `${editingAnnotation.fontSize || 16}px`,
                 fontWeight: editingAnnotation.bold ? '700' : '500',
@@ -134,14 +182,15 @@ const MapTextAnnotation = ({
                 textAlign: 'center',
                 minWidth: '200px',
                 width: 'auto',
-                padding: '2px',
                 letterSpacing: '0.5px',
                 cursor: 'text',
                 pointerEvents: 'auto',
                 WebkitUserSelect: 'text',
                 MozUserSelect: 'text',
                 msUserSelect: 'text',
-                userSelect: 'text'
+                userSelect: 'text',
+                boxShadow: 'none',
+                WebkitAppearance: 'none'
               }}
             />
           </div>
