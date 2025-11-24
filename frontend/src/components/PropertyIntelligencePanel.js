@@ -274,7 +274,12 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
 
   if (!data) return null;
 
-  const images = data.image_url ? [data.image_url] : [];
+  // Support both single image (image_url) and multiple images (image_urls array)
+  const images = data.image_urls && Array.isArray(data.image_urls) && data.image_urls.length > 0
+    ? data.image_urls
+    : data.image_url 
+    ? [data.image_url] 
+    : [];
 
   const formatPrice = (price) => {
     if (!price) return 'N/A';
