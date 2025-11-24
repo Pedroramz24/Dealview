@@ -424,8 +424,6 @@ const MapView = () => {
       
       const url = `${API}/intelligence/layer/sa-water-sewer${bbox ? `?bbox=${bbox}&limit=10000` : '?limit=10000'}`;
       
-      toast.info('Loading water/sewer infrastructure...');
-      
       fetch(url)
         .then(res => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
