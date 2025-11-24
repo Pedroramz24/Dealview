@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix Bexar CAD Parcels layer click functionality - parcels should be clickable and display property information in the side panel. After this is verified working, proceed with debugging 42 pending bugs in the application."
+user_problem_statement: "1. Red Parcel Highlighting: When a parcel is clicked, it should be clearly highlighted in red so it's easy to see which one is active. 2. Dynamic Deal Pin Scaling: Deal pins are currently too large. With 100+ deals visible, the map becomes oversaturated. Make pin size dynamic and scaled so the map remains readable even when many deals are displayed."
 
 backend:
   - task: "Pipeline Management API Endpoints"
