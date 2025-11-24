@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { X, Send, Sparkles, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { AuthContext } from '../App';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const AIResearchPanel = ({ isOpen, onClose }) => {
   const { user } = useContext(AuthContext);
