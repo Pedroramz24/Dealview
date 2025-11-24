@@ -222,8 +222,6 @@ const Pipeline = () => {
         }
       });
       
-      toast.success('Deal moved successfully');
-
       // Trigger automations - TEMPORARILY DISABLED
       // triggerAutomation(newStage.name, deal);
       
