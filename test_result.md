@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1. Property Details Enhancements: Add Documents section to DealDetails page with upload/download/delete functionality. Replace single image with multi-image carousel (Swiper) with arrows and navigation dots. 2. Authentication Improvements: Add 'Forgot password?' link to Login page with email-based password reset flow. Expose 'Change Password' option in Settings (already exists). All components styled with dark glass-morphism theme and mobile responsive."
+user_problem_statement: "1. Image Carousel Navigation: Make left/right navigation arrows clearer with hover effects for both DealDetails page and PropertyIntelligencePanel side panel. 2. Drawing Cursor: Change cursor from hand to crosshair while drawing lines or area shapes on map for more precision. 3. Measurement Units: Enhance measurement tools to measure distances in both feet and miles with easy switching and display both units."
 
 backend:
   - task: "Pipeline Management API Endpoints"
