@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Marker } from 'react-map-gl/maplibre';
-import { Type, X, Check } from 'lucide-react';
+import { X } from 'lucide-react';
 
-const MapTextAnnotation = ({ annotations, onAddAnnotation, onDeleteAnnotation }) => {
+const MapTextAnnotation = ({ annotations, onAddAnnotation, onDeleteAnnotation, editingAnnotation, onUpdateAnnotation }) => {
   return (
     <>
-      {/* Existing Annotations */}
+      {/* Existing Saved Annotations */}
       {annotations.map((annotation) => (
         <Marker
           key={annotation.id}
@@ -14,56 +14,77 @@ const MapTextAnnotation = ({ annotations, onAddAnnotation, onDeleteAnnotation })
           anchor="center"
         >
           <div
+            contentEditable={false}
             style={{
-              position: 'relative',
-              background: 'rgba(0, 0, 0, 0.85)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(0, 184, 212, 0.5)',
-              borderRadius: '8px',
-              padding: '8px 12px',
-              color: '#ffffff',
-              fontSize: '14px',
-              fontWeight: '600',
-              whiteSpace: 'normal',
-              boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3), 0 0 20px rgba(0, 184, 212, 0.2)',
+              color: annotation.color || '#ffffff',
+              fontSize: `${annotation.fontSize || 16}px`,
+              fontWeight: annotation.bold ? '700' : '500',
+              fontStyle: annotation.italic ? 'italic' : 'normal',
+              textTransform: annotation.uppercase ? 'uppercase' : 'none',
+              transform: `rotate(${annotation.rotation || 0}deg)`,
+              textShadow: `
+                -2px -2px 6px rgba(0, 0, 0, 0.9),
+                2px -2px 6px rgba(0, 0, 0, 0.9),
+                -2px 2px 6px rgba(0, 0, 0, 0.9),
+                2px 2px 6px rgba(0, 0, 0, 0.9),
+                0 0 12px rgba(0, 0, 0, 0.8)
+              `,
+              whiteSpace: 'nowrap',
               cursor: 'default',
-              maxWidth: '200px',
-              wordWrap: 'break-word'
+              userSelect: 'none',
+              padding: '4px 8px',
+              letterSpacing: '0.3px'
             }}
           >
             {annotation.text}
-            <button
-              onClick={() => onDeleteAnnotation(annotation.id)}
-              style={{
-                position: 'absolute',
-                top: '-8px',
-                right: '-8px',
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                background: 'rgba(239, 68, 68, 0.9)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#ffffff',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#ef4444';
-                e.currentTarget.style.transform = 'scale(1.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.9)';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <X size={12} strokeWidth={3} />
-            </button>
           </div>
         </Marker>
       ))}
+
+      {/* Currently Editing Annotation - Inline Editing */}
+      {editingAnnotation && (
+        <Marker
+          longitude={editingAnnotation.longitude}
+          latitude={editingAnnotation.latitude}
+          anchor="center"
+        >
+          <input
+            type="text"
+            value={editingAnnotation.text}
+            onChange={(e) => onUpdateAnnotation({ ...editingAnnotation, text: e.target.value })}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && editingAnnotation.text.trim()) {
+                onAddAnnotation(editingAnnotation);
+              }
+            }}
+            placeholder="Type here..."
+            autoFocus
+            maxLength={100}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              color: editingAnnotation.color || '#ffffff',
+              fontSize: `${editingAnnotation.fontSize || 16}px`,
+              fontWeight: editingAnnotation.bold ? '700' : '500',
+              fontStyle: editingAnnotation.italic ? 'italic' : 'normal',
+              textTransform: editingAnnotation.uppercase ? 'uppercase' : 'none',
+              transform: `rotate(${editingAnnotation.rotation || 0}deg)`,
+              textShadow: `
+                -2px -2px 6px rgba(0, 0, 0, 0.9),
+                2px -2px 6px rgba(0, 0, 0, 0.9),
+                -2px 2px 6px rgba(0, 0, 0, 0.9),
+                2px 2px 6px rgba(0, 0, 0, 0.9),
+                0 0 12px rgba(0, 0, 0, 0.8)
+              `,
+              textAlign: 'center',
+              minWidth: '150px',
+              padding: '4px 8px',
+              letterSpacing: '0.3px'
+            }}
+          />
+        </Marker>
+      )}
     </>
   );
 };
