@@ -347,20 +347,33 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
     }
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `avatars/${user.id}/avatar-${Date.now()}.${fileExt}`;
+      // Get Supabase session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Please log in to upload avatar');
+        return;
+      }
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('property-images')
-        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', file);
 
-      if (uploadError) throw uploadError;
+      // Upload via backend endpoint (uses service_role key, bypasses RLS)
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/avatar/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: formData
+      });
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('property-images')
-        .getPublicUrl(fileName);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Upload failed');
+      }
 
-      setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
+      const data = await response.json();
+      setProfileData(prev => ({ ...prev, avatar_url: data.avatar_url }));
       toast.success('Avatar uploaded successfully');
     } catch (error) {
       console.error('Error uploading avatar:', error);
