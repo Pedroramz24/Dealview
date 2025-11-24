@@ -1215,6 +1215,33 @@ const MapView = () => {
             </Source>
           )}
 
+          {/* Merged Parcel Geometry - Shows union of selected parcels */}
+          {mergedParcelGeometry && (
+            <Source
+              id="merged-parcels"
+              type="geojson"
+              data={mergedParcelGeometry}
+            >
+              <Layer
+                id="merged-parcels-fill"
+                type="fill"
+                paint={{
+                  'fill-color': '#FF0000',
+                  'fill-opacity': 0.3
+                }}
+              />
+              <Layer
+                id="merged-parcels-line"
+                type="line"
+                paint={{
+                  'line-color': '#FF0000',
+                  'line-width': 5,
+                  'line-opacity': 1
+                }}
+              />
+            </Source>
+          )}
+
           {/* Regrid Parcel Layer */}
           {showParcels && parcels && (
             <Source
