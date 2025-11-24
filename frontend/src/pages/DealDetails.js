@@ -48,6 +48,7 @@ const DealDetails = () => {
   const [linkedContacts, setLinkedContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [propertyImages, setPropertyImages] = useState([]);
   const { user } = useContext(AuthContext);
   
   // Pipeline & Stage Management
