@@ -637,9 +637,8 @@ const DealDetails = () => {
     <div style={{ background: '#000000', minHeight: '100vh' }}>
       {/* Full-Width Header */}
       <div style={{
-        background: 'rgba(255,255,255,0.03)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
-        padding: '40px 0'
+        background: 'transparent',
+        padding: '40px 0 0 0'
       }} data-testid="deal-details-page">
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
           {/* Clean Symmetrical Header */}
