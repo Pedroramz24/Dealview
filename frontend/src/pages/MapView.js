@@ -15,6 +15,7 @@ import AIResearchPanel from '../components/AIResearchPanel';
 import AddressSearchBar from '../components/AddressSearchBar';
 import MapTopBar from '../components/MapTopBar';
 import { MapTextAnnotation } from '../components/MapTextAnnotation';
+import TextFormattingToolbar from '../components/TextFormattingToolbar';
 import reportallService from '../services/reportallService';
 import REPORTALL_CONFIG from '../config/reportall';
 import propertyIntelligenceService from '../services/propertyIntelligenceService';
