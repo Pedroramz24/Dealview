@@ -449,40 +449,40 @@ const MapView = () => {
   const parcelFillPaint = useMemo(() => ({
     'fill-color': [
       'case',
-      ['==', ['get', 'robust_id'], selectedParcelId || ''],
-      '#FF0000', // Red for selected parcel
+      ['in', ['get', 'robust_id'], ['literal', selectedParcelIds]],
+      '#FF0000', // Red for selected parcels
       REPORTALL_CONFIG.style.parcelFill.color // Default cyan
     ],
     'fill-opacity': [
       'case',
-      ['==', ['get', 'robust_id'], selectedParcelId || ''],
+      ['in', ['get', 'robust_id'], ['literal', selectedParcelIds]],
       0.4, // Higher opacity for selected
       REPORTALL_CONFIG.style.parcelFill.opacity
     ],
     'fill-opacity-transition': { duration: 0 }, // Disable transitions for instant rendering
-  }), [selectedParcelId]);
+  }), [selectedParcelIds]);
 
   const parcelLinePaint = useMemo(() => ({
     'line-color': [
       'case',
-      ['==', ['get', 'robust_id'], selectedParcelId || ''],
-      '#FF0000', // Bold red for selected parcel
+      ['in', ['get', 'robust_id'], ['literal', selectedParcelIds]],
+      '#FF0000', // Bold red for selected parcels
       REPORTALL_CONFIG.style.parcelLine.color
     ],
     'line-width': [
       'case',
-      ['==', ['get', 'robust_id'], selectedParcelId || ''],
-      4, // Thicker line for selected (increased from 3)
+      ['in', ['get', 'robust_id'], ['literal', selectedParcelIds]],
+      4, // Thicker line for selected
       REPORTALL_CONFIG.style.parcelLine.width
     ],
     'line-opacity': [
       'case',
-      ['==', ['get', 'robust_id'], selectedParcelId || ''],
+      ['in', ['get', 'robust_id'], ['literal', selectedParcelIds]],
       1, // Full opacity for selected
       REPORTALL_CONFIG.style.parcelLine.opacity
     ],
     'line-opacity-transition': { duration: 0 }, // Disable transitions for instant rendering
-  }), [selectedParcelId]);
+  }), [selectedParcelIds]);
 
   // Memoize Source props to prevent Source unmounting/remounting during map drag
   // Creating new array/object references causes React-Map-GL to think props changed
