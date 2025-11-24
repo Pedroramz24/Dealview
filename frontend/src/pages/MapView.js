@@ -2070,7 +2070,6 @@ const MapView = () => {
               setTextAnnotations(prev => [...prev, annotation]);
               setEditingAnnotation(null);
               setSelectedAnnotation(null);
-              toast.success('Label added to map');
             }}
             onDeleteAnnotation={(id) => {
               setTextAnnotations(prev => prev.filter(a => a.id !== id));
