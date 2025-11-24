@@ -432,7 +432,6 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] Water/Sewer data loaded:', data.features?.length, 'features');
           setWaterSewerData(data);
-          toast.success(`Loaded ${data.features?.length || 0} water/sewer features`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching water/sewer:', err);
