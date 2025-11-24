@@ -15,6 +15,7 @@ import Campaigns from './pages/Campaigns';
 import Settings from './pages/Settings';
 import JoinTeam from './pages/JoinTeam';
 import PublicShare from './pages/PublicShare';
+import ResetPassword from './pages/ResetPassword';
 import MainLayout from './components/MainLayout';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
