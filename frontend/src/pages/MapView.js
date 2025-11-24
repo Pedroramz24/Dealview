@@ -1386,10 +1386,10 @@ const MapView = () => {
             >
               <div className="map-marker" style={{
                 position: 'relative',
-                width: '48px',
-                height: '48px',
+                width: `${pinSizes.outer}px`,
+                height: `${pinSizes.outer}px`,
                 cursor: 'pointer',
-                transition: 'transform 0.3s ease',
+                transition: 'transform 0.3s ease, width 0.3s ease, height 0.3s ease',
                 filter: selectedDeal?.id === deal.id 
                   ? 'drop-shadow(0 4px 12px rgba(0, 184, 212, 0.6))' 
                   : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))'
@@ -1399,8 +1399,8 @@ const MapView = () => {
                   position: 'absolute',
                   top: '0',
                   left: '0',
-                  width: '48px',
-                  height: '48px',
+                  width: `${pinSizes.outer}px`,
+                  height: `${pinSizes.outer}px`,
                   borderRadius: '50%',
                   background: selectedDeal?.id === deal.id ? 'rgba(0, 184, 212, 0.5)' : 'rgba(0, 184, 212, 0.3)',
                   animation: 'pulse 2s ease-out infinite'
@@ -1408,10 +1408,10 @@ const MapView = () => {
                 {/* Main marker circle with border for selected state */}
                 <div style={{
                   position: 'absolute',
-                  top: '8px',
-                  left: '8px',
-                  width: '32px',
-                  height: '32px',
+                  top: `${(pinSizes.outer - pinSizes.inner) / 2}px`,
+                  left: `${(pinSizes.outer - pinSizes.inner) / 2}px`,
+                  width: `${pinSizes.inner}px`,
+                  height: `${pinSizes.inner}px`,
                   borderRadius: '50%',
                   background: '#00b8d4',
                   display: 'flex',
@@ -1422,8 +1422,8 @@ const MapView = () => {
                 }}>
                   {/* Center white dot */}
                   <div style={{
-                    width: '12px',
-                    height: '12px',
+                    width: `${pinSizes.dot}px`,
+                    height: `${pinSizes.dot}px`,
                     borderRadius: '50%',
                     background: '#ffffff'
                   }}></div>
