@@ -155,7 +155,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }
   const isDeal = type === 'deal';
 
   useEffect(() => {
-    if (data && !isEditing) {
+    if (data) {
       setEditedData({ ...data });
       if (isDeal && data.id) {
         fetchLinkedContacts();
