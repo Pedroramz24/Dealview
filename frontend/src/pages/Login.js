@@ -128,6 +128,37 @@ const Login = () => {
               />
             </div>
 
+            {/* Forgot Password Link - Only show in login mode */}
+            {isLogin && (
+              <div style={{ textAlign: 'right', marginTop: '-8px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#00b8d4',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    padding: '4px 0',
+                    transition: 'all 0.2s',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#00d4ed';
+                    e.currentTarget.style.textDecoration = 'underline';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#00b8d4';
+                    e.currentTarget.style.textDecoration = 'none';
+                  }}
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
+
             <Button
               type="submit"
               className="w-full"
