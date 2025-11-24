@@ -1809,3 +1809,16 @@ div[role="listbox"] {
   color: #c084fc;
   text-decoration: underline;
 }
+
+/* Text Annotation - Show delete button on hover */
+.annotation-label:hover .annotation-delete-btn {
+  opacity: 1 !important;
+}
+
+/* Ensure no backgrounds on map annotations */
+.maplibregl-marker input,
+.maplibregl-marker div {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
