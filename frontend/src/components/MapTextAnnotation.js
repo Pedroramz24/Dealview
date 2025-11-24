@@ -4,6 +4,8 @@ import { X } from 'lucide-react';
 
 const MapTextAnnotation = ({ 
   annotations, 
+  selectedAnnotation,
+  onSelectAnnotation,
   onAddAnnotation, 
   onDeleteAnnotation, 
   onMoveAnnotation,
