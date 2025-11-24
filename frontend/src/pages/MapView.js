@@ -832,7 +832,6 @@ const MapView = () => {
           const closedPoints = [...measurementPoints, firstPoint];
           const result = calculateArea(closedPoints);
           setMeasurementResult(result);
-          toast.success('Area measurement complete!');
           return;
         }
       }
