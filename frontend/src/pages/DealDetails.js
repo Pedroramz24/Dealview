@@ -687,6 +687,23 @@ const DealDetails = () => {
                 </Button>
               )}
               <Button
+                onClick={handleShare}
+                style={{
+                  background: 'rgba(0, 184, 212, 0.15)',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  color: '#00b8d4',
+                  padding: '8px 24px',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                SHARE
+              </Button>
+              <Button
                 onClick={handleSave}
                 disabled={isSaving}
                 style={{
