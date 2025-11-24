@@ -1539,7 +1539,10 @@ div[role="listbox"] {
 
 /* Error toast */
 [data-sonner-toast][data-type="error"] {
-  background: var(--error-bg) !impor
+  background: var(--error-bg) !important;
+  border-color: var(--error-border) !important;
+}
+
 /* Unified Primary Button Styles */
 .btn-primary {
   padding: 10px 20px;
