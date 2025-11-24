@@ -227,72 +227,84 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
             ))}
           </Swiper>
 
-          {/* Navigation Arrows */}
+          {/* Navigation Arrows - Enhanced visibility */}
           {images.length > 1 && (
             <>
               <button 
                 className="swiper-button-prev-custom"
                 style={{
                   position: 'absolute',
-                  left: '12px',
+                  left: '16px',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   zIndex: 10,
                   background: 'rgba(0,0,0,0.7)',
                   backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.3)',
                   borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
+                  width: '52px',
+                  height: '52px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
                   cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.2s',
+                  opacity: 0.6,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.8)';
-                  e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.9)';
+                  e.currentTarget.style.transform = 'translateY(-50%) scale(1.15)';
+                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 184, 212, 0.5)';
                 }}
                 onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '0.6';
                   e.currentTarget.style.background = 'rgba(0,0,0,0.7)';
                   e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
                 }}
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft size={28} strokeWidth={3} />
               </button>
               <button 
                 className="swiper-button-next-custom"
                 style={{
                   position: 'absolute',
-                  right: '12px',
+                  right: '16px',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   zIndex: 10,
                   background: 'rgba(0,0,0,0.7)',
                   backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.3)',
                   borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
+                  width: '52px',
+                  height: '52px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
                   cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.2s',
+                  opacity: 0.6,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.8)';
-                  e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.9)';
+                  e.currentTarget.style.transform = 'translateY(-50%) scale(1.15)';
+                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 184, 212, 0.5)';
                 }}
                 onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '0.6';
                   e.currentTarget.style.background = 'rgba(0,0,0,0.7)';
                   e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
                 }}
               >
-                <ChevronRight size={24} />
+                <ChevronRight size={28} strokeWidth={3} />
               </button>
             </>
           )}
