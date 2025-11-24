@@ -819,6 +819,11 @@ const MapView = () => {
         const parcel = features[0].properties;
         console.log('[Bexar CAD] Clicked parcel data:', parcel);
         
+        // Set selected Bexar parcel for highlighting (use account number as unique ID)
+        const bexarParcelId = parcel.AcctNumb || parcel.account_number;
+        console.log('[Bexar CAD] Setting selected parcel ID for highlighting:', bexarParcelId);
+        setSelectedBexarParcelId(bexarParcelId);
+        
         // Format parcel data for PropertyIntelligencePanel
         const parcelData = {
           // Property Info
