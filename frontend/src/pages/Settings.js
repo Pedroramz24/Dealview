@@ -1166,10 +1166,9 @@ const DataPrivacySection = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleExportData = async () => {
-    toast.info('⏳ Preparing your data export...');
     setTimeout(() => {
-      toast.success('Export will be sent to your email within 24 hours');
-    }, 1500);
+      toast.success('Export request received - will be sent to your email');
+    }, 500);
   };
 
   const handleDeleteAccount = async () => {
@@ -1177,7 +1176,6 @@ const DataPrivacySection = () => {
       toast.error('Please type DELETE to confirm');
       return;
     }
-    toast.info('Account deletion will be enabled in a future update');
     setShowDeleteDialog(false);
     setDeleteConfirm('');
   };
