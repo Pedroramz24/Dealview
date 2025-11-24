@@ -2055,6 +2055,21 @@ const MapView = () => {
               )}
             </>
           )}
+          
+          {/* Text Annotations */}
+          <MapTextAnnotation
+            annotations={textAnnotations}
+            onAddAnnotation={(annotation) => {
+              setTextAnnotations(prev => [...prev, annotation]);
+              toast.success('Label added to map');
+            }}
+            onDeleteAnnotation={(id) => {
+              setTextAnnotations(prev => prev.filter(a => a.id !== id));
+              toast.success('Label removed');
+            }}
+            isAnnotationMode={annotationMode}
+            onToggleMode={(mode) => setAnnotationMode(mode)}
+          />
         </Map>
         </div>
 
