@@ -1459,10 +1459,10 @@ const MapView = () => {
             >
               <div className="map-marker" style={{
                 position: 'relative',
-                width: '48px',
-                height: '48px',
+                width: `${pinSizes.outer}px`,
+                height: `${pinSizes.outer}px`,
                 cursor: 'pointer',
-                transition: 'transform 0.3s ease',
+                transition: 'transform 0.3s ease, width 0.3s ease, height 0.3s ease',
                 filter: selectedDeal?.id === deal.id 
                   ? 'drop-shadow(0 4px 12px rgba(168, 85, 247, 0.6))' 
                   : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))'
@@ -1472,8 +1472,8 @@ const MapView = () => {
                   position: 'absolute',
                   top: '0',
                   left: '0',
-                  width: '48px',
-                  height: '48px',
+                  width: `${pinSizes.outer}px`,
+                  height: `${pinSizes.outer}px`,
                   borderRadius: '50%',
                   background: selectedDeal?.id === deal.id ? 'rgba(168, 85, 247, 0.5)' : 'rgba(168, 85, 247, 0.3)',
                   animation: 'pulse 2s ease-out infinite'
@@ -1481,10 +1481,10 @@ const MapView = () => {
                 {/* Main marker circle - purple for team deals */}
                 <div style={{
                   position: 'absolute',
-                  top: '8px',
-                  left: '8px',
-                  width: '32px',
-                  height: '32px',
+                  top: `${(pinSizes.outer - pinSizes.inner) / 2}px`,
+                  left: `${(pinSizes.outer - pinSizes.inner) / 2}px`,
+                  width: `${pinSizes.inner}px`,
+                  height: `${pinSizes.inner}px`,
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #a855f7 0%, #d946ef 100%)',
                   display: 'flex',
@@ -1493,8 +1493,8 @@ const MapView = () => {
                   transition: 'all 0.3s ease',
                   border: selectedDeal?.id === deal.id ? '3px solid #ffffff' : 'none'
                 }}>
-                  {/* Team icon indicator */}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5">
+                  {/* Team icon indicator - scaled to pin size */}
+                  <svg width={pinSizes.dot * 1.2} height={pinSizes.dot * 1.2} viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
