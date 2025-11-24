@@ -230,3 +230,4 @@ frontend/public/tiles/bexar_parcels.pmtiles
 # Environment files
 *.env
 *.env.*
+frontend/build/tiles/bexar_parcels.pmtiles

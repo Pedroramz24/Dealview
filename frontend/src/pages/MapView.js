@@ -1049,9 +1049,9 @@ const MapView = () => {
             style={{ 
               width: '100%', 
               height: '100%', 
-              willChange: 'transform',
-              cursor: measurementMode ? 'crosshair' : 'grab'
+              willChange: 'transform'
             }}
+            cursor={measurementMode ? 'crosshair' : 'grab'}
             mapStyle={mapStyles[mapStyle]}
             data-testid="map-container"
             ref={mapRef}
