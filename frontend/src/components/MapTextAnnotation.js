@@ -41,6 +41,7 @@ const MapTextAnnotation = ({
               e.stopPropagation();
               onEditAnnotation(annotation);
             }}
+            className="annotation-label"
             style={{
               position: 'relative',
               color: annotation.color || '#ffffff',
