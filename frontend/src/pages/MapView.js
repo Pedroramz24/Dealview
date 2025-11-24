@@ -2069,15 +2069,21 @@ const MapView = () => {
           {/* Text Annotations */}
           <MapTextAnnotation
             annotations={textAnnotations}
+            selectedAnnotation={selectedAnnotation}
             editingAnnotation={editingAnnotation}
+            onSelectAnnotation={(annotation) => {
+              setSelectedAnnotation(annotation);
+            }}
             onAddAnnotation={(annotation) => {
               setTextAnnotations(prev => [...prev, annotation]);
               setEditingAnnotation(null);
+              setSelectedAnnotation(null);
               toast.success('Label added to map');
             }}
             onDeleteAnnotation={(id) => {
               setTextAnnotations(prev => prev.filter(a => a.id !== id));
               setEditingAnnotation(null);
+              setSelectedAnnotation(null);
               toast.success('Label deleted');
             }}
             onMoveAnnotation={(id, newLng, newLat) => {
@@ -2086,11 +2092,11 @@ const MapView = () => {
                   ? { ...a, longitude: newLng, latitude: newLat }
                   : a
               ));
-              // No toast notification for repositioning
             }}
             onEditAnnotation={(annotation) => {
-              // Convert saved annotation back to editing mode
+              // Double-click: Convert saved annotation to editing mode
               setEditingAnnotation(annotation);
+              setSelectedAnnotation(null);
               // Remove from saved list temporarily while editing
               setTextAnnotations(prev => prev.filter(a => a.id !== annotation.id));
             }}
@@ -2101,23 +2107,48 @@ const MapView = () => {
         </Map>
         </div>
 
-        {/* Text Formatting Toolbar - Shows when editing annotation */}
+        {/* Text Formatting Toolbar - Shows when editing OR when annotation selected */}
         <TextFormattingToolbar
-          isVisible={editingAnnotation !== null}
-          currentFormat={editingAnnotation || {}}
+          isVisible={editingAnnotation !== null || selectedAnnotation !== null}
+          currentFormat={editingAnnotation || selectedAnnotation || {}}
           onFormatChange={(formatChanges) => {
-            setEditingAnnotation(prev => ({ ...prev, ...formatChanges }));
+            if (editingAnnotation) {
+              setEditingAnnotation(prev => ({ ...prev, ...formatChanges }));
+            } else if (selectedAnnotation) {
+              // Update selected annotation's formatting in real-time
+              const updatedAnnotation = { ...selectedAnnotation, ...formatChanges };
+              setSelectedAnnotation(updatedAnnotation);
+              setTextAnnotations(prev => prev.map(a => 
+                a.id === selectedAnnotation.id ? updatedAnnotation : a
+              ));
+            }
           }}
           onRotate={() => {
-            setEditingAnnotation(prev => ({
-              ...prev,
-              rotation: ((prev.rotation || 0) + 45) % 360
-            }));
+            if (editingAnnotation) {
+              setEditingAnnotation(prev => ({
+                ...prev,
+                rotation: ((prev.rotation || 0) + 45) % 360
+              }));
+            } else if (selectedAnnotation) {
+              const updatedAnnotation = {
+                ...selectedAnnotation,
+                rotation: ((selectedAnnotation.rotation || 0) + 45) % 360
+              };
+              setSelectedAnnotation(updatedAnnotation);
+              setTextAnnotations(prev => prev.map(a => 
+                a.id === selectedAnnotation.id ? updatedAnnotation : a
+              ));
+            }
           }}
           onDelete={() => {
-            setEditingAnnotation(null);
-            setAnnotationMode(false);
-            // No toast for cancelling
+            if (editingAnnotation) {
+              setEditingAnnotation(null);
+              setAnnotationMode(false);
+            } else if (selectedAnnotation) {
+              setTextAnnotations(prev => prev.filter(a => a.id !== selectedAnnotation.id));
+              setSelectedAnnotation(null);
+              toast.success('Label deleted');
+            }
           }}
         />
 
