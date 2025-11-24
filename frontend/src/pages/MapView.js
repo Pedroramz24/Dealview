@@ -90,6 +90,40 @@ const MapView = () => {
     // No setState = no re-render = no flicker
   }, []);
   
+  // Calculate dynamic pin size based on zoom level and number of deals
+  // This ensures the map remains readable even with 100+ deals
+  const calculatePinSize = useCallback((zoom, dealCount) => {
+    // Base sizes at different zoom levels
+    const baseSize = {
+      outer: Math.max(24, Math.min(48, 16 + zoom * 2)),  // Range: 24px-48px
+      inner: Math.max(16, Math.min(32, 10 + zoom * 1.5)), // Range: 16px-32px
+      dot: Math.max(6, Math.min(12, 4 + zoom * 0.6))     // Range: 6px-12px
+    };
+    
+    // Apply scale factor based on deal density
+    // More deals = smaller pins
+    let scaleFactor = 1.0;
+    if (dealCount > 100) {
+      scaleFactor = 0.6;  // 60% size for 100+ deals
+    } else if (dealCount > 50) {
+      scaleFactor = 0.75; // 75% size for 50+ deals
+    } else if (dealCount > 25) {
+      scaleFactor = 0.85; // 85% size for 25+ deals
+    }
+    
+    return {
+      outer: Math.round(baseSize.outer * scaleFactor),
+      inner: Math.round(baseSize.inner * scaleFactor),
+      dot: Math.round(baseSize.dot * scaleFactor)
+    };
+  }, []);
+  
+  // Calculate pin sizes based on current zoom and deal count
+  const pinSizes = useMemo(() => {
+    const totalDeals = deals.length + (showTeamDeals ? teamDeals.length : 0);
+    return calculatePinSize(currentZoom, totalDeals);
+  }, [currentZoom, deals.length, teamDeals.length, showTeamDeals, calculatePinSize]);
+  
   // Add street labels to map - using proper event listeners
   useEffect(() => {
     if (!mapRef.current) return;
