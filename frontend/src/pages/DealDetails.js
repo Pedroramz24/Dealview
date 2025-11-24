@@ -934,35 +934,24 @@ const DealDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Primary Image */}
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
-              {deal.image_url ? (
-                <img src={deal.image_url} alt={deal.address} className="w-full h-96 object-cover" />
-              ) : (
-                <div className="w-full h-96 flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                  <div className="text-center">
-                    <Home className="w-16 h-16 mx-auto mb-4" style={{ color: 'rgba(255,255,255,0.3)' }} />
-                    <p style={{ color: 'rgba(255,255,255,0.6)' }}>No image uploaded</p>
-                  </div>
-                </div>
-              )}
-              <div className="p-6">
-                <Label htmlFor="image-upload" className="cursor-pointer">
-                  <div className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg transition-colors" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
-                    <Upload className="w-5 h-5 mr-2" style={{ color: 'rgba(255,255,255,0.6)' }} />
-                    <span style={{ color: 'rgba(255,255,255,0.6)' }}>Upload Property Image</span>
-                    <input
-                      id="image-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      disabled={uploading}
-                    />
-                  </div>
-                </Label>
-              </div>
-            </div>
+            {/* Property Images Carousel */}
+            <ImageCarousel 
+              images={propertyImages}
+              dealId={dealId}
+              userId={user?.id}
+              onImagesUpdate={(newImages) => {
+                setPropertyImages(newImages);
+                setDeal(prev => ({ ...prev, image_url: newImages[0] || null, image_urls: newImages }));
+              }}
+              uploading={uploading}
+              setUploading={setUploading}
+            />
+
+            {/* Documents Section */}
+            <DocumentsSection 
+              dealId={dealId}
+              userId={user?.id}
+            />
 
             {/* Core Information */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: isEditMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
