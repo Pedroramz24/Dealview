@@ -791,7 +791,8 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
                 </div>
               </div>
               <button 
-                onClick={() => toast.info(`${account.name} integration coming soon`)}
+                onClick={() => {}}
+                disabled={true}
                 style={{
                   padding: '7px 16px',
                   background: account.connected ? 'transparent' : 'rgba(0, 184, 212, 0.08)',
