@@ -275,7 +275,8 @@ const MapView = () => {
       setPropertyPanelOpen(false);
       setPropertyPanelData(null);
       setCreateDealPanelOpen(false); // Close create deal if switching
-      setSelectedParcelId(null); // Clear selected parcel
+      setSelectedParcelId(null); // Clear selected ReportAll parcel
+      setSelectedBexarParcelId(null); // Clear selected Bexar CAD parcel
     } else {
       setPropertyPanelOpen(true);
       setPropertyPanelData(data);
