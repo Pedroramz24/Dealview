@@ -1002,17 +1002,41 @@ const MapView = () => {
         console.log('[ReportAll] Found parcel:', result.parcel);
         console.log('[ReportAll] Available fields:', Object.keys(result.parcel));
         
-        // Set selected parcel for highlighting
-        const parcelIdForHighlight = result.parcel.robust_id || result.parcel.parcel_id;
-        console.log('[ReportAll] Setting selected parcel ID for highlighting:', parcelIdForHighlight);
-        setSelectedParcelId(parcelIdForHighlight);
+        const parcelId = result.parcel.robust_id || result.parcel.parcel_id;
+        console.log('[ReportAll] Parcel ID:', parcelId);
+        
+        // Check if Ctrl or Cmd key is held for multi-select
+        const isMultiSelect = event.originalEvent.ctrlKey || event.originalEvent.metaKey;
+        
+        // Note: ReportAll service returns parcel data but not full GeoJSON geometry
+        // For geometry merging, we'd need to query the vector tiles directly
+        // For now, just handle ID-based multi-select
+        
+        if (isMultiSelect && selectedParcelIds.includes(parcelId)) {
+          // Deselect if already selected
+          console.log('[ReportAll] Deselecting parcel');
+          setSelectedParcelIds(prev => prev.filter(id => id !== parcelId));
+          return;
+        }
+        
+        if (isMultiSelect) {
+          // Add to selection
+          console.log('[ReportAll] Adding parcel to selection');
+          setSelectedParcelIds(prev => [...prev, parcelId]);
+        } else {
+          // Replace selection
+          console.log('[ReportAll] Replacing selection');
+          setSelectedParcelIds([parcelId]);
+        }
         
         // Show parcel information in PropertyIntelligencePanel
         const parcelData = {
           ...result.parcel,
           latitude: event.lngLat.lat,
           longitude: event.lngLat.lng,
-          isParcel: true // Flag to identify this is parcel data, not a deal
+          isParcel: true, // Flag to identify this is parcel data, not a deal
+          isMultiSelect: selectedParcelIds.length > 1 || (isMultiSelect && selectedParcelIds.length > 0),
+          selectedCount: isMultiSelect ? selectedParcelIds.length + 1 : 1
         };
         togglePropertyPanel(parcelData);
         return;
