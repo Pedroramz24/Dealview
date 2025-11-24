@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Sparkles, Ruler, Square } from 'lucide-react';
+import { Layers, Sparkles, Ruler, Square, Type } from 'lucide-react';
 
 const MapTopBar = ({
   searchBarComponent,
@@ -8,7 +8,9 @@ const MapTopBar = ({
   aiResearchPanelOpen,
   onToggleAIResearch,
   measurementMode,
-  onSetMeasurementMode
+  onSetMeasurementMode,
+  annotationMode,
+  onToggleAnnotationMode
 }) => {
   return (
     <div style={{
