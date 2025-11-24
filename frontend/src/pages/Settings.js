@@ -437,7 +437,7 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
           <div style={{ flex: 1 }}>
             <h3 style={{ color: '#fff', fontSize: '15px', fontWeight: 600, marginBottom: '6px' }}>Profile Picture</h3>
             <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '13px', marginBottom: '14px' }}>
-              JPG, PNG or GIF • Max 5MB
+              JPG, PNG or GIF • Max 10MB
             </p>
             <div style={{ display: 'flex', gap: '10px' }}>
               <label htmlFor="avatar-upload" style={{
