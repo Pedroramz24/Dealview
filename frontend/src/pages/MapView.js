@@ -1082,6 +1082,7 @@ const MapView = () => {
               willChange: 'transform'
             }}
             cursor={measurementMode || annotationMode ? 'crosshair' : 'grab'}
+            dragPan={editingAnnotation ? false : { inertia: 500 }}
             mapStyle={mapStyles[mapStyle]}
             data-testid="map-container"
             ref={mapRef}
