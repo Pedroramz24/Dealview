@@ -638,117 +638,264 @@ const DealDetails = () => {
         padding: '40px 0'
       }} data-testid="deal-details-page">
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
-          {/* Back Button & Edit Toggle */}
-          <div className="flex items-center justify-between w-full mb-4">
-            <Button
+          {/* Clean Command Bar Header */}
+          <div style={{
+            padding: '24px 32px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+            marginBottom: '32px'
+          }}>
+            {/* Back Button - Minimal */}
+            <button
               onClick={() => navigate('/deals')}
-              variant="ghost"
               style={{
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                color: 'rgba(255,255,255,0.6)',
-                padding: '8px 16px',
-                borderRadius: '6px',
+                background: 'transparent',
+                border: 'none',
+                color: 'rgba(255,255,255,0.5)',
+                padding: '4px 0',
                 fontSize: '13px',
                 fontWeight: '500',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                marginBottom: '24px',
+                transition: 'color 0.2s'
               }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#00b8d4'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              BACK TO PROPERTIES
-            </Button>
-            
-            {/* Action Buttons - Always Show Save */}
-            <div className="flex gap-2">
-              {linkedContacts.length > 0 && linkedContacts[0].email && (
-                <Button
-                  onClick={() => {
-                    setEmailRecipient({
-                      id: linkedContacts[0].id,
-                      email: linkedContacts[0].email,
-                      name: linkedContacts[0].full_name || linkedContacts[0].name
-                    });
-                    setShowEmailCompose(true);
-                  }}
-                  style={{
-                    background: 'rgba(139, 92, 246, 0.15)',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
-                    color: '#8b5cf6',
-                    padding: '8px 24px',
-                    borderRadius: '6px',
+              <ArrowLeft className="w-4 h-4" />
+              Back to Deals
+            </button>
+
+            {/* Hero Section - Address & Tags */}
+            <div style={{ marginBottom: '24px' }}>
+              {/* Property Address - Hero Text */}
+              <h1 style={{ 
+                color: '#FFFFFF', 
+                fontSize: 'clamp(28px, 4vw, 42px)',
+                fontWeight: '700',
+                letterSpacing: '-0.02em',
+                marginBottom: '16px',
+                lineHeight: '1.2'
+              }}>
+                {deal.address || 'Untitled Property'}
+              </h1>
+
+              {/* Property Tags - Directly Below Address */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+                {/* Asset Type Badge */}
+                {deal.asset_type && (
+                  <span style={{
+                    padding: '6px 14px',
+                    borderRadius: '8px',
                     fontSize: '13px',
                     fontWeight: '600',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}
-                >
-                  <Mail className="w-4 h-4 mr-2" />
-                  SEND EMAIL
-                </Button>
-              )}
-              <Button
-                onClick={handleShare}
-                style={{
-                  background: 'rgba(0, 184, 212, 0.15)',
-                  border: '1px solid rgba(0, 184, 212, 0.3)',
-                  color: '#00b8d4',
-                  padding: '8px 24px',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                SHARE
-              </Button>
+                    background: `${getAssetTypeColor(deal.asset_type).bg}`,
+                    color: getAssetTypeColor(deal.asset_type).color,
+                    border: `1px solid ${getAssetTypeColor(deal.asset_type).border}`,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    <Home size={14} />
+                    {deal.asset_type}
+                  </span>
+                )}
+
+                {/* Stage Badge */}
+                {deal.pipeline_stages && (
+                  <span style={{
+                    padding: '6px 14px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    background: `${deal.pipeline_stages.color}20`,
+                    color: deal.pipeline_stages.color,
+                    border: `1px solid ${deal.pipeline_stages.color}40`,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    {deal.pipeline_stages.name}
+                  </span>
+                )}
+
+                {/* Price Badge */}
+                {deal.price && (
+                  <span style={{
+                    padding: '6px 14px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    background: 'rgba(0, 184, 212, 0.1)',
+                    color: '#00b8d4',
+                    border: '1px solid rgba(0, 184, 212, 0.2)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    <DollarSign size={14} />
+                    {formatPrice(deal.price)}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Action Bar - Right Aligned */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'flex-end', 
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              {/* Primary Action: Save */}
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
                 style={{
                   background: '#00b8d4',
-                  border: '1px solid #00d4aa',
+                  border: 'none',
                   color: '#FFFFFF',
-                  padding: '8px 24px',
-                  borderRadius: '6px',
-                  fontSize: '13px',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
                   fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
+                  boxShadow: '0 2px 8px rgba(0, 184, 212, 0.25)'
                 }}
               >
-                <Save className="w-4 h-4 mr-2" />
-                {isSaving ? 'SAVING...' : 'SAVE CHANGES'}
+                <Save size={16} className="mr-2" />
+                {isSaving ? 'Saving...' : 'Save'}
               </Button>
+
+              {/* Secondary Action: Share */}
               <Button
-                onClick={() => setShowDeleteConfirm(true)}
+                onClick={handleShare}
                 style={{
-                  background: 'rgba(239, 68, 68, 0.15)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  color: '#ef4444',
-                  padding: '8px 24px',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: 'rgba(255,255,255,0.7)',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500'
                 }}
               >
-                <Trash2 className="w-4 h-4 mr-2" />
-                DELETE
+                <Share2 size={16} className="mr-2" />
+                Share
               </Button>
+
+              {/* More Menu */}
+              <div style={{ position: 'relative' }}>
+                <Button
+                  onClick={() => setShowMoreMenu(!showMoreMenu)}
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.7)',
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}
+                >
+                  <MoreVertical size={16} />
+                </Button>
+
+                {/* Dropdown Menu */}
+                {showMoreMenu && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: 0,
+                    marginTop: '8px',
+                    background: 'rgba(15, 23, 42, 0.98)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '8px',
+                    padding: '8px',
+                    minWidth: '180px',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                    backdropFilter: 'blur(20px)',
+                    zIndex: 1000
+                  }}>
+                    {linkedContacts.length > 0 && linkedContacts[0].email && (
+                      <button
+                        onClick={() => {
+                          setEmailRecipient({
+                            id: linkedContacts[0].id,
+                            email: linkedContacts[0].email,
+                            name: linkedContacts[0].full_name || linkedContacts[0].name
+                          });
+                          setShowEmailCompose(true);
+                          setShowMoreMenu(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          background: 'transparent',
+                          border: 'none',
+                          borderRadius: '6px',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          transition: 'all 0.2s',
+                          textAlign: 'left'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.15)';
+                          e.currentTarget.style.color = '#8b5cf6';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                        }}
+                      >
+                        <Mail size={16} />
+                        Send Email
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        setShowDeleteConfirm(true);
+                        setShowMoreMenu(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        background: 'transparent',
+                        border: 'none',
+                        borderRadius: '6px',
+                        color: 'rgba(255,255,255,0.8)',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        transition: 'all 0.2s',
+                        textAlign: 'left'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
+                        e.currentTarget.style.color = '#ef4444';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                      }}
+                    >
+                      <Trash2 size={16} />
+                      Delete Deal
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-
-          {/* Property Address - Centered */}
-          <h1 style={{ 
-            color: '#FFFFFF', 
-            fontSize: 'clamp(32px, 5vw, 56px)',
-            fontWeight: '700',
-            letterSpacing: '-0.03em',
-            marginBottom: '20px',
             textAlign: 'center',
             lineHeight: '1.2'
           }}>
