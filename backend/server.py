@@ -583,6 +583,50 @@ async def upload_deal_document(deal_id: str, file: UploadFile = File(...), curre
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
+
+@api_router.post("/users/avatar/upload")
+async def upload_avatar(file: UploadFile = File(...), current_user: User = Depends(get_current_user_supabase)):
+    """Upload user avatar to Supabase Storage using service_role key (bypasses RLS)"""
+    
+    # Validate file type
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="File must be an image")
+    
+    # Validate file size (10MB)
+    file_content = await file.read()
+    if len(file_content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Image size must be less than 10MB")
+    
+    # Generate file path
+    file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+    file_path = f"avatars/{current_user.id}/avatar-{uuid.uuid4()}.{file_ext}"
+    
+    try:
+        # Upload using service_role key (bypasses RLS)
+        result = supabase.storage.from_("property-images").upload(
+            file_path, 
+            file_content, 
+            {"content-type": file.content_type, "cache-control": "3600"}
+        )
+        
+        # Get public URL
+        public_url = supabase.storage.from_("property-images").get_public_url(file_path)
+        
+        # Update user profile in Supabase
+        supabase.table('user_profiles').update({
+            'avatar_url': public_url
+        }).eq('id', current_user.id).execute()
+        
+        return {
+            "success": True,
+            "avatar_url": public_url,
+            "message": "Avatar uploaded successfully"
+        }
+    except Exception as e:
+        logging.error(f"Avatar upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+
+
 @api_router.put("/deals/{deal_id}/stage")
 async def update_deal_stage(deal_id: str, stage_update: StageUpdate, current_user: User = Depends(get_current_user)):
     result = await db.deals.update_one(
