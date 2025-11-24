@@ -39,18 +39,9 @@ const MapView = () => {
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
+  const [reportAllParcel, setReportAllParcel] = useState(null);
   const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
-  const [selectedParcelIds, setSelectedParcelIds] = useState([]); // Track multiple selected ReportAll parcels
-  const [selectedBexarParcelIds, setSelectedBexarParcelIds] = useState([]); // Track multiple selected Bexar CAD parcels
-  const [mergedParcelGeometry, setMergedParcelGeometry] = useState(null); // Merged geometry for display
-  const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
-  const [selectedParcelIds, setSelectedParcelIds] = useState([]); // Track multiple selected ReportAll parcels
-  const [selectedBexarParcelIds, setSelectedBexarParcelIds] = useState([]); // Track multiple selected Bexar CAD parcels
-  const [mergedParcelGeometry, setMergedParcelGeometry] = useState(null); // Merged geometry for display
-  const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
-  const [selectedParcelIds, setSelectedParcelIds] = useState([]); // Track multiple selected ReportAll parcels
-  const [selectedBexarParcelIds, setSelectedBexarParcelIds] = useState([]); // Track multiple selected Bexar CAD parcels
-  const [mergedParcelGeometry, setMergedParcelGeometry] = useState(null); // Merged geometry for display
+  const [selectedParcelId, setSelectedParcelId] = useState(null); // Track selected ReportAll parcel for highlighting
   const [selectedBexarParcelId, setSelectedBexarParcelId] = useState(null); // Track selected Bexar CAD parcel for highlighting
   const [currentZoom, setCurrentZoom] = useState(11.5); // Track current zoom level for dynamic pin sizing
   
@@ -402,6 +393,7 @@ const MapView = () => {
       
       const url = `${API}/intelligence/layer/austin-zoning${bbox ? `?bbox=${bbox}&limit=10000` : '?limit=10000'}`;
       
+      toast.info('Loading Austin zoning data...');
       
       fetch(url)
         .then(res => {
@@ -411,6 +403,7 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] Austin Zoning data loaded:', data.features?.length, 'features');
           setAustinZoningData(data);
+          toast.success(`Loaded ${data.features?.length || 0} Austin zoning parcels`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching Austin zoning:', err);
@@ -434,6 +427,7 @@ const MapView = () => {
       
       const url = `${API}/intelligence/layer/sa-water-sewer${bbox ? `?bbox=${bbox}&limit=10000` : '?limit=10000'}`;
       
+      toast.info('Loading water/sewer infrastructure...');
       
       fetch(url)
         .then(res => {
@@ -443,6 +437,7 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] Water/Sewer data loaded:', data.features?.length, 'features');
           setWaterSewerData(data);
+          toast.success(`Loaded ${data.features?.length || 0} water/sewer features`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching water/sewer:', err);
@@ -843,6 +838,7 @@ const MapView = () => {
           const closedPoints = [...measurementPoints, firstPoint];
           const result = calculateArea(closedPoints);
           setMeasurementResult(result);
+          toast.success('Area measurement complete!');
           return;
         }
       }
@@ -928,6 +924,7 @@ const MapView = () => {
         
         console.log('[Bexar CAD] Opening property panel with data:', parcelData);
         togglePropertyPanel(parcelData);
+        toast.success('Bexar CAD parcel loaded');
         return;
       } else {
         console.log('[Bexar CAD] No parcel features found at click point');
@@ -2081,6 +2078,7 @@ const MapView = () => {
               setTextAnnotations(prev => [...prev, annotation]);
               setEditingAnnotation(null);
               setSelectedAnnotation(null);
+              toast.success('Label added to map');
             }}
             onDeleteAnnotation={(id) => {
               setTextAnnotations(prev => prev.filter(a => a.id !== id));
