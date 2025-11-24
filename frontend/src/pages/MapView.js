@@ -1065,7 +1065,7 @@ const MapView = () => {
               height: '100%', 
               willChange: 'transform'
             }}
-            cursor={measurementMode ? 'crosshair' : 'grab'}
+            cursor={measurementMode || annotationMode ? 'crosshair' : 'grab'}
             mapStyle={mapStyles[mapStyle]}
             data-testid="map-container"
             ref={mapRef}
