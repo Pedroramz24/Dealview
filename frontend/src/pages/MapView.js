@@ -877,13 +877,70 @@ const MapView = () => {
       console.log('[Bexar CAD] Features found:', features?.length || 0);
       
       if (features && features.length > 0) {
-        const parcel = features[0].properties;
+        const feature = features[0];
+        const parcel = feature.properties;
+        const parcelGeometry = feature.geometry;
         console.log('[Bexar CAD] Clicked parcel data:', parcel);
         
-        // Set selected Bexar parcel for highlighting (use account number as unique ID)
         const bexarParcelId = parcel.AcctNumb || parcel.account_number;
-        console.log('[Bexar CAD] Setting selected parcel ID for highlighting:', bexarParcelId);
-        setSelectedBexarParcelId(bexarParcelId);
+        console.log('[Bexar CAD] Parcel ID:', bexarParcelId);
+        
+        // Check if Ctrl or Cmd key is held for multi-select
+        const isMultiSelect = event.originalEvent.ctrlKey || event.originalEvent.metaKey;
+        
+        if (isMultiSelect && selectedBexarParcelIds.includes(bexarParcelId)) {
+          // Deselect if already selected
+          console.log('[Bexar CAD] Deselecting parcel');
+          const newIds = selectedBexarParcelIds.filter(id => id !== bexarParcelId);
+          const newFeatures = selectedParcelFeatures.filter(f => 
+            (f.properties.AcctNumb || f.properties.account_number) !== bexarParcelId
+          );
+          setSelectedBexarParcelIds(newIds);
+          setSelectedParcelFeatures(newFeatures);
+          
+          // Update merged geometry
+          if (newFeatures.length > 0) {
+            try {
+              const merged = newFeatures.reduce((acc, f) => {
+                const poly = turf.polygon(f.geometry.coordinates);
+                return acc ? turf.union(acc, poly) : poly;
+              }, null);
+              setMergedParcelGeometry(merged);
+            } catch (e) {
+              console.error('[Bexar CAD] Error merging geometries:', e);
+            }
+          } else {
+            setMergedParcelGeometry(null);
+          }
+          return;
+        }
+        
+        if (isMultiSelect) {
+          // Add to selection
+          console.log('[Bexar CAD] Adding parcel to selection');
+          const newIds = [...selectedBexarParcelIds, bexarParcelId];
+          const newFeatures = [...selectedParcelFeatures, feature];
+          setSelectedBexarParcelIds(newIds);
+          setSelectedParcelFeatures(newFeatures);
+          
+          // Merge geometries
+          try {
+            const merged = newFeatures.reduce((acc, f) => {
+              const poly = turf.polygon(f.geometry.coordinates);
+              return acc ? turf.union(acc, poly) : poly;
+            }, null);
+            setMergedParcelGeometry(merged);
+            console.log('[Bexar CAD] Merged', newIds.length, 'parcels');
+          } catch (e) {
+            console.error('[Bexar CAD] Error merging geometries:', e);
+          }
+        } else {
+          // Replace selection
+          console.log('[Bexar CAD] Replacing selection');
+          setSelectedBexarParcelIds([bexarParcelId]);
+          setSelectedParcelFeatures([feature]);
+          setMergedParcelGeometry(null);
+        }
         
         // Format parcel data for PropertyIntelligencePanel
         const parcelData = {
@@ -917,7 +974,11 @@ const MapView = () => {
           latitude: event.lngLat.lat,
           longitude: event.lngLat.lng,
           isParcel: true,
-          isBexarCAD: true  // Flag for Bexar CAD data
+          isBexarCAD: true,  // Flag for Bexar CAD data
+          
+          // Multi-select info
+          isMultiSelect: selectedBexarParcelIds.length > 1 || (isMultiSelect && selectedBexarParcelIds.length > 0),
+          selectedCount: isMultiSelect ? selectedBexarParcelIds.length + 1 : 1
         };
         
         console.log('[Bexar CAD] Opening property panel with data:', parcelData);
