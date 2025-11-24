@@ -1093,7 +1093,6 @@ const MapView = () => {
             ]}
             dragRotate={false}
             touchZoomRotate={false}
-            dragPan={{ inertia: 500 }}
             maxZoom={19}
             fadeDuration={100}
             renderWorldCopies={false}
