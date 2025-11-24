@@ -244,8 +244,15 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
                   margin: 0,
                   whiteSpace: 'pre-wrap',
                 }}
+                className={message.role === 'assistant' ? 'ai-response-content' : ''}
               >
-                {message.content}
+                {message.role === 'assistant' ? (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {message.content}
+                  </ReactMarkdown>
+                ) : (
+                  message.content
+                )}
               </p>
             </div>
 
