@@ -39,9 +39,18 @@ const MapView = () => {
   const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
-  const [reportAllParcel, setReportAllParcel] = useState(null);
   const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
-  const [selectedParcelId, setSelectedParcelId] = useState(null); // Track selected ReportAll parcel for highlighting
+  const [selectedParcelIds, setSelectedParcelIds] = useState([]); // Track multiple selected ReportAll parcels
+  const [selectedBexarParcelIds, setSelectedBexarParcelIds] = useState([]); // Track multiple selected Bexar CAD parcels
+  const [mergedParcelGeometry, setMergedParcelGeometry] = useState(null); // Merged geometry for display
+  const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
+  const [selectedParcelIds, setSelectedParcelIds] = useState([]); // Track multiple selected ReportAll parcels
+  const [selectedBexarParcelIds, setSelectedBexarParcelIds] = useState([]); // Track multiple selected Bexar CAD parcels
+  const [mergedParcelGeometry, setMergedParcelGeometry] = useState(null); // Merged geometry for display
+  const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
+  const [selectedParcelIds, setSelectedParcelIds] = useState([]); // Track multiple selected ReportAll parcels
+  const [selectedBexarParcelIds, setSelectedBexarParcelIds] = useState([]); // Track multiple selected Bexar CAD parcels
+  const [mergedParcelGeometry, setMergedParcelGeometry] = useState(null); // Merged geometry for display
   const [selectedBexarParcelId, setSelectedBexarParcelId] = useState(null); // Track selected Bexar CAD parcel for highlighting
   const [currentZoom, setCurrentZoom] = useState(11.5); // Track current zoom level for dynamic pin sizing
   
