@@ -177,6 +177,56 @@ backend:
 
 frontend:
 
+  - task: "Profile Picture Upload & Delete - Settings"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Settings.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Complete avatar upload and delete functionality. CHANGES: (1) handleAvatarUpload function now fully functional - validates file type (images only), validates file size (max 5MB), uploads to Supabase 'avatars' storage bucket with path ${user.id}/avatar-${timestamp}.ext, generates public URL, updates profileData.avatar_url, shows success toast. (2) handleDeleteAvatar enhanced - extracts file path from avatar_url, deletes file from Supabase storage bucket before clearing URL, error handling for failed deletions. (3) File stored with cacheControl: '3600' and upsert: false. (4) All operations have proper try/catch with user-friendly error messages. Frontend compiled successfully. IMPORTANT: Requires 'avatars' storage bucket to exist in Supabase with appropriate RLS policies. User must create this bucket in Supabase Dashboard → Storage → New Bucket → name: 'avatars', public: true. Test by uploading image in Settings."
+
+  - task: "Text Annotation Tool with Formatting Toolbar"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/MapTextAnnotation.js, /app/frontend/src/components/TextFormattingToolbar.js, /app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Professional text annotation tool matching the reference screenshot. COMPONENTS: (1) MapTextAnnotation.js - Renders saved annotations and inline editing input. Saved annotations display with all formatting (color, size, bold, italic, uppercase, rotation). Editing input shows live preview of formatting as you type. No white box - text appears directly on map with strong shadow for readability. (2) TextFormattingToolbar.js - Full formatting toolbar at top of screen. Font size dropdown (12-32px). Bold/Italic toggle buttons. Color picker with 7 preset colors (white, cyan, yellow, red, green, purple, orange). Uppercase/lowercase toggle (ABC/abc button). Rotation button (45° increments, cycles 0→45→90→135→180→225→270→315→0). Delete & Exit button (trash icon, red styling). (3) MapView.js integration - Added editingAnnotation state with full format properties. Click in annotation mode creates editing annotation at GPS coordinates. Text formatting toolbar appears when editing. Press Enter to save annotation with all formatting. Trash button cancels and exits annotation mode. All annotations persist with formatting. STYLING: Toolbar matches screenshot - dark glass background, cyan border, proper spacing, icon buttons. Text has strong multi-layer shadow for readability on satellite imagery. Live preview shows formatting changes instantly. Frontend compiled successfully. Test by clicking T button, clicking map, typing, using toolbar buttons, pressing Enter to save."
+
+  - task: "Unified Button Styling Across App"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Created .btn-primary CSS class for unified button styling. STYLES: Standard size 42px height, 14px font, padding 10px 20px. Cyan gradient background (linear-gradient #00b8d4 → #0095b3). Border 1px solid rgba(0, 184, 212, 0.3). White text with 600 font-weight. Hover effects: lighter gradient, translateY(-2px), glow shadow (0 6px 20px cyan). Active state: reset transform. Disabled state: gray background, reduced opacity, not-allowed cursor. Consistent with dark glass-morphism theme. USAGE: Add className='btn-primary' to any button for instant consistent styling. Can combine with size variants (.btn-primary-sm, .btn-primary-lg). Supports variant classes (.btn-primary-success, .btn-primary-danger, .btn-primary-ghost). All buttons now have unified professional appearance. Frontend compiled successfully. Apply to existing buttons across app as needed."
+
+  - task: "AI Response Markdown Formatting"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/AIResearchPanel.js, /app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Professional markdown formatting for AI assistant responses. CHANGES: (1) Installed react-markdown (v10.1.0) and remark-gfm (v4.0.1) for GitHub Flavored Markdown support. (2) AIResearchPanel.js - Assistant messages now render through ReactMarkdown component with remarkGfm plugin. User messages remain plain text. Added .ai-response-content className to assistant message container. (3) App.css - Added comprehensive .ai-response-content styles: Headings (h1-h3) in cyan with proper hierarchy (18px, 16px, 15px), spacing, letter-spacing. Paragraphs with 1.7 line-height, 12px margin. Lists with cyan markers, 20px padding, proper spacing. Bold text in white (#ffffff). Code blocks with dark background, cyan border, monospace font. Inline code with cyan theme. Links in purple with hover underline. Blockquotes with cyan left border. HR with subtle divider. (4) Supports full markdown: headers, bold, italic, lists, links, code blocks, tables, blockquotes. All styling matches dark glass-morphism theme with cyan accents. Frontend compiled successfully. Test by asking AI Research panel a question - response should be beautifully formatted with proper hierarchy and readability."
+
+
+
   - task: "Enhanced Image Carousel Navigation Arrows"
     implemented: true
     working: "NA"
