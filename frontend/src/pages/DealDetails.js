@@ -18,6 +18,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInput';
 import ContactFormPanel from '../components/ContactFormPanel';
+import ImageCarousel from '../components/ImageCarousel';
+import DocumentsSection from '../components/DocumentsSection';
 
 // Pipeline stage colors - matching Pipeline.js
 const stageColors = {
