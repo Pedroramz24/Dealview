@@ -401,7 +401,6 @@ const MapView = () => {
         .then(data => {
           console.log('[MapView] Austin Zoning data loaded:', data.features?.length, 'features');
           setAustinZoningData(data);
-          toast.success(`Loaded ${data.features?.length || 0} Austin zoning parcels`);
         })
         .catch(err => {
           console.error('[MapView] Error fetching Austin zoning:', err);
