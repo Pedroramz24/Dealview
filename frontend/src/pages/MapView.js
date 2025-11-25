@@ -41,7 +41,6 @@ const MapView = () => {
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
   const [reportAllParcel, setReportAllParcel] = useState(null);
-  const [showStreetLabels, setShowStreetLabels] = useState(false); // Street labels toggle
   const [selectedParcelIds, setSelectedParcelIds] = useState([]); // Track multiple selected ReportAll parcels
   const [selectedBexarParcelIds, setSelectedBexarParcelIds] = useState([]); // Track multiple selected Bexar CAD parcels
   const [mergedParcelGeometry, setMergedParcelGeometry] = useState(null); // Merged geometry for visual display
