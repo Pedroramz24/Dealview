@@ -987,8 +987,6 @@ const MapView = () => {
         <LayerManager
           isOpen={layersPanelOpen}
           onClose={() => setLayersPanelOpen(false)}
-          showStreetLabels={showStreetLabels}
-          onToggleStreetLabels={() => setShowStreetLabels(!showStreetLabels)}
           showParcels={showReportAllParcels}
           onToggleParcels={() => setShowReportAllParcels(!showReportAllParcels)}
           showTeamDeals={showTeamDeals}
