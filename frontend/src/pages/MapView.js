@@ -440,7 +440,7 @@ const MapView = () => {
           type: 'raster',
           source: 'carto-labels',
           minzoom: 8,
-          maxzoom: 18,
+          maxzoom: 15,
           paint: {
             'raster-opacity': [
               'interpolate',
@@ -448,7 +448,9 @@ const MapView = () => {
               ['zoom'],
               8, 0.6,
               10, 0.8,
-              12, 1
+              12, 1,
+              14, 0.5,
+              15, 0
             ]
           }
         }
