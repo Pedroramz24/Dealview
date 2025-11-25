@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://flexipipe-1.preview.emergentagent.com/api"
+BASE_URL = "https://parcelmaster.preview.emergentagent.com/api"
 
 # Use existing test user with known credentials
 TEST_USER_EMAIL = "teamtest@test.com"

@@ -5,7 +5,7 @@ Debug the counties identify issue
 
 import requests
 
-BASE_URL = "https://flexipipe-1.preview.emergentagent.com/api"
+BASE_URL = "https://parcelmaster.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {"email": "pedro@test.com", "password": "password123"}
 
 # Authenticate

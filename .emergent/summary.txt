@@ -1,90 +1,86 @@
 <analysis>
-The trajectory chronicles an intense development cycle, evolving from bug fixes to major architectural refactoring. Initially, the focus was on fixing a non-functional parcel-click feature, where the AI engineer discovered that the previously prescribed fixes were already implemented.
+The trajectory details a multi-stage development process, starting with map UI enhancements and escalating to significant feature additions and complex bug fixes. The AI engineer first implemented user requests for parcel highlighting and dynamic map pin sizing. The work then pivoted to major feature development: adding a documents section and an image carousel (using Swiper.js) to the  page, and implementing Forgot Password and Change Password authentication flows.
 
-The work then pivoted to a user-requested feature: merging the Deals and Pipeline tabs into a unified view. This was quickly followed by a much larger request: making the entire pipeline system dynamic and customizable. This involved a complete backend overhaul, introducing new  and  tables in the Supabase database, writing migration scripts for existing data, and adding corresponding FastAPI endpoints.
+A substantial portion of the effort was dedicated to iterative refinement of a new map text-annotation tool, addressing user feedback on interactivity (typing, dragging, selection), styling, and functionality (formatting toolbar).
 
-The most challenging phase was the frontend implementation. A critical incompatibility between  and the project's React 19 version necessitated a full migration to . This migration was fraught with difficulties, including complex syntax errors, duplicate component declarations, and subtle logic bugs that required multiple interventions from a  to resolve. These issues included incorrect state updates causing UI flickering, deal cards not rendering, and visual z-index problems during drag operations.
-
-Finally, the focus shifted to UI/UX refinement of the  and map side-panel pages, converting them to a Notion-style inline-editable interface and redesigning the header for a cleaner, more modern look. A Git LFS issue with large data files was also diagnosed and resolved by cleaning the repository's history. The trajectory concludes with the completion of these UI polishes.
-
-The user's primary language is English. The next agent must respond in English.
+The most challenging tasks involved deep-rooted system issues. A persistent row-level security policy error on avatar uploads required creating a new backend endpoint in  to bypass client-side Supabase RLS limitations. This solution involved using the privileged  key on the server to handle file storage. Repeated file corruption issues, caused by faulty  commands and partial writes, necessitated restoring files from git and adopting more robust editing methods. The trajectory concludes with the successful implementation of a complex multi-parcel merging feature using  for geometric unions. The user's primary language is English. The next agent must respond in English.
 </analysis>
 
 <product_requirements>
-The application is a map-centric Commercial Real Estate (CRE) CRM. The primary goal of the recent development cycle was to transform a static, single-workflow pipeline into a flexible, multi-workflow system, enhancing its competitiveness.
+The application is a map-centric Commercial Real Estate (CRE) CRM. The development cycle focused on enhancing map interactivity, improving media management, and fixing critical bugs.
 
 **Implemented Features:**
 
-1.  **Unified Deals Tab:** The Pipeline (Kanban view) and Deals (Table view) pages were merged into a single Deals tab. A toggle allows users to switch between Pipeline and Table views, streamlining navigation.
+1.  **Map Enhancements:**
+    *   **Parcel Selection:** Selected parcels are now highlighted in red.
+    *   **Multi-Parcel Merging:** Users can Ctrl+click adjacent parcels to select and merge them into a single visual shape on the map.
+    *   **Dynamic Pin Sizing:** Deal pins on the map now scale dynamically based on the zoom level to prevent oversaturation.
+    *   **Text Annotation Tool:** A full-featured tool allows users to click on the map to add text labels. These labels are draggable, editable on double-click, and deletable.
+    *   **Measurement Tool:** The distance measurement tool now displays in feet and automatically switches to miles for distances over one mile.
 
-2.  **Customizable Pipelines System:** This is the core feature addition.
-    *   **Multiple Pipelines:** Users can create up to five distinct pipelines (e.g., Off-Market, Listings, For Lease) to manage different deal workflows.
-    *   **Customizable Stages:** Within each pipeline, users can create, edit, delete, and reorder stages. This includes changing their names and colors.
-    *   **Full Functionality:** The system supports creating new pipelines, drag-and-drop reordering of stages, and real-time UI updates.
+2.  **Property Media Management:**
+    *   **Image Carousel:** The static property image on the  page was replaced with a multi-image carousel powered by Swiper.js.
+    *   **Documents Section:** A new section was added to the  page for uploading and listing property-related documents.
 
-3.  **Inline-Editable Details Pages:** The  page and the map's  were refactored to be Notion-style. The Edit mode was removed, and all fields are now editable by default, with changes saved via a Save button.
+3.  **Authentication & Profile:**
+    *   **Password Management:** A Forgot Password link was added to the login page, and a Change Password feature was implemented in the Settings page.
+    *   **Avatar Upload Fix:** A critical Bucket not found and subsequent RLS policy error preventing profile picture uploads was fixed by implementing a secure backend endpoint. The file size limit was increased to 10MB.
 
-4.  **Redesigned Command Bar:** The header of the  page was redesigned to be a clean, symmetrical command bar, featuring primary actions (Save, Share) and an overflow menu (...) for secondary actions.
+4.  **UI/UX Polish:**
+    *   **Reduced Notifications:** Non-essential toast notifications were removed across the app to reduce clutter.
+    *   **Unified Styling:** Primary buttons were unified, and AI assistant responses were stylistically improved.
 </product_requirements>
 
 <key_technical_concepts>
-- **Frontend:** React (v19), MapLibre GL JS, Tailwind CSS, Vite.
-- **Backend:** Python (FastAPI), Supabase (PostgreSQL), .
-- **Drag-and-Drop:** Migrated from  to **** and **** to ensure React 19 compatibility. Implemented  for improved visual feedback.
-- **State Management:** React Hooks (, , ) for managing complex UI state, including pipeline/stage data and drag-and-drop states.
-- **Database:** New schema with  and  tables. Utilized RLS policies for security and migration scripts for existing data.
-- **DevOps:** Resolved a Git push failure by removing large GeoJSON files from the commit history using  and updating .
+- **Frontend:** React, ,  (for image carousel), .
+- **Backend:** FastAPI, Supabase Python Client (using  key).
+- **Database:** Supabase (PostgreSQL), Supabase Storage.
+- **GIS/Mapping:**  for geometric union (), dynamic map layers and sources for rendering parcels and merged geometries.
+- **API Security:** Implemented a backend endpoint () to handle file uploads, bypassing client-side RLS limitations for a secure and functional solution.
 </key_technical_concepts>
 
 <code_architecture>
-The application follows a monorepo structure with a React frontend and a FastAPI backend, interacting with a Supabase PostgreSQL database. The architecture was significantly updated to support dynamic, user-configurable data models for pipelines.
+The application is a monorepo with a React frontend and a FastAPI backend. The architecture was extended to handle more complex map interactions, media uploads, and secure backend operations.
 
 
 
 - ****
-    - **Importance:** The central hub for deal management. It was the most heavily modified file.
-    - **Changes:** Refactored to fetch dynamic pipelines and stages from the backend. The static Kanban board was replaced with a dynamic one using . It now includes a pipeline selector, a view switcher for Table/Pipeline views, and integrates the  and . The drag-and-drop logic for deal cards was completely rewritten.
+    - **Importance:** The core of the application's user interface, managing all map state and interactions.
+    - **Changes:** This file was extensively modified. State management was updated to handle arrays of selected parcel IDs (, ) and to store merged parcel geometry (). The main map click handler was updated to detect  for multi-selection. It now uses  to perform the union operation on parcel geometries. A new  and  were added to display the merged geometry. It also integrates the new  and  components.
 
 - ****
-    - **Importance:** A new component for users to manage their pipelines and stages.
-    - **Changes:** Created from scratch. The stage reordering functionality was implemented and then completely refactored from  to , which involved significant debugging of syntax and logic errors. It now handles creating/editing/deleting pipelines and stages, and reordering stages via drag-and-drop.
+    - **Importance:** The FastAPI backend server.
+    - **Changes:** A new endpoint, , was created to solve a critical RLS policy issue. This endpoint receives a file from the authenticated user, then uses the privileged  Supabase client to upload the file to a designated 'avatars' path in Supabase Storage, bypassing the stricter client-side security policies.
 
 - ****
-    - **Importance:** The page for viewing and editing a single deal's comprehensive information.
-    - **Changes:** Underwent a major UX refactor. The Edit Mode was removed, making all fields inline-editable by default. The header was redesigned into a clean command bar with a More overflow menu. Logic was added to include dropdowns for selecting a deal's  and .
+    - **Importance:** User profile and application settings page.
+    - **Changes:** The avatar upload logic () was completely rewritten to use the new  backend endpoint instead of uploading directly to Supabase from the client. The file size limit check was updated to 10MB, and the corresponding helper text was changed. Non-essential coming soon toasts were removed, and the associated buttons were disabled for a cleaner UX.
 
 - ****
-    - **Importance:** The main FastAPI application file.
-    - **Changes:** New API endpoints were added to support CRUD operations for pipelines and stages (e.g., , , ). The  endpoint was updated to support filtering by the new . A bug related to  vs  was fixed.
+    - **Importance:** A new component to render and manage user-created text labels on the map.
+    - **Changes:** This component was created and then heavily refactored to meet user requirements. The final version uses a   that is . It contains a controlled  field for text editing, which is toggled by a double-click. It handles its own state for editing and selection and includes logic to show a delete button on hover.
 
 - ****
-    - **Importance:** Contains the SQL scripts for database schema changes.
-    - **Changes:** Two new files were created.  defines the new  and  tables with RLS policies.  contains the data migration script to move all existing deals into a default Off-Market pipeline.
-
-- ****
-    - **Importance:** Defines which files Git should ignore.
-    - **Changes:** Large  source files were added to this file to prevent them from being committed to the repository, resolving a  failure.
+    - **Importance:** A database migration intended to fix the avatar upload RLS issue.
+    - **Changes:** This file was created to add a new RLS policy allowing users to upload to an  path. While this approach was correct in principle, it was ultimately superseded by the more robust backend endpoint solution, which offered greater control and security.
 </code_architecture>
 
 <pending_tasks>
-- **Initial Pending Tasks (Pre-Trajectory):** The Dashboard News Feed, full implementation of Austin/other data layers, and migration of PMTiles files to Cloudflare R2 were mentioned but not addressed.
-- **Bug Backlog:** The user mentioned a backlog of 42 pending bugs that have not been started.
+- A general backlog of 42 pending bugs was mentioned at the start of the trajectory but was not addressed.
+- Initial project goals like the Dashboard News Feed and additional data layer integrations remain outstanding.
 </pending_tasks>
 
 <current_work>
-The most recent work focused on a comprehensive UI/UX overhaul and bug-fixing pass for the newly implemented customizable pipeline feature, based on direct user feedback.
+The most recent and final task completed was the implementation of the **multi-parcel boundary merging feature**. This allows users to select multiple adjacent parcels on the map and see them visually combined into a single shape.
 
-1.  **Drag-and-Drop Visuals:** A bug where dragged deal cards appeared behind stage columns was fixed. The AI implemented 's  to render a clone of the full card in a top-level portal, ensuring it always stays visible. The original card is now made transparent during the drag operation.
-
-2.  **Instant Stage Reordering:** A bug where stage reordering in the settings modal required a manual browser refresh was fixed. State management logic was improved by passing a callback function () from  to , ensuring the parent component's state is updated immediately after a reorder.
-
-3.  **Inline Editing & Pipeline Logic:** The  page and the map's  were fully refactored. The concept of an Edit Mode was removed, making all fields editable by default. In , dropdowns for selecting a deal's  and  were implemented.
-
-4.  **UI/UX Polish:** The header of the  page was redesigned to be a clean, symmetrical command bar. Duplicate tags and a visual divider were removed to declutter the UI, as requested by the user.
-
-5.  **Runtime Error Fix:** A  was resolved by adding the missing  icon import to  in .
+The implementation involved the following key steps in :
+1.  **State Management Update:** The state variables for tracking selected parcels (, ) were converted into arrays (, ) to hold multiple IDs. A new state, , was added to store the combined GeoJSON object.
+2.  **Multi-Select Logic:** The primary map click handlers were updated to check for . If Ctrl is held, the clicked parcel's ID is added to or removed from the selection array.
+3.  **Geometric Merging:** The  library was imported and its  function is now used. Each time a parcel is added to the selection, its geometry is merged with the existing , creating a new, unified shape.
+4.  **Rendering the Merged Layer:** A new  and  were added within the  component. The  data is bound to the  state, and the  renders it with a distinct fill and outline, visually representing the merged area.
+5.  **Highlighting Individual Parcels:** The  and  paint properties for the original parcel layers were updated to use a  expression. This ensures all parcels in the selection array are highlighted simultaneously, even as they are part of the larger merged shape.
 </current_work>
 
 <optional_next_step>
-I will await your confirmation that the latest UI/UX fixes are working as expected before proceeding to the next set of tasks.
+Confirm the successful implementation of the parcel merging feature and ask the user for the next set of tasks or feedback.
 </optional_next_step>
