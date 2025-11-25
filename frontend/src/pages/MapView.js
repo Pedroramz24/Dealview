@@ -1152,7 +1152,8 @@ const MapView = () => {
             ]}
             dragRotate={false}
             touchZoomRotate={false}
-            maxZoom={19}
+            maxZoom={18}
+            minZoom={6}
             fadeDuration={100}
             renderWorldCopies={false}
             crossSourceCollisions={false}
