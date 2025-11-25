@@ -417,12 +417,12 @@ const MapView = () => {
         'carto-labels': {
           type: 'raster',
           tiles: [
-            'https://a.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
-            'https://b.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
-            'https://c.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
-            'https://d.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png'
+            'https://a.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',
+            'https://b.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',
+            'https://c.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',
+            'https://d.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png'
           ],
-          tileSize: 256,
+          tileSize: 512,
           maxzoom: 18,
           attribution: '&copy; CARTO'
         }
