@@ -991,6 +991,15 @@ const MapView = () => {
           onToggleParcels={() => setShowReportAllParcels(!showReportAllParcels)}
           showTeamDeals={showTeamDeals}
           onToggleTeamDeals={() => setShowTeamDeals(!showTeamDeals)}
+          teamDealsAssetTypeFilter={teamDealsAssetTypeFilter}
+          onToggleTeamDealsAssetType={(assetType) => {
+            setTeamDealsAssetTypeFilter(prev => 
+              prev.includes(assetType) 
+                ? prev.filter(t => t !== assetType)
+                : [...prev, assetType]
+            );
+          }}
+          onClearTeamDealsFilters={() => setTeamDealsAssetTypeFilter([])}
           mapStyle={mapStyle}
           onToggleMapStyle={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
           mapRef={mapRef}
