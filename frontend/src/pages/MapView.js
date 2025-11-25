@@ -135,6 +135,24 @@ const MapView = () => {
     return calculatePinSize(currentZoom, totalDeals);
   }, [currentZoom, deals.length, teamDeals.length, showTeamDeals, calculatePinSize]);
   
+  // Dynamically hide labels at very close zoom to reduce clutter
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const map = mapRef.current.getMap();
+    if (!map || !map.isStyleLoaded()) return;
+
+    // Hide labels completely at zoom 17+ to avoid clutter
+    if (currentZoom >= 17) {
+      if (map.getLayer('labels')) {
+        map.setLayoutProperty('labels', 'visibility', 'none');
+      }
+    } else {
+      if (map.getLayer('labels')) {
+        map.setLayoutProperty('labels', 'visibility', 'visible');
+      }
+    }
+  }, [currentZoom]);
+  
   // Load panel state from session storage
   useEffect(() => {
     const savedPanelState = sessionStorage.getItem('mapActivePanels');
