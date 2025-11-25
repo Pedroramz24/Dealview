@@ -414,19 +414,17 @@ const MapView = () => {
           maxzoom: 18,
           attribution: '&copy; Esri'
         },
-        'esri-reference': {
+        'carto-labels': {
           type: 'raster',
-          tiles: ['https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{z}/{y}/{x}'],
+          tiles: [
+            'https://a.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
+            'https://b.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
+            'https://c.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
+            'https://d.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png'
+          ],
           tileSize: 256,
           maxzoom: 18,
-          attribution: '&copy; Esri'
-        },
-        'esri-roads': {
-          type: 'raster',
-          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}'],
-          tileSize: 256,
-          maxzoom: 18,
-          attribution: '&copy; Esri'
+          attribution: '&copy; CARTO'
         }
       },
       layers: [
@@ -438,29 +436,19 @@ const MapView = () => {
           maxzoom: 18
         },
         {
-          id: 'place-labels',
+          id: 'labels',
           type: 'raster',
-          source: 'esri-reference',
-          minzoom: 7,
-          maxzoom: 14,
-          paint: {
-            'raster-opacity': 0.8
-          }
-        },
-        {
-          id: 'transportation',
-          type: 'raster',
-          source: 'esri-roads',
-          minzoom: 10,
+          source: 'carto-labels',
+          minzoom: 8,
           maxzoom: 18,
           paint: {
             'raster-opacity': [
               'interpolate',
               ['linear'],
               ['zoom'],
-              10, 0.4,
-              13, 0.7,
-              15, 1
+              8, 0.6,
+              10, 0.8,
+              12, 1
             ]
           }
         }
