@@ -414,16 +414,16 @@ const MapView = () => {
           maxzoom: 18,
           attribution: '&copy; Esri'
         },
-        'esri-labels': {
+        'esri-reference': {
           type: 'raster',
-          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}'],
+          tiles: ['https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{z}/{y}/{x}'],
           tileSize: 256,
           maxzoom: 18,
           attribution: '&copy; Esri'
         },
-        'esri-boundaries': {
+        'esri-roads': {
           type: 'raster',
-          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'],
+          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}'],
           tileSize: 256,
           maxzoom: 18,
           attribution: '&copy; Esri'
@@ -438,26 +438,19 @@ const MapView = () => {
           maxzoom: 18
         },
         {
-          id: 'boundaries-labels',
+          id: 'place-labels',
           type: 'raster',
-          source: 'esri-boundaries',
+          source: 'esri-reference',
           minzoom: 7,
-          maxzoom: 18,
+          maxzoom: 14,
           paint: {
-            'raster-opacity': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              7, 0.6,
-              10, 0.8,
-              12, 1
-            ]
+            'raster-opacity': 0.8
           }
         },
         {
-          id: 'road-labels',
+          id: 'transportation',
           type: 'raster',
-          source: 'esri-labels',
+          source: 'esri-roads',
           minzoom: 10,
           maxzoom: 18,
           paint: {
@@ -465,9 +458,9 @@ const MapView = () => {
               'interpolate',
               ['linear'],
               ['zoom'],
-              10, 0.3,
-              12, 0.6,
-              14, 1
+              10, 0.4,
+              13, 0.7,
+              15, 1
             ]
           }
         }
