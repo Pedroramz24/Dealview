@@ -1494,6 +1494,8 @@ const MapView = () => {
           {/* Team Deals Markers - Only show when team deals layer is enabled */}
           {showTeamDeals && teamDeals
             .filter(deal => {
+              // Filter out deals without valid coordinates
+              if (!deal.longitude || !deal.latitude || isNaN(deal.longitude) || isNaN(deal.latitude)) return false;
               // If no filters selected, show all
               if (teamDealsAssetTypeFilter.length === 0) return true;
               // Otherwise, only show deals matching selected asset types
