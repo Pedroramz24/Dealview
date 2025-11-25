@@ -1417,7 +1417,9 @@ const MapView = () => {
             </Source>
           )}
 
-          {deals.map((deal) => (
+          {deals
+            .filter(deal => deal.longitude && deal.latitude && !isNaN(deal.longitude) && !isNaN(deal.latitude))
+            .map((deal) => (
             <Marker
               key={deal.id}
               longitude={deal.longitude}
