@@ -134,10 +134,6 @@ const MapView = () => {
     return calculatePinSize(currentZoom, totalDeals);
   }, [currentZoom, deals.length, teamDeals.length, showTeamDeals, calculatePinSize]);
   
-  // Add street labels to map - using proper event listeners
-  useEffect(() => {
-    if (!mapRef.current) return;
-  
   // Load panel state from session storage
   useEffect(() => {
     const savedPanelState = sessionStorage.getItem('mapActivePanels');
