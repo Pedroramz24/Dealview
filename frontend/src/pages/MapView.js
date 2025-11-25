@@ -414,12 +414,19 @@ const MapView = () => {
           maxzoom: 18,
           attribution: '&copy; Esri'
         },
-        'protomaps': {
-          type: 'vector',
-          tiles: ['https://api.protomaps.com/tiles/v3/{z}/{x}/{y}.mvt?key=free'],
-          minzoom: 0,
-          maxzoom: 14,
-          attribution: '© OpenStreetMap'
+        'esri-labels': {
+          type: 'raster',
+          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}'],
+          tileSize: 256,
+          maxzoom: 18,
+          attribution: '&copy; Esri'
+        },
+        'esri-boundaries': {
+          type: 'raster',
+          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'],
+          tileSize: 256,
+          maxzoom: 18,
+          attribution: '&copy; Esri'
         }
       },
       layers: [
@@ -430,186 +437,38 @@ const MapView = () => {
           minzoom: 0,
           maxzoom: 18
         },
-        // County boundaries - Zoom 6-14
         {
-          id: 'county-boundaries',
-          type: 'line',
-          source: 'protomaps',
-          'source-layer': 'boundaries',
-          filter: ['==', ['get', 'admin_level'], 6],
-          minzoom: 6,
-          maxzoom: 14,
+          id: 'boundaries-labels',
+          type: 'raster',
+          source: 'esri-boundaries',
+          minzoom: 7,
+          maxzoom: 18,
           paint: {
-            'line-color': '#ffffff',
-            'line-width': [
+            'raster-opacity': [
               'interpolate',
               ['linear'],
               ['zoom'],
-              6, 0.5,
-              10, 1,
-              14, 1.5
-            ],
-            'line-opacity': 0.3
+              7, 0.6,
+              10, 0.8,
+              12, 1
+            ]
           }
         },
-        // City labels - Zoom 6-18 (always visible when zoomed enough)
         {
-          id: 'city-labels',
-          type: 'symbol',
-          source: 'protomaps',
-          'source-layer': 'places',
-          filter: ['in', ['get', 'pmap:kind'], ['literal', ['city', 'town']]],
-          minzoom: 6,
-          layout: {
-            'text-field': ['get', 'name'],
-            'text-font': ['Noto Sans Regular'],
-            'text-size': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              6, 10,
-              10, 14,
-              14, 16,
-              18, 18
-            ],
-            'text-anchor': 'center',
-            'text-offset': [0, 0.5],
-            'text-allow-overlap': false,
-            'text-optional': false
-          },
-          paint: {
-            'text-color': '#ffffff',
-            'text-halo-color': 'rgba(0, 0, 0, 0.8)',
-            'text-halo-width': 2
-          }
-        },
-        // Highway shields/icons - Zoom 6-18 (always show shields)
-        {
-          id: 'highway-shields',
-          type: 'symbol',
-          source: 'protomaps',
-          'source-layer': 'roads',
-          filter: ['in', ['get', 'pmap:kind'], ['literal', ['highway', 'major_road']]],
-          minzoom: 6,
-          layout: {
-            'text-field': ['get', 'ref'],
-            'text-font': ['Noto Sans Bold'],
-            'text-size': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              6, 8,
-              10, 10,
-              14, 12
-            ],
-            'symbol-placement': 'line',
-            'symbol-spacing': 400,
-            'text-rotation-alignment': 'viewport',
-            'text-pitch-alignment': 'viewport'
-          },
-          paint: {
-            'text-color': '#ffffff',
-            'text-halo-color': 'rgba(0, 0, 0, 0.9)',
-            'text-halo-width': 2
-          }
-        },
-        // Major highway lines - Zoom 10+ only
-        {
-          id: 'highway-lines',
-          type: 'line',
-          source: 'protomaps',
-          'source-layer': 'roads',
-          filter: ['==', ['get', 'pmap:kind'], 'highway'],
+          id: 'road-labels',
+          type: 'raster',
+          source: 'esri-labels',
           minzoom: 10,
+          maxzoom: 18,
           paint: {
-            'line-color': [
-              'match',
-              ['get', 'pmap:kind_detail'],
-              'motorway', '#ff8c00',
-              'trunk', '#ffa500',
-              '#ffb347'
-            ],
-            'line-width': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              10, 1,
-              12, 2,
-              14, 3,
-              16, 5
-            ],
-            'line-opacity': [
+            'raster-opacity': [
               'interpolate',
               ['linear'],
               ['zoom'],
               10, 0.3,
               12, 0.6,
-              14, 0.8
+              14, 1
             ]
-          }
-        },
-        // Arterial roads - Zoom 12+
-        {
-          id: 'arterial-roads',
-          type: 'line',
-          source: 'protomaps',
-          'source-layer': 'roads',
-          filter: ['==', ['get', 'pmap:kind'], 'major_road'],
-          minzoom: 12,
-          paint: {
-            'line-color': '#ffffff',
-            'line-width': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              12, 0.5,
-              14, 1.5,
-              16, 3
-            ],
-            'line-opacity': 0.5
-          }
-        },
-        // Local streets - Zoom 15+
-        {
-          id: 'local-streets',
-          type: 'line',
-          source: 'protomaps',
-          'source-layer': 'roads',
-          filter: ['in', ['get', 'pmap:kind'], ['literal', ['minor_road', 'other']]],
-          minzoom: 15,
-          paint: {
-            'line-color': '#ffffff',
-            'line-width': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              15, 0.5,
-              18, 2
-            ],
-            'line-opacity': 0.4
-          }
-        },
-        // Street name labels - Zoom 16+
-        {
-          id: 'street-labels',
-          type: 'symbol',
-          source: 'protomaps',
-          'source-layer': 'roads',
-          filter: ['has', 'name'],
-          minzoom: 16,
-          layout: {
-            'text-field': ['get', 'name'],
-            'text-font': ['Noto Sans Regular'],
-            'text-size': 10,
-            'symbol-placement': 'line',
-            'text-rotation-alignment': 'map',
-            'text-pitch-alignment': 'viewport',
-            'text-max-angle': 30
-          },
-          paint: {
-            'text-color': '#ffffff',
-            'text-halo-color': 'rgba(0, 0, 0, 0.9)',
-            'text-halo-width': 1.5
           }
         }
       ]
