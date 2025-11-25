@@ -1471,7 +1471,14 @@ const MapView = () => {
           ))}
 
           {/* Team Deals Markers - Only show when team deals layer is enabled */}
-          {showTeamDeals && teamDeals.map((deal) => (
+          {showTeamDeals && teamDeals
+            .filter(deal => {
+              // If no filters selected, show all
+              if (teamDealsAssetTypeFilter.length === 0) return true;
+              // Otherwise, only show deals matching selected asset types
+              return teamDealsAssetTypeFilter.includes(deal.asset_type);
+            })
+            .map((deal) => (
             <Marker
               key={`team-${deal.id}`}
               longitude={deal.longitude}
