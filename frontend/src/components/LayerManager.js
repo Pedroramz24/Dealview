@@ -702,6 +702,89 @@ const LayerManager = ({
               {props.showTeamDeals ? 'ON' : 'OFF'}
             </button>
           </div>
+
+          {/* Team Deals Asset Type Filter - Only show when Team Deals is ON */}
+          {props.showTeamDeals && (
+            <div style={{
+              marginTop: '8px',
+              padding: '12px',
+              background: 'rgba(168, 85, 247, 0.05)',
+              borderRadius: '8px',
+              border: '1px solid rgba(168, 85, 247, 0.15)'
+            }}>
+              <div style={{ 
+                color: 'rgba(255,255,255,0.7)', 
+                fontSize: '11px', 
+                fontWeight: '600',
+                marginBottom: '8px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                Filter by Asset Type
+              </div>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '6px'
+              }}>
+                {['Retail Centers', 'Land', 'Industrial', 'Restaurants', 'Hotels', 'Medical', 'Office', 'Multifamily', 'Mixed Use'].map(assetType => {
+                  const isSelected = props.teamDealsAssetTypeFilter?.includes(assetType);
+                  return (
+                    <button
+                      key={assetType}
+                      onClick={() => props.onToggleTeamDealsAssetType?.(assetType)}
+                      style={{
+                        padding: '4px 10px',
+                        borderRadius: '4px',
+                        border: isSelected ? '1px solid #a855f7' : '1px solid rgba(255,255,255,0.15)',
+                        background: isSelected ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255,255,255,0.05)',
+                        color: isSelected ? '#ffffff' : 'rgba(255,255,255,0.6)',
+                        fontSize: '10px',
+                        fontWeight: isSelected ? '600' : '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        whiteSpace: 'nowrap'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                          e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.3)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+                        }
+                      }}
+                    >
+                      {assetType}
+                    </button>
+                  );
+                })}
+              </div>
+              {props.teamDealsAssetTypeFilter?.length > 0 && (
+                <button
+                  onClick={() => props.onClearTeamDealsFilters?.()}
+                  style={{
+                    marginTop: '8px',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    border: 'none',
+                    background: 'rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: '10px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    width: '100%'
+                  }}
+                >
+                  Clear Filters ({props.teamDealsAssetTypeFilter.length} selected)
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Property Intelligence Section */}
