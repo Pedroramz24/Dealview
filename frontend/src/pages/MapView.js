@@ -415,17 +415,12 @@ const MapView = () => {
           maxzoom: 18,
           attribution: '&copy; Esri'
         },
-        'carto-labels': {
-          type: 'raster',
-          tiles: [
-            'https://a.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',
-            'https://b.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',
-            'https://c.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png',
-            'https://d.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}@2x.png'
-          ],
-          tileSize: 512,
-          maxzoom: 18,
-          attribution: '&copy; CARTO'
+        'openmaptiles': {
+          type: 'vector',
+          tiles: ['https://tiles.openfreemap.org/planet/{z}/{x}/{y}.pbf'],
+          minzoom: 0,
+          maxzoom: 14,
+          attribution: '© OpenMapTiles © OpenStreetMap'
         }
       },
       layers: [
@@ -434,27 +429,105 @@ const MapView = () => {
           type: 'raster',
           source: 'esri-satellite',
           minzoom: 0,
-          maxzoom: 18
+          maxzoom: 22
         },
+        // City and Place Labels - Dynamic Scaling
         {
-          id: 'labels',
-          type: 'raster',
-          source: 'carto-labels',
+          id: 'place-labels',
+          type: 'symbol',
+          source: 'openmaptiles',
+          'source-layer': 'place',
+          filter: ['in', ['get', 'class'], ['literal', ['city', 'town', 'village']]],
           minzoom: 8,
-          maxzoom: 18,
-          paint: {
-            'raster-opacity': [
+          maxzoom: 22,
+          layout: {
+            'text-field': ['get', 'name:latin'],
+            'text-font': ['Noto Sans Regular'],
+            'text-size': [
               'interpolate',
               ['linear'],
               ['zoom'],
-              8, 0.6,
-              10, 0.8,
-              12, 1,
-              15, 0.8,
-              16, 0.5,
-              17, 0.3,
-              18, 0.2
-            ]
+              8, 12,
+              10, 14,
+              12, 16,
+              14, 14,
+              16, 12,
+              18, 10
+            ],
+            'text-anchor': 'center',
+            'text-max-width': 8,
+            'text-allow-overlap': false,
+            'text-optional': false
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': 'rgba(0, 0, 0, 0.8)',
+            'text-halo-width': 2
+          }
+        },
+        // Road Labels - Dynamic Scaling (shrinks at close zoom)
+        {
+          id: 'road-labels',
+          type: 'symbol',
+          source: 'openmaptiles',
+          'source-layer': 'transportation_name',
+          filter: ['has', 'name'],
+          minzoom: 12,
+          maxzoom: 22,
+          layout: {
+            'text-field': ['get', 'name:latin'],
+            'text-font': ['Noto Sans Regular'],
+            'text-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              12, 10,
+              14, 11,
+              16, 10,
+              18, 8,
+              20, 7
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 300,
+            'text-rotation-alignment': 'map',
+            'text-pitch-alignment': 'viewport',
+            'text-max-angle': 30
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': 'rgba(0, 0, 0, 0.9)',
+            'text-halo-width': 1.5
+          }
+        },
+        // Highway Shields/Numbers
+        {
+          id: 'highway-shields',
+          type: 'symbol',
+          source: 'openmaptiles',
+          'source-layer': 'transportation_name',
+          filter: ['has', 'ref'],
+          minzoom: 8,
+          maxzoom: 22,
+          layout: {
+            'text-field': ['get', 'ref'],
+            'text-font': ['Noto Sans Bold'],
+            'text-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              8, 9,
+              12, 11,
+              16, 10,
+              18, 9
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 400,
+            'text-rotation-alignment': 'viewport'
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': 'rgba(0, 0, 0, 0.9)',
+            'text-halo-width': 2
           }
         }
       ]
