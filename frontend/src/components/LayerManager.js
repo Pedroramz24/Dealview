@@ -16,7 +16,10 @@ const LayerManager = ({
   showParcels, 
   onToggleParcels, 
   showTeamDeals, 
-  onToggleTeamDeals, 
+  onToggleTeamDeals,
+  teamDealsAssetTypeFilter,
+  onToggleTeamDealsAssetType,
+  onClearTeamDealsFilters,
   measurementMode, 
   onSetMeasurementMode,
   // Property Intelligence layers
