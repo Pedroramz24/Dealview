@@ -538,7 +538,14 @@ const MapView = () => {
           maxzoom: 18,
           attribution: '&copy; Esri'
         },
-        'esri-labels': {
+        'esri-boundaries-places': {
+          type: 'raster',
+          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'],
+          tileSize: 256,
+          maxzoom: 18,
+          attribution: '&copy; Esri'
+        },
+        'esri-transportation': {
           type: 'raster',
           tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}'],
           tileSize: 256,
@@ -555,10 +562,17 @@ const MapView = () => {
           maxzoom: 18
         },
         {
-          id: 'labels',
+          id: 'city-labels',
           type: 'raster',
-          source: 'esri-labels',
-          minzoom: 14,
+          source: 'esri-boundaries-places',
+          minzoom: 8,
+          maxzoom: 18
+        },
+        {
+          id: 'road-labels',
+          type: 'raster',
+          source: 'esri-transportation',
+          minzoom: 9,
           maxzoom: 18
         }
       ]
