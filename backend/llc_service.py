@@ -12,8 +12,6 @@ import os
 import httpx
 import re
 import logging
-from bs4 import BeautifulSoup
-import asyncio
 
 logger = logging.getLogger(__name__)
 security = HTTPBearer()
