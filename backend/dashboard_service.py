@@ -294,13 +294,13 @@ async def get_dashboard_snapshot(
         
         # Fetch milestones
         milestones_response = supabase.table('deal_milestones').select('*').eq(
-            'user_id', user.id
+            'owner_id', user.id
         ).execute()
         milestones = milestones_response.data or []
         
         # Fetch calendar events
         events_response = supabase.table('calendar_events').select('*').eq(
-            'user_id', user.id
+            'owner_id', user.id
         ).gte('start_time', today_start.isoformat()).execute()
         events = events_response.data or []
         
