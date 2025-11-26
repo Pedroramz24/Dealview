@@ -568,6 +568,29 @@ const MapView = () => {
 
       console.log('[MapView] Fetched deals:', data?.length || 0);
       setDeals(data || []);
+      
+      // Check for deals without coordinates and show helpful message
+      if (data && data.length > 0) {
+        const dealsWithoutCoords = data.filter(deal => 
+          !deal.longitude || !deal.latitude || isNaN(deal.longitude) || isNaN(deal.latitude)
+        );
+        
+        if (dealsWithoutCoords.length > 0) {
+          console.warn('[MapView] ⚠️ Deals without coordinates:', dealsWithoutCoords.length);
+          console.log('[MapView] Missing coordinates for:', dealsWithoutCoords.map(d => ({ id: d.id, title: d.title })));
+          
+          // Show user-friendly notification
+          toast.info(
+            `${dealsWithoutCoords.length} deal(s) won't appear on map - missing coordinates. Click on the map to create deals with location data.`,
+            { duration: 5000 }
+          );
+        }
+        
+        const dealsWithCoords = data.filter(deal => 
+          deal.longitude && deal.latitude && !isNaN(deal.longitude) && !isNaN(deal.latitude)
+        );
+        console.log('[MapView] ✅ Deals with valid coordinates:', dealsWithCoords.length);
+      }
     } catch (error) {
       console.error('[MapView] Error loading deals:', error);
       // Don't show toast for empty results
