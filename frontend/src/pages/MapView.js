@@ -1503,7 +1503,8 @@ const MapView = () => {
                 </div>
               </div>
             </Marker>
-          ))}
+          );
+          })}
 
           {/* Team Deals Markers - Only show when team deals layer is enabled */}
           {showTeamDeals && teamDeals
