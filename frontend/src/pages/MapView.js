@@ -1040,6 +1040,7 @@ const MapView = () => {
               parcelData
             );
           }}
+          onDealDeleted={handleDealDeleted}
         />
         
         {/* Create Deal Panel (LEFT - same slot as Property Panel) */}
