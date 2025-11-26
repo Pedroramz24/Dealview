@@ -338,7 +338,7 @@ async def get_dashboard_snapshot(
         
         # High priority actions (from priority queue)
         priority_response = supabase.table('ai_priority_queue').select('*').eq(
-            'user_id', user.id
+            'owner_id', user.id
         ).eq('completed', False).eq('dismissed', False).gte('priority_score', 60).execute()
         high_priority_actions = len(priority_response.data or [])
         
