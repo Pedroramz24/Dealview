@@ -363,6 +363,10 @@ async def get_dashboard_snapshot(
         
     except Exception as e:
         logger.error(f"Error fetching dashboard snapshot: {str(e)}")
+        logger.error(f"Error type: {type(e)}")
+        logger.error(f"Error details: {e.__dict__ if hasattr(e, '__dict__') else 'No details'}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
