@@ -697,8 +697,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Red Parcel Highlighting on Click"
-    - "Dynamic Deal Pin Scaling"
+    - "LLC Owner Lookup Feature"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
