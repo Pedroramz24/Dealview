@@ -147,7 +147,7 @@ SELECT USING (same check)
 
 ### Your Configuration:
 ```
-Site URL: https://parcelmaster.preview.emergentagent.com
+Site URL: https://map-view-repair.preview.emergentagent.com
 Email confirmation: OFF (for development)
 JWT expiry: 3600 seconds (1 hour)
 Auto-refresh: YES
