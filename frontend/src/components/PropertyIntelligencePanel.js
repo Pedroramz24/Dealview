@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calendar, ChevronLeft, ChevronRight, Upload, Download, ExternalLink, Trash2, Search } from 'lucide-react';
+import { X, Edit, Save, Share2, MapPin, DollarSign, Home, Users, FileText, Calendar, ChevronLeft, ChevronRight, Upload, Download, ExternalLink, Trash2, Search, ChevronDown, ChevronUp, Loader2, Copy, Phone } from 'lucide-react';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { toast } from 'sonner';
 import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInput';
 import ContactFormPanel from './ContactFormPanel';
-import LLCLookupModal from './LLCLookupModal';
+import { supabase } from '../supabaseClient';
+import { API } from '../App';
 
 // Pipeline stage colors - matching Pipeline.js
 const stageColors = {
