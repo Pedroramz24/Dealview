@@ -181,7 +181,7 @@ async def generate_priorities_from_data(
             if due_date < now:
                 score, level = calculate_priority_score(is_overdue=True)
                 priorities.append({
-                    'user_id': user_id,
+                    'owner_id': user_id,
                     'title': f"⚠️ Overdue: {milestone['title']}",
                     'description': milestone.get('description', ''),
                     'priority_score': score,
