@@ -510,7 +510,7 @@ async def create_deal_milestone(
         user = await get_current_user_supabase(credentials)
         
         milestone_data = milestone.model_dump()
-        milestone_data['user_id'] = user.id
+        milestone_data['owner_id'] = user.id
         
         response = supabase.table('deal_milestones').insert(milestone_data).execute()
         return {"success": True, "milestone": response.data[0]}
