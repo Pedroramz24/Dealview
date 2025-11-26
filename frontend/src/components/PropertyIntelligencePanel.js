@@ -436,6 +436,59 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
   };
 
   const nextImage = () => {
+
+  const handleOwnerLookup = async () => {
+    const ownerName = data.owner || data.owner_name || data.ownername;
+    
+    if (!ownerName) {
+      toast.error('No owner name available');
+      return;
+    }
+
+    setOwnerLookupLoading(true);
+    setOwnerLookupExpanded(true);
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      console.log('[Owner Lookup] Searching for:', ownerName);
+      
+      const response = await fetch(
+        `${API}/llc/lookup?owner_name=${encodeURIComponent(ownerName)}&state=TX&find_phone=true`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('[Owner Lookup] Results:', data);
+        setOwnerLookupData(data.result);
+        toast.success(data.result.cached ? 'Owner info loaded (cached)' : 'Owner info found!');
+      } else {
+        const error = await response.text();
+        console.error('[Owner Lookup] Failed:', error);
+        toast.error('Owner information not found');
+        setOwnerLookupData(null);
+      }
+    } catch (error) {
+      console.error('[Owner Lookup] Error:', error);
+      toast.error('Failed to lookup owner');
+      setOwnerLookupData(null);
+    } finally {
+      setOwnerLookupLoading(false);
+    }
+  };
+
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
