@@ -24,43 +24,57 @@ const AIDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Get auth token
-      const { data: { session } } = await user.getSession();
-      const token = session?.access_token;
-
-      if (!token) {
-        toast.error('Authentication required');
+      // Get auth token from Supabase
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.error('Session error:', sessionError);
+        toast.error('Please log in to view dashboard');
         return;
       }
+
+      const token = session.access_token;
 
       const headers = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       };
 
+      console.log('[Dashboard] Fetching snapshot...');
       // Fetch snapshot
       const snapshotRes = await fetch(`${API}/dashboard/snapshot`, { headers });
       if (snapshotRes.ok) {
         const data = await snapshotRes.json();
+        console.log('[Dashboard] Snapshot data:', data);
         setSnapshot(data);
+      } else {
+        console.error('[Dashboard] Snapshot failed:', snapshotRes.status, await snapshotRes.text());
       }
 
+      console.log('[Dashboard] Fetching priorities...');
       // Fetch priorities
       const prioritiesRes = await fetch(`${API}/dashboard/priorities`, { headers });
       if (prioritiesRes.ok) {
         const data = await prioritiesRes.json();
+        console.log('[Dashboard] Priorities data:', data);
         setPriorities(data);
+      } else {
+        console.error('[Dashboard] Priorities failed:', prioritiesRes.status, await prioritiesRes.text());
       }
 
+      console.log('[Dashboard] Fetching calendar...');
       // Fetch calendar data
       const calendarRes = await fetch(`${API}/dashboard/calendar`, { headers });
       if (calendarRes.ok) {
         const data = await calendarRes.json();
+        console.log('[Dashboard] Calendar data:', data);
         setCalendarData(data);
+      } else {
+        console.error('[Dashboard] Calendar failed:', calendarRes.status, await calendarRes.text());
       }
 
     } catch (error) {
-      console.error('Dashboard error:', error);
+      console.error('[Dashboard] Error:', error);
       toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
