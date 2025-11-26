@@ -9,6 +9,7 @@ import { formatNumberWithCommas, parseFormattedNumber } from '../utils/numberInp
 const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated }) => {
   const { user } = useContext(AuthContext);
   const [isSaving, setIsSaving] = useState(false);
+  const [defaultPipeline, setDefaultPipeline] = useState(null);
 
   // Refs for uncontrolled inputs
   const titleRef = useRef(null);
