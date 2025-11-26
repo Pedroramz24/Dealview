@@ -426,9 +426,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
     } catch (error) {
       console.error('Error deleting property:', error);
       toast.error('Failed to delete property');
-    } catch (error) {
-      console.error('Error deleting property:', error);
-      toast.error('Failed to delete property');
     }
   };
 
