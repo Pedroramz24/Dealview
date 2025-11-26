@@ -517,7 +517,7 @@ const PrioritiesPanel = ({ priorities, onRefresh, onAction, refreshing, navigate
             color: 'rgba(255, 255, 255, 0.4)',
             fontSize: '14px'
           }}>
-            <CheckCircle2 style={{ width: '32px', height: '32px', margin: '0 auto 12px', opacity: 0.5' }} />
+            <CheckCircle2 style={{ width: '32px', height: '32px', margin: '0 auto 12px', opacity: 0.5 }} />
             All caught up! Check back later for new priorities.
           </div>
         ) : (
