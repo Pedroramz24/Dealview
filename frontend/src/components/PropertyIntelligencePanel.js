@@ -153,6 +153,9 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
   const [showContactFormPanel, setShowContactFormPanel] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showLLCLookup, setShowLLCLookup] = useState(false);
+  const [ownerLookupExpanded, setOwnerLookupExpanded] = useState(false);
+  const [ownerLookupData, setOwnerLookupData] = useState(null);
+  const [ownerLookupLoading, setOwnerLookupLoading] = useState(false);
 
   const isDeal = type === 'deal';
 
