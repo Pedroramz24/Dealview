@@ -226,7 +226,7 @@ async def generate_priorities_from_data(
                 days_until_due=7  # Assume weekly check-in
             )
             priorities.append({
-                'user_id': user_id,
+                'owner_id': user_id,
                 'title': f"💰 High-Value Deal: {deal.get('title', 'Untitled')}",
                 'description': f"${deal_value:,.0f} in {deal.get('stage_name', 'Unknown Stage')}",
                 'priority_score': score,
