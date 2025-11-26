@@ -241,6 +241,27 @@ const MapView = () => {
     }
   };
   
+  const handleDealDeleted = (deletedDealId) => {
+    console.log('[MapView] Deal deleted, updating state without map refresh...');
+    
+    // Update deals state by filtering out deleted deal
+    setDeals(prevDeals => prevDeals.filter(deal => deal.id !== deletedDealId));
+    
+    // Update team deals if it was a team deal
+    setTeamDeals(prevTeamDeals => prevTeamDeals.filter(deal => deal.id !== deletedDealId));
+    
+    // Clear selected deal if it was the deleted one
+    if (selectedDeal?.id === deletedDealId) {
+      setSelectedDeal(null);
+    }
+    
+    // Close property panel
+    setPropertyPanelOpen(false);
+    setPropertyPanelData(null);
+    
+    console.log('[MapView] State updated - map position preserved');
+  };
+  
   // Expose panel toggles to window for external access if needed
   useEffect(() => {
     window.toggleLayersPanel = toggleLayersPanel;
