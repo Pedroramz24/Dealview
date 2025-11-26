@@ -954,36 +954,46 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', textTransform: 'uppercase' }}>
                     Owner Name
                   </div>
-                  {/* Find Owner button */}
-                  {(data.owner || data.owner_name || data.ownername) && 
-                   (data.owner || data.owner_name || data.ownername).toUpperCase().includes('LLC') && (
+                  {/* Find Owner button - for ALL owners, not just LLCs */}
+                  {(data.owner || data.owner_name || data.ownername) && (
                     <button
-                      onClick={() => setShowLLCLookup(true)}
+                      onClick={handleOwnerLookup}
+                      disabled={ownerLookupLoading}
                       style={{
                         padding: '4px 10px',
-                        background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+                        background: ownerLookupExpanded 
+                          ? 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(0, 184, 212, 0.15))'
+                          : 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
                         border: '1px solid rgba(0, 184, 212, 0.3)',
                         borderRadius: '6px',
                         color: '#00b8d4',
                         fontSize: '11px',
                         fontWeight: '600',
-                        cursor: 'pointer',
+                        cursor: ownerLookupLoading ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '4px',
-                        transition: 'all 0.2s ease'
+                        transition: 'all 0.2s ease',
+                        opacity: ownerLookupLoading ? 0.6 : 1
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(0, 184, 212, 0.15))';
-                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        if (!ownerLookupLoading) {
+                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(0, 184, 212, 0.15))';
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                        }
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))';
+                        if (!ownerLookupExpanded && !ownerLookupLoading) {
+                          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))';
+                        }
                         e.currentTarget.style.transform = 'translateY(0)';
                       }}
                     >
-                      <Search style={{ width: '12px', height: '12px' }} />
-                      Find Owner
+                      {ownerLookupLoading ? (
+                        <><Loader2 style={{ width: '12px', height: '12px', animation: 'spin 1s linear infinite' }} /> Searching...</>
+                      ) : (
+                        <><Search style={{ width: '12px', height: '12px' }} /> Find Owner</>
+                      )}
                     </button>
                   )}
                 </div>
