@@ -1036,6 +1036,323 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
                   {data.county_id || data.fips || data.countyfips || data.county_fips || 'N/A'}
                 </div>
               </div>
+
+              {/* Inline Owner Lookup Results */}
+              {ownerLookupExpanded && (
+                <div style={{
+                  marginTop: '20px',
+                  padding: '16px',
+                  background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.08), rgba(0, 184, 212, 0.04))',
+                  border: '1px solid rgba(0, 184, 212, 0.25)',
+                  borderRadius: '10px',
+                  animation: 'fadeSlideIn 0.3s ease-out'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Search style={{ color: '#00b8d4', width: '14px', height: '14px' }} />
+                      <span style={{ color: '#00b8d4', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase' }}>
+                        Enhanced Owner Lookup
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setOwnerLookupExpanded(false)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        cursor: 'pointer',
+                        padding: '4px'
+                      }}
+                    >
+                      <ChevronUp style={{ width: '16px', height: '16px' }} />
+                    </button>
+                  </div>
+
+                  {ownerLookupLoading ? (
+                    <div style={{ textAlign: 'center', padding: '20px', color: 'rgba(255, 255, 255, 0.6)' }}>
+                      <Loader2 style={{ width: '24px', height: '24px', margin: '0 auto 8px', animation: 'spin 1s linear infinite' }} />
+                      <div style={{ fontSize: '13px' }}>Searching databases...</div>
+                    </div>
+                  ) : ownerLookupData ? (
+                    <div>
+                      {/* Entity Type & Status */}
+                      <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                          <div style={{
+                            padding: '4px 10px',
+                            background: 'rgba(139, 92, 246, 0.15)',
+                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            borderRadius: '6px',
+                            fontSize: '10px',
+                            fontWeight: '700',
+                            color: '#a78bfa',
+                            textTransform: 'uppercase'
+                          }}>
+                            {ownerLookupData.entity_type}
+                          </div>
+                          {ownerLookupData.current_status && (
+                            <div style={{
+                              padding: '4px 10px',
+                              background: ownerLookupData.current_status.toLowerCase().includes('active')
+                                ? 'rgba(16, 185, 129, 0.15)'
+                                : 'rgba(107, 114, 128, 0.15)',
+                              border: `1px solid ${ownerLookupData.current_status.toLowerCase().includes('active') ? 'rgba(16, 185, 129, 0.3)' : 'rgba(107, 114, 128, 0.3)'}`,
+                              borderRadius: '6px',
+                              fontSize: '10px',
+                              fontWeight: '700',
+                              color: ownerLookupData.current_status.toLowerCase().includes('active') ? '#10b981' : '#9ca3af',
+                              textTransform: 'uppercase'
+                            }}>
+                              {ownerLookupData.current_status}
+                            </div>
+                          )}
+                          {ownerLookupData.cached && (
+                            <div style={{
+                              padding: '4px 8px',
+                              background: 'rgba(245, 158, 11, 0.15)',
+                              border: '1px solid rgba(245, 158, 11, 0.3)',
+                              borderRadius: '6px',
+                              fontSize: '9px',
+                              fontWeight: '700',
+                              color: '#f59e0b',
+                              textTransform: 'uppercase'
+                            }}>
+                              Cached
+                            </div>
+                          )}
+                        </div>
+                        {ownerLookupData.incorporation_date && (
+                          <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px' }}>
+                            Incorporated: {new Date(ownerLookupData.incorporation_date).toLocaleDateString()}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Registered Agent */}
+                      {ownerLookupData.registered_agent && (ownerLookupData.registered_agent.name || ownerLookupData.registered_agent.address) && (
+                        <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                          <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', marginBottom: '10px' }}>
+                            Registered Agent
+                          </div>
+                          {ownerLookupData.registered_agent.name && (
+                            <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div>
+                                <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '10px', marginBottom: '2px' }}>Name</div>
+                                <div style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>
+                                  {ownerLookupData.registered_agent.name}
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(ownerLookupData.registered_agent.name);
+                                  toast.success('Copied to clipboard');
+                                }}
+                                style={{
+                                  padding: '4px 8px',
+                                  background: 'rgba(0, 184, 212, 0.1)',
+                                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                                  borderRadius: '6px',
+                                  color: '#00b8d4',
+                                  fontSize: '10px',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
+                                }}
+                              >
+                                <Copy style={{ width: '10px', height: '10px' }} />
+                              </button>
+                            </div>
+                          )}
+                          {ownerLookupData.registered_agent.address && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '10px', marginBottom: '2px' }}>Address</div>
+                                <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', lineHeight: '1.4' }}>
+                                  {ownerLookupData.registered_agent.address}
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(ownerLookupData.registered_agent.address);
+                                  toast.success('Copied to clipboard');
+                                }}
+                                style={{
+                                  padding: '4px 8px',
+                                  background: 'rgba(0, 184, 212, 0.1)',
+                                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                                  borderRadius: '6px',
+                                  color: '#00b8d4',
+                                  fontSize: '10px',
+                                  cursor: 'pointer',
+                                  marginLeft: '8px',
+                                  flexShrink: 0
+                                }}
+                              >
+                                <Copy style={{ width: '10px', height: '10px' }} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Phone Numbers */}
+                      {ownerLookupData.phone_numbers && ownerLookupData.phone_numbers.length > 0 && (
+                        <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                          <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', marginBottom: '10px' }}>
+                            📞 Phone Numbers
+                          </div>
+                          {ownerLookupData.phone_numbers.map((phone, idx) => {
+                            const confidenceColors = {
+                              high: '#10b981',
+                              medium: '#f59e0b',
+                              low: '#9ca3af'
+                            };
+                            const color = confidenceColors[phone.confidence] || '#9ca3af';
+                            
+                            return (
+                              <div key={idx} style={{
+                                marginBottom: '8px',
+                                padding: '10px 12px',
+                                background: 'rgba(255, 255, 255, 0.03)',
+                                border: `1px solid ${color}20`,
+                                borderRadius: '8px',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                              }}>
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                                    <Phone style={{ color: color, width: '12px', height: '12px' }} />
+                                    <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>
+                                      {phone.number}
+                                    </span>
+                                    <div style={{
+                                      padding: '2px 6px',
+                                      background: `${color}15`,
+                                      border: `1px solid ${color}30`,
+                                      borderRadius: '4px',
+                                      fontSize: '9px',
+                                      fontWeight: '700',
+                                      color: color,
+                                      textTransform: 'uppercase'
+                                    }}>
+                                      {phone.confidence}
+                                    </div>
+                                  </div>
+                                  <div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '10px', marginLeft: '20px' }}>
+                                    {phone.source}
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(phone.number);
+                                    toast.success('Phone copied');
+                                  }}
+                                  style={{
+                                    padding: '4px 8px',
+                                    background: `${color}15`,
+                                    border: `1px solid ${color}30`,
+                                    borderRadius: '6px',
+                                    color: color,
+                                    fontSize: '10px',
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  <Copy style={{ width: '10px', height: '10px' }} />
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {/* Officers */}
+                      {ownerLookupData.officers && ownerLookupData.officers.length > 0 && (
+                        <div style={{ marginBottom: '12px' }}>
+                          <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', marginBottom: '10px' }}>
+                            Officers & Directors
+                          </div>
+                          {ownerLookupData.officers.slice(0, 5).map((officer, idx) => (
+                            <div key={idx} style={{
+                              marginBottom: '6px',
+                              padding: '8px 10px',
+                              background: 'rgba(255, 255, 255, 0.02)',
+                              border: '1px solid rgba(255, 255, 255, 0.06)',
+                              borderRadius: '6px',
+                              fontSize: '12px'
+                            }}>
+                              <div style={{ color: '#ffffff', fontWeight: '600', marginBottom: '2px' }}>
+                                {officer.name}
+                              </div>
+                              {officer.position && (
+                                <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px' }}>
+                                  {officer.position}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Links */}
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {ownerLookupData.opencorporates_url && (
+                          <a
+                            href={ownerLookupData.opencorporates_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              padding: '6px 10px',
+                              background: 'rgba(0, 184, 212, 0.1)',
+                              border: '1px solid rgba(0, 184, 212, 0.2)',
+                              borderRadius: '6px',
+                              color: '#00b8d4',
+                              fontSize: '11px',
+                              fontWeight: '600',
+                              textDecoration: 'none',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <ExternalLink style={{ width: '11px', height: '11px' }} />
+                            OpenCorporates
+                          </a>
+                        )}
+                        {ownerLookupData.registry_url && (
+                          <a
+                            href={ownerLookupData.registry_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              padding: '6px 10px',
+                              background: 'rgba(139, 92, 246, 0.1)',
+                              border: '1px solid rgba(139, 92, 246, 0.2)',
+                              borderRadius: '6px',
+                              color: '#a78bfa',
+                              fontSize: '11px',
+                              fontWeight: '600',
+                              textDecoration: 'none',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <ExternalLink style={{ width: '11px', height: '11px' }} />
+                            State Registry
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ textAlign: 'center', padding: '16px', color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>
+                      No additional owner information found
+                    </div>
+                  )}
+                </div>
+              )}
+
             </div>
           )}
 
