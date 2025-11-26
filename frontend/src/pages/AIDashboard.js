@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext, API } from '../App';
+import { supabase } from '../supabaseClient';
 import { 
   LayoutDashboard, TrendingUp, Calendar, AlertCircle, 
   CheckCircle2, Clock, DollarSign, Target, Zap, 
