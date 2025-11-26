@@ -1113,7 +1113,6 @@ const MapView = () => {
             minZoom={6}
             fadeDuration={100}
             renderWorldCopies={false}
-            crossSourceCollisions={false}
             antialias={true}
             preserveDrawingBuffer={false}
             refreshExpiredTiles={false}
