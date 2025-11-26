@@ -573,11 +573,11 @@ async def refresh_priorities(
         ).eq('owner_id', user.id).execute()
         
         milestones_response = supabase.table('deal_milestones').select('*').eq(
-            'user_id', user.id
+            'owner_id', user.id
         ).execute()
         
         events_response = supabase.table('calendar_events').select('*').eq(
-            'user_id', user.id
+            'owner_id', user.id
         ).eq('status', 'scheduled').execute()
         
         # Generate new priorities
