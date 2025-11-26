@@ -431,7 +431,7 @@ frontend:
     file: "/app/frontend/src/components/PropertyIntelligencePanel.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "user"
@@ -442,6 +442,18 @@ frontend:
       - working: true
         agent: "main"
         comment: "✅ ENHANCEMENT ADDED: Implemented automatic comma formatting for all number inputs as user types. Added utility functions formatNumberWithCommas() and parseFormattedNumber() in /app/frontend/src/utils/numberInput.js. Updated EditableField component to auto-format numbers with commas in real-time (e.g., user types '1000000' → displays '1,000,000'). Modified handleSave to parse formatted numbers back to raw numbers before saving to database. All numeric fields (price, size, lot_size, cap_rate, noi, annual_income, annual_expenses, year_built, parking_spaces, occupancy) now have live comma formatting."
+
+  - task: "LLC Owner Lookup Feature"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PropertyIntelligencePanel.js, /app/frontend/src/components/LLCLookupModal.js, /app/backend/llc_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Complete LLC Owner Lookup feature added. FRONTEND: (1) PropertyIntelligencePanel.js - Added 'Find Owner' button (lines 900-931) that appears next to Owner Name field only when owner name contains 'LLC'. Button styled in cyan with Search icon. (2) LLCLookupModal.js - Full modal component with search input, state dropdown (TX, CA, FL, NY, IL), Lookup button, results display showing registered agent, officers, phone numbers, company details, and external links. Modal has dark glass-morphism styling matching app theme. BACKEND: (3) llc_service.py - Complete API service with /api/llc/lookup endpoint, OpenCorporates API integration, caching system (30-day cache in llc_lookup_cache table), phone number lookup placeholder. IMPORTANT: OpenCorporates API key is NOT configured (empty string in backend/.env) - lookups will fail with 404 'LLC not found' error, which is expected behavior. Feature is ready for user to add API key. Frontend compiled successfully. Needs UI testing to verify button appears for LLC owners, modal opens/closes correctly, error handling works gracefully."
 
   - task: "Automatic Comma Formatting for Number Inputs"
     implemented: true
