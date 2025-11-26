@@ -414,12 +414,18 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
       setShowDeleteConfirm(false);
       onClose();
       
-      // Refresh the page or navigate away
-      if (window.location.pathname.includes('/deals/')) {
-        navigate('/deals');
+      // Call parent callback to update state without refresh
+      if (onDealDeleted) {
+        onDealDeleted(data.id);
       } else {
-        window.location.reload();
+        // Fallback for DealDetails page - navigate away
+        if (window.location.pathname.includes('/deals/')) {
+          navigate('/deals');
+        }
       }
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      toast.error('Failed to delete property');
     } catch (error) {
       console.error('Error deleting property:', error);
       toast.error('Failed to delete property');
