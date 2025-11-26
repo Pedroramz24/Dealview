@@ -62,6 +62,37 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
     }
   };
 
+  // Fetch default pipeline on mount
+  useEffect(() => {
+    const fetchDefaultPipeline = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('pipelines')
+          .select('id, pipeline_stages(id, name, display_order)')
+          .eq('owner_id', user.id)
+          .eq('is_default', true)
+          .order('display_order', { foreignTable: 'pipeline_stages', ascending: true })
+          .single();
+        
+        if (error) {
+          console.error('[CreateDealPanel] Error fetching default pipeline:', error);
+          return;
+        }
+        
+        console.log('[CreateDealPanel] Default pipeline loaded:', data);
+        setDefaultPipeline(data);
+      } catch (error) {
+        console.error('[CreateDealPanel] Error:', error);
+      }
+    };
+    
+    if (isOpen) {
+      fetchDefaultPipeline();
+    }
+  }, [isOpen, user]);
+
   if (!isOpen) return null;
 
   const handleCreateDeal = async () => {
