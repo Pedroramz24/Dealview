@@ -489,7 +489,7 @@ async def create_calendar_event(
         user = await get_current_user_supabase(credentials)
         
         event_data = event.model_dump()
-        event_data['user_id'] = user.id
+        event_data['owner_id'] = user.id
         
         response = supabase.table('calendar_events').insert(event_data).execute()
         return {"success": True, "event": response.data[0]}
