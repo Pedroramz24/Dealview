@@ -1417,9 +1417,23 @@ const MapView = () => {
             </Source>
           )}
 
+          {/* User Deals Markers */}
           {deals
-            .filter(deal => deal.longitude && deal.latitude && !isNaN(deal.longitude) && !isNaN(deal.latitude))
-            .map((deal) => (
+            .filter(deal => {
+              const hasCoords = deal.longitude && deal.latitude && !isNaN(deal.longitude) && !isNaN(deal.latitude);
+              if (!hasCoords) {
+                console.log('[MapView] Deal missing coordinates:', { 
+                  id: deal.id, 
+                  title: deal.title, 
+                  longitude: deal.longitude, 
+                  latitude: deal.latitude 
+                });
+              }
+              return hasCoords;
+            })
+            .map((deal) => {
+              console.log('[MapView] Rendering deal marker:', { id: deal.id, title: deal.title, lng: deal.longitude, lat: deal.latitude });
+              return (
             <Marker
               key={deal.id}
               longitude={deal.longitude}
