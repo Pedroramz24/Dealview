@@ -24,6 +24,10 @@ const MainLayout = () => {
   ];
 
   const isActive = (path, exact = false) => {
+    // Handle root path - dashboard is the default
+    if (path === '/dashboard') {
+      return location.pathname === '/' || location.pathname === '/dashboard';
+    }
     if (exact) {
       return location.pathname === path;
     }
