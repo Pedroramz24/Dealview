@@ -118,8 +118,13 @@ const AIDashboard = () => {
 
   const handlePriorityAction = async (priorityId, action) => {
     try {
-      const { data: { session } } = await user.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
+
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
 
       const response = await fetch(`${API}/dashboard/priorities/${priorityId}`, {
         method: 'PATCH',
@@ -133,8 +138,13 @@ const AIDashboard = () => {
       if (response.ok) {
         toast.success(action === 'completed' ? 'Priority completed' : 'Priority dismissed');
         setPriorities(priorities.filter(p => p.id !== priorityId));
+      } else {
+        const error = await response.text();
+        console.error('[Dashboard] Priority action failed:', error);
+        toast.error('Failed to update priority');
       }
     } catch (error) {
+      console.error('[Dashboard] Priority action error:', error);
       toast.error('Failed to update priority');
     }
   };
