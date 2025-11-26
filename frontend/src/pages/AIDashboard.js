@@ -84,8 +84,13 @@ const AIDashboard = () => {
   const handleRefreshPriorities = async () => {
     try {
       setRefreshing(true);
-      const { data: { session } } = await user.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
+
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
 
       const response = await fetch(`${API}/dashboard/priorities/refresh`, {
         method: 'POST',
@@ -98,8 +103,13 @@ const AIDashboard = () => {
       if (response.ok) {
         toast.success('Priorities refreshed');
         fetchDashboardData();
+      } else {
+        const error = await response.text();
+        console.error('[Dashboard] Refresh failed:', error);
+        toast.error('Failed to refresh priorities');
       }
     } catch (error) {
+      console.error('[Dashboard] Refresh error:', error);
       toast.error('Failed to refresh priorities');
     } finally {
       setRefreshing(false);
