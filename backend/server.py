@@ -3372,6 +3372,7 @@ async def move_deal(
 
 
 app.include_router(api_router)
+app.include_router(dashboard_router)
 
 app.add_middleware(
     CORSMiddleware,
