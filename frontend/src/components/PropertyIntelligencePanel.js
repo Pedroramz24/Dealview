@@ -893,8 +893,42 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
                 </span>
               </div>
               <div style={{ marginBottom: '12px' }}>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>
-                  Owner Name
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', textTransform: 'uppercase' }}>
+                    Owner Name
+                  </div>
+                  {/* Find Owner button */}
+                  {(data.owner || data.owner_name || data.ownername) && 
+                   (data.owner || data.owner_name || data.ownername).toUpperCase().includes('LLC') && (
+                    <button
+                      onClick={() => setShowLLCLookup(true)}
+                      style={{
+                        padding: '4px 10px',
+                        background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '6px',
+                        color: '#00b8d4',
+                        fontSize: '11px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(0, 184, 212, 0.15))';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      <Search style={{ width: '12px', height: '12px' }} />
+                      Find Owner
+                    </button>
+                  )}
                 </div>
                 <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
                   {data.owner || data.owner_name || data.ownername || 'N/A'}
