@@ -544,7 +544,7 @@ async def update_priority_item(
         
         response = supabase.table('ai_priority_queue').update(update_data).eq(
             'id', priority_id
-        ).eq('user_id', user.id).execute()
+        ).eq('owner_id', user.id).execute()
         
         return {"success": True, "priority": response.data[0] if response.data else None}
         
