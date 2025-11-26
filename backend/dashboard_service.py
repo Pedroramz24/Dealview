@@ -564,7 +564,7 @@ async def refresh_priorities(
         
         # Clear existing uncompleted priorities
         supabase.table('ai_priority_queue').delete().eq(
-            'user_id', user.id
+            'owner_id', user.id
         ).eq('completed', False).execute()
         
         # Fetch fresh data
