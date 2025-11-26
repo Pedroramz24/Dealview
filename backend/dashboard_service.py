@@ -201,7 +201,7 @@ async def generate_priorities_from_data(
             if now <= start_time <= today_end:
                 score, level = calculate_priority_score(days_until_due=0)
                 priorities.append({
-                    'user_id': user_id,
+                    'owner_id': user_id,
                     'title': f"📅 Today: {event['title']}",
                     'description': event.get('description', ''),
                     'priority_score': score,
