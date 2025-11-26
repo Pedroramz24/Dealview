@@ -2313,14 +2313,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
           dealId={data?.id}
         />
       )}
-
-      {/* LLC Lookup Modal */}
-      <LLCLookupModal
-        isOpen={showLLCLookup}
-        onClose={() => setShowLLCLookup(false)}
-        llcName={data?.owner || data?.owner_name || data?.ownername || ''}
-        state="TX"
-      />
     </div>
   );
 };
