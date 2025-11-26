@@ -457,14 +457,14 @@ async def get_calendar_events(
         # Fetch events
         events_response = supabase.table('calendar_events').select(
             '*, deals(id, title), contacts(id, name)'
-        ).eq('user_id', user.id).gte('start_time', start_date).lte(
+        ).eq('owner_id', user.id).gte('start_time', start_date).lte(
             'start_time', end_date
         ).order('start_time').execute()
         
         # Fetch milestones
         milestones_response = supabase.table('deal_milestones').select(
             '*, deals(id, title)'
-        ).eq('user_id', user.id).gte('due_date', start_date).lte(
+        ).eq('owner_id', user.id).gte('due_date', start_date).lte(
             'due_date', end_date
         ).order('due_date').execute()
         
