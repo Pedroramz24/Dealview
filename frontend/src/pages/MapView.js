@@ -220,10 +220,25 @@ const MapView = () => {
   };
   
   const handleDealCreated = async (newDeal) => {
-    // Refresh deals list
+    console.log('[MapView] Deal created, refreshing deals list...');
+    // Refresh deals list to get complete deal data from database
     await fetchDeals();
-    // Open the newly created deal in property panel
-    togglePropertyPanel(newDeal);
+    
+    // Find the newly created deal in the refreshed list (by ID)
+    const refreshedDeal = await supabase
+      .from('deals')
+      .select('*')
+      .eq('id', newDeal.id)
+      .single();
+    
+    if (refreshedDeal.data) {
+      console.log('[MapView] Opening newly created deal:', refreshedDeal.data);
+      // Open the deal with fresh data from database
+      togglePropertyPanel(refreshedDeal.data);
+    } else {
+      // Fallback to passed data if query fails
+      togglePropertyPanel(newDeal);
+    }
   };
   
   // Expose panel toggles to window for external access if needed
