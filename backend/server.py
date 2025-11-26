@@ -32,6 +32,7 @@ load_dotenv(ROOT_DIR / '.env')
 from sendgrid_service import sendgrid_service
 from campaign_scheduler import get_scheduler
 from radar_service import radar_service
+from dashboard_service import dashboard_router
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
