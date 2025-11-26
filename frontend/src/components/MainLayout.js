@@ -14,12 +14,12 @@ const MainLayout = () => {
   };
 
   const navItems = [
-    { path: '/', label: 'Map', icon: Map, exact: true },
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/map', label: 'Map', icon: Map },
     { path: '/deals', label: 'Deals', icon: Trello },
     { path: '/contacts', label: 'Contacts', icon: Users },
     { path: '/campaigns', label: 'Campaigns', icon: Mail },
     { path: '/calendar', label: 'Calendar', icon: Calendar },
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/team', label: 'Team', icon: UsersRound },
   ];
 
