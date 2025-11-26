@@ -125,6 +125,9 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
         cap_rate: (grossIncomeRef.current?.value && operatingExpensesRef.current?.value && priceRef.current?.value)
           ? ((parseFloat(grossIncomeRef.current.value.replace(/,/g, '')) - parseFloat(operatingExpensesRef.current.value.replace(/,/g, ''))) / parseFloat(priceRef.current.value.replace(/,/g, ''))) * 100
           : null,
+        // Pipeline association - CRITICAL for Pipeline view visibility
+        pipeline_id: defaultPipeline?.id || null,
+        pipeline_stage_id: defaultPipeline?.pipeline_stages?.[0]?.id || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
