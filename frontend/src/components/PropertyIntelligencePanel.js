@@ -141,7 +141,7 @@ const EditableTextarea = ({ label, value, field, isEditing, editedData, setEdite
   );
 };
 
-const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal }) => {
+const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, onDealDeleted }) => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(true); // Always editing - all fields editable
   const [editedData, setEditedData] = useState(data || {});
