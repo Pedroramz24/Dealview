@@ -1815,9 +1815,9 @@ div[role="listbox"] {
   opacity: 1 !important;
 }
 
-/* Ensure no backgrounds on map annotations */
-.maplibregl-marker input,
-.maplibregl-marker div {
+/* Ensure no backgrounds on map text annotations only - not deal markers */
+.maplibregl-marker .annotation-label input,
+.maplibregl-marker .annotation-label div {
   background: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
