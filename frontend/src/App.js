@@ -108,9 +108,9 @@ function App() {
             path="/"
             element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
-            <Route index element={<MapView />} />
+            <Route index element={<AIDashboard />} />
+            <Route path="dashboard" element={<AIDashboard />} />
             <Route path="map" element={<MapView />} />
-            <Route path="dashboard" element={<Dashboard />} />
             <Route path="deals" element={<Pipeline />} />
             <Route path="deals/:dealId" element={<DealDetails />} />
             <Route path="contacts" element={<Contacts />} />
