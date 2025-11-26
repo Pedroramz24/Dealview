@@ -281,16 +281,21 @@ async def get_dashboard_snapshot(
     try:
         from server import get_current_user_supabase, supabase
         user = await get_current_user_supabase(credentials)
+        
+        logger.info(f"[Dashboard] Fetching snapshot for user: {user.id}")
+        
         now = datetime.now(timezone.utc)
         today_start = now.replace(hour=0, minute=0, second=0)
         today_end = now.replace(hour=23, minute=59, second=59)
         week_end = now + timedelta(days=7)
         
         # Fetch deals
+        logger.info(f"[Dashboard] Fetching deals for owner_id: {user.id}")
         deals_response = supabase.table('deals').select(
             '*, pipeline_stages(stage_weight, name)'
         ).eq('owner_id', user.id).execute()
         deals = deals_response.data or []
+        logger.info(f"[Dashboard] Found {len(deals)} deals")
         
         # Fetch milestones
         milestones_response = supabase.table('deal_milestones').select('*').eq(
