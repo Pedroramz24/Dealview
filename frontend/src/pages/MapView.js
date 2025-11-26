@@ -452,7 +452,7 @@ const MapView = () => {
           type: 'raster',
           source: 'esri-satellite',
           minzoom: 0,
-          maxzoom: 22
+          maxzoom: 18
         },
         {
           id: 'labels',
@@ -461,7 +461,7 @@ const MapView = () => {
           minzoom: 8,
           maxzoom: 18,
           paint: {
-            'raster-opacity': 1
+            'raster-opacity': 0.9
           }
         }
       ]
