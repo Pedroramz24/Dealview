@@ -375,7 +375,7 @@ async def get_priorities(
         # Fetch existing priority items
         priority_response = supabase.table('ai_priority_queue').select(
             '*, deals(id, title, price), contacts(id, name)'
-        ).eq('user_id', user.id).eq('completed', False).eq(
+        ).eq('owner_id', user.id).eq('completed', False).eq(
             'dismissed', False
         ).order('priority_score', desc=True).limit(20).execute()
         
