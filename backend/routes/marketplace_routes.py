@@ -100,10 +100,10 @@ async def get_marketplace_deal_detail(
     supabase = get_supabase()
     
     try:
-        # Fetch deal
-        deal_result = supabase.table('deals').select(
-            '*, owner:owner_id(id, email, user_profiles(company, phone))'
-        ).eq('id', deal_id).eq('is_published', True).eq('public_status', 'published').eq('approval_status', 'approved').single().execute()
+        # Fetch deal (without owner join for now)
+        deal_result = supabase.table('deals').select('*').eq(
+            'id', deal_id
+        ).eq('is_published', True).eq('public_status', 'published').eq('approval_status', 'approved').single().execute()
         
         if not deal_result.data:
             raise HTTPException(status_code=404, detail="Deal not found or not published")
