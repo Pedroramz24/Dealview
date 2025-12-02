@@ -108,31 +108,40 @@ function App() {
           <Route path="/share/:dealId" element={<PublicShare />} />
           <Route path="/join-team/:token" element={<JoinTeam />} />
           
-          {/* Authenticated Routes with Dual-Mode Layout */}
+          {/* Marketplace Routes - DualModeLayout (minimal sidebar) */}
           <Route
-            path="/"
+            path="/marketplace"
             element={user ? <DualModeLayout /> : <Navigate to="/login" />}
           >
-            {/* Default route - Marketplace */}
-            <Route index element={<Navigate to="/marketplace" replace />} />
-            
-            {/* Marketplace Routes */}
-            <Route path="marketplace" element={<MarketplacePage />} />
-            <Route path="marketplace/deals/:dealId" element={<MarketplaceDealDetail />} />
-            
-            {/* Workspace Routes (existing CRM) */}
-            <Route path="workspace/dashboard" element={<AIDashboard />} />
-            <Route path="workspace/map" element={<MapView />} />
-            <Route path="workspace/deals" element={<Pipeline />} />
-            <Route path="workspace/deals/:dealId" element={<DealDetails />} />
-            <Route path="workspace/contacts" element={<Contacts />} />
-            <Route path="workspace/campaigns" element={<Campaigns />} />
-            <Route path="workspace/calendar" element={<CalendarView />} />
-            <Route path="workspace/team" element={<Team />} />
-            
-            {/* Settings (shared) */}
-            <Route path="settings" element={<Settings />} />
+            <Route index element={<MarketplacePage />} />
+            <Route path="deals/:dealId" element={<MarketplaceDealDetail />} />
           </Route>
+
+          {/* Workspace Routes - MainLayout (full CRM sidebar) */}
+          <Route
+            path="/workspace"
+            element={user ? <MainLayout /> : <Navigate to="/login" />}
+          >
+            <Route path="dashboard" element={<AIDashboard />} />
+            <Route path="map" element={<MapView />} />
+            <Route path="deals" element={<Pipeline />} />
+            <Route path="deals/:dealId" element={<DealDetails />} />
+            <Route path="contacts" element={<Contacts />} />
+            <Route path="campaigns" element={<Campaigns />} />
+            <Route path="calendar" element={<CalendarView />} />
+            <Route path="team" element={<Team />} />
+          </Route>
+
+          {/* Settings - MainLayout */}
+          <Route
+            path="/settings"
+            element={user ? <MainLayout /> : <Navigate to="/login" />}
+          >
+            <Route index element={<Settings />} />
+          </Route>
+
+          {/* Default redirect */}
+          <Route path="/" element={user ? <Navigate to="/marketplace" replace /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     </AuthContext.Provider>
