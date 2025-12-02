@@ -35,9 +35,14 @@ const MarketplacePage = () => {
 
   const fetchFilterOptions = async () => {
     try {
-      const token = (await import('../supabaseClient')).supabase.auth.getSession().then(s => s.data.session?.access_token);
+      const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.error('No auth token');
+        return;
+      }
+      
       const response = await fetch(`${API}/marketplace/filters`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
       });
       const data = await response.json();
       setFilterOptions(data);
@@ -49,7 +54,12 @@ const MarketplacePage = () => {
   const fetchDeals = async () => {
     try {
       setLoading(true);
-      const token = (await import('../supabaseClient')).supabase.auth.getSession().then(s => s.data.session?.access_token);
+      const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.error('No auth token');
+        setLoading(false);
+        return;
+      }
       
       // Build query params
       const params = new URLSearchParams();
@@ -58,7 +68,7 @@ const MarketplacePage = () => {
       });
 
       const response = await fetch(`${API}/marketplace/deals?${params}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
       });
       
       if (!response.ok) throw new Error('Failed to fetch deals');
