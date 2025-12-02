@@ -270,7 +270,7 @@ const DualModeLayout = () => {
       {/* Main Content Area */}
       <div style={{ 
         flex: 1, 
-        overflow: 'hidden',
+        overflow: 'auto',
         display: 'flex',
         flexDirection: 'column'
       }}>
