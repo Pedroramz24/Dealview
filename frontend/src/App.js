@@ -16,7 +16,9 @@ import Settings from './pages/Settings';
 import JoinTeam from './pages/JoinTeam';
 import PublicShare from './pages/PublicShare';
 import ResetPassword from './pages/ResetPassword';
-import MainLayout from './components/MainLayout';
+import DualModeLayout from './components/DualModeLayout';
+import MarketplacePage from './pages/MarketplacePage';
+import MarketplaceDealDetail from './pages/MarketplaceDealDetail';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
