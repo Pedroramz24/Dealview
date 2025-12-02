@@ -91,16 +91,12 @@ async def browse_marketplace_deals(
 @router.get("/deals/{deal_id}")
 async def get_marketplace_deal_detail(
     deal_id: str,
-    credentials = Depends(security)
+    user = Depends(get_current_user_supabase)
 ):
     """
     Get detailed information about a published deal.
     Records a view for analytics.
     """
-    from utils.auth_helpers import security
-    from middleware import check_membership
-    
-    user = await check_membership(credentials)
     supabase = get_supabase()
     
     try:
