@@ -99,21 +99,25 @@ async def require_role(allowed_roles: list[str], credentials: HTTPAuthorizationC
     return user
 
 
-async def require_broker(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def require_broker(credentials: HTTPAuthorizationCredentials):
     """
     Shorthand for requiring broker role.
     Use this for deal publishing endpoints.
+    
+    Usage:
+        user = Depends(require_broker)
     """
-    from utils.auth_helpers import security
     return await require_role(['broker', 'admin'], credentials)
 
 
-async def check_onboarding(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def check_onboarding(credentials: HTTPAuthorizationCredentials):
     """
     Verify user has completed onboarding.
     Redirect to onboarding if not completed.
+    
+    Usage:
+        user = Depends(check_onboarding)
     """
-    from utils.auth_helpers import security
     user = await check_membership(credentials)
     
     if not user.onboarding_completed:
