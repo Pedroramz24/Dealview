@@ -134,7 +134,7 @@ async def get_marketplace_deal_detail(
 async def save_deal(
     deal_id: str,
     save_data: SavedDealCreate,
-    user = Depends(check_membership)
+    user = Depends(get_current_user_supabase)
 ):
     """Save/bookmark a deal for later."""
     supabase = get_supabase()
