@@ -90,11 +90,17 @@ const MarketplacePage = () => {
   const handleSaveDeal = async (dealId, e) => {
     e.stopPropagation();
     try {
-      const token = (await import('../supabaseClient')).supabase.auth.getSession().then(s => s.data.session?.access_token);
+      const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.error('No auth token');
+        toast.error('Please log in to save deals');
+        return;
+      }
+      
       const response = await fetch(`${API}/marketplace/deals/${dealId}/save`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ deal_id: dealId })
