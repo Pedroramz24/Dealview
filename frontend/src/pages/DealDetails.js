@@ -731,6 +731,23 @@ const DealDetails = () => {
                   Share
                 </Button>
 
+                {/* Publish to Marketplace */}
+                <Button
+                  onClick={() => setShowPublishModal(true)}
+                  style={{
+                    background: 'linear-gradient(135deg, #00b8d4 0%, #0088a3 100%)',
+                    border: 'none',
+                    color: '#fff',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: '600'
+                  }}
+                >
+                  <Upload size={16} className="mr-2" />
+                  Publish to Marketplace
+                </Button>
+
                 {/* More Menu */}
                 <div style={{ position: 'relative' }} data-more-menu>
                   <Button
