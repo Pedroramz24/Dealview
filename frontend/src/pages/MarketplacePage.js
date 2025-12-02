@@ -329,8 +329,8 @@ const MarketplacePage = () => {
                   {/* Deal Image */}
                   <div style={{
                     height: '200px',
-                    background: deal.image_url || deal.primary_image_url 
-                      ? `url(${deal.image_url || deal.primary_image_url})` 
+                    background: deal.image_url 
+                      ? `url(${deal.image_url})` 
                       : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
