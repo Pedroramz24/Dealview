@@ -64,14 +64,6 @@ supabase = get_supabase()
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
-
-# News feed cache
-news_cache = {
-    'articles': [],
-    'last_updated': 0,
-    'cache_duration': 3600  # 1 hour in seconds
-}
-
 # Logging
 logger = logging.getLogger(__name__)
 
