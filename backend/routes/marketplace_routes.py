@@ -1,12 +1,13 @@
 """Marketplace browsing and publishing routes for DealLinked."""
 from fastapi import APIRouter, HTTPException, Depends, Query, status
+from fastapi.security import HTTPAuthorizationCredentials
 from typing import List, Optional
 from datetime import datetime, timezone
 import logging
 
 from models.marketplace import SavedDeal, SavedDealCreate, DealView
 from models import Deal
-from middleware import check_membership, require_broker
+from utils.auth_helpers import get_current_user_supabase, security
 from utils.db import get_supabase
 
 router = APIRouter(prefix="/marketplace", tags=["Marketplace"])
