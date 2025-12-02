@@ -43,7 +43,7 @@ async def browse_marketplace_deals(
             'id, title, address, city, state, '
             'public_asset_type, public_market, public_price, public_strategy, '
             'size, lot_size, '
-            'image_url, primary_image_url, '
+            'image_url, '
             'description, '
             'marketplace_views_count, marketplace_inquiries_count, marketplace_saves_count, '
             'published_at, latitude, longitude'
