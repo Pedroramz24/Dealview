@@ -10,7 +10,7 @@ from datetime import datetime
 import sys
 
 # Configuration
-BASE_URL = "https://map-view-repair.preview.emergentagent.com/api"
+BASE_URL = "https://real-finder-1.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {
     "email": "pedro@test.com",
     "password": "password123"

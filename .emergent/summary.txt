@@ -1,86 +1,177 @@
-<analysis>
-The trajectory details a multi-stage development process, starting with map UI enhancements and escalating to significant feature additions and complex bug fixes. The AI engineer first implemented user requests for parcel highlighting and dynamic map pin sizing. The work then pivoted to major feature development: adding a documents section and an image carousel (using Swiper.js) to the  page, and implementing Forgot Password and Change Password authentication flows.
+<analysis>**original_problem_statement:** The user's initial goal was to fix critical bugs on the map, including deal markers not rendering, a hard refresh on deal deletion, and new deals not appearing in the pipeline. After these were addressed, the focus shifted to new features.
 
-A substantial portion of the effort was dedicated to iterative refinement of a new map text-annotation tool, addressing user feedback on interactivity (typing, dragging, selection), styling, and functionality (formatting toolbar).
+The first new feature was the **AI Operations Dashboard**, which has been implemented (Phase 1).
 
-The most challenging tasks involved deep-rooted system issues. A persistent row-level security policy error on avatar uploads required creating a new backend endpoint in  to bypass client-side Supabase RLS limitations. This solution involved using the privileged  key on the server to handle file storage. Repeated file corruption issues, caused by faulty  commands and partial writes, necessitated restoring files from git and adopting more robust editing methods. The trajectory concludes with the successful implementation of a complex multi-parcel merging feature using  for geometric unions. The user's primary language is English. The next agent must respond in English.
-</analysis>
+The current and most critical request is to **significantly upgrade the owner-lookup system**. The user was dissatisfied with the initial implementation, reporting it was inaccurate (failing to find LLCs that were on the OpenCorporates website) and the UI was poor (a separate modal).
 
-<product_requirements>
-The application is a map-centric Commercial Real Estate (CRE) CRM. The development cycle focused on enhancing map interactivity, improving media management, and fixing critical bugs.
+**PRODUCT REQUIREMENTS for the Owner Lookup System:**
+1.  **High Accuracy:** The search logic must be robust, mirroring the results from a direct search on the OpenCorporates platform to ensure maximum match accuracy.
+2.  **All Entity Types:** It must correctly identify owners across all structures (LLCs, LPs, Corps, Trusts, Individuals).
+3.  **Phone Number Discovery:** It must run a secondary lookup to retrieve valid phone numbers for the identified owner/agent using the best available free and accurate sources.
+4.  **Seamless UI:** The results must appear directly inside the  as a new, inline, expandable section, not in a separate modal or window.
 
-**Implemented Features:**
+**User's preferred language**: English
 
-1.  **Map Enhancements:**
-    *   **Parcel Selection:** Selected parcels are now highlighted in red.
-    *   **Multi-Parcel Merging:** Users can Ctrl+click adjacent parcels to select and merge them into a single visual shape on the map.
-    *   **Dynamic Pin Sizing:** Deal pins on the map now scale dynamically based on the zoom level to prevent oversaturation.
-    *   **Text Annotation Tool:** A full-featured tool allows users to click on the map to add text labels. These labels are draggable, editable on double-click, and deletable.
-    *   **Measurement Tool:** The distance measurement tool now displays in feet and automatically switches to miles for distances over one mile.
+**what currently exists?**
+The application is a Commercial Real Estate (CRE) CRM with a React frontend and FastAPI backend, using Supabase for the database.
+- The initial map-related bugs have been addressed. The deals not showing bug was traced to a data issue (incorrect longitude).
+- Phase 1 of the **AI Operations Dashboard** is complete. This included creating new database tables (, , ), building new backend API endpoints (), creating a new frontend component (), and making it the default landing page.
+- The **Owner Lookup** feature has been completely rebuilt in response to user feedback. The modal-based UI was replaced with an inline, expandable section within . The backend was enhanced with a new  containing multi-strategy search logic to improve accuracy, and a caching table was added to the database.
+- A  for the  library was temporarily resolved by commenting out the import, allowing the backend to run.
 
-2.  **Property Media Management:**
-    *   **Image Carousel:** The static property image on the  page was replaced with a multi-image carousel powered by Swiper.js.
-    *   **Documents Section:** A new section was added to the  page for uploading and listing property-related documents.
+**Last working item**:
+- **Last item agent was working:** Rebuilding the Find Owner feature to meet the user's new, more demanding requirements. The agent rewrote the backend service () for more accurate OpenCorporates searching and completely overhauled the frontend component () to use an inline UI instead of a modal. A  for  was encountered and temporarily patched by commenting out the import.
+- **Status:** IN PROGRESS
+- **Agent Testing Done:** N (Only compilation and service restarts were verified).
+- **Which testing method agent to use?** Frontend testing agent
+- **User Testing Done:** N
 
-3.  **Authentication & Profile:**
-    *   **Password Management:** A Forgot Password link was added to the login page, and a Change Password feature was implemented in the Settings page.
-    *   **Avatar Upload Fix:** A critical Bucket not found and subsequent RLS policy error preventing profile picture uploads was fixed by implementing a secure backend endpoint. The file size limit was increased to 10MB.
+**All Pending/In progress Issue list**:
+-   **Issue 1: OpenCorporates search is inaccurate (P0)**
+-   **Issue 2:  in backend (P1)**
+-   **Issue 3: One deal has incorrect longitude data (P2)**
+-   **Issue 4: Supabase authentication fails in testing environment (P3)**
 
-4.  **UI/UX Polish:**
-    *   **Reduced Notifications:** Non-essential toast notifications were removed across the app to reduce clutter.
-    *   **Unified Styling:** Primary buttons were unified, and AI assistant responses were stylistically improved.
-</product_requirements>
+**Issues Detail:**
+-   **Issue 1: OpenCorporates search is inaccurate (P0)**
+    -   **Attempted fixes:** The agent completely rewrote the backend search logic in  to use a multi-strategy approach (exact, fuzzy, partial matches) to improve accuracy.
+    -   **Next debug checklist:**
+        1.  Thoroughly test the new search endpoint () with the exact LLC name the user reported as failing.
+        2.  Verify the different search strategies are being triggered correctly.
+        3.  Log the raw API response from OpenCorporates to ensure the data is coming through as expected.
+    -   **Why fix this issue and what will be achieved with the fix?** This is the user's primary complaint. Fixing it will make the core owner lookup feature reliable and useful.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Both
+    -   **Blocked on other issue:** None
 
-<key_technical_concepts>
-- **Frontend:** React, ,  (for image carousel), .
-- **Backend:** FastAPI, Supabase Python Client (using  key).
-- **Database:** Supabase (PostgreSQL), Supabase Storage.
-- **GIS/Mapping:**  for geometric union (), dynamic map layers and sources for rendering parcels and merged geometries.
-- **API Security:** Implemented a backend endpoint () to handle file uploads, bypassing client-side RLS limitations for a secure and functional solution.
-</key_technical_concepts>
+-   **Issue 2:  in backend (P1)**
+    -   **Attempted fixes:** The agent installed  via pip and confirmed the files exist in the venv. When the error persisted, the agent commented out  in  as a temporary workaround to get the server running.
+    -   **Next debug checklist:**
+        1.  Verify the  command is targeting the correct Python environment used by the Supervisor service.
+        2.  Check the  within the running FastAPI application to ensure it includes .
+        3.  Consider adding  to  and running  followed by a supervisor restart.
+    -   **Why fix this issue and what will be achieved with the fix?** This library is essential for Phase 2 of the owner lookup feature (phone number scraping). Fixing the import issue will unblock future development.
+    -   **Status:** NOT STARTED
+    -   **Is recurring issue?** N
+    -   **Should Test frontend/backend/both after fix?** Backend
+    -   **Blocked on other issue:** None
 
-<code_architecture>
-The application is a monorepo with a React frontend and a FastAPI backend. The architecture was extended to handle more complex map interactions, media uploads, and secure backend operations.
+-   **Issue 3: One deal has incorrect longitude data (P2)**
+    -   **Attempted fixes:** The previous agent identified the data error as the cause for a deal not appearing on the map. Attempts to fix it with MCP tools failed.
+    -   **Next debug checklist:**
+        1.  Provide the user with a clear SQL  statement to manually run in their Supabase dashboard to correct the longitude value. Example: 
+    -   **Why fix this issue and what will be achieved with the fix?** Fixes a known data integrity issue and ensures all deals are displayed correctly on the map.
+    -   **Status:** NOT STARTED
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Frontend
+
+-   **Issue 4: Supabase authentication fails in testing environment (P3)**
+    -   **Attempted fixes:** None. This has been a persistent environmental issue.
+    -   **Next debug checklist:**
+        1.  Examine the screenshot tool's console logs for the exact auth error.
+        2.  Confirm that the test credentials () are valid and active in the user's Supabase project.
+        3.  Check for any network policies in the container environment that might be blocking access to the Supabase URL.
+    -   **Why fix this issue and what will be achieved with the fix?** It will unblock the use of the screenshot tool, enabling faster, more effective UI verification and debugging.
+    -   **Status:** NOT STARTED
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Both
+
+**In progress Task List**:
+-   **Task 1: Complete the Find Owner feature upgrade (P0)**
+    -   **Where to resume:** The foundational backend and frontend code has been rewritten. The next step is to fix the  import issue (Issue #2), then implement the phone number lookup, and finally, conduct thorough testing of the entire flow.
+    -   **What will be achieved with this?** A robust, accurate, and user-friendly owner lookup system that is seamlessly integrated into the CRM, meeting all of the user's specified requirements.
+    -   **Status:** IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?** Both
+    -   **Blocked on something:** Issue #2 ( import error) must be resolved before starting phone number scraping.
+
+**Upcoming and Future Tasks**
+-   **Upcoming Tasks:**
+    -   **(P0) Find Owner - Phase 2: Phone Number Discovery:** Implement web scraping logic in  to find phone numbers from free sources like TruePeopleSearch, using the registered agent's name and address. This is blocked by the  import issue.
+-   **Future Tasks:**
+    -   **(P1) AI Operations Dashboard - Phase 2:** Implement Risk Detection, Execution Support (one-click actions), and Insights.
+    -   **(P2) Deal Radar System:** Develop a system to identify properties likely to sell soon by analyzing public data.
+    -   **(P3) Google Calendar Integration:** User expressed interest in this.
+    -   **(P3) Light/Dark Mode Theme:** On hold per user request.
+
+**Completed work in this session**
+-   **AI Operations Dashboard (Phase 1):**
+    -   Created Supabase schemas (, , ).
+    -   Built backend service and frontend component.
+    -   Set dashboard as the new default landing page and fixed related bugs.
+-   **Owner Lookup Feature (Rebuild):**
+    -   Rewrote backend service () with multi-strategy search logic for better accuracy.
+    -   Rebuilt the frontend () to use an inline UI, removing the previous modal.
+    -   Added a caching table () to the database.
+-   **Application Documentation:**
+    -   Provided a comprehensive application overview detailing the tech stack, UI/UX design, architecture, and data models.
+
+**Code Architecture**
 
 
+**Key Technical Concepts**
+-   **Frontend:** React, , Supabase-js, Fetch API.
+-   **Backend:** FastAPI, Supabase-py,  for external APIs,  for web scraping.
+-   **Database:** Supabase (PostgreSQL) with Row Level Security (RLS).
+-   **Development Concepts:**
+    -   **Database Migrations:** Using  files to manage schema changes.
+    -   **API Caching:** Using a dedicated database table () to store results from the OpenCorporates API, reducing costs and latency.
+    -   **Multi-Strategy Search:** Combining exact, fuzzy, and partial search logic in the backend to improve the accuracy of the external OpenCorporates API.
+    -   **UI Refactoring:** Replacing a modal-based workflow with an inline, expandable UI section for a better user experience.
 
-- ****
-    - **Importance:** The core of the application's user interface, managing all map state and interactions.
-    - **Changes:** This file was extensively modified. State management was updated to handle arrays of selected parcel IDs (, ) and to store merged parcel geometry (). The main map click handler was updated to detect  for multi-selection. It now uses  to perform the union operation on parcel geometries. A new  and  were added to display the merged geometry. It also integrates the new  and  components.
+**key DB schema**
+-   **calendar_events:** 
+-   **deal_milestones:** 
+-   **ai_priority_queue:** 
+-   **llc_lookup_cache:** 
 
-- ****
-    - **Importance:** The FastAPI backend server.
-    - **Changes:** A new endpoint, , was created to solve a critical RLS policy issue. This endpoint receives a file from the authenticated user, then uses the privileged  Supabase client to upload the file to a designated 'avatars' path in Supabase Storage, bypassing the stricter client-side security policies.
+**All files of reference**
+-   : Contains the rewritten, multi-strategy search logic for the owner lookup feature. The  import is currently commented out.
+-   : Has been significantly refactored to remove the modal and implement the new inline, expandable owner lookup UI.
+-   : Contains all API endpoints for the AI Operations Dashboard.
+-   : The frontend component for the AI Operations Dashboard, which is the new default page.
+-   : The SQL script that creates the database table for caching OpenCorporates API lookups.
 
-- ****
-    - **Importance:** User profile and application settings page.
-    - **Changes:** The avatar upload logic () was completely rewritten to use the new  backend endpoint instead of uploading directly to Supabase from the client. The file size limit check was updated to 10MB, and the corresponding helper text was changed. Non-essential coming soon toasts were removed, and the associated buttons were disabled for a cleaner UX.
+**Critical Info for New Agent**
+-   Your highest priority is to perfect the **Owner Lookup** feature. Start by fixing the  import issue (Issue #2), which is blocking the implementation of phone number scraping.
+-   The user is highly attentive to accuracy. You must thoroughly test the new multi-strategy search in  to ensure it resolves the user's complaint about finding LLCs.
+-   The Supabase  tools have been unreliable. When database changes are needed, prefer creating a  migration file for the user to run manually, as this has been a successful workaround.
+-   The user was provided with an extensive document, , detailing the entire application. Refer to this if you have questions about architecture, design, or data flow.
 
-- ****
-    - **Importance:** A new component to render and manage user-created text labels on the map.
-    - **Changes:** This component was created and then heavily refactored to meet user requirements. The final version uses a   that is . It contains a controlled  field for text editing, which is toggled by a double-click. It handles its own state for editing and selection and includes logic to show a delete button on hover.
+**Last 10 User Messages and any pending user messages**
+1.  **User:** Asks for a major upgrade to the Find Owner feature: inline UI, phone number lookup, and improved accuracy for all entity types. (Status: **In Progress**)
+2.  **User:** Asks if OpenCorporates has a free tier. (Status: **Completed**)
+3.  **User:** Provides OpenCorporates API documentation and asks for a recommendation. (Status: **Completed**)
+4.  **User:** Misunderstands the plan, thinking a state-specific scraper is primary. (Status: **Completed**)
+5.  **User:** Approves the clarified plan to use OpenCorporates as the primary source. (Status: **In Progress**)
+6.  **User:** Repeats the detailed requirements for the Find Owner feature. (Status: **In Progress**)
+7.  **User:** Requests a complete overview of the application's tech stack and UI. (Status: **Completed**)
 
-- ****
-    - **Importance:** A database migration intended to fix the avatar upload RLS issue.
-    - **Changes:** This file was created to add a new RLS policy allowing users to upload to an  path. While this approach was correct in principle, it was ultimately superseded by the more robust backend endpoint solution, which offered greater control and security.
-</code_architecture>
+**Project Health Check:**
+-   **Broken:**
+    -   The Python environment has a  for , preventing its use.
+-   **Mocked:**
+    -   Phone number lookup is not yet implemented; the function in the backend is a placeholder.
+    -   Automated testing via the screenshot tool is hindered by a persistent Supabase authentication issue.
 
-<pending_tasks>
-- A general backlog of 42 pending bugs was mentioned at the start of the trajectory but was not addressed.
-- Initial project goals like the Dashboard News Feed and additional data layer integrations remain outstanding.
-</pending_tasks>
+**3rd Party Integrations**:
+-   Supabase (Database, Auth, Storage)
+-   OpenCorporates (LLC/Entity data lookup)
+-   Esri ArcGIS (Satellite map imagery)
+-   CARTO (Map labels)
+-   Regrid (Property API)
+-   Perplexity AI (AI Chat)
+-   SendGrid (Email)
 
-<current_work>
-The most recent and final task completed was the implementation of the **multi-parcel boundary merging feature**. This allows users to select multiple adjacent parcels on the map and see them visually combined into a single shape.
+**Testing status**
+-   **Testing agent used after significant changes:** YES (but not since the latest owner-lookup rebuild).
+-   **Troubleshoot agent used after agent stuck in loop:** NO
+-   **Test files created:** None
+-   **Known regressions:** The owner lookup inaccuracy was reported by the user and is being treated as a high-priority bug.
 
-The implementation involved the following key steps in :
-1.  **State Management Update:** The state variables for tracking selected parcels (, ) were converted into arrays (, ) to hold multiple IDs. A new state, , was added to store the combined GeoJSON object.
-2.  **Multi-Select Logic:** The primary map click handlers were updated to check for . If Ctrl is held, the clicked parcel's ID is added to or removed from the selection array.
-3.  **Geometric Merging:** The  library was imported and its  function is now used. Each time a parcel is added to the selection, its geometry is merged with the existing , creating a new, unified shape.
-4.  **Rendering the Merged Layer:** A new  and  were added within the  component. The  data is bound to the  state, and the  renders it with a distinct fill and outline, visually representing the merged area.
-5.  **Highlighting Individual Parcels:** The  and  paint properties for the original parcel layers were updated to use a  expression. This ensures all parcels in the selection array are highlighted simultaneously, even as they are part of the larger merged shape.
-</current_work>
+**Credentials to test flow:**
+-   The user provided credentials for testing:  / 
 
-<optional_next_step>
-Confirm the successful implementation of the parcel merging feature and ask the user for the next set of tasks or feedback.
-</optional_next_step>
+**What agent forgot to execute**
+-   The agent has not yet implemented the Phone Number Discovery part of the user's request, as it was blocked by the  import issue.
+-   The persistent Supabase authentication issue in the testing environment has been deferred multiple times. Fixing it would improve the agent's ability to test.</analysis>
