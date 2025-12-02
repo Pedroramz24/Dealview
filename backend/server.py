@@ -28,25 +28,6 @@ import time
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Import models from new structure
-from models import (
-    User, UserCreate, UserLogin, Token,
-    Deal, DealCreate, DealUpdate,
-    Contact, ContactCreate,
-    TeamInvite, TeamCreate, TeamUpdate, InviteCreate, JoinTeam, UpdateMemberRole,
-    StageUpdate,
-    ChatMessage, ChatRequest, Citation, ChatResponse,
-    EmailSettingsCreate, EmailSettingsResponse, TestEmailConnection, SendTransactionalEmail,
-    CreateCampaign, SendCampaign, ScheduleCampaign, BatchScheduleCampaign
-)
-
-# Import utilities
-from utils.db import get_db, get_supabase
-from utils.auth_helpers import (
-    verify_password, get_password_hash, create_access_token,
-    get_current_user, get_current_user_supabase, security
-)
-
 # Now safe to import services that use environment variables
 from sendgrid_service import sendgrid_service
 from campaign_scheduler import get_scheduler
@@ -54,9 +35,23 @@ from radar_service import radar_service
 from dashboard_service import dashboard_router
 from llc_service import llc_router
 
-# Database connections (using new utility functions)
-db = get_db()
-supabase = get_supabase()
+# MongoDB connection
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
+
+# Supabase connection
+supabase_url = os.environ['SUPABASE_URL']
+supabase_key = os.environ['SUPABASE_SERVICE_KEY']
+supabase: Client = create_client(supabase_url, supabase_key)
+
+# JWT & Password
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+JWT_SECRET = os.environ['JWT_SECRET']
+JWT_ALGORITHM = os.environ['JWT_ALGORITHM']
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 43200))
+
+security = HTTPBearer()
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -70,13 +65,8 @@ news_cache = {
 }
 
 
-# Logging
-logger = logging.getLogger(__name__)
-
-# ===== ROUTES START HERE =====
-# (All models and helper functions have been moved to /models and /utils)
-
-# Auth endpoints
+# Models
+class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
