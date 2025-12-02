@@ -103,11 +103,6 @@ const MarketplacePage = () => {
     return `$${(price / 1000000).toFixed(2)}M`;
   };
 
-  const formatPrice = (price) => {
-    if (!price) return 'Price on request';
-    return `$${(price / 1000000).toFixed(2)}M`;
-  };
-
   return (
     <div style={{ 
       display: 'flex', 
