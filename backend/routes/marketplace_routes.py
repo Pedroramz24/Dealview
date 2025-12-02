@@ -172,7 +172,7 @@ async def save_deal(
 @router.delete("/deals/{deal_id}/save")
 async def unsave_deal(
     deal_id: str,
-    user = Depends(check_membership)
+    user = Depends(get_current_user_supabase)
 ):
     """Remove a deal from saved/bookmarked deals."""
     supabase = get_supabase()
