@@ -521,7 +521,7 @@ const DealDetails = () => {
           {/* Back Button & Edit Toggle */}
           <div className="flex items-center justify-between w-full mb-4">
             <Button
-              onClick={() => navigate('/deals')}
+              onClick={() => navigate('/workspace/deals')}
               variant="ghost"
               style={{
                 background: 'rgba(255,255,255,0.08)',
