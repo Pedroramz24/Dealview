@@ -319,7 +319,7 @@ async def unpublish_deal_from_marketplace(
 @router.get("/{deal_id}/marketplace-stats")
 async def get_deal_marketplace_performance(
     deal_id: str,
-    user = Depends(require_broker)
+    user = Depends(get_current_user_supabase)
 ):
     """
     Get Marketplace performance stats for a deal.
