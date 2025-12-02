@@ -2470,9 +2470,15 @@ async def delete_pipeline_stage(
 # ============================================================================
 
 
+# Register extracted route modules (auth, deals, dashboard stats/news)
+api_router.include_router(auth_router)
+api_router.include_router(deal_router)
+api_router.include_router(dashboard_routes_router)
+
+# Register main API router and service routers
 app.include_router(api_router)
-app.include_router(dashboard_router)
-app.include_router(llc_router)
+app.include_router(dashboard_router)  # AI Dashboard service
+app.include_router(llc_router)  # LLC lookup service
 
 app.add_middleware(
     CORSMiddleware,
