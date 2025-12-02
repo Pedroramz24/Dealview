@@ -230,9 +230,6 @@ async def publish_deal_to_marketplace(
     Only brokers can publish deals.
     Requires admin approval before going live.
     """
-    from middleware import require_broker
-    from utils.db import get_supabase
-    
     supabase = get_supabase()
     
     try:
