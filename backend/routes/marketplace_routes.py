@@ -242,7 +242,7 @@ async def get_available_markets(user = Depends(get_current_user_supabase)):
 
 
 @router.get("/filters")
-async def get_marketplace_filters(user = Depends(check_membership)):
+async def get_marketplace_filters(user = Depends(get_current_user_supabase)):
     """
     Get available filter options (markets, asset types, strategies).
     Returns user's buy_box_preferences as defaults.
