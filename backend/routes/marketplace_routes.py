@@ -42,7 +42,7 @@ async def browse_marketplace_deals(
         query = supabase.table('deals').select(
             'id, title, address, city, state, '
             'public_asset_type, public_market, public_price, public_strategy, '
-            'size, building_size, lot_size, '
+            'size, lot_size, '
             'image_url, primary_image_url, '
             'description, '
             'marketplace_views_count, marketplace_inquiries_count, marketplace_saves_count, '
