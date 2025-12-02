@@ -194,7 +194,7 @@ async def unsave_deal(
 
 @router.get("/saved-deals")
 async def get_saved_deals(
-    user = Depends(check_membership)
+    user = Depends(get_current_user_supabase)
 ):
     """Get user's saved/bookmarked deals."""
     supabase = get_supabase()
