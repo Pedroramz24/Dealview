@@ -78,6 +78,9 @@ const DealDetails = () => {
   const [emailRecipient, setEmailRecipient] = useState(null);
   const [token, setToken] = useState(null);
   
+  // Publishing state
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  
   // Get Supabase session token
   useEffect(() => {
     const getToken = async () => {
