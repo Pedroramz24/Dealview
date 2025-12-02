@@ -55,22 +55,28 @@ const MainLayout = () => {
         position: 'relative',
         zIndex: 100
       }}>
-        {/* DealView Icon Logo */}
+        {/* DealLinked Logo */}
         <div style={{ 
           marginBottom: '40px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <img 
-            src="/dealview-icon.svg" 
-            alt="DealView" 
-            style={{ 
-              width: '48px', 
-              height: '48px',
-              filter: 'drop-shadow(0 0 8px rgba(0, 184, 212, 0.3))'
-            }} 
-          />
+          <div style={{ 
+            width: '48px', 
+            height: '48px',
+            background: 'linear-gradient(135deg, #00b8d4 0%, #0088a3 100%)',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '20px',
+            fontWeight: '700',
+            color: '#fff',
+            filter: 'drop-shadow(0 0 8px rgba(0, 184, 212, 0.3))'
+          }}>
+            DL
+          </div>
         </div>
 
         {/* Navigation Icons */}
