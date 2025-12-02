@@ -282,9 +282,6 @@ async def unpublish_deal_from_marketplace(
     Remove a deal from the Marketplace.
     Only the broker who published it can unpublish.
     """
-    from middleware import require_broker
-    from utils.db import get_supabase
-    
     supabase = get_supabase()
     
     try:
