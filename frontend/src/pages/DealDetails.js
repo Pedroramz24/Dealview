@@ -510,7 +510,7 @@ const DealDetails = () => {
   if (!deal) return null;
 
   return (
-    <div style={{ background: '#000000', minHeight: '100vh' }}>
+    <div style={{ background: '#000000', minHeight: '100vh', overflow: 'auto', height: '100%' }}>
       {/* Full-Width Header */}
       <div style={{
         background: 'rgba(255,255,255,0.03)',
