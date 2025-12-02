@@ -1,0 +1,28 @@
+"""Data models for DealLinked CRM."""
+from .user import User, UserCreate, UserLogin
+from .deal import Deal, DealCreate, DealUpdate
+from .contact import Contact, ContactCreate
+from .team import TeamInvite, TeamCreate, TeamUpdate, InviteCreate, JoinTeam, UpdateMemberRole
+from .common import Token, StageUpdate
+from .chat import ChatMessage, ChatRequest, Citation, ChatResponse
+from .email import EmailSettingsCreate, EmailSettingsResponse, TestEmailConnection, SendTransactionalEmail
+from .campaign import CreateCampaign, SendCampaign, ScheduleCampaign, BatchScheduleCampaign
+
+__all__ = [
+    # User models
+    "User", "UserCreate", "UserLogin",
+    # Deal models
+    "Deal", "DealCreate", "DealUpdate",
+    # Contact models
+    "Contact", "ContactCreate",
+    # Team models
+    "TeamInvite", "TeamCreate", "TeamUpdate", "InviteCreate", "JoinTeam", "UpdateMemberRole",
+    # Common models
+    "Token", "StageUpdate",
+    # Chat models
+    "ChatMessage", "ChatRequest", "Citation", "ChatResponse",
+    # Email models
+    "EmailSettingsCreate", "EmailSettingsResponse", "TestEmailConnection", "SendTransactionalEmail",
+    # Campaign models
+    "CreateCampaign", "SendCampaign", "ScheduleCampaign", "BatchScheduleCampaign",
+]
