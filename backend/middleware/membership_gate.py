@@ -7,9 +7,6 @@ from fastapi.security import HTTPAuthorizationCredentials
 from typing import Optional
 import logging
 
-from utils.auth_helpers import get_current_user_supabase, security
-from utils.db import get_supabase
-
 logger = logging.getLogger(__name__)
 
 
@@ -26,6 +23,10 @@ async def check_membership(credentials: HTTPAuthorizationCredentials = Depends(s
     Raises:
         HTTPException 403 if membership is not active
     """
+    # Import here to avoid circular dependency and env var issues
+    from utils.auth_helpers import get_current_user_supabase, security
+    from utils.db import get_supabase
+    
     # First verify authentication
     user = await get_current_user_supabase(credentials)
     
@@ -81,6 +82,7 @@ async def require_role(allowed_roles: list[str], credentials: HTTPAuthorizationC
     Raises:
         HTTPException 403 if user doesn't have required role
     """
+    from utils.auth_helpers import security
     user = await check_membership(credentials)
     
     if user.user_role not in allowed_roles:
@@ -97,6 +99,7 @@ async def require_broker(credentials: HTTPAuthorizationCredentials = Depends(sec
     Shorthand for requiring broker role.
     Use this for deal publishing endpoints.
     """
+    from utils.auth_helpers import security
     return await require_role(['broker', 'admin'], credentials)
 
 
@@ -105,6 +108,7 @@ async def check_onboarding(credentials: HTTPAuthorizationCredentials = Depends(s
     Verify user has completed onboarding.
     Redirect to onboarding if not completed.
     """
+    from utils.auth_helpers import security
     user = await check_membership(credentials)
     
     if not user.onboarding_completed:
