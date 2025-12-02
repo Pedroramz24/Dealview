@@ -223,7 +223,7 @@ async def move_deal(
 async def publish_deal_to_marketplace(
     deal_id: str,
     publish_data: dict,
-    user = Depends(require_broker)
+    user = Depends(get_current_user_supabase)
 ):
     """
     Publish a deal to the Marketplace.
