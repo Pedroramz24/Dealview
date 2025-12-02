@@ -325,9 +325,6 @@ async def get_deal_marketplace_performance(
     Get Marketplace performance stats for a deal.
     Only available to the broker who published it.
     """
-    from middleware import require_broker
-    from utils.db import get_supabase
-    
     supabase = get_supabase()
     
     try:
