@@ -84,6 +84,7 @@ const MarketplacePage = () => {
   };
 
   const handleDealClick = (dealId) => {
+    console.log('Navigating to deal:', dealId);
     navigate(`/marketplace/deals/${dealId}`);
   };
 
