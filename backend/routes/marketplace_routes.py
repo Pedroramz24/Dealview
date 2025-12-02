@@ -218,7 +218,7 @@ async def get_saved_deals(
 
 
 @router.get("/markets")
-async def get_available_markets(user = Depends(check_membership)):
+async def get_available_markets(user = Depends(get_current_user_supabase)):
     """Get list of markets with available published deals."""
     supabase = get_supabase()
     
