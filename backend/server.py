@@ -70,8 +70,13 @@ news_cache = {
 }
 
 
-# Models
-class User(BaseModel):
+# Logging
+logger = logging.getLogger(__name__)
+
+# ===== ROUTES START HERE =====
+# (All models and helper functions have been moved to /models and /utils)
+
+# Auth endpoints
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
