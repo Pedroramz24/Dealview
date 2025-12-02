@@ -14,13 +14,14 @@ const MainLayout = () => {
   };
 
   const navItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/map', label: 'Map', icon: Map },
-    { path: '/deals', label: 'Deals', icon: Trello },
-    { path: '/contacts', label: 'Contacts', icon: Users },
-    { path: '/campaigns', label: 'Campaigns', icon: Mail },
-    { path: '/calendar', label: 'Calendar', icon: Calendar },
-    { path: '/team', label: 'Team', icon: UsersRound },
+    { path: '/marketplace', label: 'Marketplace', icon: Map },
+    { path: '/workspace/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/workspace/map', label: 'Map', icon: Map },
+    { path: '/workspace/deals', label: 'Deals', icon: Trello },
+    { path: '/workspace/contacts', label: 'Contacts', icon: Users },
+    { path: '/workspace/campaigns', label: 'Campaigns', icon: Mail },
+    { path: '/workspace/calendar', label: 'Calendar', icon: Calendar },
+    { path: '/workspace/team', label: 'Team', icon: UsersRound },
   ];
 
   const isActive = (path, exact = false) => {
