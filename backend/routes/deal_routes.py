@@ -215,13 +215,179 @@ async def move_deal(
 
 
 # ============================================================
-# MARKETPLACE PUBLISHING ENDPOINTS (TO BE ADDED IN PHASE 2)
+# MARKETPLACE PUBLISHING ENDPOINTS
 # ============================================================
-# @router.post("/{deal_id}/publish")
-# async def publish_deal_to_marketplace(...)
-# 
-# @router.post("/{deal_id}/unpublish")
-# async def unpublish_deal_from_marketplace(...)
-#
-# @router.get("/{deal_id}/marketplace-stats")
-# async def get_deal_marketplace_performance(...)
+
+@router.post("/{deal_id}/publish")
+async def publish_deal_to_marketplace(
+    deal_id: str,
+    publish_data: dict,
+    user = Depends(require_broker)
+):
+    """
+    Publish a deal to the Marketplace.
+    Only brokers can publish deals.
+    Requires admin approval before going live.
+    """
+    from middleware import require_broker
+    from utils.db import get_supabase
+    
+    supabase = get_supabase()
+    
+    try:
+        # Verify user owns this deal
+        deal = supabase.table('deals').select('id, owner_id').eq('id', deal_id).single().execute()
+        
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        if deal.data['owner_id'] != str(user.id):
+            raise HTTPException(status_code=403, detail="You can only publish your own deals")
+        
+        # Update deal with publishing info
+        update_data = {
+            'is_published': True,
+            'public_status': 'pending_approval',
+            'public_asset_type': publish_data.get('public_asset_type'),
+            'public_market': publish_data.get('public_market'),
+            'public_price': publish_data.get('public_price'),
+            'public_strategy': publish_data.get('public_strategy', 'Core'),
+            'published_by': str(user.id),
+            'published_at': datetime.now(timezone.utc).isoformat(),
+            'approval_status': 'pending'
+        }
+        
+        result = supabase.table('deals').update(update_data).eq('id', deal_id).execute()
+        
+        return {
+            "success": True,
+            "message": "Deal submitted for approval",
+            "deal": result.data[0]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error publishing deal: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to publish deal"
+        )
+
+
+@router.post("/{deal_id}/unpublish")
+async def unpublish_deal_from_marketplace(
+    deal_id: str,
+    user = Depends(require_broker)
+):
+    """
+    Remove a deal from the Marketplace.
+    Only the broker who published it can unpublish.
+    """
+    from middleware import require_broker
+    from utils.db import get_supabase
+    
+    supabase = get_supabase()
+    
+    try:
+        # Verify ownership
+        deal = supabase.table('deals').select('id, owner_id, published_by').eq('id', deal_id).single().execute()
+        
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        if deal.data['owner_id'] != str(user.id):
+            raise HTTPException(status_code=403, detail="You can only unpublish your own deals")
+        
+        # Unpublish
+        result = supabase.table('deals').update({
+            'is_published': False,
+            'public_status': 'archived'
+        }).eq('id', deal_id).execute()
+        
+        return {
+            "success": True,
+            "message": "Deal removed from Marketplace",
+            "deal": result.data[0]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error unpublishing deal: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to unpublish deal"
+        )
+
+
+@router.get("/{deal_id}/marketplace-stats")
+async def get_deal_marketplace_performance(
+    deal_id: str,
+    user = Depends(require_broker)
+):
+    """
+    Get Marketplace performance stats for a deal.
+    Only available to the broker who published it.
+    """
+    from middleware import require_broker
+    from utils.db import get_supabase
+    
+    supabase = get_supabase()
+    
+    try:
+        # Verify ownership
+        deal = supabase.table('deals').select(
+            'id, owner_id, is_published, '
+            'marketplace_views_count, marketplace_inquiries_count, marketplace_saves_count, '
+            'published_at, public_status, approval_status'
+        ).eq('id', deal_id).single().execute()
+        
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        if deal.data['owner_id'] != str(user.id):
+            raise HTTPException(status_code=403, detail="You can only view stats for your own deals")
+        
+        # Get recent views (last 30 days)
+        from datetime import timedelta
+        thirty_days_ago = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+        
+        recent_views = supabase.table('marketplace_deal_views').select('id').eq(
+            'deal_id', deal_id
+        ).gte('viewed_at', thirty_days_ago).execute()
+        
+        # Get inquiries
+        inquiries = supabase.table('marketplace_inquiries').select(
+            'id, message, status, created_at, inquirer_id'
+        ).eq('deal_id', deal_id).order('created_at', desc=True).execute()
+        
+        # Get offers
+        offers = supabase.table('marketplace_offers').select(
+            'id, offer_amount, status, created_at, buyer_id'
+        ).eq('deal_id', deal_id).order('created_at', desc=True).execute()
+        
+        return {
+            "deal_id": deal_id,
+            "is_published": deal.data['is_published'],
+            "public_status": deal.data['public_status'],
+            "approval_status": deal.data['approval_status'],
+            "published_at": deal.data.get('published_at'),
+            "stats": {
+                "total_views": deal.data['marketplace_views_count'],
+                "recent_views_30d": len(recent_views.data),
+                "total_inquiries": deal.data['marketplace_inquiries_count'],
+                "total_saves": deal.data['marketplace_saves_count']
+            },
+            "recent_inquiries": inquiries.data[:5],  # Last 5
+            "recent_offers": offers.data[:5]  # Last 5
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching marketplace stats: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch marketplace stats"
+        )
