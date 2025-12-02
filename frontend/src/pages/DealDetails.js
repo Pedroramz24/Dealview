@@ -2149,6 +2149,19 @@ const DealDetails = () => {
           </div>
         </div>
       )}
+
+      {/* Publish to Marketplace Modal */}
+      {showPublishModal && (
+        <PublishDealModal
+          dealId={dealId}
+          deal={deal}
+          onClose={() => setShowPublishModal(false)}
+          onPublished={(publishedDeal) => {
+            setDeal(publishedDeal);
+            fetchDeal();
+          }}
+        />
+      )}
     </div>
   );
 };
