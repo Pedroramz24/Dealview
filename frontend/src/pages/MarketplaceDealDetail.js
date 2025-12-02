@@ -163,12 +163,12 @@ const MarketplaceDealDetail = () => {
                 background: saved ? 'rgba(0, 212, 170, 0.15)' : 'rgba(255,255,255,0.05)',
                 border: saved ? '1px solid rgba(0, 212, 170, 0.3)' : '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '10px',
-                color: saved ? '#00d4aa' : '#fff',
+                color: saved ? '#00b8d4' : '#fff',
                 cursor: 'pointer',
                 fontSize: '14px'
               }}
             >
-              <Heart size={18} fill={saved ? '#00d4aa' : 'none'} />
+              <Heart size={18} fill={saved ? '#00b8d4' : 'none'} />
               {saved ? 'Saved' : 'Save Deal'}
             </button>
 
@@ -255,7 +255,7 @@ const MarketplaceDealDetail = () => {
                   borderRadius: '10px',
                   padding: '8px 16px',
                   fontSize: '14px',
-                  color: '#00d4aa',
+                  color: '#00b8d4',
                   fontWeight: '600'
                 }}>
                   {deal.public_asset_type || deal.asset_type}
@@ -263,7 +263,7 @@ const MarketplaceDealDetail = () => {
               </div>
 
               <div style={{ 
-                color: '#00d4aa', 
+                color: '#00b8d4', 
                 fontSize: '36px',
                 fontWeight: '700',
                 marginBottom: '24px'
@@ -339,7 +339,7 @@ const MarketplaceDealDetail = () => {
                 style={{
                   width: '100%',
                   padding: '14px',
-                  background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                  background: 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
                   border: 'none',
                   borderRadius: '12px',
                   color: '#000',

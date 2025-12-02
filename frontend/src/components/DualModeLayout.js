@@ -73,14 +73,14 @@ const DualModeLayout = () => {
           paddingLeft: workspaceExpanded ? '20px' : '0'
         }}>
           {workspaceExpanded ? (
-            <div style={{ color: '#00d4aa', fontSize: '24px', fontWeight: '700' }}>
+            <div style={{ color: '#00b8d4', fontSize: '24px', fontWeight: '700' }}>
               DealLinked
             </div>
           ) : (
             <div style={{ 
               width: '48px', 
               height: '48px',
-              background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+              background: 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
@@ -113,7 +113,7 @@ const DualModeLayout = () => {
               gap: '12px',
               padding: workspaceExpanded ? '12px 16px' : '12px',
               borderRadius: '12px',
-              color: isMarketplaceMode ? '#00d4aa' : 'rgba(255,255,255,0.6)',
+              color: isMarketplaceMode ? '#00b8d4' : 'rgba(255,255,255,0.6)',
               background: isMarketplaceMode ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
               border: isMarketplaceMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
               textDecoration: 'none',
@@ -149,7 +149,7 @@ const DualModeLayout = () => {
                 gap: '12px',
                 padding: workspaceExpanded ? '12px 16px' : '12px',
                 borderRadius: '12px',
-                color: isWorkspaceMode ? '#00d4aa' : 'rgba(255,255,255,0.6)',
+                color: isWorkspaceMode ? '#00b8d4' : 'rgba(255,255,255,0.6)',
                 background: isWorkspaceMode ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
                 border: isWorkspaceMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
                 textDecoration: 'none',
@@ -195,7 +195,7 @@ const DualModeLayout = () => {
                         gap: '12px',
                         padding: '10px 12px',
                         borderRadius: '8px',
-                        color: active ? '#00d4aa' : 'rgba(255,255,255,0.5)',
+                        color: active ? '#00b8d4' : 'rgba(255,255,255,0.5)',
                         background: active ? 'rgba(0, 184, 212, 0.1)' : 'transparent',
                         textDecoration: 'none',
                         fontSize: '14px',
@@ -222,7 +222,7 @@ const DualModeLayout = () => {
               gap: '12px',
               padding: workspaceExpanded ? '12px 16px' : '12px',
               borderRadius: '12px',
-              color: isActive('/settings') ? '#00d4aa' : 'rgba(255,255,255,0.6)',
+              color: isActive('/settings') ? '#00b8d4' : 'rgba(255,255,255,0.6)',
               background: isActive('/settings') ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
               border: isActive('/settings') ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
               textDecoration: 'none',

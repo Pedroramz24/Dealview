@@ -151,7 +151,7 @@ const MarketplacePage = () => {
                   onClick={() => handleDealClick(deal.id)}
                 >
                   <div style={{
-                    background: '#00d4aa',
+                    background: '#00b8d4',
                     borderRadius: '50%',
                     width: '24px',
                     height: '24px',
@@ -223,7 +223,7 @@ const MarketplacePage = () => {
                 background: showMap ? 'rgba(0, 212, 170, 0.15)' : 'rgba(255,255,255,0.05)',
                 border: showMap ? '1px solid rgba(0, 212, 170, 0.3)' : '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '12px',
-                color: showMap ? '#00d4aa' : 'rgba(255,255,255,0.6)',
+                color: showMap ? '#00b8d4' : 'rgba(255,255,255,0.6)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -261,7 +261,7 @@ const MarketplacePage = () => {
                   background: filters.market === market ? 'rgba(0, 212, 170, 0.15)' : 'rgba(255,255,255,0.05)',
                   border: filters.market === market ? '1px solid rgba(0, 212, 170, 0.3)' : '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '20px',
-                  color: filters.market === market ? '#00d4aa' : 'rgba(255,255,255,0.6)',
+                  color: filters.market === market ? '#00b8d4' : 'rgba(255,255,255,0.6)',
                   fontSize: '13px',
                   cursor: 'pointer'
                 }}
@@ -389,7 +389,7 @@ const MarketplacePage = () => {
                         borderRadius: '6px',
                         padding: '4px 8px',
                         fontSize: '11px',
-                        color: '#00d4aa',
+                        color: '#00b8d4',
                         fontWeight: '600'
                       }}>
                         {deal.public_asset_type || deal.asset_type}
@@ -402,7 +402,7 @@ const MarketplacePage = () => {
                       alignItems: 'center'
                     }}>
                       <span style={{ 
-                        color: '#00d4aa', 
+                        color: '#00b8d4', 
                         fontSize: '18px',
                         fontWeight: '700'
                       }}>
