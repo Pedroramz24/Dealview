@@ -1,0 +1,10 @@
+{
+  "auth_routes": [
+    {
+      "path": "/auth/register",
+      "group": "auth",
+      "line": 76,
+      "body_lines": 2964
+    }
+  ]
+}
