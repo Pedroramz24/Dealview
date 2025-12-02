@@ -412,31 +412,49 @@ const MarketplaceDealDetail = () => {
                 Message Broker
               </button>
 
-              {/* Stats */}
+              {/* Broker Contact Info - Placeholder for now */}
               <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ marginBottom: '16px' }}>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Views</div>
-                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>{deal.marketplace_views_count || 0}</div>
+                {/* Broker Avatar */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                  <div style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: 'rgba(0, 184, 212, 0.2)',
+                    border: '2px solid rgba(0, 184, 212, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '32px',
+                    fontWeight: '600',
+                    color: '#00b8d4'
+                  }}>
+                    BR
+                  </div>
                 </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Inquiries</div>
-                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>{deal.marketplace_inquiries_count || 0}</div>
-                </div>
-                <div>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Saves</div>
-                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>{deal.marketplace_saves_count || 0}</div>
-                </div>
-              </div>
 
-              {/* Market Info */}
-              <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                {/* Broker Name */}
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600', marginBottom: '4px' }}>
+                    Broker Name
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>
+                    Company Name
+                  </div>
+                </div>
+
+                {/* Contact Details */}
                 <div style={{ marginBottom: '12px' }}>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Market</div>
-                  <div style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: '500' }}>{deal.public_market || deal.city || 'N/A'}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Email</div>
+                  <div style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '500' }}>
+                    broker@company.com
+                  </div>
                 </div>
                 <div>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Strategy</div>
-                  <div style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: '500' }}>{deal.public_strategy || 'N/A'}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Phone</div>
+                  <div style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '500' }}>
+                    (210) 555-0123
+                  </div>
                 </div>
               </div>
             </div>
