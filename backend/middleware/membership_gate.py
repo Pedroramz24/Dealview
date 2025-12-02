@@ -72,12 +72,15 @@ async def check_membership(credentials: HTTPAuthorizationCredentials):
         )
 
 
-async def require_role(allowed_roles: list[str], credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def require_role(allowed_roles: list[str], credentials: HTTPAuthorizationCredentials):
     """
     Verify user has active membership AND one of the required roles.
     
     Args:
         allowed_roles: List of allowed roles (e.g., ['broker', 'admin'])
+        
+    Usage:
+        user = Depends(lambda creds: require_role(['broker'], creds))
         
     Returns:
         User object with membership and role info
@@ -85,7 +88,6 @@ async def require_role(allowed_roles: list[str], credentials: HTTPAuthorizationC
     Raises:
         HTTPException 403 if user doesn't have required role
     """
-    from utils.auth_helpers import security
     user = await check_membership(credentials)
     
     if user.user_role not in allowed_roles:
