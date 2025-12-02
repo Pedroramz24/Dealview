@@ -10,12 +10,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-async def check_membership(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def check_membership(credentials: HTTPAuthorizationCredentials):
     """
     Verify user has active membership.
     
     This dependency should be used on all Marketplace and Workspace routes
     that require paid membership access.
+    
+    Usage:
+        user = Depends(check_membership)
     
     Returns:
         User object with membership info
@@ -24,7 +27,7 @@ async def check_membership(credentials: HTTPAuthorizationCredentials = Depends(s
         HTTPException 403 if membership is not active
     """
     # Import here to avoid circular dependency and env var issues
-    from utils.auth_helpers import get_current_user_supabase, security
+    from utils.auth_helpers import get_current_user_supabase
     from utils.db import get_supabase
     
     # First verify authentication
