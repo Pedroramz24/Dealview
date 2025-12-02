@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Share2, MessageCircle, ExternalLink, Home, MapPin, DollarSign } from 'lucide-react';
+import { ArrowLeft, Heart, Share2, MessageCircle, ExternalLink, Home, MapPin, DollarSign, FileText, Calendar, Building2 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { API } from '../App';
 import { toast } from 'sonner';
@@ -146,62 +146,15 @@ const MarketplaceDealDetail = () => {
           </button>
 
           <div style={{ display: 'flex', gap: '12px' }}>
-            <button
-              onClick={handleSaveDeal}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                background: saved ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                border: saved ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                color: saved ? '#00b8d4' : '#fff',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
+            <button onClick={handleSaveDeal} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: saved ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)', border: saved ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: saved ? '#00b8d4' : '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
               <Heart size={18} fill={saved ? '#00b8d4' : 'none'} />
               {saved ? 'Saved' : 'Save Deal'}
             </button>
-
-            <button
-              onClick={handleShare}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                color: '#fff',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
+            <button onClick={handleShare} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
               <Share2 size={18} />
               Share
             </button>
-
-            <button
-              onClick={handleOpenInWorkspace}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                color: '#fff',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
+            <button onClick={handleOpenInWorkspace} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
               <ExternalLink size={18} />
               Open in Workspace
             </button>
@@ -210,36 +163,13 @@ const MarketplaceDealDetail = () => {
       </div>
 
       {/* Hero Section */}
-      <div style={{
-        background: 'rgba(255,255,255,0.03)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
-        padding: '40px 0'
-      }}>
+      <div style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '40px 0' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
-          <h1 style={{ 
-            color: '#FFFFFF', 
-            fontSize: 'clamp(32px, 5vw, 56px)',
-            fontWeight: '700',
-            letterSpacing: '-0.03em',
-            marginBottom: '20px',
-            textAlign: 'center',
-            lineHeight: '1.2'
-          }}>
+          <h1 style={{ color: '#FFFFFF', fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: '700', letterSpacing: '-0.03em', marginBottom: '20px', textAlign: 'center', lineHeight: '1.2' }}>
             {deal.address || deal.title}
           </h1>
-
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <span style={{
-              padding: '10px 24px',
-              background: getAssetTypeColor(deal.public_asset_type || deal.asset_type).bg,
-              color: getAssetTypeColor(deal.public_asset_type || deal.asset_type).color,
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              border: `1px solid ${getAssetTypeColor(deal.public_asset_type || deal.asset_type).border}`,
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }}>
+            <span style={{ padding: '10px 24px', background: getAssetTypeColor(deal.public_asset_type || deal.asset_type).bg, color: getAssetTypeColor(deal.public_asset_type || deal.asset_type).color, borderRadius: '8px', fontSize: '14px', fontWeight: '600', border: `1px solid ${getAssetTypeColor(deal.public_asset_type || deal.asset_type).border}`, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               {deal.public_asset_type || deal.asset_type}
             </span>
           </div>
@@ -266,98 +196,89 @@ const MarketplaceDealDetail = () => {
             </div>
 
             {/* Description */}
-            {deal.description && (
-              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600', marginBottom: '16px', letterSpacing: '-0.02em' }}>
-                  Property Description
-                </h3>
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Property Description
+              </h3>
+              {deal.description ? (
                 <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '15px', lineHeight: '1.6' }}>
                   {deal.description}
                 </p>
-              </div>
-            )}
+              ) : (
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', fontStyle: 'italic' }}>
+                  No description available
+                </p>
+              )}
+            </div>
 
-            {/* Property Facts */}
+            {/* Property Facts - ALWAYS SHOW */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Property Facts
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {deal.size && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Building Size (SF)
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.size?.toLocaleString()}
-                    </div>
-                  </div>
-                )}
-                {deal.lot_size && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Lot Size (Acres)
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.lot_size}
-                    </div>
-                  </div>
-                )}
-                {deal.year_built && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Year Built
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.year_built}
-                    </div>
-                  </div>
-                )}
-                {deal.zoning && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Zoning
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.zoning}
-                    </div>
-                  </div>
-                )}
-                {deal.occupancy && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Occupancy (%)
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.occupancy}
-                    </div>
-                  </div>
-                )}
-                {deal.parking_spaces && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Parking Spaces
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.parking_spaces}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {deal.key_features && (
-                <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                <div>
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    Key Features
+                    Building Size (SF)
                   </div>
-                  <div style={{ color: '#FFFFFF', fontSize: '15px', lineHeight: '1.6' }}>
-                    {deal.key_features}
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.size ? deal.size?.toLocaleString() : 'N/A'}
                   </div>
                 </div>
-              )}
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Lot Size (Acres)
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.lot_size || 'N/A'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Year Built
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.year_built || 'N/A'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Zoning
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.zoning || 'N/A'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Occupancy (%)
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.occupancy || 'N/A'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Parking Spaces
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.parking_spaces || 'N/A'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Features */}
+              <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Key Features
+                </div>
+                <div style={{ color: '#FFFFFF', fontSize: '15px', lineHeight: '1.6' }}>
+                  {deal.key_features || 'No key features listed'}
+                </div>
+              </div>
             </div>
 
-            {/* Financials */}
+            {/* Financials - ALWAYS SHOW */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
               <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Financials
@@ -376,109 +297,117 @@ const MarketplaceDealDetail = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-6">
-                {deal.noi && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      NOI
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      ${deal.noi?.toLocaleString()}
-                    </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    NOI
                   </div>
-                )}
-                {deal.cap_rate && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Cap Rate
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.cap_rate}%
-                    </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.noi ? `$${deal.noi?.toLocaleString()}` : 'N/A'}
                   </div>
-                )}
-                {deal.lease_type && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Lease Type
-                    </div>
-                    <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
-                      {deal.lease_type}
-                    </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Cap Rate
                   </div>
-                )}
-              </div>
-            </div>
-
-            {/* Location Map */}
-            {deal.latitude && deal.longitude && (
-              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
-                <MapContainer
-                  center={[deal.latitude, deal.longitude]}
-                  zoom={15}
-                  style={{ height: '400px', width: '100%' }}
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; OpenStreetMap contributors'
-                  />
-                  <Marker position={[deal.latitude, deal.longitude]} />
-                </MapContainer>
-                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)' }}>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
-                    <MapPin size={18} style={{ color: '#00b8d4', marginTop: '2px' }} />
-                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
-                      {deal.address}
-                    </p>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.cap_rate ? `${deal.cap_rate}%` : 'N/A'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Lease Type
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.lease_type || 'N/A'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Price Per SF
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600' }}>
+                    {deal.size && deal.price ? `$${((deal.public_price || deal.price) / deal.size).toFixed(2)}` : 'N/A'}
                   </div>
                 </div>
               </div>
-            )}
+            </div>
+
+            {/* Important Dates - ALWAYS SHOW */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Important Dates & Details
+              </h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Target Close Date
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                    {deal.target_close_date || 'Not set'}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Last Contact Date
+                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: '500' }}>
+                    {deal.last_contact_date || 'No recent contact'}
+                  </div>
+                </div>
+              </div>
+              
+              {deal.notes && (
+                <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Notes
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: '1.6' }}>
+                    {deal.notes}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Location Map - ALWAYS SHOW */}
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
+              <div style={{ padding: '24px', paddingBottom: '16px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Location & Market
+                </h3>
+              </div>
+              {deal.latitude && deal.longitude ? (
+                <div>
+                  <MapContainer center={[deal.latitude, deal.longitude]} zoom={15} style={{ height: '400px', width: '100%' }}>
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap contributors' />
+                    <Marker position={[deal.latitude, deal.longitude]} />
+                  </MapContainer>
+                  <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)' }}>
+                    <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                      <MapPin size={18} style={{ color: '#00b8d4', marginTop: '2px' }} />
+                      <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
+                        {deal.address}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ padding: '40px', textAlign: 'center' }}>
+                  <MapPin className="w-12 h-12 mx-auto mb-3" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                  <p style={{ color: 'rgba(255,255,255,0.5)' }}>No location coordinates available</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Sidebar */}
           <div className="space-y-6">
             {/* Contact Broker Card */}
-            <div style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '12px',
-              padding: '24px',
-              position: 'sticky',
-              top: '100px'
-            }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px', position: 'sticky', top: '100px' }}>
               <h3 style={{ color: '#FFFFFF', fontSize: '18px', fontWeight: '600', marginBottom: '20px', letterSpacing: '-0.02em' }}>
                 Contact Broker
               </h3>
 
-              <button
-                style={{
-                  width: '100%',
-                  padding: '14px',
-                  background: '#00b8d4',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: '#000',
-                  fontWeight: '600',
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#009fb8';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 184, 212, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#00b8d4';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.3)';
-                }}
-              >
+              <button style={{ width: '100%', padding: '14px', background: '#00b8d4', border: 'none', borderRadius: '8px', color: '#000', fontWeight: '600', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)', transition: 'all 0.3s ease' }}>
                 <MessageCircle size={20} />
                 Message Broker
               </button>
@@ -486,28 +415,16 @@ const MarketplaceDealDetail = () => {
               {/* Stats */}
               <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ marginBottom: '16px' }}>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    Views
-                  </div>
-                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>
-                    {deal.marketplace_views_count || 0}
-                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Views</div>
+                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>{deal.marketplace_views_count || 0}</div>
                 </div>
                 <div style={{ marginBottom: '16px' }}>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    Inquiries
-                  </div>
-                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>
-                    {deal.marketplace_inquiries_count || 0}
-                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Inquiries</div>
+                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>{deal.marketplace_inquiries_count || 0}</div>
                 </div>
                 <div>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    Saves
-                  </div>
-                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>
-                    {deal.marketplace_saves_count || 0}
-                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Saves</div>
+                  <div style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '600' }}>{deal.marketplace_saves_count || 0}</div>
                 </div>
               </div>
 
@@ -515,18 +432,12 @@ const MarketplaceDealDetail = () => {
               <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ marginBottom: '12px' }}>
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Market</div>
-                  <div style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: '500' }}>
-                    {deal.public_market || deal.city || 'N/A'}
-                  </div>
+                  <div style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: '500' }}>{deal.public_market || deal.city || 'N/A'}</div>
                 </div>
-                {deal.public_strategy && (
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Strategy</div>
-                    <div style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: '500' }}>
-                      {deal.public_strategy}
-                    </div>
-                  </div>
-                )}
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Strategy</div>
+                  <div style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: '500' }}>{deal.public_strategy || 'N/A'}</div>
+                </div>
               </div>
             </div>
           </div>
