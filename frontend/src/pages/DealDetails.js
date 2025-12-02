@@ -1148,6 +1148,28 @@ const DealDetails = () => {
             Share Property
           </Button>
 
+          {/* Publish to Marketplace Button */}
+          <Button onClick={() => setShowPublishModal(true)} style={{
+            background: 'linear-gradient(135deg, #00b8d4 0%, #0088a3 100%)',
+            color: '#ffffff',
+            padding: '14px 24px',
+            borderRadius: '8px',
+            border: 'none',
+            fontWeight: '600',
+            fontSize: '15px',
+            boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
+            cursor: 'pointer',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            transition: 'all 0.3s ease'
+          }}>
+            <Upload className="w-5 h-5" />
+            Publish to Marketplace
+          </Button>
+
           {/* Property Details Card */}
           <div style={{
             background: 'rgba(255,255,255,0.03)',
