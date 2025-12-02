@@ -306,3 +306,17 @@ async def get_market_news():
             "count": 0,
             "error": True
         }
+
+
+# ============================================================
+# MARKETPLACE ANALYTICS ENDPOINTS (TO BE ADDED IN PHASE 2)
+# ============================================================
+# @router.get("/marketplace-performance")
+# async def get_marketplace_performance(current_user: User = Depends(get_current_user)):
+#     """Get Marketplace performance metrics for broker"""
+#     pass
+#
+# @router.get("/marketplace-activity")
+# async def get_marketplace_activity_feed(current_user: User = Depends(get_current_user)):
+#     """Get recent Marketplace activity (views, inquiries, offers)"""
+#     pass
