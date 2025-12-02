@@ -69,11 +69,10 @@ news_cache = {
     'cache_duration': 3600  # 1 hour in seconds
 }
 
-
-# Models
-
 # Logging
 logger = logging.getLogger(__name__)
+
+# ===== API ROUTES =====
 
 @api_router.post("/auth/register", response_model=Token)
 async def register(user_data: UserCreate):
