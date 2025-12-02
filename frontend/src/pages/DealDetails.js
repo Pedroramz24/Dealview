@@ -57,6 +57,10 @@ const DealDetails = () => {
   const [editedDeal, setEditedDeal] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   
+  // Publish Modal State
+  const [showPublishModal, setShowPublishModal] = useState(false);
+
+  
   // Contact Management
   const [allContacts, setAllContacts] = useState([]);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
