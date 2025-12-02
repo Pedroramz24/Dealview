@@ -233,7 +233,7 @@ const MarketplacePage = () => {
 
           {/* Quick Filters */}
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            {filterOptions?.available_filters.markets.slice(0, 5).map(market => (
+            {filterOptions?.available_filters?.markets?.slice(0, 5).map(market => (
               <button
                 key={market}
                 onClick={() => {
