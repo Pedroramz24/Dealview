@@ -276,7 +276,7 @@ async def publish_deal_to_marketplace(
 @router.post("/{deal_id}/unpublish")
 async def unpublish_deal_from_marketplace(
     deal_id: str,
-    user = Depends(require_broker)
+    user = Depends(get_current_user_supabase)
 ):
     """
     Remove a deal from the Marketplace.
