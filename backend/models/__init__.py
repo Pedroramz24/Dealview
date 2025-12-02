@@ -7,6 +7,14 @@ from .common import Token, StageUpdate
 from .chat import ChatMessage, ChatRequest, Citation, ChatResponse
 from .email import EmailSettingsCreate, EmailSettingsResponse, TestEmailConnection, SendTransactionalEmail
 from .campaign import CreateCampaign, SendCampaign, ScheduleCampaign, BatchScheduleCampaign
+from .marketplace import (
+    SavedDeal, SavedDealCreate,
+    DealView,
+    MarketplaceInquiry, InquiryCreate, InquiryResponse,
+    MarketplaceMessage, MessageCreate, MessageUpdate,
+    MarketplaceOffer, OfferCreate, OfferUpdate,
+    Conversation
+)
 
 __all__ = [
     # User models
@@ -25,4 +33,11 @@ __all__ = [
     "EmailSettingsCreate", "EmailSettingsResponse", "TestEmailConnection", "SendTransactionalEmail",
     # Campaign models
     "CreateCampaign", "SendCampaign", "ScheduleCampaign", "BatchScheduleCampaign",
+    # Marketplace models
+    "SavedDeal", "SavedDealCreate",
+    "DealView",
+    "MarketplaceInquiry", "InquiryCreate", "InquiryResponse",
+    "MarketplaceMessage", "MessageCreate", "MessageUpdate",
+    "MarketplaceOffer", "OfferCreate", "OfferUpdate",
+    "Conversation",
 ]
