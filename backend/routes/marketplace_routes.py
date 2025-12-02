@@ -26,7 +26,7 @@ async def browse_marketplace_deals(
     sort_order: str = Query("desc", description="Sort order: asc or desc"),
     limit: int = Query(50, le=100, description="Results per page"),
     offset: int = Query(0, description="Pagination offset"),
-    user = Depends(check_membership)
+    credentials = Depends(security)
 ):
     """
     Browse published deals in the Marketplace.
@@ -34,6 +34,12 @@ async def browse_marketplace_deals(
     
     Filters are applied based on user's buy_box_preferences by default.
     """
+    from utils.auth_helpers import security
+    from middleware import check_membership
+    
+    # Check membership
+    user = await check_membership(credentials)
+    
     supabase = get_supabase()
     
     try:
