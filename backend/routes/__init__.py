@@ -9,6 +9,7 @@ from .dashboard_routes import router as dashboard_router
 from .marketplace_routes import router as marketplace_router
 from .messaging_routes import router as messaging_router
 from .onboarding_routes import router as onboarding_router
+from .admin_routes import router as admin_router
 
 __all__ = [
     "auth_router",
@@ -17,4 +18,5 @@ __all__ = [
     "marketplace_router",
     "messaging_router",
     "onboarding_router",
+    "admin_router",
 ]
