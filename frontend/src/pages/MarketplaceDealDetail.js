@@ -102,6 +102,21 @@ const MarketplaceDealDetail = () => {
       
       const data = await response.json();
       setDeal(data.deal);
+      
+      // Fetch broker reputation
+      if (data.deal && data.deal.owner_id) {
+        try {
+          const repResponse = await fetch(`${API}/reputation/broker/${data.deal.owner_id}`, {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+          });
+          if (repResponse.ok) {
+            const repData = await repResponse.json();
+            setBrokerReputation(repData);
+          }
+        } catch (repError) {
+          console.log('Could not fetch broker reputation:', repError);
+        }
+      }
     } catch (error) {
       console.error('Error fetching deal:', error);
       toast.error('Failed to load deal details');
