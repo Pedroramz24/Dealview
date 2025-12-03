@@ -27,12 +27,25 @@ async def get_pending_deals(user = Depends(get_current_user_supabase)):
     supabase = get_supabase()
     
     try:
-        # Fetch pending deals
+        # Fetch pending deals (without foreign key join)
         deals = supabase.table('deals').select(
             'id, title, address, public_asset_type, public_market, public_price, '
-            'published_at, published_by, approval_status, '
-            'owner_id, user_profiles!deals_owner_id_fkey(full_name, company)'
+            'published_at, published_by, approval_status, owner_id'
         ).eq('is_published', True).eq('approval_status', 'pending').order('published_at', desc=True).execute()
+        
+        # Get user info for each deal separately
+        for deal in deals.data:
+            try:
+                user_profile = supabase.table('user_profiles').select('full_name, company').eq('id', deal['owner_id']).single().execute()
+                if user_profile.data:
+                    deal['broker_name'] = user_profile.data.get('full_name', 'Unknown')
+                    deal['broker_company'] = user_profile.data.get('company', '')
+                else:
+                    deal['broker_name'] = 'Unknown'
+                    deal['broker_company'] = ''
+            except:
+                deal['broker_name'] = 'Unknown'
+                deal['broker_company'] = ''
         
         return {
             "pending_deals": deals.data,
