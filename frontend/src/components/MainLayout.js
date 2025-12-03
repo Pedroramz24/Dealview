@@ -13,6 +13,7 @@ import {
   UsersRound,
   LogOut,
   Inbox,
+  TrendingUp,
   Settings as SettingsIcon
 } from 'lucide-react';
 
