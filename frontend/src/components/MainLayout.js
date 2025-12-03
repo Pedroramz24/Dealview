@@ -190,11 +190,12 @@ const MainLayout = () => {
                   {item.label}
                 </div>
               </NavLink>
+              </React.Fragment>
             );
           })}
         </nav>
 
-        {/* Bottom Section - Inbox, Settings, Logout */}
+        {/* Bottom Section - Settings, Logout */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
