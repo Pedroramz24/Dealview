@@ -874,23 +874,25 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0,0,0,0.8)',
-      backdropFilter: 'blur(8px)',
+      background: 'rgba(0,0,0,0.85)',
+      backdropFilter: 'blur(12px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 1000
     }}>
       <div style={{
-        background: '#0a0a0a',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'rgba(255, 255, 255, 0.03)',
+        backdropFilter: 'blur(16px)',
+        border: '1px solid rgba(255,255,255,0.08)',
         borderRadius: '20px',
         width: '90%',
         maxWidth: '900px',
         maxHeight: '90vh',
         overflow: 'hidden',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
       }}>
         {/* Header */}
         <div style={{
