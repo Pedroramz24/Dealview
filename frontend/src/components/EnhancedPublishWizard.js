@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, ChevronRight, ChevronLeft, AlertCircle } from 'lucide-react';
+import { X, Check, ChevronRight, ChevronLeft, AlertCircle, Building2, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import { API } from '../App';
 
