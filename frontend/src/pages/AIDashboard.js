@@ -160,12 +160,13 @@ const AIDashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'radial-gradient(circle, rgba(19, 15, 64, 1), rgba(0, 0, 0, 1))',
+      background: '#130F40',
+      backgroundImage: 'radial-gradient(circle, rgba(19, 15, 64, 1) 0%, rgba(0, 0, 0, 1) 100%)',
       padding: '32px',
       position: 'relative',
       overflow: 'auto'
     }}>
-      {/* Radial purple gradient with ultra-light glass cards */}
+      {/* Radial gradient with fallback color */}
       {/* Header Card - Ultra-Light Glassmorphism */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.03)',
