@@ -331,35 +331,58 @@ const MarketplacePage = () => {
                     e.currentTarget.style.boxShadow = shadows.md;
                   }}
                 >
-                  {/* Deal Image */}
+                  {/* Deal Image with Gradient Overlay */}
                   <div style={{
                     height: '200px',
                     background: deal.image_url 
                       ? `url(${deal.image_url})` 
-                      : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
+                      : gradients.surfaceSubtle,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     position: 'relative'
                   }}>
+                    {/* Dark gradient overlay for depth */}
+                    {deal.image_url && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: '50%',
+                        background: gradients.imageOverlay,
+                        pointerEvents: 'none'
+                      }} />
+                    )}
+                    
                     <button
                       onClick={(e) => handleSaveDeal(deal.id, e)}
                       style={{
                         position: 'absolute',
                         top: '12px',
                         right: '12px',
-                        background: 'rgba(0,0,0,0.6)',
+                        background: 'rgba(0,0,0,0.7)',
+                        backdropFilter: 'blur(12px)',
                         border: 'none',
-                        borderRadius: '50%',
-                        width: '36px',
-                        height: '36px',
+                        borderRadius: borderRadius.full,
+                        width: '40px',
+                        height: '40px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'pointer',
-                        backdropFilter: 'blur(8px)'
+                        transition: transitions.fast,
+                        boxShadow: shadows.sm
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = colors.primary;
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(0,0,0,0.7)';
+                        e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <Heart size={18} color="rgba(255,255,255,0.8)" />
+                      <Heart size={18} color="rgba(255,255,255,0.9)" />
                     </button>
                   </div>
 
