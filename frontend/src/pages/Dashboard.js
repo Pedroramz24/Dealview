@@ -432,28 +432,25 @@ const Dashboard = () => {
 // Metric Card Component
 const MetricCard = ({ icon: Icon, label, value, color, bgColor, isLarge }) => (
   <div style={{
-    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    borderRadius: '16px',
-    padding: '24px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.03)',
-    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    background: colors.surfaceCard,
+    border: 'none',
+    borderRadius: borderRadius.md,
+    padding: spacing.lg,
+    boxShadow: shadows.cardElevation,
+    transition: transitions.default,
     cursor: 'pointer',
     position: 'relative',
-    overflow: 'hidden',
-    transform: 'translateZ(0)'
+    overflow: 'hidden'
   }}
   onMouseEnter={(e) => {
-    e.currentTarget.style.transform = 'translateY(-2px) translateZ(0)';
-    e.currentTarget.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px ${color}15, inset 0 1px 0 rgba(255, 255, 255, 0.08)`;
-    e.currentTarget.style.borderColor = `${color}20`;
-    e.currentTarget.style.background = 'linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03))';
+    e.currentTarget.style.transform = 'translateY(-2px)';
+    e.currentTarget.style.boxShadow = shadows.cardElevationHover;
+    e.currentTarget.style.background = colors.surfaceCardHover;
   }}
   onMouseLeave={(e) => {
-    e.currentTarget.style.transform = 'translateY(0) translateZ(0)';
-    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.03)';
-    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.06)';
-    e.currentTarget.style.background = 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))';
+    e.currentTarget.style.transform = 'translateY(0)';
+    e.currentTarget.style.boxShadow = shadows.cardElevation;
+    e.currentTarget.style.background = colors.surfaceCard;
   }}
   >
     {/* Subtle glow accent */}
