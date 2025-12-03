@@ -166,16 +166,16 @@ const AIDashboard = () => {
       overflow: 'auto'
     }}>
       {/* Radial purple gradient with ultra-light glass cards */}
-      {/* Header Card - Stained Grey Glass */}
+      {/* Header Card - Ultra-Light Glassmorphism */}
       <div style={{
-        background: 'rgba(30, 30, 30, 0.6)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'rgba(255, 255, 255, 0.03)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
         borderRadius: '16px',
         padding: '32px 40px',
         marginBottom: '32px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
