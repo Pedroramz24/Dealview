@@ -165,14 +165,14 @@ const AIDashboard = () => {
       position: 'relative',
       overflow: 'auto'
     }}>
-      {/* Dark blue vertical gradient test */}
+      {/* Header Card - Solid Dark Grey */}
       <div style={{
-        background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.06), rgba(59, 130, 246, 0.04))',
-        border: '1px solid rgba(0, 184, 212, 0.15)',
-        borderRadius: '20px',
+        background: '#0c0c0c',
+        border: 'none',
+        borderRadius: '16px',
         padding: '32px 40px',
         marginBottom: '32px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
