@@ -74,13 +74,18 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
         headers: { 'Authorization': `Bearer ${session.access_token}` }
       });
       
-      if (!response.ok) throw new Error('Failed to fetch conversations');
+      if (!response.ok) {
+        console.warn('No existing conversations');
+        setConversations([]);
+        return;
+      }
       
       const data = await response.json();
       setConversations(data.conversations || []);
     } catch (error) {
       console.error('Error fetching conversations:', error);
-      toast.error('Failed to load conversations');
+      // Don't show error toast - just empty state
+      setConversations([]);
     } finally {
       setLoading(false);
     }
