@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { colors, shadows, borderRadius, spacing, transitions } from '../styles/designSystem';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
