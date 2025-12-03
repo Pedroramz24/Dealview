@@ -160,13 +160,12 @@ const AIDashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#130f40',
-      backgroundImage: 'linear-gradient(315deg, #130f40 0%, #000000 74%)',
+      background: 'radial-gradient(circle, rgba(19, 15, 64, 1), rgba(0, 0, 0, 1))',
       padding: '32px',
       position: 'relative',
       overflow: 'auto'
     }}>
-      {/* Purple diagonal gradient with stained grey glass cards */}
+      {/* Radial purple gradient with ultra-light glass cards */}
       {/* Header Card - Stained Grey Glass */}
       <div style={{
         background: 'rgba(30, 30, 30, 0.6)',
