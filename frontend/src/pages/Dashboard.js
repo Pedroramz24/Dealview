@@ -301,7 +301,7 @@ const Dashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#000000',
+      background: 'transparent',
       padding: '32px',
       position: 'relative',
       overflow: 'hidden'
