@@ -310,14 +310,14 @@ const Dashboard = () => {
       {/* Global body gradient now handles the atmospheric effect */}
       
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '1800px', margin: '0 auto' }}>
-        {/* AI Greeting Header */}
+        {/* AI Greeting Header - Modular Card */}
         <div style={{
-          background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.06), rgba(59, 130, 246, 0.04))',
-          border: '1px solid rgba(0, 184, 212, 0.15)',
-          borderRadius: '20px',
+          background: colors.surfaceCard,
+          border: 'none',
+          borderRadius: borderRadius.lg,
           padding: '32px 40px',
           marginBottom: '32px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 184, 212, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
+          boxShadow: shadows.cardElevation,
           position: 'relative',
           overflow: 'hidden'
         }}>
