@@ -291,22 +291,6 @@ async def publish_deal_to_marketplace(
         )
 
 
-@router.post("/{deal_id}/unpublish")
-async def unpublish_deal_from_marketplace(
-    deal_id: str,
-    user = Depends(get_current_user_supabase)
-):
-    """
-    Remove a deal from the Marketplace.
-    Only the broker who published it can unpublish.
-    """
-    supabase = get_supabase()
-    
-    try:
-        # Verify ownership
-        deal = supabase.table('deals').select('id, owner_id, published_by').eq('id', deal_id).single().execute()
-
-
 @router.get("/{deal_id}/completeness")
 async def get_deal_completeness(
     deal_id: str,
