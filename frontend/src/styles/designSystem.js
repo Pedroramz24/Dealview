@@ -34,6 +34,11 @@ export const colors = {
 };
 
 export const shadows = {
+  // Modular Card Shadows - Soft elevation
+  cardElevation: '0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3)',
+  cardElevationHover: '0 8px 20px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.4)',
+  cardElevationActive: '0 2px 6px rgba(0, 0, 0, 0.4)',
+  
   sm: '0 2px 8px rgba(0, 0, 0, 0.3)',
   md: '0 4px 16px rgba(0, 0, 0, 0.4)',
   lg: '0 8px 32px rgba(0, 0, 0, 0.5)',
