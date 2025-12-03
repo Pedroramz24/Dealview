@@ -791,17 +791,16 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: canPublish ? '#10b981' : '#f59e0b',
-              fontSize: '24px'
+              color: canPublish ? '#10b981' : '#f59e0b'
             }}>
-              {canPublish ? '✓' : '!'}
+              {canPublish ? <Check size={24} /> : <AlertCircle size={24} />}
             </div>
             <div>
               <h4 style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>
                 Completeness: {score}%
               </h4>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>
-                {canPublish ? 'Ready to publish!' : 'Need 80% to publish'}
+                {canPublish ? 'Ready to publish' : 'Need 80% to publish'}
               </p>
             </div>
           </div>
