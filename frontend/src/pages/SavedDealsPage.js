@@ -59,7 +59,7 @@ const SavedDealsPage = () => {
   };
 
   return (
-    <div style={{ background: '#000', minHeight: '100vh', padding: '40px' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', padding: '40px' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ marginBottom: '32px' }}>
