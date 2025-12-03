@@ -100,44 +100,55 @@ const MainLayout = () => {
           width: '100%',
           alignItems: 'center'
         }}>
-          {navItems.map((item) => {
+          {navItems.map((item, index) => {
             const Icon = item.icon;
             const active = isActive(item.path, item.exact);
             
+            // Add workspace section divider before first workspace item
+            const showDivider = index > 0 && item.isWorkspace && !navItems[index - 1].isWorkspace;
+            
             return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '56px',
-                  height: '56px',
-                  borderRadius: '12px',
-                  color: active ? '#00d4aa' : 'rgba(255,255,255,0.6)',
-                  background: active ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
-                  transition: 'all 0.3s ease',
-                  textDecoration: 'none',
-                  border: active ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
-                  boxShadow: active ? '0 0 20px rgba(0, 184, 212, 0.2)' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (!active) {
-                    e.currentTarget.style.color = '#00b8d4';
-                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
-                    e.currentTarget.style.boxShadow = '0 0 16px rgba(0, 184, 212, 0.15)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!active) {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }
-                }}
-              >
+              <React.Fragment key={item.path}>
+                {showDivider && (
+                  <div style={{
+                    width: '40px',
+                    height: '1px',
+                    background: 'rgba(255,255,255,0.15)',
+                    margin: '8px 0'
+                  }} />
+                )}
+                <NavLink
+                  to={item.path}
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '12px',
+                    color: active ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                    background: active ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
+                    transition: 'all 0.3s ease',
+                    textDecoration: 'none',
+                    border: active ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+                    boxShadow: active ? '0 0 20px rgba(0, 184, 212, 0.2)' : 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.color = '#00b8d4';
+                      e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+                      e.currentTarget.style.boxShadow = '0 0 16px rgba(0, 184, 212, 0.15)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }
+                  }}
+                >
                 {/* Active Indicator Line */}
                 {active && (
                   <div style={{
