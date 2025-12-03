@@ -259,12 +259,16 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
             borderRadius: '12px',
             color: '#fff',
             cursor: 'pointer',
-            transition: 'all 0.2s'
+            transition: 'all 0.2s',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <Building2 size={32} style={{ marginBottom: '8px', color: !formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
-          <div style={{ fontWeight: '600' }}>Property</div>
-          <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>
+          <Building2 size={40} style={{ marginBottom: '12px', color: !formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
+          <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px' }}>Property</div>
+          <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
             Building, Retail, Office, etc.
           </div>
         </button>
@@ -279,12 +283,16 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
             borderRadius: '12px',
             color: '#fff',
             cursor: 'pointer',
-            transition: 'all 0.2s'
+            transition: 'all 0.2s',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <MapPin size={32} style={{ marginBottom: '8px', color: formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
-          <div style={{ fontWeight: '600' }}>Land</div>
-          <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>
+          <MapPin size={40} style={{ marginBottom: '12px', color: formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
+          <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px' }}>Land</div>
+          <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
             Lot, Parcel, Raw Land
           </div>
         </button>
