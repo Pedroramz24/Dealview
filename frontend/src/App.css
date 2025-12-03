@@ -78,13 +78,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-primary);
   
-  /* Prominent Blue-to-Black Gradient - Much Brighter for Visibility */
+  /* Much Brighter Blue-to-Black Gradient for High Visibility */
   background: linear-gradient(180deg, 
-    rgb(45, 85, 125) 0%,      /* Brighter blue at top */
-    rgb(30, 60, 90) 20%,      /* Medium blue */
-    rgb(20, 40, 60) 40%,      /* Darker blue */
-    rgb(10, 20, 30) 60%,      /* Very dark blue */
-    rgb(0, 0, 0) 85%          /* Pure black */
+    rgb(60, 110, 160) 0%,     /* Bright blue at top */
+    rgb(40, 75, 110) 25%,     /* Medium blue */
+    rgb(25, 45, 65) 50%,      /* Darker blue */
+    rgb(10, 20, 30) 70%,      /* Very dark */
+    rgb(0, 0, 0) 90%          /* Pure black */
   );
   background-attachment: fixed;
   min-height: 100vh;
