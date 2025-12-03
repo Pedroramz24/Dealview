@@ -119,9 +119,14 @@ const BrokerAnalytics = () => {
   };
 
   return (
-    <div style={{ background: 'transparent', minHeight: '100vh', padding: '40px' }}>
+    <div style={{ 
+      background: '#130f40',
+      backgroundImage: 'linear-gradient(315deg, #130f40 0%, #000000 74%)',
+      minHeight: '100vh', 
+      padding: '40px' 
+    }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        {/* Header */}
+        {/* Diagonal purple gradient for comparison with Dashboard */}
         <div style={{ marginBottom: '32px' }}>
           <h1 style={{ color: '#fff', fontSize: '32px', fontWeight: '700', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <TrendingUp size={32} color="#00b8d4" />
