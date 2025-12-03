@@ -178,26 +178,27 @@ const MarketplacePage = () => {
       }}>
         {/* Header with Filters */}
         <div style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-          background: 'rgba(0,0,0,0.8)',
-          backdropFilter: 'blur(12px)'
+          padding: '24px 28px',
+          borderBottom: `1px solid ${colors.border}`,
+          background: `${colors.surface}f5`,
+          backdropFilter: 'blur(20px)',
+          boxShadow: shadows.sm
         }}>
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
             gap: '12px',
-            marginBottom: '16px'
+            marginBottom: '20px'
           }}>
             <div style={{ position: 'relative', flex: 1 }}>
               <Search 
                 size={20} 
                 style={{ 
                   position: 'absolute', 
-                  left: '12px', 
+                  left: '16px', 
                   top: '50%', 
                   transform: 'translateY(-50%)',
-                  color: 'rgba(255,255,255,0.4)'
+                  color: colors.textMuted
                 }} 
               />
               <input
@@ -207,12 +208,22 @@ const MarketplacePage = () => {
                 onChange={(e) => setFilters({...filters, search: e.target.value})}
                 style={{
                   width: '100%',
-                  padding: '12px 12px 12px 44px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '12px',
-                  color: '#fff',
-                  fontSize: '14px'
+                  padding: '14px 16px 14px 48px',
+                  background: colors.elevated,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: borderRadius.md,
+                  color: colors.textPrimary,
+                  fontSize: '15px',
+                  transition: transitions.fast,
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = colors.borderHover;
+                  e.currentTarget.style.boxShadow = `inset 0 2px 4px rgba(0,0,0,0.1), ${shadows.glowCyan}`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = colors.border;
+                  e.currentTarget.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.1)';
                 }}
                 onKeyPress={(e) => e.key === 'Enter' && fetchDeals()}
               />
@@ -221,15 +232,17 @@ const MarketplacePage = () => {
             <button
               onClick={() => setShowMap(!showMap)}
               style={{
-                padding: '12px',
-                background: showMap ? 'rgba(0, 212, 170, 0.15)' : 'rgba(255,255,255,0.05)',
-                border: showMap ? '1px solid rgba(0, 212, 170, 0.3)' : '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '12px',
-                color: showMap ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                padding: '14px',
+                background: showMap ? `${colors.primary}20` : colors.elevated,
+                border: showMap ? `1px solid ${colors.primary}50` : `1px solid ${colors.border}`,
+                borderRadius: borderRadius.md,
+                color: showMap ? colors.primary : colors.textTertiary,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                transition: transitions.fast,
+                boxShadow: showMap ? shadows.glowCyan : shadows.sm
               }}
             >
               <MapIcon size={20} />
@@ -237,12 +250,22 @@ const MarketplacePage = () => {
 
             <button
               style={{
-                padding: '12px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '12px',
-                color: 'rgba(255,255,255,0.6)',
-                cursor: 'pointer'
+                padding: '14px',
+                background: colors.elevated,
+                border: `1px solid ${colors.border}`,
+                borderRadius: borderRadius.md,
+                color: colors.textTertiary,
+                cursor: 'pointer',
+                transition: transitions.fast,
+                boxShadow: shadows.sm
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = colors.hover;
+                e.currentTarget.style.borderColor = colors.borderHover;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = colors.elevated;
+                e.currentTarget.style.borderColor = colors.border;
               }}
             >
               <SlidersHorizontal size={20} />
