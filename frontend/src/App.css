@@ -76,16 +76,15 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #000000;
   color: var(--text-primary);
   
-  /* Prominent Cyan-to-Black Vertical Gradient - Top to Bottom */
+  /* Prominent Blue-to-Black Gradient - Much Brighter for Visibility */
   background: linear-gradient(180deg, 
-    #0a2332 0%,        /* Dark cyan/teal at top */
-    #051825 15%,       /* Slightly darker */
-    #030f18 30%,       /* Getting darker */
-    #01070c 50%,       /* Almost black */
-    #000000 70%        /* Pure black */
+    rgb(45, 85, 125) 0%,      /* Brighter blue at top */
+    rgb(30, 60, 90) 20%,      /* Medium blue */
+    rgb(20, 40, 60) 40%,      /* Darker blue */
+    rgb(10, 20, 30) 60%,      /* Very dark blue */
+    rgb(0, 0, 0) 85%          /* Pure black */
   );
   background-attachment: fixed;
   min-height: 100vh;
