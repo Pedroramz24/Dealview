@@ -1,6 +1,6 @@
 /**
  * DealLinked Design System - Premium Dark Mode
- * Elevated aesthetic with depth, shadows, and refined details
+ * Elevated aesthetic with depth, shadows, atmospheric gradients, and refined motion
  */
 
 export const colors = {
@@ -41,11 +41,19 @@ export const shadows = {
   // Glow effects
   glowCyan: '0 0 20px rgba(0, 184, 212, 0.2)',
   glowCyanHover: '0 0 32px rgba(0, 184, 212, 0.3)',
+  glowCyanStrong: '0 0 40px rgba(0, 184, 212, 0.4)',
   glowSuccess: '0 0 20px rgba(16, 185, 129, 0.2)',
 };
 
 export const gradients = {
-  // Subtle backgrounds (almost imperceptible)
+  // Atmospheric Background (Buy Box Cartel inspired)
+  atmosphericGlow: `
+    radial-gradient(ellipse 1200px 800px at 50% -10%, rgba(0, 184, 212, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 800px 600px at 10% 50%, rgba(0, 184, 212, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 800px 600px at 90% 50%, rgba(0, 184, 212, 0.05) 0%, transparent 50%)
+  `,
+  
+  // Subtle surface gradients
   surfaceSubtle: 'linear-gradient(135deg, rgba(0, 184, 212, 0.03) 0%, rgba(0, 0, 0, 0) 100%)',
   
   // Interactive elements
@@ -55,6 +63,17 @@ export const gradients = {
   // Overlays
   imageOverlay: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)',
   cardShine: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)',
+};
+
+export const animations = {
+  // Keyframes for shimmer loading
+  shimmer: '@keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }',
+  
+  // Keyframes for fade in
+  fadeIn: '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }',
+  
+  // Keyframes for scale in
+  scaleIn: '@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }',
 };
 
 export const spacing = {
@@ -91,7 +110,8 @@ export const typography = {
 };
 
 export const transitions = {
-  default: 'all 0.3s ease',
-  fast: 'all 0.15s ease',
-  slow: 'all 0.5s ease',
+  default: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',  // Smooth ease-in-out
+  fast: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+  slow: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+  spring: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',  // Bouncy spring effect
 };
