@@ -42,12 +42,14 @@ async def browse_marketplace_deals(
     
     try:
         # Build query - only published and approved deals
+        # Include owner_id and seller_commitment_level for ranking
         query = supabase.table('deals').select(
-            'id, title, address, city, state, '
+            'id, title, address, city, state, owner_id, '
             'public_asset_type, public_market, public_price, public_strategy, '
             'size, lot_size, '
             'image_url, '
             'description, '
+            'seller_commitment_level, '
             'marketplace_views_count, marketplace_inquiries_count, marketplace_saves_count, '
             'published_at, latitude, longitude'
         ).eq('is_published', True).eq('public_status', 'published').eq('approval_status', 'approved')
@@ -68,7 +70,7 @@ async def browse_marketplace_deals(
         if max_size:
             query = query.lte('size', max_size)
         
-        # Apply sorting
+        # Apply sorting (default by published_at, but can be overridden)
         query = query.order(sort_by, desc=(sort_order == 'desc'))
         
         # Apply pagination
@@ -76,9 +78,51 @@ async def browse_marketplace_deals(
         
         result = query.execute()
         
+        # Fetch broker quality scores for all deals and sort by quality
+        deals_with_scores = []
+        for deal in result.data:
+            broker_quality = 50  # Default for new brokers
+            commitment_priority = 2  # Default priority
+            
+            # Get broker reputation
+            if deal.get('owner_id'):
+                try:
+                    rep_result = supabase.table('broker_reputation').select('quality_score').eq(
+                        'broker_id', deal['owner_id']
+                    ).single().execute()
+                    if rep_result.data:
+                        broker_quality = rep_result.data.get('quality_score', 50)
+                except:
+                    pass
+            
+            # Determine commitment priority (higher = better)
+            commitment_level = deal.get('seller_commitment_level')
+            if commitment_level == 'signed_listing':
+                commitment_priority = 3
+            elif commitment_level == 'written_auth':
+                commitment_priority = 2
+            elif commitment_level == 'verbal_maybe':
+                commitment_priority = 1
+            
+            deals_with_scores.append({
+                **deal,
+                'broker_quality_score': broker_quality,
+                'commitment_priority': commitment_priority
+            })
+        
+        # Sort by commitment priority first, then broker quality, then published date
+        deals_with_scores.sort(
+            key=lambda x: (
+                x['commitment_priority'],
+                x['broker_quality_score'],
+                x.get('published_at', '')
+            ),
+            reverse=True
+        )
+        
         return {
-            "deals": result.data,
-            "count": len(result.data),
+            "deals": deals_with_scores,
+            "count": len(deals_with_scores),
             "offset": offset,
             "limit": limit
         }
