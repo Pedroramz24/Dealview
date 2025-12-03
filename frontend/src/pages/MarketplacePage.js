@@ -273,7 +273,7 @@ const MarketplacePage = () => {
           </div>
 
           {/* Quick Filters */}
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             {filterOptions?.available_filters?.markets?.slice(0, 5).map(market => (
               <button
                 key={market}
@@ -282,13 +282,28 @@ const MarketplacePage = () => {
                   setTimeout(fetchDeals, 100);
                 }}
                 style={{
-                  padding: '8px 16px',
-                  background: filters.market === market ? 'rgba(0, 212, 170, 0.15)' : 'rgba(255,255,255,0.05)',
-                  border: filters.market === market ? '1px solid rgba(0, 212, 170, 0.3)' : '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '20px',
-                  color: filters.market === market ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                  padding: '10px 18px',
+                  background: filters.market === market ? gradients.primaryButton : colors.elevated,
+                  border: filters.market === market ? 'none' : `1px solid ${colors.border}`,
+                  borderRadius: borderRadius.full,
+                  color: filters.market === market ? '#000' : colors.textTertiary,
                   fontSize: '13px',
-                  cursor: 'pointer'
+                  fontWeight: filters.market === market ? '600' : '500',
+                  cursor: 'pointer',
+                  transition: transitions.fast,
+                  boxShadow: filters.market === market ? shadows.glowCyan : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (filters.market !== market) {
+                    e.currentTarget.style.background = colors.hover;
+                    e.currentTarget.style.borderColor = colors.borderHover;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (filters.market !== market) {
+                    e.currentTarget.style.background = colors.elevated;
+                    e.currentTarget.style.borderColor = colors.border;
+                  }
                 }}
               >
                 {market}
