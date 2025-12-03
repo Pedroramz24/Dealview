@@ -855,7 +855,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
           fontSize: '13px',
           lineHeight: '1.5'
         }}>
-          <strong style={{ color: '#00b8d4' }}>📋 Review Process:</strong><br />
+          <strong style={{ color: '#00b8d4' }}>Review Process:</strong><br />
           Your deal will be reviewed by our team before appearing in the Marketplace. You'll be notified once it's approved.
         </div>
       </div>
