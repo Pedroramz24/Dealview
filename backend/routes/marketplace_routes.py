@@ -281,3 +281,227 @@ async def get_marketplace_filters(user = Depends(get_current_user_supabase)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch filter options"
         )
+
+
+# ============================================================
+# NCND Digital Signature Endpoints
+# ============================================================
+
+@router.get("/deals/{deal_id}/ncnd-status", response_model=NCNDStatus)
+async def get_ncnd_status(
+    deal_id: str,
+    user = Depends(get_current_user_supabase)
+):
+    """
+    Check if user has signed NCND for this deal.
+    Returns signature status including expiration.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Check if deal exists and requires NCND
+        deal_result = supabase.table('deals').select(
+            'id, ncnd_required'
+        ).eq('id', deal_id).eq('is_published', True).single().execute()
+        
+        if not deal_result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        requires_signature = deal_result.data.get('ncnd_required', True)
+        
+        # Check for existing active signature
+        signature_result = supabase.table('ncnd_signatures').select('*').eq(
+            'user_id', str(user.id)
+        ).eq('deal_id', deal_id).eq('is_active', True).execute()
+        
+        if signature_result.data and len(signature_result.data) > 0:
+            signature = signature_result.data[0]
+            expires_at = datetime.fromisoformat(signature['expires_at'].replace('Z', '+00:00'))
+            is_expired = expires_at < datetime.now(timezone.utc)
+            
+            return NCNDStatus(
+                has_signed=True,
+                is_expired=is_expired,
+                signature=signature,
+                requires_signature=requires_signature
+            )
+        
+        return NCNDStatus(
+            has_signed=False,
+            is_expired=False,
+            signature=None,
+            requires_signature=requires_signature
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error checking NCND status: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to check NCND status"
+        )
+
+
+@router.post("/deals/{deal_id}/sign-ncnd", response_model=NCNDSignatureResponse)
+async def sign_ncnd(
+    deal_id: str,
+    signature_data: NCNDSignatureCreate,
+    request: Request,
+    user = Depends(get_current_user_supabase)
+):
+    """
+    Sign NCND agreement for a deal.
+    Records signature with user info, IP, and timestamp.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Get deal details
+        deal_result = supabase.table('deals').select(
+            'id, address, city, state'
+        ).eq('id', deal_id).eq('is_published', True).single().execute()
+        
+        if not deal_result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        # Get user profile details
+        profile_result = supabase.table('user_profiles').select(
+            'first_name, last_name, email'
+        ).eq('id', str(user.id)).single().execute()
+        
+        if not profile_result.data:
+            raise HTTPException(status_code=404, detail="User profile not found")
+        
+        profile = profile_result.data
+        user_full_name = f"{profile.get('first_name', '')} {profile.get('last_name', '')}".strip()
+        user_email = profile.get('email', user.email)
+        
+        # Format property address
+        deal = deal_result.data
+        property_address = f"{deal.get('address', '')}, {deal.get('city', '')}, {deal.get('state', '')}"
+        
+        # Generate agreement text with filled fields
+        agreement_text = generate_ncnd_text(property_address, user_full_name)
+        
+        # Get client IP and user agent
+        client_ip = request.client.host if request.client else None
+        user_agent = request.headers.get('user-agent', '')
+        
+        # Check for existing signature (deactivate if exists)
+        existing = supabase.table('ncnd_signatures').select('id').eq(
+            'user_id', str(user.id)
+        ).eq('deal_id', deal_id).eq('is_active', True).execute()
+        
+        if existing.data and len(existing.data) > 0:
+            # Deactivate old signature
+            supabase.table('ncnd_signatures').update({
+                'is_active': False
+            }).eq('id', existing.data[0]['id']).execute()
+        
+        # Create new signature
+        now = datetime.now(timezone.utc)
+        signature_record = {
+            'user_id': str(user.id),
+            'deal_id': deal_id,
+            'property_address': property_address,
+            'user_full_name': user_full_name,
+            'user_email': user_email,
+            'signature_data': signature_data.signature_data,
+            'ip_address': client_ip,
+            'user_agent': user_agent,
+            'agreement_text': agreement_text,
+            'signed_at': now.isoformat(),
+            'is_active': True
+        }
+        
+        result = supabase.table('ncnd_signatures').insert(signature_record).execute()
+        
+        if not result.data or len(result.data) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create signature"
+            )
+        
+        created_signature = result.data[0]
+        expires_at = datetime.fromisoformat(created_signature['expires_at'].replace('Z', '+00:00'))
+        
+        # Update deal signature count
+        try:
+            supabase.rpc('increment_ncnd_count', {'deal_id': deal_id}).execute()
+        except:
+            # If function doesn't exist, do manual update
+            current_count = supabase.table('deals').select('ncnd_signatures_count').eq('id', deal_id).single().execute()
+            new_count = (current_count.data.get('ncnd_signatures_count', 0) or 0) + 1
+            supabase.table('deals').update({'ncnd_signatures_count': new_count}).eq('id', deal_id).execute()
+        
+        return NCNDSignatureResponse(
+            success=True,
+            message="NCND agreement signed successfully",
+            signature_id=created_signature['id'],
+            expires_at=expires_at
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error signing NCND: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to sign NCND: {str(e)}"
+        )
+
+
+@router.get("/deals/{deal_id}/ncnd-text")
+async def get_ncnd_text(
+    deal_id: str,
+    user = Depends(get_current_user_supabase)
+):
+    """
+    Get the NCND agreement text with user and property details filled in.
+    Used by frontend to display the agreement before signing.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Get deal details
+        deal_result = supabase.table('deals').select(
+            'id, address, city, state'
+        ).eq('id', deal_id).eq('is_published', True).single().execute()
+        
+        if not deal_result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        # Get user profile
+        profile_result = supabase.table('user_profiles').select(
+            'first_name, last_name'
+        ).eq('id', str(user.id)).single().execute()
+        
+        if not profile_result.data:
+            raise HTTPException(status_code=404, detail="User profile not found")
+        
+        profile = profile_result.data
+        user_full_name = f"{profile.get('first_name', '')} {profile.get('last_name', '')}".strip()
+        
+        # Format property address
+        deal = deal_result.data
+        property_address = f"{deal.get('address', '')}, {deal.get('city', '')}, {deal.get('state', '')}"
+        
+        # Generate agreement text
+        agreement_text = generate_ncnd_text(property_address, user_full_name)
+        
+        return {
+            "agreement_text": agreement_text,
+            "property_address": property_address,
+            "user_full_name": user_full_name
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching NCND text: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch NCND text"
+        )
+
