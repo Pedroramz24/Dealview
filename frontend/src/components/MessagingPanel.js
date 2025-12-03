@@ -99,13 +99,18 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
         headers: { 'Authorization': `Bearer ${session.access_token}` }
       });
       
-      if (!response.ok) throw new Error('Failed to fetch messages');
+      if (!response.ok) {
+        console.warn('No messages in conversation');
+        setMessages([]);
+        return;
+      }
       
       const data = await response.json();
       setMessages(data.messages || []);
     } catch (error) {
       console.error('Error fetching messages:', error);
-      toast.error('Failed to load messages');
+      // Don't show error toast for empty conversations
+      setMessages([]);
     }
   };
 
