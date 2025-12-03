@@ -135,9 +135,8 @@ async def send_message(
         if message_data.conversation_id:
             conversation_id = message_data.conversation_id
         else:
-            # Create new conversation_id (use sorted user IDs + deal ID for consistency)
-            user_ids = sorted([str(user.id), message_data.recipient_id])
-            conversation_id = f"{user_ids[0]}_{user_ids[1]}_{message_data.deal_id}"
+            # Create new conversation_id as proper UUID
+            conversation_id = str(uuid.uuid4())
         
         # Check if this is the first message (create inquiry)
         existing_messages = supabase.table('marketplace_messages').select('id').eq(
