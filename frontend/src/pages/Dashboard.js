@@ -302,16 +302,12 @@ const Dashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundImage: 'url(https://customer-assets.emergentagent.com/job_marketdash-re/artifacts/6i9knb7o_Figma%20_%20File%20Cover%20image.png)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundAttachment: 'fixed',
+      background: 'red',
       padding: '32px',
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Using gradient image as background - testing on Dashboard only */}
+      {/* BRIGHT RED TEST - to confirm changes are working */}
       
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '1800px', margin: '0 auto' }}>
         {/* AI Greeting Header - Modular Card */}
