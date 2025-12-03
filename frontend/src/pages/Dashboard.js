@@ -306,19 +306,8 @@ const Dashboard = () => {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Animated background gradients */}
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        left: '-50%',
-        width: '200%',
-        height: '200%',
-        background: 'radial-gradient(circle at 20% 20%, rgba(0, 184, 212, 0.04) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 50%)',
-        animation: 'float-gradient 20s ease-in-out infinite',
-        pointerEvents: 'none',
-        opacity: 0.6
-      }} />
-
+      {/* Global body gradient now handles the atmospheric effect */}
+      
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '1800px', margin: '0 auto' }}>
         {/* AI Greeting Header */}
         <div style={{
