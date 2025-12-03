@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Eye, MessageCircle, Heart, ExternalLink, CheckCircle, Clock } from 'lucide-react';
+import { TrendingUp, Eye, MessageCircle, Heart, ExternalLink, Clock, User, Send } from 'lucide-react';
 import { API } from '../App';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { getAssetTypeColor } from '../utils/assetTypeColors';
+import MessagingPanel from '../components/MessagingPanel';
 
 const BrokerAnalytics = () => {
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [publishedDeals, setPublishedDeals] = useState([]);
-  const [inquiries, setInquiries] = useState([]);
+  const [messagesByProperty, setMessagesByProperty] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showMessaging, setShowMessaging] = useState(null);
 
   useEffect(() => {
     fetchAnalytics();
     fetchPublishedDeals();
-    fetchInquiries();
+    fetchMessagesByProperty();
   }, []);
 
   const fetchAnalytics = async () => {
@@ -22,7 +25,6 @@ const BrokerAnalytics = () => {
       const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
       const supabase = (await import('../supabaseClient')).supabase;
       
-      // Get user's published deals
       const { data: deals } = await supabase
         .from('deals')
         .select('marketplace_views_count, marketplace_inquiries_count, marketplace_saves_count')
@@ -63,21 +65,56 @@ const BrokerAnalytics = () => {
     }
   };
 
-  const fetchInquiries = async () => {
+  const fetchMessagesByProperty = async () => {
     try {
       const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
       const supabase = (await import('../supabaseClient')).supabase;
       
-      const { data } = await supabase
-        .from('marketplace_inquiries')
-        .select('*, deal:deal_id(title, address), inquirer:inquirer_id(user_profiles(full_name))')
-        .eq('broker_id', session.user.id)
-        .order('created_at', { ascending: false })
-        .limit(10);
+      // Get all messages where user is recipient (broker)
+      const { data: messages } = await supabase
+        .from('marketplace_messages')
+        .select('*, deal:deal_id(id, title, address, image_url), sender:sender_id(user_profiles(full_name))')
+        .eq('recipient_id', session.user.id)
+        .order('created_at', { ascending: false });
       
-      setInquiries(data || []);
+      // Group by property
+      const grouped = {};
+      messages?.forEach(msg => {
+        const dealId = msg.deal_id;
+        if (!grouped[dealId]) {
+          grouped[dealId] = {
+            deal: msg.deal,
+            conversations: {}
+          };
+        }
+        
+        // Group by conversation
+        const convId = msg.conversation_id;
+        if (!grouped[dealId].conversations[convId]) {
+          grouped[dealId].conversations[convId] = {
+            conversation_id: convId,
+            sender_name: msg.sender?.user_profiles?.full_name || 'Anonymous',
+            sender_id: msg.sender_id,
+            messages: [],
+            unread_count: 0
+          };
+        }
+        
+        grouped[dealId].conversations[convId].messages.push(msg);
+        if (!msg.read) {
+          grouped[dealId].conversations[convId].unread_count++;
+        }
+      });
+      
+      // Convert to array
+      const result = Object.keys(grouped).map(dealId => ({
+        deal: grouped[dealId].deal,
+        conversations: Object.values(grouped[dealId].conversations)
+      }));
+      
+      setMessagesByProperty(result);
     } catch (error) {
-      console.error('Error fetching inquiries:', error);
+      console.error('Error fetching messages:', error);
     }
   };
 
@@ -97,7 +134,7 @@ const BrokerAnalytics = () => {
 
         {/* Stats Overview */}
         {analytics && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '48px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <Eye size={24} color="#00b8d4" />
@@ -114,7 +151,7 @@ const BrokerAnalytics = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <MessageCircle size={24} color="#00b8d4" />
                 <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Total Inquiries
+                  Total Messages
                 </div>
               </div>
               <div style={{ color: '#fff', fontSize: '36px', fontWeight: '700' }}>
@@ -136,173 +173,301 @@ const BrokerAnalytics = () => {
           </div>
         )}
 
-        {/* Published Deals Table */}
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', overflow: 'hidden', marginBottom: '32px' }}>
-          <div style={{ padding: '24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-            <h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '600' }}>
-              Your Published Listings
-            </h2>
-          </div>
+        {/* SECTION 1: Your Published Listings */}
+        <div style={{ marginBottom: '48px' }}>
+          <h2 style={{ color: '#fff', fontSize: '24px', fontWeight: '600', marginBottom: '24px' }}>
+            Your Published Listings
+          </h2>
 
           {loading ? (
             <div style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
               Loading...
             </div>
           ) : publishedDeals.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
               No published deals yet
             </div>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <th style={{ padding: '16px 24px', textAlign: 'left', color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Property</th>
-                    <th style={{ padding: '16px 24px', textAlign: 'left', color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
-                    <th style={{ padding: '16px 24px', textAlign: 'center', color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Views</th>
-                    <th style={{ padding: '16px 24px', textAlign: 'center', color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Inquiries</th>
-                    <th style={{ padding: '16px 24px', textAlign: 'center', color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Saves</th>
-                    <th style={{ padding: '16px 24px', textAlign: 'right', color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {publishedDeals.map((deal) => (
-                    <tr key={deal.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <td style={{ padding: '20px 24px' }}>
-                        <div style={{ color: '#fff', fontWeight: '600', marginBottom: '4px' }}>
+            <div style={{ display: 'grid', gap: '20px' }}>
+              {publishedDeals.map((deal) => (
+                <div
+                  key={deal.id}
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                  }}
+                >
+                  {/* Property Image */}
+                  <div style={{
+                    width: '200px',
+                    height: '150px',
+                    flexShrink: 0,
+                    background: deal.image_url 
+                      ? `url(${deal.image_url})` 
+                      : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }} />
+
+                  {/* Property Info */}
+                  <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>
+                        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: '600' }}>
                           {deal.title || deal.address}
-                        </div>
-                        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>
-                          {deal.public_market} • {deal.public_asset_type}
-                        </div>
-                      </td>
-                      <td style={{ padding: '20px 24px' }}>
+                        </h3>
                         <span style={{
                           padding: '6px 12px',
                           background: deal.approval_status === 'approved' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(251, 191, 36, 0.15)',
                           border: deal.approval_status === 'approved' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(251, 191, 36, 0.3)',
                           borderRadius: '6px',
                           color: deal.approval_status === 'approved' ? '#22c55e' : '#fbbf24',
-                          fontSize: '12px',
-                          fontWeight: '600'
+                          fontSize: '11px',
+                          fontWeight: '600',
+                          textTransform: 'uppercase'
                         }}>
                           {deal.approval_status === 'approved' ? 'Published' : deal.approval_status}
                         </span>
-                      </td>
-                      <td style={{ padding: '20px 24px', textAlign: 'center', color: '#fff', fontSize: '18px', fontWeight: '600' }}>
-                        {deal.marketplace_views_count || 0}
-                      </td>
-                      <td style={{ padding: '20px 24px', textAlign: 'center', color: '#fff', fontSize: '18px', fontWeight: '600' }}>
-                        {deal.marketplace_inquiries_count || 0}
-                      </td>
-                      <td style={{ padding: '20px 24px', textAlign: 'center', color: '#fff', fontSize: '18px', fontWeight: '600' }}>
-                        {deal.marketplace_saves_count || 0}
-                      </td>
-                      <td style={{ padding: '20px 24px', textAlign: 'right' }}>
-                        <button
-                          onClick={() => navigate(`/workspace/deals/${deal.id}`)}
-                          style={{
-                            padding: '8px 16px',
-                            background: 'rgba(0, 184, 212, 0.15)',
-                            border: '1px solid rgba(0, 184, 212, 0.3)',
-                            borderRadius: '8px',
-                            color: '#00b8d4',
-                            cursor: 'pointer',
-                            fontSize: '13px',
-                            fontWeight: '600'
-                          }}
-                        >
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+
+                      <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginBottom: '8px' }}>
+                        {deal.public_market} • {deal.public_asset_type}
+                      </div>
+
+                      <div style={{ color: '#00b8d4', fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
+                        ${deal.public_price?.toLocaleString()}
+                      </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div style={{ display: 'flex', gap: '24px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Eye size={16} color="rgba(255,255,255,0.5)" />
+                        <span style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>
+                          {deal.marketplace_views_count || 0}
+                        </span>
+                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>views</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <MessageCircle size={16} color="rgba(255,255,255,0.5)" />
+                        <span style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>
+                          {deal.marketplace_inquiries_count || 0}
+                        </span>
+                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>messages</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Heart size={16} color="rgba(255,255,255,0.5)" />
+                        <span style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>
+                          {deal.marketplace_saves_count || 0}
+                        </span>
+                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>saves</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ padding: '20px', borderLeft: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: '12px', justifyContent: 'center' }}>
+                    <button
+                      onClick={() => navigate(`/workspace/deals/${deal.id}`)}
+                      style={{
+                        padding: '10px 16px',
+                        background: 'rgba(0, 184, 212, 0.15)',
+                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        borderRadius: '8px',
+                        color: '#00b8d4',
+                        cursor: 'pointer',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      View in CRM
+                    </button>
+                    <button
+                      onClick={() => navigate(`/marketplace/deals/${deal.id}`)}
+                      style={{
+                        padding: '10px 16px',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '8px',
+                        color: 'rgba(255,255,255,0.7)',
+                        cursor: 'pointer',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        whiteSpace: 'nowrap',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <ExternalLink size={14} />
+                      View Live
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Recent Inquiries */}
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', overflow: 'hidden' }}>
-          <div style={{ padding: '24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-            <h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '600' }}>
-              Recent Inquiries
-            </h2>
-          </div>
+        {/* SECTION 2: Messages by Property */}
+        <div>
+          <h2 style={{ color: '#fff', fontSize: '24px', fontWeight: '600', marginBottom: '24px' }}>
+            Messages by Property
+          </h2>
 
-          {inquiries.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
-              No inquiries yet
+          {messagesByProperty.length === 0 ? (
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
+              No messages yet
             </div>
           ) : (
-            <div>
-              {inquiries.map((inquiry) => (
+            <div style={{ display: 'grid', gap: '24px' }}>
+              {messagesByProperty.map((property) => (
                 <div
-                  key={inquiry.id}
+                  key={property.deal.id}
                   style={{
-                    padding: '20px 24px',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)'
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '16px',
+                    overflow: 'hidden'
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ color: '#fff', fontWeight: '600', marginBottom: '6px' }}>
-                        {inquiry.deal?.title || inquiry.deal?.address || 'Unknown Property'}
-                      </div>
-                      <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', marginBottom: '8px' }}>
-                        From: {inquiry.inquirer?.user_profiles?.full_name || 'Anonymous'}
-                      </div>
-                      <div style={{
-                        padding: '12px',
-                        background: 'rgba(255,255,255,0.02)',
-                        borderRadius: '8px',
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: '14px',
-                        lineHeight: '1.5'
-                      }}>
-                        {inquiry.message}
-                      </div>
-                      <div style={{ marginTop: '8px', fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
-                        {new Date(inquiry.created_at).toLocaleString()}
-                      </div>
-                    </div>
+                  {/* Property Header */}
+                  <div style={{
+                    padding: '20px 24px',
+                    borderBottom: '1px solid rgba(255,255,255,0.08)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    background: 'rgba(255,255,255,0.02)'
+                  }}>
+                    {/* Thumbnail */}
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      borderRadius: '8px',
+                      background: property.deal.image_url 
+                        ? `url(${property.deal.image_url})` 
+                        : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }} />
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {inquiry.status === 'new' ? (
-                        <span style={{
-                          padding: '6px 12px',
-                          background: 'rgba(251, 191, 36, 0.15)',
-                          border: '1px solid rgba(251, 191, 36, 0.3)',
-                          borderRadius: '6px',
-                          color: '#fbbf24',
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}>
-                          <Clock size={14} />
-                          New
-                        </span>
-                      ) : (
-                        <span style={{
-                          padding: '6px 12px',
-                          background: 'rgba(34, 197, 94, 0.15)',
-                          border: '1px solid rgba(34, 197, 94, 0.3)',
-                          borderRadius: '6px',
-                          color: '#22c55e',
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}>
-                          <CheckCircle size={14} />
-                          {inquiry.status}
-                        </span>
-                      )}
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ color: '#fff', fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
+                        {property.deal.title || property.deal.address}
+                      </h4>
+                      <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>
+                        {property.conversations.length} conversation{property.conversations.length !== 1 ? 's' : ''}
+                      </div>
                     </div>
+                  </div>
+
+                  {/* Conversations */}
+                  <div>
+                    {property.conversations.map((conv) => {
+                      const lastMsg = conv.messages[0]; // Already sorted desc
+                      return (
+                        <div
+                          key={conv.conversation_id}
+                          onClick={() => setShowMessaging({ dealId: property.deal.id, dealTitle: property.deal.title || property.deal.address, recipientId: conv.sender_id })}
+                          style={{
+                            padding: '20px 24px',
+                            borderBottom: '1px solid rgba(255,255,255,0.05)',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                <User size={16} color="#00b8d4" />
+                                <span style={{ color: '#fff', fontWeight: '600', fontSize: '15px' }}>
+                                  {conv.sender_name}
+                                </span>
+                                {conv.unread_count > 0 && (
+                                  <span style={{
+                                    padding: '3px 8px',
+                                    background: '#00b8d4',
+                                    borderRadius: '10px',
+                                    color: '#000',
+                                    fontSize: '11px',
+                                    fontWeight: '700'
+                                  }}>
+                                    {conv.unread_count} new
+                                  </span>
+                                )}
+                              </div>
+
+                              <div style={{
+                                color: 'rgba(255,255,255,0.7)',
+                                fontSize: '14px',
+                                marginBottom: '6px',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
+                              }}>
+                                {lastMsg.message}
+                              </div>
+
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
+                                  {new Date(lastMsg.created_at).toLocaleString()}
+                                </span>
+                                <button
+                                  style={{
+                                    padding: '4px 12px',
+                                    background: 'rgba(0, 184, 212, 0.15)',
+                                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                                    borderRadius: '6px',
+                                    color: '#00b8d4',
+                                    fontSize: '12px',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px'
+                                  }}
+                                >
+                                  <Send size={12} />
+                                  Reply
+                                </button>
+                              </div>
+                            </div>
+
+                            <div>
+                              {conv.messages.length > 1 && (
+                                <span style={{
+                                  padding: '6px 12px',
+                                  background: 'rgba(255,255,255,0.05)',
+                                  borderRadius: '6px',
+                                  color: 'rgba(255,255,255,0.6)',
+                                  fontSize: '12px'
+                                }}>
+                                  {conv.messages.length} messages
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -310,6 +475,16 @@ const BrokerAnalytics = () => {
           )}
         </div>
       </div>
+
+      {/* Messaging Panel */}
+      {showMessaging && (
+        <MessagingPanel
+          dealId={showMessaging.dealId}
+          dealTitle={showMessaging.dealTitle}
+          brokerId={showMessaging.recipientId}
+          onClose={() => setShowMessaging(null)}
+        />
+      )}
     </div>
   );
 };
