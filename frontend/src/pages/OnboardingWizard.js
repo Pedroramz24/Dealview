@@ -67,7 +67,7 @@ const OnboardingWizard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#000',
+      background: 'transparent',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

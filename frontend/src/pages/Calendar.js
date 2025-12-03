@@ -348,7 +348,7 @@ const CalendarView = () => {
   };
 
   return (
-    <div style={{ height: '100vh', background: '#000000', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ height: '100vh', background: 'transparent', position: 'relative', overflow: 'hidden' }}>
       {/* Animated background gradients - TONED DOWN */}
       <div style={{
         position: 'absolute',

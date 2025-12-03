@@ -111,7 +111,7 @@ const PublicShare = () => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ color: '#FFFFFF', fontSize: '16px' }}>Loading property details...</div>
       </div>
     );
@@ -119,7 +119,7 @@ const PublicShare = () => {
 
   if (error || !deal) {
     return (
-      <div style={{ minHeight: '100vh', background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
           <h1 style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '700', marginBottom: '12px' }}>Property Not Found</h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>The property listing you're looking for doesn't exist or has been removed.</p>
@@ -129,7 +129,7 @@ const PublicShare = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#000000' }}>
+    <div style={{ minHeight: '100vh', background: 'transparent' }}>
       {/* Header with Logo */}
       <div style={{
         padding: '16px 20px',

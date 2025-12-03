@@ -298,7 +298,7 @@ const Team = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#000' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'transparent' }}>
         <Loader2 size={40} style={{ color: '#00b8d4' }} className="animate-spin" />
       </div>
     );
@@ -306,7 +306,7 @@ const Team = () => {
 
   if (teams.length === 0) {
     return (
-      <div style={{ minHeight: '100vh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+      <div style={{ minHeight: '100vh', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
         <div className="glass-surface p-10 max-w-2xl w-full" style={{ textAlign: 'center' }}>
           <div style={{
             width: '80px',
@@ -340,7 +340,7 @@ const Team = () => {
   const canManage = ['owner', 'admin'].includes(userRole);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#000', padding: '24px' }}>
+    <div style={{ minHeight: '100vh', background: 'transparent', padding: '24px' }}>
       {/* Header with Stats */}
       <div style={{ marginBottom: '24px' }}>
         <div className="glass-surface" style={{ padding: '24px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
