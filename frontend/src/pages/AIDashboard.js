@@ -361,11 +361,11 @@ const CalendarTimeline = ({ events, milestones, navigate }) => {
 
   return (
     <div style={{
-      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-      border: '1px solid rgba(255, 255, 255, 0.06)',
-      borderRadius: '20px',
+      background: '#0c0c0c',
+      border: 'none',
+      borderRadius: '16px',
       padding: '28px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
         <div style={{
