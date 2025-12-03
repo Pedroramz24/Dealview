@@ -119,6 +119,7 @@ function App() {
           >
             <Route index element={<MarketplacePage />} />
             <Route path="deals/:dealId" element={<MarketplaceDealDetail />} />
+            <Route path="saved" element={<SavedDealsPage />} />
           </Route>
 
           {/* Workspace Routes - MainLayout (full CRM sidebar) */}
