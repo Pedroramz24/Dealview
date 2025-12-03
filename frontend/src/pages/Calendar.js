@@ -349,19 +349,8 @@ const CalendarView = () => {
 
   return (
     <div style={{ height: '100vh', background: 'transparent', position: 'relative', overflow: 'hidden' }}>
-      {/* Animated background gradients - TONED DOWN */}
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        left: '-50%',
-        width: '200%',
-        height: '200%',
-        background: 'radial-gradient(circle at 30% 30%, rgba(0, 184, 212, 0.03) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.02) 0%, transparent 40%)',
-        animation: 'float-gradient 15s ease-in-out infinite',
-        pointerEvents: 'none',
-        opacity: 0.4
-      }} />
-
+      {/* Global body gradient provides the atmospheric effect */}
+      
       {/* Main Container */}
       <div style={{ height: '100%', position: 'relative', zIndex: 1, padding: '20px' }}>
         {/* Premium Elevated Calendar Card */}
