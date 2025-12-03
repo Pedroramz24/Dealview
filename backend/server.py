@@ -2478,6 +2478,7 @@ api_router.include_router(marketplace_router)
 api_router.include_router(messaging_router)
 api_router.include_router(onboarding_router)
 api_router.include_router(admin_router)
+api_router.include_router(reputation_router)
 
 # Register main API router and service routers
 app.include_router(api_router)
