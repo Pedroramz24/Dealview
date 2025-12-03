@@ -113,7 +113,7 @@ const MarketplaceDealDetail = () => {
   }
 
   return (
-    <div style={{ background: '#000000', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       {/* Header with Actions */}
       <div style={{
         position: 'sticky',
