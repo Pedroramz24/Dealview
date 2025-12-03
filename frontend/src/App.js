@@ -133,6 +133,7 @@ function App() {
             <Route path="campaigns" element={<Campaigns />} />
             <Route path="calendar" element={<CalendarView />} />
             <Route path="team" element={<Team />} />
+            <Route path="admin/approvals" element={<AdminApprovalQueue />} />
           </Route>
 
           {/* Settings - MainLayout */}
