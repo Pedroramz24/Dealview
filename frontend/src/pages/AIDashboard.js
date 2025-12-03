@@ -160,12 +160,12 @@ const AIDashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(180deg, rgba(29, 43, 114, 1), rgba(0, 0, 0, 1))',
+      background: 'linear-gradient(0deg, rgba(2, 0, 36, 1) 66%, rgba(9, 9, 121, 1) 100%)',
       padding: '32px',
       position: 'relative',
       overflow: 'auto'
     }}>
-      {/* Header Card - Solid Dark Grey */}
+      {/* Dark purple-blue gradient: darker at bottom (66%), brighter blue at top (100%) */}
       <div style={{
         background: '#0c0c0c',
         border: 'none',
