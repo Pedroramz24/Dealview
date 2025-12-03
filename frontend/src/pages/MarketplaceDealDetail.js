@@ -25,10 +25,63 @@ const MarketplaceDealDetail = () => {
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
   const [showMessaging, setShowMessaging] = useState(false);
+  const [showNCNDModal, setShowNCNDModal] = useState(false);
+  const [ncndStatus, setNcndStatus] = useState(null);
+  const [checkingNCND, setCheckingNCND] = useState(true);
 
   useEffect(() => {
-    fetchDealDetail();
+    checkNCNDStatus();
   }, [dealId]);
+
+  const checkNCNDStatus = async () => {
+    try {
+      setCheckingNCND(true);
+      const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      if (!session?.access_token) {
+        setCheckingNCND(false);
+        return;
+      }
+      
+      const response = await fetch(`${API}/marketplace/deals/${dealId}/ncnd-status`, {
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      });
+      
+      if (response.ok) {
+        const status = await response.json();
+        setNcndStatus(status);
+        
+        // Show NCND modal if signature required and not signed or expired
+        if (status.requires_signature && (!status.has_signed || status.is_expired)) {
+          setShowNCNDModal(true);
+        } else {
+          // Proceed to fetch deal details
+          fetchDealDetail();
+        }
+      } else {
+        // If NCND check fails, still allow viewing (graceful degradation)
+        fetchDealDetail();
+      }
+    } catch (error) {
+      console.error('Error checking NCND status:', error);
+      // Graceful degradation: allow viewing even if NCND check fails
+      fetchDealDetail();
+    } finally {
+      setCheckingNCND(false);
+    }
+  };
+
+  const handleNCNDSigned = () => {
+    setShowNCNDModal(false);
+    setNcndStatus({ ...ncndStatus, has_signed: true, is_expired: false });
+    fetchDealDetail();
+  };
+
+  useEffect(() => {
+    // Only fetch deal if NCND is not required or already signed
+    if (!checkingNCND && ncndStatus && (!ncndStatus.requires_signature || (ncndStatus.has_signed && !ncndStatus.is_expired))) {
+      fetchDealDetail();
+    }
+  }, [checkingNCND, ncndStatus]);
 
   const fetchDealDetail = async () => {
     try {
