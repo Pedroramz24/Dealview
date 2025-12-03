@@ -50,11 +50,14 @@ const DualModeLayout = () => {
   };
 
   const sidebarWidth = workspaceExpanded ? '240px' : (sidebarCollapsed ? '0px' : '80px');
+  
+  // Only show toggle on marketplace feed page, not detail pages
+  const showToggle = isMarketplaceMode && location.pathname === '/marketplace';
 
   return (
     <div className="flex h-screen" style={{ background: '#000000' }}>
-      {/* Toggle Button for Marketplace Mode - Floating */}
-      {isMarketplaceMode && (
+      {/* Toggle Button for Marketplace Mode - Only on feed page */}
+      {showToggle && (
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           style={{
