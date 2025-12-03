@@ -49,17 +49,50 @@ const DualModeLayout = () => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
-  const sidebarWidth = workspaceExpanded ? '240px' : '80px';
+  const sidebarWidth = workspaceExpanded ? '240px' : (sidebarCollapsed ? '0px' : '80px');
 
   return (
     <div className="flex h-screen" style={{ background: '#000000' }}>
+      {/* Toggle Button for Marketplace Mode - Floating */}
+      {isMarketplaceMode && (
+        <button
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: sidebarCollapsed ? '20px' : '100px',
+            zIndex: 200,
+            background: 'rgba(0, 184, 212, 0.9)',
+            border: 'none',
+            borderRadius: '8px',
+            width: '40px',
+            height: '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <ChevronRight 
+            size={20} 
+            color="#000"
+            style={{ 
+              transform: sidebarCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s ease'
+            }} 
+          />
+        </button>
+      )}
+
       {/* Dual-Mode Sidebar */}
       <div style={{
         width: sidebarWidth,
         background: 'rgba(0, 0, 0, 0.8)',
-        borderRight: '1px solid rgba(255,255,255,0.08)',
+        borderRight: sidebarCollapsed ? 'none' : '1px solid rgba(255,255,255,0.08)',
         backdropFilter: 'blur(12px)',
-        display: 'flex',
+        display: sidebarCollapsed ? 'none' : 'flex',
         flexDirection: 'column',
         padding: '24px 0',
         boxShadow: '4px 0 24px rgba(0,0,0,0.5)',
