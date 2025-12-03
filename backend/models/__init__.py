@@ -62,4 +62,11 @@ __all__ = [
     # NCND models
     "NCNDSignatureCreate", "NCNDSignature", "NCNDStatus",
     "NCNDSignatureResponse", "generate_ncnd_text",
+    # Reputation models
+    "DealLifecycleEvent", "CreateLifecycleEvent",
+    "BrokerReputation", "BrokerBadges", "BrokerReputationSummary",
+    "DealFeedback", "SubmitFeedback", "FeedbackResponse",
+    "SellerCommitment", "UpdateCommitment",
+    "ResponseTimeRecord", "RecordResponseTime",
+    "calculate_broker_badges", "get_reputation_summary",
 ]
