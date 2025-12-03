@@ -507,13 +507,13 @@ const MetricCard = ({ icon: Icon, label, value, color, bgColor, isLarge }) => (
 // Timeline Module Component
 const TimelineModule = ({ events }) => (
   <div style={{
-    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    borderRadius: '20px',
-    padding: '28px',
-    marginBottom: '32px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
-    transition: 'all 0.3s ease'
+    background: colors.surfaceCard,
+    border: 'none',
+    borderRadius: borderRadius.lg,
+    padding: spacing.xl,
+    marginBottom: spacing.xl,
+    boxShadow: shadows.cardElevation,
+    transition: transitions.default
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
       <div style={{
