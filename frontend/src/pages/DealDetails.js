@@ -59,6 +59,7 @@ const DealDetails = () => {
   
   // Publish Modal State
   const [showPublishModal, setShowPublishModal] = useState(false);
+  const [dealCompleteness, setDealCompleteness] = useState(null);
 
   
   // Contact Management
