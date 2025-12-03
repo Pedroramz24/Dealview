@@ -421,6 +421,22 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
         </div>
 
         <div>
+          <label style={labelStyle}>Seller Commitment Level</label>
+          <select
+            value={formData.seller_commitment_level}
+            onChange={(e) => updateFormData({ seller_commitment_level: e.target.value })}
+            style={inputStyle}
+          >
+            <option value="signed_listing">Signed Listing Agreement - Verified</option>
+            <option value="written_auth">Written Authorization</option>
+            <option value="verbal_maybe">Verbal Authorization</option>
+          </select>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginTop: '6px' }}>
+            Higher commitment levels improve visibility and trust
+          </p>
+        </div>
+
+        <div>
           <label style={labelStyle}>Sale Notes</label>
           <textarea
             value={formData.sale_notes}
