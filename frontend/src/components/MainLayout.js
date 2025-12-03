@@ -207,66 +207,9 @@ const MainLayout = () => {
           paddingTop: '24px',
           borderTop: '1px solid rgba(255,255,255,0.08)'
         }}>
-          {/* Inbox Icon */}
-          <button
-            onClick={() => navigate('/inbox')}
-            style={{
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '56px',
-              height: '56px',
-              borderRadius: '12px',
-              color: location.pathname === '/inbox' ? '#00d4aa' : 'rgba(255,255,255,0.6)',
-              background: location.pathname === '/inbox' ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (location.pathname !== '/inbox') {
-                e.currentTarget.style.color = '#00b8d4';
-                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
-                e.currentTarget.style.boxShadow = '0 0 16px rgba(0, 184, 212, 0.15)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (location.pathname !== '/inbox') {
-                e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.boxShadow = 'none';
-              }
-            }}
-          >
-            <Inbox size={24} strokeWidth={1.5} />
-            <div style={{
-              position: 'absolute',
-              left: '100%',
-              marginLeft: '12px',
-              background: 'rgba(15, 23, 42, 0.95)',
-              border: '1px solid rgba(0, 184, 212, 0.3)',
-              borderRadius: '6px',
-              padding: '6px 12px',
-              whiteSpace: 'nowrap',
-              fontSize: '13px',
-              fontWeight: '500',
-              color: '#FFFFFF',
-              opacity: 0,
-              pointerEvents: 'none',
-              transition: 'opacity 0.2s ease',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-              zIndex: 1000
-            }}
-            className="nav-tooltip"
-            >
-              Inbox
-            </div>
-          </button>
-
           {/* Settings Icon */}
-          <button
-            onClick={() => navigate('/settings')}
+          <NavLink
+            to="/settings"
             style={{
               position: 'relative',
               display: 'flex',
@@ -275,9 +218,10 @@ const MainLayout = () => {
               width: '56px',
               height: '56px',
               borderRadius: '12px',
-              color: location.pathname === '/settings' ? '#00d4aa' : 'rgba(255,255,255,0.6)',
+              color: location.pathname === '/settings' ? '#00b8d4' : 'rgba(255,255,255,0.6)',
               background: location.pathname === '/settings' ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
               border: 'none',
+              textDecoration: 'none',
               cursor: 'pointer',
               transition: 'all 0.3s ease'
             }}
@@ -285,18 +229,16 @@ const MainLayout = () => {
               if (location.pathname !== '/settings') {
                 e.currentTarget.style.color = '#00b8d4';
                 e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
-                e.currentTarget.style.boxShadow = '0 0 16px rgba(0, 184, 212, 0.15)';
               }
             }}
             onMouseLeave={(e) => {
               if (location.pathname !== '/settings') {
                 e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
                 e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.boxShadow = 'none';
               }
             }}
           >
-            <Settings size={24} strokeWidth={1.5} />
+            <SettingsIcon size={24} strokeWidth={1.5} />
             <div style={{
               position: 'absolute',
               left: '100%',
@@ -319,7 +261,7 @@ const MainLayout = () => {
             >
               Settings
             </div>
-          </button>
+          </NavLink>
 
           {/* Logout Icon */}
           <button
