@@ -125,7 +125,7 @@ const MarketplacePage = () => {
     <div style={{ 
       display: 'flex', 
       height: '100vh', 
-      background: '#000000',
+      background: 'transparent',  // Let body gradient show through
       overflow: 'hidden'
     }}>
       {/* Map Section - Left Side */}
