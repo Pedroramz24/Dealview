@@ -108,6 +108,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/share/:dealId" element={<PublicShare />} />
           <Route path="/join-team/:token" element={<JoinTeam />} />
+          <Route path="/onboarding" element={user ? <OnboardingWizard /> : <Navigate to="/login" />} />
           
           {/* Marketplace Routes - DualModeLayout (minimal sidebar) */}
           <Route
