@@ -252,7 +252,7 @@ const DealFeedbackModal = ({ dealId, interactionType = 'offer_submitted', onClos
             color: 'rgba(255,255,255,0.7)',
             lineHeight: '1.6'
           }}>
-            <strong style={{ color: '#00b8d4' }}>🔒 Privacy:</strong> Your feedback is private and anonymous. It will not be published publicly. We use this data solely to calculate broker quality scores and improve platform integrity.
+            <strong style={{ color: '#00b8d4' }}>Privacy:</strong> Your feedback is private and anonymous. It will not be published publicly. We use this data solely to calculate broker quality scores and improve platform integrity.
           </div>
         </div>
 
