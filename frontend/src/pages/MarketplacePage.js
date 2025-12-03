@@ -174,7 +174,7 @@ const MarketplacePage = () => {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: '#0a0a0a'
+        background: 'transparent'  // Let gradient show through
       }}>
         {/* Header with Filters */}
         <div style={{
