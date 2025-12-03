@@ -220,49 +220,66 @@ async def move_deal(
 # MARKETPLACE PUBLISHING ENDPOINTS
 # ============================================================
 
-@router.post("/{deal_id}/publish")
+@router.post("/{deal_id}/publish", response_model=PublishDealResponse)
 async def publish_deal_to_marketplace(
     deal_id: str,
-    publish_data: dict,
+    publish_data: PublishDealRequest,
     user = Depends(get_current_user_supabase)
 ):
     """
-    Publish a deal to the Marketplace.
-    Only brokers can publish deals.
+    Publish a deal to the Marketplace with comprehensive data.
+    Calculates completeness score and blocks publishing if below 80%.
     Requires admin approval before going live.
     """
     supabase = get_supabase()
     
     try:
         # Verify user owns this deal
-        deal = supabase.table('deals').select('id, owner_id').eq('id', deal_id).single().execute()
+        deal_result = supabase.table('deals').select('*').eq('id', deal_id).single().execute()
         
-        if not deal.data:
+        if not deal_result.data:
             raise HTTPException(status_code=404, detail="Deal not found")
         
-        if deal.data['owner_id'] != str(user.id):
+        if deal_result.data['owner_id'] != str(user.id):
             raise HTTPException(status_code=403, detail="You can only publish your own deals")
         
-        # Update deal with publishing info
-        update_data = {
-            'is_published': True,
-            'public_status': 'pending_approval',
-            'public_asset_type': publish_data.get('public_asset_type'),
-            'public_market': publish_data.get('public_market'),
-            'public_price': publish_data.get('public_price'),
-            'public_strategy': publish_data.get('public_strategy', 'Core'),
-            'published_by': str(user.id),
-            'published_at': datetime.now(timezone.utc).isoformat(),
-            'approval_status': 'pending'
-        }
+        # Prepare update data with all new fields
+        update_data = publish_data.model_dump(exclude_none=False)
         
+        # Calculate completeness score
+        deal_data = {**deal_result.data, **update_data}
+        completeness = calculate_completeness_score(deal_data)
+        
+        # Block publishing if completeness is below 80%
+        if not completeness.can_publish:
+            return PublishDealResponse(
+                success=False,
+                message=f"Cannot publish: Listing is only {completeness.total_score}% complete. Need 80% minimum. Missing: {', '.join(completeness.missing_fields)}",
+                deal_id=deal_id,
+                completeness_score=completeness.total_score,
+                public_status='draft',
+                can_publish=False
+            )
+        
+        # Add publishing metadata
+        update_data['is_published'] = True
+        update_data['public_status'] = 'pending_approval'
+        update_data['published_by'] = str(user.id)
+        update_data['published_at'] = datetime.now(timezone.utc).isoformat()
+        update_data['approval_status'] = 'pending'
+        update_data['completeness_score'] = completeness.total_score
+        
+        # Update the deal
         result = supabase.table('deals').update(update_data).eq('id', deal_id).execute()
         
-        return {
-            "success": True,
-            "message": "Deal submitted for approval",
-            "deal": result.data[0]
-        }
+        return PublishDealResponse(
+            success=True,
+            message=f"Deal submitted for approval! Completeness: {completeness.total_score}%",
+            deal_id=deal_id,
+            completeness_score=completeness.total_score,
+            public_status='pending_approval',
+            can_publish=True
+        )
         
     except HTTPException:
         raise
@@ -270,7 +287,7 @@ async def publish_deal_to_marketplace(
         logger.error(f"Error publishing deal: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to publish deal"
+            detail=f"Failed to publish deal: {str(e)}"
         )
 
 
