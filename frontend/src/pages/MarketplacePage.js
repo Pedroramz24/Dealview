@@ -138,7 +138,7 @@ const MarketplacePage = () => {
             {...viewport}
             onMove={evt => setViewport(evt.viewState)}
             style={{ width: '100%', height: '100%' }}
-            mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+            mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
           >
             <NavigationControl position="top-right" />
             
