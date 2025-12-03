@@ -427,6 +427,46 @@ const MarketplacePage = () => {
 
                   {/* Deal Info */}
                   <div style={{ padding: '20px' }}>
+                    {/* Commitment Level Badge */}
+                    {deal.seller_commitment_level && (
+                      <div style={{ marginBottom: '12px' }}>
+                        {deal.seller_commitment_level === 'signed_listing' && (
+                          <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '4px 10px',
+                            background: 'rgba(16, 185, 129, 0.15)',
+                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                            borderRadius: '6px',
+                            fontSize: '11px',
+                            color: '#10b981',
+                            fontWeight: '600'
+                          }}>
+                            <Check size={12} />
+                            Verified Listing
+                          </div>
+                        )}
+                        {deal.seller_commitment_level === 'verbal_maybe' && (
+                          <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '4px 10px',
+                            background: 'rgba(107, 114, 128, 0.15)',
+                            border: '1px solid rgba(107, 114, 128, 0.3)',
+                            borderRadius: '6px',
+                            fontSize: '11px',
+                            color: '#9ca3af',
+                            fontWeight: '600'
+                          }}>
+                            <AlertCircle size={12} />
+                            Broker-Certified Lead
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     <div style={{
                       display: 'flex',
                       justifyContent: 'space-between',
