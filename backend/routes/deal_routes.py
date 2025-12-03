@@ -305,6 +305,61 @@ async def unpublish_deal_from_marketplace(
     try:
         # Verify ownership
         deal = supabase.table('deals').select('id, owner_id, published_by').eq('id', deal_id).single().execute()
+
+
+@router.get("/{deal_id}/completeness")
+async def get_deal_completeness(
+    deal_id: str,
+    user = Depends(get_current_user_supabase)
+):
+    """
+    Calculate and return the completeness score for a deal.
+    Used by the publishing wizard to show real-time progress.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Fetch the deal
+        deal_result = supabase.table('deals').select('*').eq('id', deal_id).single().execute()
+        
+        if not deal_result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        if deal_result.data['owner_id'] != str(user.id):
+            raise HTTPException(status_code=403, detail="You can only view your own deals")
+        
+        # Calculate completeness
+        completeness = calculate_completeness_score(deal_result.data)
+        
+        return {
+            "deal_id": deal_id,
+            "completeness": completeness.model_dump()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error calculating completeness: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to calculate completeness score"
+        )
+
+
+@router.post("/{deal_id}/unpublish")
+async def unpublish_deal_from_marketplace(
+    deal_id: str,
+    user = Depends(get_current_user_supabase)
+):
+    """
+    Remove a deal from the Marketplace.
+    Only the broker who published it can unpublish.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Verify ownership
+        deal = supabase.table('deals').select('id, owner_id, published_by').eq('id', deal_id).single().execute()
         
         if not deal.data:
             raise HTTPException(status_code=404, detail="Deal not found")
