@@ -147,7 +147,7 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
         recipient_id: selectedConversation.other_user_id,
         deal_id: selectedConversation.deal_id,
         message: newMessage,
-        conversation_id: selectedConversation.conversation_id
+        conversation_id: selectedConversation.conversation_id || undefined
       };
 
       const response = await fetch(`${API}/messages/send`, {
@@ -159,7 +159,10 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
         body: JSON.stringify(payload)
       });
 
-      if (!response.ok) throw new Error('Failed to send message');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to send message');
+      }
       
       const data = await response.json();
       
@@ -182,7 +185,7 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
       
     } catch (error) {
       console.error('Error sending message:', error);
-      toast.error('Failed to send message');
+      toast.error(error.message || 'Failed to send message');
     } finally {
       setSending(false);
     }
