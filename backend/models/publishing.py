@@ -24,6 +24,7 @@ class PublishDealRequest(BaseModel):
     sale_conditions: Optional[List[str]] = []
     sale_notes: Optional[str] = None
     highlights: Optional[List[str]] = []
+    seller_commitment_level: Optional[str] = "written_auth"  # Default to written auth
     
     # Media
     image_urls: Optional[List[str]] = []
