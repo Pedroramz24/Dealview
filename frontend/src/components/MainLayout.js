@@ -55,7 +55,7 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex h-screen" style={{ background: '#000000' }}>
+    <div className="flex h-screen" style={{ background: 'transparent' }}>
       {/* Compact Icon-Only Sidebar */}
       <div style={{
         width: '80px',
