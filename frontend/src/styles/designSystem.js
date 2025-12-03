@@ -1,0 +1,97 @@
+/**
+ * DealLinked Design System - Premium Dark Mode
+ * Elevated aesthetic with depth, shadows, and refined details
+ */
+
+export const colors = {
+  // Surfaces (layered elevation)
+  void: '#000000',           // Deep background
+  surface: '#0a0a0a',        // Card backgrounds
+  elevated: '#121212',       // Elevated components
+  hover: '#1a1a1a',         // Hover states
+  
+  // Brand Colors
+  primary: '#00b8d4',       // Cyan - main brand
+  primaryDark: '#0088a3',   // Darker cyan
+  primaryLight: '#00d4f0',  // Lighter cyan
+  
+  // Accent Colors (selective use)
+  success: '#10b981',       // Emerald - approved, positive
+  warning: '#f59e0b',       // Amber - pending, alerts
+  danger: '#ef4444',        // Red - delete, reject
+  
+  // Text Hierarchy
+  textPrimary: '#ffffff',           // Headings
+  textSecondary: 'rgba(255,255,255,0.85)',  // Body text
+  textTertiary: 'rgba(255,255,255,0.6)',    // Labels
+  textMuted: 'rgba(255,255,255,0.4)',       // Disabled/subtle
+  
+  // Borders & Dividers
+  border: 'rgba(255,255,255,0.08)',
+  borderHover: 'rgba(0, 184, 212, 0.3)',
+  divider: 'rgba(255,255,255,0.05)',
+};
+
+export const shadows = {
+  sm: '0 2px 8px rgba(0, 0, 0, 0.3)',
+  md: '0 4px 16px rgba(0, 0, 0, 0.4)',
+  lg: '0 8px 32px rgba(0, 0, 0, 0.5)',
+  xl: '0 12px 48px rgba(0, 0, 0, 0.6)',
+  
+  // Glow effects
+  glowCyan: '0 0 20px rgba(0, 184, 212, 0.2)',
+  glowCyanHover: '0 0 32px rgba(0, 184, 212, 0.3)',
+  glowSuccess: '0 0 20px rgba(16, 185, 129, 0.2)',
+};
+
+export const gradients = {
+  // Subtle backgrounds (almost imperceptible)
+  surfaceSubtle: 'linear-gradient(135deg, rgba(0, 184, 212, 0.03) 0%, rgba(0, 0, 0, 0) 100%)',
+  
+  // Interactive elements
+  primaryButton: 'linear-gradient(135deg, #00b8d4 0%, #0088a3 100%)',
+  primaryButtonHover: 'linear-gradient(135deg, #00d4f0 0%, #00b8d4 100%)',
+  
+  // Overlays
+  imageOverlay: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)',
+  cardShine: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)',
+};
+
+export const spacing = {
+  xs: '4px',
+  sm: '8px',
+  md: '16px',
+  lg: '24px',
+  xl: '32px',
+  xxl: '48px',
+};
+
+export const borderRadius = {
+  sm: '8px',
+  md: '12px',
+  lg: '16px',
+  xl: '20px',
+  full: '9999px',
+};
+
+export const typography = {
+  // Headings
+  h1: { fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em' },
+  h2: { fontSize: '28px', fontWeight: '700', letterSpacing: '-0.02em' },
+  h3: { fontSize: '20px', fontWeight: '600', letterSpacing: '-0.01em' },
+  h4: { fontSize: '16px', fontWeight: '600' },
+  
+  // Body
+  body: { fontSize: '15px', lineHeight: '1.6' },
+  bodySm: { fontSize: '14px', lineHeight: '1.5' },
+  
+  // Labels
+  label: { fontSize: '12px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  labelSm: { fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.8px' },
+};
+
+export const transitions = {
+  default: 'all 0.3s ease',
+  fast: 'all 0.15s ease',
+  slow: 'all 0.5s ease',
+};
