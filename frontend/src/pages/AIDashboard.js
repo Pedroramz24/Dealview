@@ -479,17 +479,17 @@ const TimelineItem = ({ item, navigate }) => {
   );
 };
 
-// Priorities Panel Component - Stained Grey Glass
+// Priorities Panel Component - Ultra-Light Glassmorphism
 const PrioritiesPanel = ({ priorities, onRefresh, onAction, refreshing, navigate }) => {
   return (
     <div style={{
-      background: 'rgba(30, 30, 30, 0.6)',
-      backdropFilter: 'blur(12px)',
-      WebkitBackdropFilter: 'blur(12px)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
+      background: 'rgba(255, 255, 255, 0.03)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      border: '1px solid rgba(255, 255, 255, 0.08)',
       borderRadius: '16px',
       padding: '28px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
       height: 'fit-content',
       position: 'sticky',
       top: '32px'
