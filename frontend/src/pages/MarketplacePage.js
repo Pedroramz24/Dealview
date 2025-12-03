@@ -5,6 +5,7 @@ import { API } from '../App';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { colors, shadows, gradients, borderRadius, transitions } from '../styles/designSystem';
+import BrokerBadges from '../components/BrokerBadges';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MarketplacePage = () => {
