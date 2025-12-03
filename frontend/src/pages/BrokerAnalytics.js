@@ -338,7 +338,7 @@ const BrokerAnalytics = () => {
           </h2>
 
           {messagesByProperty.length === 0 ? (
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
+            <div style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
               No messages yet
             </div>
           ) : (
@@ -347,8 +347,9 @@ const BrokerAnalytics = () => {
                 <div
                   key={property.deal.id}
                   style={{
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    background: 'rgba(255,255,255,0.02)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.05)',
                     borderRadius: '16px',
                     overflow: 'hidden'
                   }}
