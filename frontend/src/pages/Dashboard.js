@@ -302,12 +302,12 @@ const Dashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(180deg, rgba(29, 69, 109, 1), rgba(0, 0, 0, 1))',
+      background: 'linear-gradient(180deg, rgb(45, 85, 125), rgb(0, 0, 0))',
       padding: '32px',
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Testing custom blue-to-black gradient */}
+      {/* Brighter blue-to-black gradient for visibility */}
       
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '1800px', margin: '0 auto' }}>
         {/* AI Greeting Header - Modular Card */}
