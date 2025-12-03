@@ -78,14 +78,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-primary);
   
-  /* Much Brighter Blue-to-Black Gradient for High Visibility */
-  background: linear-gradient(180deg, 
-    rgb(60, 110, 160) 0%,     /* Bright blue at top */
-    rgb(40, 75, 110) 25%,     /* Medium blue */
-    rgb(25, 45, 65) 50%,      /* Darker blue */
-    rgb(10, 20, 30) 70%,      /* Very dark */
-    rgb(0, 0, 0) 90%          /* Pure black */
-  );
+  /* HIGHLY VISIBLE Blue-to-Black Gradient - User's Exact Spec */
+  background: linear-gradient(180deg, rgba(29, 69, 109, 1) 0%, rgba(0, 0, 0, 1) 100%);
   background-attachment: fixed;
   min-height: 100vh;
 }
