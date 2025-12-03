@@ -46,11 +46,13 @@ export const shadows = {
 };
 
 export const gradients = {
-  // Atmospheric Background (Buy Box Cartel inspired)
+  // Atmospheric Background (Buy Box Cartel inspired - with cyan instead of purple)
+  // Strong radial glows for depth - more visible than before
   atmosphericGlow: `
-    radial-gradient(ellipse 1200px 800px at 50% -10%, rgba(0, 184, 212, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 800px 600px at 10% 50%, rgba(0, 184, 212, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse 800px 600px at 90% 50%, rgba(0, 184, 212, 0.05) 0%, transparent 50%)
+    radial-gradient(ellipse 1400px 900px at 50% 0%, rgba(0, 184, 212, 0.15) 0%, rgba(0, 100, 120, 0.08) 40%, transparent 70%),
+    radial-gradient(ellipse 1000px 800px at 0% 30%, rgba(0, 140, 160, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 1000px 800px at 100% 70%, rgba(0, 200, 220, 0.10) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(0, 50, 60, 0.1) 0%, rgba(0, 0, 0, 1) 100%)
   `,
   
   // Subtle surface gradients
