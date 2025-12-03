@@ -23,6 +23,7 @@ const MarketplaceDealDetail = () => {
   const [deal, setDeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
+  const [showMessaging, setShowMessaging] = useState(false);
 
   useEffect(() => {
     fetchDealDetail();
