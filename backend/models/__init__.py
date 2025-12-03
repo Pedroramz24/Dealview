@@ -15,6 +15,10 @@ from .marketplace import (
     MarketplaceOffer, OfferCreate, OfferUpdate,
     Conversation
 )
+from .publishing import (
+    PublishDealRequest, PublishDealResponse,
+    CompletenessScore, calculate_completeness_score
+)
 
 __all__ = [
     # User models
