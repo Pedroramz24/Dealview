@@ -6,6 +6,7 @@ import { API } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import MessagingPanel from '../components/MessagingPanel';
+import NCNDSignatureModal from '../components/NCNDSignatureModal';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
