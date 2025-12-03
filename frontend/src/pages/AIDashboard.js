@@ -474,11 +474,11 @@ const TimelineItem = ({ item, navigate }) => {
 const PrioritiesPanel = ({ priorities, onRefresh, onAction, refreshing, navigate }) => {
   return (
     <div style={{
-      background: 'linear-gradient(145deg, rgba(139, 92, 246, 0.06), rgba(59, 130, 246, 0.04))',
-      border: '1px solid rgba(139, 92, 246, 0.15)',
-      borderRadius: '20px',
+      background: '#0c0c0c',
+      border: 'none',
+      borderRadius: '16px',
       padding: '28px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)',
       height: 'fit-content',
       position: 'sticky',
       top: '32px'
