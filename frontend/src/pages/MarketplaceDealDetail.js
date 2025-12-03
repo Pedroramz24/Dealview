@@ -479,6 +479,22 @@ const MarketplaceDealDetail = () => {
                 </div>
               )}
             </div>
+
+            {/* Broker Reputation */}
+            {brokerReputation && deal.owner_id && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Broker Reputation
+                </h3>
+                <BrokerBadges 
+                  brokerId={deal.owner_id}
+                  badges={brokerReputation.badges || []}
+                  stats={brokerReputation.stats || {}}
+                  quality_score={brokerReputation.quality_score || 50}
+                  compact={false}
+                />
+              </div>
+            )}
           </div>
 
           {/* Right Sidebar */}
