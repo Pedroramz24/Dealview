@@ -294,32 +294,32 @@ const SnapshotCards = ({ snapshot, navigate }) => {
   );
 };
 
-// Metric Card Component - Stained Grey Glass
+// Metric Card Component - Ultra-Light Glassmorphism
 const MetricCard = ({ icon: Icon, label, value, color, isLarge, onClick }) => (
   <div
     onClick={onClick}
     style={{
-      background: 'rgba(30, 30, 30, 0.6)',
-      backdropFilter: 'blur(12px)',
-      WebkitBackdropFilter: 'blur(12px)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
+      background: 'rgba(255, 255, 255, 0.03)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      border: '1px solid rgba(255, 255, 255, 0.08)',
       borderRadius: '12px',
       padding: '24px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
       transition: 'all 0.3s ease',
       cursor: 'pointer'
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.transform = 'translateY(-2px)';
-      e.currentTarget.style.boxShadow = `0 8px 20px rgba(0, 0, 0, 0.6), 0 4px 8px ${color}20, inset 0 1px 0 rgba(255, 255, 255, 0.08)`;
-      e.currentTarget.style.background = 'rgba(40, 40, 40, 0.7)';
-      e.currentTarget.style.borderColor = `${color}30`;
+      e.currentTarget.style.boxShadow = `0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px ${color}25, inset 0 1px 0 rgba(255, 255, 255, 0.12)`;
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+      e.currentTarget.style.borderColor = `${color}40`;
     }}
     onMouseLeave={(e) => {
       e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)';
-      e.currentTarget.style.background = 'rgba(30, 30, 30, 0.6)';
-      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08)';
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
     }}
   >
     <div style={{
