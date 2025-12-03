@@ -4,11 +4,12 @@
  */
 
 export const colors = {
-  // Surfaces (layered elevation)
-  void: '#000000',           // Deep background
-  surface: '#0a0a0a',        // Card backgrounds
-  elevated: '#121212',       // Elevated components
-  hover: '#1a1a1a',         // Hover states
+  // Surfaces (layered elevation) - Modular Card System
+  void: '#000000',           // Base background (with gradient)
+  surfaceCard: '#0c0c0c',    // Card/panel backgrounds - lighter than void
+  surfaceCardHover: '#111111', // Card hover state
+  surfaceElevated: '#151515', // Even more elevated (nested cards)
+  hover: '#1a1a1a',          // General hover states
   
   // Brand Colors
   primary: '#00b8d4',       // Cyan - main brand
