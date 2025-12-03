@@ -7,6 +7,7 @@ import uuid
 import logging
 
 from models import Deal, DealCreate, DealUpdate, User, StageUpdate
+from models import PublishDealRequest, PublishDealResponse, calculate_completeness_score
 from utils.auth_helpers import get_current_user, get_current_user_supabase, security
 from utils.db import get_db, get_supabase
 from middleware import require_broker
