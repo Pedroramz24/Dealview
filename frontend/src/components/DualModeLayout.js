@@ -56,7 +56,21 @@ const DualModeLayout = () => {
   const showToggle = isMarketplaceMode && location.pathname === '/marketplace';
 
   return (
-    <div className="flex h-screen" style={{ background: '#000000' }}>
+    <div className="flex h-screen" style={{ 
+      background: `#000000`,
+      position: 'relative'
+    }}>
+      {/* Atmospheric Gradient Background Layer */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: gradients.atmosphericGlow,
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
       {/* Toggle Button for Marketplace Mode - Only on feed page */}
       {showToggle && (
         <button
