@@ -224,26 +224,27 @@ const BrokerAnalytics = () => {
                   {/* Property Info */}
                   <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>
-                        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: '600' }}>
+                      <div style={{ marginBottom: '12px' }}>
+                        <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
                           {deal.title || deal.address}
                         </h3>
-                        <span style={{
-                          padding: '6px 12px',
-                          background: deal.approval_status === 'approved' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(251, 191, 36, 0.15)',
-                          border: deal.approval_status === 'approved' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(251, 191, 36, 0.3)',
-                          borderRadius: '6px',
-                          color: deal.approval_status === 'approved' ? '#22c55e' : '#fbbf24',
-                          fontSize: '11px',
-                          fontWeight: '600',
-                          textTransform: 'uppercase'
-                        }}>
-                          {deal.approval_status === 'approved' ? 'Published' : deal.approval_status}
-                        </span>
-                      </div>
-
-                      <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginBottom: '8px' }}>
-                        {deal.public_market} • {deal.public_asset_type}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+                            {deal.public_market} • {deal.public_asset_type}
+                          </span>
+                          <span style={{
+                            padding: '6px 12px',
+                            background: deal.approval_status === 'approved' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(251, 191, 36, 0.15)',
+                            border: deal.approval_status === 'approved' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(251, 191, 36, 0.3)',
+                            borderRadius: '6px',
+                            color: deal.approval_status === 'approved' ? '#22c55e' : '#fbbf24',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            textTransform: 'uppercase'
+                          }}>
+                            {deal.approval_status === 'approved' ? 'Published' : deal.approval_status}
+                          </span>
+                        </div>
                       </div>
 
                       <div style={{ color: '#00b8d4', fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
