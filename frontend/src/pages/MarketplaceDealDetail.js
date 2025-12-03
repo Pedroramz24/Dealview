@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import MessagingPanel from '../components/MessagingPanel';
 import NCNDSignatureModal from '../components/NCNDSignatureModal';
+import BrokerBadges from '../components/BrokerBadges';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
