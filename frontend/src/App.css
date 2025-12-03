@@ -76,8 +76,16 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-base);
+  background: #000000;
   color: var(--text-primary);
+  
+  /* Atmospheric Cyan Glow - Global Background */
+  background-image: 
+    radial-gradient(ellipse 1400px 900px at 50% 0%, rgba(0, 184, 212, 0.12) 0%, rgba(0, 100, 120, 0.06) 35%, transparent 65%),
+    radial-gradient(ellipse 1000px 800px at 0% 40%, rgba(0, 140, 160, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 1000px 800px at 100% 60%, rgba(0, 200, 220, 0.08) 0%, transparent 55%);
+  background-attachment: fixed;
+  background-size: 100% 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
