@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre';
-import { Search, SlidersHorizontal, MapIcon, Grid3x3, Heart } from 'lucide-react';
+import { Search, SlidersHorizontal, MapIcon, Grid3x3, Heart, Check, AlertCircle } from 'lucide-react';
 import { API } from '../App';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
