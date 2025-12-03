@@ -1313,7 +1313,7 @@ const DealDetails = () => {
 
       {/* Publish to Marketplace Modal */}
       {showPublishModal && (
-        <PublishDealModal
+        <EnhancedPublishWizard
           dealId={dealId}
           deal={deal}
           onClose={() => setShowPublishModal(false)}
