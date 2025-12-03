@@ -101,6 +101,13 @@ class PublishDealRequest(BaseModel):
         if v and v not in allowed_gradings:
             raise ValueError("Invalid grading")
         return v
+    
+    @validator('seller_commitment_level')
+    def validate_seller_commitment(cls, v):
+        """Validate seller commitment level."""
+        if v and v not in ['signed_listing', 'written_auth', 'verbal_maybe']:
+            raise ValueError("Invalid seller commitment level")
+        return v
 
 
 class CompletenessScore(BaseModel):
