@@ -167,7 +167,7 @@ const AIDashboard = () => {
     }}>
       {/* Dark purple-blue gradient: darker at bottom (66%), brighter blue at top (100%) */}
       <div style={{
-        background: '#0c0c0c',
+        background: '#292929',
         border: 'none',
         borderRadius: '16px',
         padding: '32px 40px',
@@ -296,7 +296,7 @@ const MetricCard = ({ icon: Icon, label, value, color, isLarge, onClick }) => (
   <div
     onClick={onClick}
     style={{
-      background: '#0c0c0c',
+      background: '#292929',
       border: 'none',
       borderRadius: '12px',
       padding: '24px',
@@ -361,7 +361,7 @@ const CalendarTimeline = ({ events, milestones, navigate }) => {
 
   return (
     <div style={{
-      background: '#0c0c0c',
+      background: '#292929',
       border: 'none',
       borderRadius: '16px',
       padding: '28px',
@@ -474,7 +474,7 @@ const TimelineItem = ({ item, navigate }) => {
 const PrioritiesPanel = ({ priorities, onRefresh, onAction, refreshing, navigate }) => {
   return (
     <div style={{
-      background: '#0c0c0c',
+      background: '#292929',
       border: 'none',
       borderRadius: '16px',
       padding: '28px',
