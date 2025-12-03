@@ -17,6 +17,7 @@ import JoinTeam from './pages/JoinTeam';
 import PublicShare from './pages/PublicShare';
 import ResetPassword from './pages/ResetPassword';
 import OnboardingWizard from './pages/OnboardingWizard';
+import AdminApprovalQueue from './pages/AdminApprovalQueue';
 import MainLayout from './components/MainLayout';
 import DualModeLayout from './components/DualModeLayout';
 import MarketplacePage from './pages/MarketplacePage';
