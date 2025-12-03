@@ -492,6 +492,16 @@ const MarketplaceDealDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Messaging Panel */}
+      {showMessaging && (
+        <MessagingPanel
+          dealId={dealId}
+          dealTitle={deal.title || deal.address}
+          brokerId={deal.owner_id}
+          onClose={() => setShowMessaging(false)}
+        />
+      )}
     </div>
   );
 };
