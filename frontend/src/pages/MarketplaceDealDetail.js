@@ -29,6 +29,7 @@ const MarketplaceDealDetail = () => {
   const [showNCNDModal, setShowNCNDModal] = useState(false);
   const [ncndStatus, setNcndStatus] = useState(null);
   const [checkingNCND, setCheckingNCND] = useState(true);
+  const [brokerReputation, setBrokerReputation] = useState(null);
 
   useEffect(() => {
     checkNCNDStatus();
