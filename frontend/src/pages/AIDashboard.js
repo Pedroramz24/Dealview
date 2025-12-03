@@ -312,7 +312,7 @@ const MetricCard = ({ icon: Icon, label, value, color, isLarge, onClick }) => (
     onMouseLeave={(e) => {
       e.currentTarget.style.transform = 'translateY(0)';
       e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)';
-      e.currentTarget.style.background = '#0c0c0c';
+      e.currentTarget.style.background = '#292929';
     }}
   >
     <div style={{
