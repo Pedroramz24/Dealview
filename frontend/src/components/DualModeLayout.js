@@ -15,6 +15,7 @@ import {
   UsersRound,
   ChevronRight
 } from 'lucide-react';
+import { gradients } from '../styles/designSystem';
 
 const DualModeLayout = () => {
   const { user, logout } = useContext(AuthContext);
