@@ -294,28 +294,32 @@ const SnapshotCards = ({ snapshot, navigate }) => {
   );
 };
 
-// Metric Card Component
+// Metric Card Component - Stained Grey Glass
 const MetricCard = ({ icon: Icon, label, value, color, isLarge, onClick }) => (
   <div
     onClick={onClick}
     style={{
-      background: '#292929',
-      border: 'none',
+      background: 'rgba(30, 30, 30, 0.6)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
       borderRadius: '12px',
       padding: '24px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
       transition: 'all 0.3s ease',
       cursor: 'pointer'
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.transform = 'translateY(-2px)';
-      e.currentTarget.style.boxShadow = `0 8px 20px rgba(0, 0, 0, 0.6), 0 4px 8px ${color}20`;
-      e.currentTarget.style.background = '#333333';
+      e.currentTarget.style.boxShadow = `0 8px 20px rgba(0, 0, 0, 0.6), 0 4px 8px ${color}20, inset 0 1px 0 rgba(255, 255, 255, 0.08)`;
+      e.currentTarget.style.background = 'rgba(40, 40, 40, 0.7)';
+      e.currentTarget.style.borderColor = `${color}30`;
     }}
     onMouseLeave={(e) => {
       e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)';
-      e.currentTarget.style.background = '#292929';
+      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)';
+      e.currentTarget.style.background = 'rgba(30, 30, 30, 0.6)';
+      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
     }}
   >
     <div style={{
