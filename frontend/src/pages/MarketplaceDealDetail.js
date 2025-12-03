@@ -409,7 +409,36 @@ const MarketplaceDealDetail = () => {
                 Contact Broker
               </h3>
 
-              <button style={{ width: '100%', padding: '14px', background: '#00b8d4', border: 'none', borderRadius: '8px', color: '#000', fontWeight: '600', fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)', transition: 'all 0.3s ease' }}>
+              <button
+                onClick={() => setShowMessaging(true)}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: '#00b8d4',
+                  border: 'none',
+                  borderRadius: '8px',
+                  color: '#000',
+                  fontWeight: '600',
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#009fb8';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 184, 212, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#00b8d4';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.3)';
+                }}
+              >
                 <MessageCircle size={20} />
                 Message Broker
               </button>
