@@ -160,13 +160,13 @@ const AIDashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#130f40',
-      backgroundImage: 'linear-gradient(315deg, #130f40 0%, #000000 74%)',
+      backgroundColor: '#4834d4',
+      backgroundImage: 'linear-gradient(315deg, #4834d4 0%, #0c0c0c 74%)',
       padding: '32px',
       position: 'relative',
       overflow: 'auto'
     }}>
-      {/* Purple-to-black diagonal gradient (315deg) */}
+      {/* Brighter purple diagonal gradient test */}
       <div style={{
         background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.06), rgba(59, 130, 246, 0.04))',
         border: '1px solid rgba(0, 184, 212, 0.15)',
