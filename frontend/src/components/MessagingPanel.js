@@ -55,7 +55,7 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
   const startNewConversation = () => {
     // Create a virtual conversation for new message
     setSelectedConversation({
-      conversation_id: null,
+      conversation_id: undefined,  // undefined, not null, to avoid sending 'null' string
       deal_id: dealId,
       deal_title: dealTitle,
       other_user_id: brokerId,
