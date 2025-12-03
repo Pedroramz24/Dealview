@@ -108,6 +108,7 @@ function App() {
     <AuthContext.Provider value={{ user, login, signup, logout }}>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/marketplace" />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/share/:dealId" element={<PublicShare />} />
