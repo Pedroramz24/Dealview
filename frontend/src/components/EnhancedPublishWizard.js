@@ -42,6 +42,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
     sale_conditions: [],
     sale_notes: '',
     highlights: [''],
+    seller_commitment_level: 'written_auth', // Default to written auth
     
     // Media
     image_urls: [],
