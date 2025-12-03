@@ -387,38 +387,42 @@ const MarketplacePage = () => {
                   </div>
 
                   {/* Deal Info */}
-                  <div style={{ padding: '16px' }}>
+                  <div style={{ padding: '20px' }}>
                     <div style={{
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'flex-start',
-                      marginBottom: '12px'
+                      marginBottom: '14px'
                     }}>
                       <div>
                         <h3 style={{ 
-                          color: '#fff', 
-                          fontSize: '16px',
+                          color: colors.textPrimary, 
+                          fontSize: '17px',
                           fontWeight: '600',
-                          marginBottom: '4px'
+                          marginBottom: '6px',
+                          letterSpacing: '-0.01em'
                         }}>
                           {deal.title}
                         </h3>
                         <p style={{ 
-                          color: 'rgba(255,255,255,0.5)', 
+                          color: colors.textTertiary, 
                           fontSize: '13px',
-                          marginBottom: '8px'
+                          marginBottom: '12px'
                         }}>
                           {deal.address}
                         </p>
                       </div>
                       <div style={{
-                        background: 'rgba(0, 212, 170, 0.15)',
-                        border: '1px solid rgba(0, 212, 170, 0.3)',
-                        borderRadius: '6px',
-                        padding: '4px 8px',
+                        background: `${colors.primary}15`,
+                        border: `1px solid ${colors.primary}40`,
+                        borderRadius: borderRadius.sm,
+                        padding: '6px 12px',
                         fontSize: '11px',
-                        color: '#00b8d4',
-                        fontWeight: '600'
+                        color: colors.primary,
+                        fontWeight: '700',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        boxShadow: `0 0 12px ${colors.primary}10`
                       }}>
                         {deal.public_asset_type || deal.asset_type}
                       </div>
@@ -427,18 +431,21 @@ const MarketplacePage = () => {
                     <div style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      marginBottom: '16px'
                     }}>
                       <span style={{ 
-                        color: '#00b8d4', 
-                        fontSize: '18px',
-                        fontWeight: '700'
+                        color: colors.primary, 
+                        fontSize: '22px',
+                        fontWeight: '700',
+                        textShadow: `0 0 20px ${colors.primary}30`
                       }}>
                         {formatPrice(deal.public_price || deal.price)}
                       </span>
                       <span style={{ 
-                        color: 'rgba(255,255,255,0.5)', 
-                        fontSize: '12px'
+                        color: colors.textMuted, 
+                        fontSize: '13px',
+                        fontWeight: '500'
                       }}>
                         {deal.public_market || deal.city}
                       </span>
@@ -446,32 +453,44 @@ const MarketplacePage = () => {
 
                     {deal.description && (
                       <p style={{ 
-                        color: 'rgba(255,255,255,0.6)', 
+                        color: colors.textTertiary, 
                         fontSize: '13px',
-                        marginTop: '12px',
+                        marginBottom: '16px',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical'
+                        WebkitBoxOrient: 'vertical',
+                        lineHeight: '1.5'
                       }}>
                         {deal.description}
                       </p>
                     )}
 
-                    {/* Stats */}
+                    {/* Stats with Icons */}
                     <div style={{
                       display: 'flex',
-                      gap: '16px',
-                      marginTop: '12px',
-                      paddingTop: '12px',
-                      borderTop: '1px solid rgba(255,255,255,0.05)'
+                      gap: '20px',
+                      paddingTop: '16px',
+                      borderTop: `1px solid ${colors.divider}`
                     }}>
-                      <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
-                        👁 {deal.marketplace_views_count || 0} views
+                      <span style={{ 
+                        color: colors.textMuted, 
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}>
+                        👁 <span style={{ color: colors.textSecondary, fontWeight: '600' }}>{deal.marketplace_views_count || 0}</span> views
                       </span>
-                      <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
-                        💬 {deal.marketplace_inquiries_count || 0} inquiries
+                      <span style={{ 
+                        color: colors.textMuted, 
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}>
+                        💬 <span style={{ color: colors.textSecondary, fontWeight: '600' }}>{deal.marketplace_inquiries_count || 0}</span> inquiries
                       </span>
                     </div>
                   </div>
