@@ -1,5 +1,5 @@
 """Marketplace browsing and publishing routes for DealLinked."""
-from fastapi import APIRouter, HTTPException, Depends, Query, status
+from fastapi import APIRouter, HTTPException, Depends, Query, status, Request
 from fastapi.security import HTTPAuthorizationCredentials
 from typing import List, Optional
 from datetime import datetime, timezone
@@ -7,6 +7,9 @@ import logging
 
 from models.marketplace import SavedDeal, SavedDealCreate, DealView
 from models import Deal
+from models.ncnd import (
+    NCNDSignatureCreate, NCNDStatus, NCNDSignatureResponse, generate_ncnd_text
+)
 from utils.auth_helpers import get_current_user_supabase, security
 from utils.db import get_supabase
 
