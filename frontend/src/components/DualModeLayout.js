@@ -21,6 +21,9 @@ const DualModeLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // Sidebar collapse state for Marketplace
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  
   // Determine current mode based on route
   const isMarketplaceMode = location.pathname.startsWith('/marketplace');
   const isWorkspaceMode = location.pathname.startsWith('/workspace');
