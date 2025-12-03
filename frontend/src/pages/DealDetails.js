@@ -1171,6 +1171,50 @@ const DealDetails = () => {
           </Button>
 
           {/* Publish to Marketplace Button */}
+          {dealCompleteness && (
+            <div style={{
+              padding: '12px 16px',
+              background: dealCompleteness.can_publish ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+              border: dealCompleteness.can_publish ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)',
+              borderRadius: '8px',
+              marginBottom: '12px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', fontWeight: '500' }}>
+                  Listing Quality
+                </span>
+                <span style={{ 
+                  color: dealCompleteness.can_publish ? '#10b981' : '#f59e0b', 
+                  fontSize: '15px', 
+                  fontWeight: '700' 
+                }}>
+                  {dealCompleteness.total_score}%
+                </span>
+              </div>
+              <div style={{
+                width: '100%',
+                height: '6px',
+                background: 'rgba(0,0,0,0.3)',
+                borderRadius: '3px',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  width: `${dealCompleteness.total_score}%`,
+                  height: '100%',
+                  background: dealCompleteness.can_publish 
+                    ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
+                    : 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
+                  transition: 'width 0.3s ease'
+                }} />
+              </div>
+              {!dealCompleteness.can_publish && (
+                <p style={{ color: '#f59e0b', fontSize: '11px', marginTop: '6px' }}>
+                  Need 80% to publish
+                </p>
+              )}
+            </div>
+          )}
+
           <Button onClick={() => setShowPublishModal(true)} style={{
             background: 'linear-gradient(135deg, #00b8d4 0%, #0088a3 100%)',
             color: '#ffffff',
