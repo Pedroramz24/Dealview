@@ -296,23 +296,23 @@ const MetricCard = ({ icon: Icon, label, value, color, isLarge, onClick }) => (
   <div
     onClick={onClick}
     style={{
-      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-      border: '1px solid rgba(255, 255, 255, 0.06)',
-      borderRadius: '16px',
+      background: '#0c0c0c',
+      border: 'none',
+      borderRadius: '12px',
       padding: '24px',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)',
       transition: 'all 0.3s ease',
       cursor: 'pointer'
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.transform = 'translateY(-2px)';
-      e.currentTarget.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px ${color}15`;
-      e.currentTarget.style.borderColor = `${color}20`;
+      e.currentTarget.style.boxShadow = `0 8px 20px rgba(0, 0, 0, 0.6), 0 4px 8px ${color}20`;
+      e.currentTarget.style.background = '#111111';
     }}
     onMouseLeave={(e) => {
       e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4)';
-      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.06)';
+      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)';
+      e.currentTarget.style.background = '#0c0c0c';
     }}
   >
     <div style={{
