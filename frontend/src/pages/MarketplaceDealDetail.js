@@ -150,7 +150,7 @@ const MarketplaceDealDetail = () => {
     navigate(`/workspace/deals/${dealId}`);
   };
 
-  if (loading) {
+  if (checkingNCND || loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#000', color: '#fff' }}>
         Loading...
@@ -168,6 +168,15 @@ const MarketplaceDealDetail = () => {
 
   return (
     <div style={{ background: 'transparent', minHeight: '100vh' }}>
+      {/* NCND Signature Modal */}
+      {showNCNDModal && (
+        <NCNDSignatureModal
+          dealId={dealId}
+          onClose={() => navigate('/marketplace')}
+          onSigned={handleNCNDSigned}
+        />
+      )}
+
       {/* Header with Actions */}
       <div style={{
         position: 'sticky',
