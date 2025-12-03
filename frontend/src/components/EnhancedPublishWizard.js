@@ -355,32 +355,37 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
   const renderStep3 = () => (
     <div style={{ padding: '32px' }}>
       <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', marginBottom: '24px' }}>
-        Step 3: Financial Details
+        Step 3: Financial Details & Sale Conditions
       </h3>
 
       <div style={{ display: 'grid', gap: '20px' }}>
-        <div>
-          <label style={labelStyle}>CAP Rate (%)</label>
-          <input
-            type="number"
-            step="0.01"
-            value={formData.cap_rate}
-            onChange={(e) => updateFormData({ cap_rate: e.target.value })}
-            placeholder="e.g., 6.5"
-            style={inputStyle}
-          />
-        </div>
+        {/* Only show CAP Rate and NOI for Property listings, not Land */}
+        {!formData.is_land_listing && (
+          <>
+            <div>
+              <label style={labelStyle}>CAP Rate (%)</label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.cap_rate}
+                onChange={(e) => updateFormData({ cap_rate: e.target.value })}
+                placeholder="e.g., 6.5"
+                style={inputStyle}
+              />
+            </div>
 
-        <div>
-          <label style={labelStyle}>NOI (Net Operating Income)</label>
-          <input
-            type="number"
-            value={formData.noi}
-            onChange={(e) => updateFormData({ noi: e.target.value })}
-            placeholder="e.g., 150000"
-            style={inputStyle}
-          />
-        </div>
+            <div>
+              <label style={labelStyle}>NOI (Net Operating Income)</label>
+              <input
+                type="number"
+                value={formData.noi}
+                onChange={(e) => updateFormData({ noi: e.target.value })}
+                placeholder="e.g., 150000"
+                style={inputStyle}
+              />
+            </div>
+          </>
+        )}
 
         <div>
           <label style={labelStyle}>Sale Conditions</label>
