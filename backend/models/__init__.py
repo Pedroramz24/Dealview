@@ -44,4 +44,7 @@ __all__ = [
     "MarketplaceMessage", "MessageCreate", "MessageUpdate",
     "MarketplaceOffer", "OfferCreate", "OfferUpdate",
     "Conversation",
+    # Publishing models
+    "PublishDealRequest", "PublishDealResponse",
+    "CompletenessScore", "calculate_completeness_score",
 ]
