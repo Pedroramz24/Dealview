@@ -160,12 +160,16 @@ const AIDashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#000000',
+      backgroundImage: 'url(https://customer-assets.emergentagent.com/job_marketdash-re/artifacts/6i9knb7o_Figma%20_%20File%20Cover%20image.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'fixed',
       padding: '32px',
       position: 'relative',
       overflow: 'auto'
     }}>
-      {/* Header */}
+      {/* Gradient image background applied to AI Dashboard */}
       <div style={{
         background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.06), rgba(59, 130, 246, 0.04))',
         border: '1px solid rgba(0, 184, 212, 0.15)',
