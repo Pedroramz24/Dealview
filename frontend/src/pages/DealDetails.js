@@ -90,12 +90,33 @@ const DealDetails = () => {
 
       if (error) throw error;
       setDeal(data);
+      
+      // Fetch completeness score
+      fetchCompleteness();
     } catch (error) {
       console.error('Error fetching deal:', error);
       toast.error('Failed to load deal');
       navigate('/deals');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCompleteness = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/deals/${dealId}/completeness`, {
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setDealCompleteness(data.completeness);
+      }
+    } catch (error) {
+      console.log('Could not fetch completeness:', error);
     }
   };
 
