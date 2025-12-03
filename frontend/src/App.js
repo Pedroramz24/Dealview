@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import '@/App.css';
 import Login from './pages/Login';
+import LandingPage from './pages/LandingPage';
 import AIDashboard from './pages/AIDashboard';
 import MapView from './pages/MapView';
 import DealsList from './pages/DealsList';
