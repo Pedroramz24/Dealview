@@ -109,14 +109,14 @@ const DualModeLayout = () => {
         width: sidebarWidth,
         background: 'rgba(0, 0, 0, 0.8)',
         borderRight: sidebarCollapsed ? 'none' : '1px solid rgba(255,255,255,0.08)',
-        backdropFilter: 'blur(12px)',
+        backdropFilter: 'blur(20px)',
         display: sidebarCollapsed ? 'none' : 'flex',
         flexDirection: 'column',
         padding: '24px 0',
         boxShadow: '4px 0 24px rgba(0,0,0,0.5)',
         position: 'relative',
         zIndex: 100,
-        transition: 'width 0.3s ease'
+        transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         {/* Logo */}
         <div style={{ 
