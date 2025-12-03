@@ -326,7 +326,9 @@ const DualModeLayout = () => {
         flex: 1, 
         overflow: 'auto',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        position: 'relative',
+        zIndex: 1
       }}>
         <Outlet />
       </div>
