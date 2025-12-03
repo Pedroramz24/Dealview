@@ -261,7 +261,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
             transition: 'all 0.2s'
           }}
         >
-          <div style={{ fontSize: '32px', marginBottom: '8px' }}>🏢</div>
+          <Building2 size={32} style={{ marginBottom: '8px', color: !formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
           <div style={{ fontWeight: '600' }}>Property</div>
           <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>
             Building, Retail, Office, etc.
@@ -281,7 +281,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
             transition: 'all 0.2s'
           }}
         >
-          <div style={{ fontSize: '32px', marginBottom: '8px' }}>🌾</div>
+          <MapPin size={32} style={{ marginBottom: '8px', color: formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
           <div style={{ fontWeight: '600' }}>Land</div>
           <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>
             Lot, Parcel, Raw Land
