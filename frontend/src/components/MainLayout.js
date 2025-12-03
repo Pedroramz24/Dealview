@@ -14,9 +14,9 @@ const MainLayout = () => {
   };
 
   const navItems = [
-    { path: '/marketplace', label: 'Marketplace', icon: Map },
+    { path: '/marketplace', label: 'Marketplace', icon: Map, isMarketplace: true },
     { path: '/workspace/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/workspace/map', label: 'Map', icon: Map },
+    { path: '/workspace/map', label: 'Map View', icon: Map },
     { path: '/workspace/deals', label: 'Deals', icon: Trello },
     { path: '/workspace/contacts', label: 'Contacts', icon: Users },
     { path: '/workspace/campaigns', label: 'Campaigns', icon: Mail },
