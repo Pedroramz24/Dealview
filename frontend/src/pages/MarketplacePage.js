@@ -309,23 +309,26 @@ const MarketplacePage = () => {
                   key={deal.id}
                   onClick={() => handleDealClick(deal.id)}
                   style={{
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    borderRadius: '16px',
+                    background: colors.surface,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.lg,
                     overflow: 'hidden',
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    position: 'relative'
+                    transition: transitions.default,
+                    position: 'relative',
+                    boxShadow: shadows.md
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 212, 170, 0.3)';
-                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.background = colors.elevated;
+                    e.currentTarget.style.borderColor = colors.borderHover;
+                    e.currentTarget.style.transform = 'translateY(-6px)';
+                    e.currentTarget.style.boxShadow = `${shadows.lg}, ${shadows.glowCyan}`;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                    e.currentTarget.style.background = colors.surface;
+                    e.currentTarget.style.borderColor = colors.border;
                     e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = shadows.md;
                   }}
                 >
                   {/* Deal Image */}
