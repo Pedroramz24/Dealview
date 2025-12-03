@@ -123,3 +123,51 @@ export const transitions = {
   slow: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
   spring: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',  // Bouncy spring effect
 };
+
+/**
+ * Modular Card/Panel Style System
+ * Creates layered, elevated surfaces on the black void background
+ */
+export const cardStyles = {
+  // Base card style - for main content sections
+  base: {
+    background: colors.surfaceCard,
+    borderRadius: borderRadius.md,
+    boxShadow: shadows.cardElevation,
+    padding: spacing.lg,
+    transition: transitions.default,
+  },
+  
+  // Compact card - for smaller modules
+  compact: {
+    background: colors.surfaceCard,
+    borderRadius: borderRadius.md,
+    boxShadow: shadows.cardElevation,
+    padding: spacing.md,
+    transition: transitions.default,
+  },
+  
+  // Large card - for major sections
+  large: {
+    background: colors.surfaceCard,
+    borderRadius: borderRadius.lg,
+    boxShadow: shadows.cardElevation,
+    padding: spacing.xl,
+    transition: transitions.default,
+  },
+  
+  // Interactive card - with hover state
+  interactive: {
+    background: colors.surfaceCard,
+    borderRadius: borderRadius.md,
+    boxShadow: shadows.cardElevation,
+    padding: spacing.lg,
+    transition: transitions.default,
+    cursor: 'pointer',
+    ':hover': {
+      background: colors.surfaceCardHover,
+      boxShadow: shadows.cardElevationHover,
+      transform: 'translateY(-2px)',
+    },
+  },
+};
