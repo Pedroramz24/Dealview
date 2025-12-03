@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { API } from '../App';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
+import MessagingPanel from '../components/MessagingPanel';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
