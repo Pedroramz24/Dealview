@@ -12,6 +12,7 @@ import {
   Calendar, 
   UsersRound,
   LogOut,
+  Inbox,
   Settings as SettingsIcon
 } from 'lucide-react';
 
