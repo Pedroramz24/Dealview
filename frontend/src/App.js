@@ -137,6 +137,7 @@ function App() {
             <Route path="calendar" element={<CalendarView />} />
             <Route path="team" element={<Team />} />
             <Route path="admin/approvals" element={<AdminApprovalQueue />} />
+            <Route path="marketplace-analytics" element={<BrokerAnalytics />} />
           </Route>
 
           {/* Settings - MainLayout */}
