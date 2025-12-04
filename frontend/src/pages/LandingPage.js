@@ -215,8 +215,8 @@ const LandingPage = () => {
 
       {/* What is DealLinked Section - With radial gradient transition */}
       <section style={{
-        padding: '280px 60px 100px',
-        background: '#000',
+        padding: '400px 60px 100px',
+        background: 'transparent',
         position: 'relative',
         zIndex: 20,
         overflow: 'hidden'
