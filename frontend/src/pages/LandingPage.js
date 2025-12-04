@@ -687,95 +687,160 @@ const LandingPage = () => {
         position: 'relative',
         zIndex: 1
       }}>
-        <h2 style={{
-          fontSize: '48px',
-          fontWeight: '800',
-          color: '#fff',
-          textAlign: 'center',
-          marginBottom: '60px',
-          letterSpacing: '-0.02em',
-          textShadow: '0 0 30px rgba(0, 184, 212, 0.3)'
-        }}>
-          What Our Members Say
-        </h2>
-
+      {/* Testimonials Section - Grid Layout */}
+      <section style={{
+        padding: '100px 60px',
+        background: 'transparent',
+        position: 'relative',
+        zIndex: 1
+      }}>
         <div style={{
-          maxWidth: '900px',
-          margin: '0 auto',
-          background: 'rgba(10, 10, 10, 0.6)',
-          backdropFilter: 'blur(16px)',
-          padding: '60px',
-          borderRadius: '24px',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
-          boxShadow: '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)',
-          position: 'relative',
-          minHeight: '280px'
+          maxWidth: '1200px',
+          margin: '0 auto'
         }}>
-          <div style={{
-            position: 'absolute',
-            top: '24px',
-            left: '24px',
-            fontSize: '80px',
-            color: 'rgba(0, 184, 212, 0.15)',
-            fontFamily: 'Georgia, serif',
-            lineHeight: '1'
-          }}>
-            "
-          </div>
-
-          <p style={{
-            fontSize: '22px',
-            color: 'rgba(255,255,255,0.9)',
-            lineHeight: '1.7',
-            marginBottom: '32px',
-            fontStyle: 'italic',
-            textAlign: 'center',
-            position: 'relative',
-            zIndex: 1
-          }}>
-            {testimonials[currentTestimonial].text}
-          </p>
-
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              fontSize: '18px',
-              fontWeight: '700',
-              color: '#fff',
-              marginBottom: '4px'
-            }}>
-              {testimonials[currentTestimonial].author}
-            </div>
-            <div style={{
-              fontSize: '14px',
-              color: '#00b8d4',
-              fontWeight: '600'
-            }}>
-              {testimonials[currentTestimonial].role}
-            </div>
-          </div>
-
-          {/* Testimonial Navigation Dots */}
+          {/* Header with Join Others button */}
           <div style={{
             display: 'flex',
-            justifyContent: 'center',
-            gap: '12px',
-            marginTop: '40px'
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '60px'
           }}>
-            {testimonials.map((_, idx) => (
-              <button
+            <h2 style={{
+              fontSize: '48px',
+              fontWeight: '600',
+              background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '-0.03em',
+              fontFamily: '"Inter", sans-serif',
+              filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))',
+              margin: 0
+            }}>
+              What Our Members Say
+            </h2>
+            <button
+              onClick={() => navigate('/signup')}
+              style={{
+                padding: '12px 28px',
+                background: '#00b8d4',
+                border: 'none',
+                borderRadius: '10px',
+                color: '#000',
+                fontSize: '15px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Join others
+            </button>
+          </div>
+
+          {/* Reviews Grid */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '24px'
+          }}>
+            {[
+              {
+                text: "DealLinked transformed how I source off-market deals. The quality control and NCND protection give me confidence every deal is legitimate.",
+                author: "Sarah M.",
+                role: "Commercial Real Estate Investor"
+              },
+              {
+                text: "As a broker, the reputation system helps me stand out. My verified listings get priority visibility, and I've closed 3 deals in the first month.",
+                author: "Michael R.",
+                role: "Commercial Broker"
+              },
+              {
+                text: "Finally, a marketplace that weeds out the noise. Only serious brokers with quality deals. The completeness requirements ensure I'm not wasting time.",
+                author: "Jennifer L.",
+                role: "Private Equity Investor"
+              },
+              {
+                text: "The NCND digital signature system is brilliant. I feel protected sharing my off-market opportunities, and buyers appreciate the professionalism.",
+                author: "David K.",
+                role: "Off-Market Specialist"
+              },
+              {
+                text: "Best platform for commercial real estate. The deal tracking and CRM features keep everything organized in one place.",
+                author: "Robert T.",
+                role: "Real Estate Developer"
+              },
+              {
+                text: "Quality over quantity - exactly what the industry needed. Every listing I've seen has been complete and from committed sellers.",
+                author: "Amanda S.",
+                role: "Institutional Investor"
+              }
+            ].map((review, idx) => (
+              <div
                 key={idx}
-                onClick={() => setCurrentTestimonial(idx)}
                 style={{
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  border: 'none',
-                  background: currentTestimonial === idx ? '#00b8d4' : 'rgba(255,255,255,0.2)',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  boxShadow: currentTestimonial === idx ? '0 0 15px rgba(0, 184, 212, 0.8)' : 'none'
+                  background: 'rgba(10, 10, 10, 0.6)',
+                  backdropFilter: 'blur(16px)',
+                  padding: '32px',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  transition: 'all 0.3s'
                 }}
-              />
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                {/* Profile Picture Placeholder */}
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 100%)',
+                  border: '2px solid rgba(0, 184, 212, 0.3)',
+                  marginBottom: '20px'
+                }} />
+
+                {/* Review Text */}
+                <p style={{
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  lineHeight: '1.6',
+                  marginBottom: '20px',
+                  fontFamily: '"Inter", sans-serif'
+                }}>
+                  "{review.text}"
+                </p>
+
+                {/* Author Info */}
+                <div>
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#fff',
+                    marginBottom: '4px'
+                  }}>
+                    {review.author}
+                  </div>
+                  <div style={{
+                    fontSize: '13px',
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    fontWeight: '400'
+                  }}>
+                    {review.role}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
