@@ -35,7 +35,7 @@ const LandingPage = () => {
       minHeight: '100vh',
       position: 'relative',
       overflow: 'hidden',
-      fontFamily: '"Articulat CF", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+      fontFamily: '"Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     }}>
       {/* Navigation */}
       <nav style={{
