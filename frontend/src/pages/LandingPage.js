@@ -168,18 +168,6 @@ const LandingPage = () => {
             <br />
             Find your next investment with NCND protection.
           </p>
-
-          {/* Cyan Glow Bar - Anchored at bottom of hero */}
-          <div style={{
-            position: 'absolute',
-            bottom: '0',
-            left: '0',
-            right: '0',
-            height: '2px',
-            background: 'linear-gradient(90deg, transparent 0%, #00b8d4 50%, transparent 100%)',
-            boxShadow: '0 0 30px rgba(0, 184, 212, 1)',
-            zIndex: 5
-          }} />
         </div>
       </section>
 
@@ -187,7 +175,7 @@ const LandingPage = () => {
       <section style={{
         padding: '0 60px',
         marginTop: '-60px',
-        marginBottom: '-200px',
+        marginBottom: '-350px',
         position: 'relative',
         zIndex: 30
       }}>
