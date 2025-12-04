@@ -13,6 +13,7 @@ const MarketplacePage = () => {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showMap, setShowMap] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     market: '',
