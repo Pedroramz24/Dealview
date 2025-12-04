@@ -102,11 +102,16 @@ const LandingPage = () => {
           <h1 style={{
             fontSize: '72px',
             fontWeight: '600',
-            color: '#fff',
+            background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
             marginBottom: '28px',
             lineHeight: '1.1',
             letterSpacing: '-0.03em',
-            fontFamily: '"Inter", sans-serif'
+            fontFamily: '"Inter", sans-serif',
+            textShadow: '0 2px 20px rgba(255, 255, 255, 0.1)',
+            filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
           }}>
             The Private Marketplace for
             <br />
@@ -115,9 +120,9 @@ const LandingPage = () => {
           <p style={{
             fontSize: '19px',
             color: 'rgba(255,255,255,0.65)',
-            marginBottom: '44px',
+            marginBottom: '40px',
             maxWidth: '780px',
-            margin: '0 auto 44px',
+            margin: '0 auto 40px',
             lineHeight: '1.65',
             fontWeight: '400'
           }}>
@@ -128,7 +133,7 @@ const LandingPage = () => {
             industry's first fully integrated deal OS.
           </p>
 
-          {/* Get Started Button under hero */}
+          {/* Get Started Button under hero - Reduced gap */}
           <button
             onClick={() => navigate('/signup')}
             style={{
@@ -144,7 +149,7 @@ const LandingPage = () => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              marginBottom: '100px'
+              marginBottom: '60px'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
