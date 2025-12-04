@@ -114,24 +114,24 @@ const LandingPage = () => {
       {/* Hero Section with Wireframe Background */}
       <section style={{
         position: 'relative',
-        padding: '120px 60px 200px',
+        padding: '80px 60px 120px',
         textAlign: 'center',
         background: '#000',
-        overflow: 'hidden'
+        overflow: 'visible'
       }}>
-        {/* Wireframe Background Image - Clean cyan lines, no blur */}
+        {/* Wireframe Background Image - Positioned higher */}
         <div style={{
           position: 'absolute',
-          top: '50%',
+          top: '-20%',
           left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '100%',
-          height: '100%',
+          transform: 'translateX(-50%)',
+          width: '140%',
+          height: '140%',
           backgroundImage: 'url(https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/qbhrh82j_Gemini_Generated_Image_jjqn5hjjqn5hjjqn.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: 'contain',
+          backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat',
-          opacity: 0.12,
+          opacity: 0.15,
           zIndex: 0,
           pointerEvents: 'none'
         }} />
@@ -159,73 +159,15 @@ const LandingPage = () => {
           <p style={{
             fontSize: '22px',
             color: 'rgba(255,255,255,0.7)',
-            marginBottom: '48px',
+            marginBottom: '80px',
             maxWidth: '900px',
-            margin: '0 auto 48px',
+            margin: '0 auto 80px',
             lineHeight: '1.6'
           }}>
             Connect brokers with serious investors. Post quality-controlled off-market deals.
             <br />
             Find your next investment with NCND protection.
           </p>
-          
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '80px' }}>
-            <button
-              onClick={() => navigate('/signup')}
-              style={{
-                padding: '18px 40px',
-                background: '#00b8d4',
-                border: 'none',
-                borderRadius: '12px',
-                color: '#000',
-                fontSize: '18px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 30px rgba(0, 184, 212, 0.3)',
-                transition: 'all 0.3s',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.8), 0 12px 40px rgba(0, 184, 212, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 30px rgba(0, 184, 212, 0.3)';
-              }}
-            >
-              Get Started
-              <ArrowRight size={20} />
-            </button>
-            
-            <button
-              onClick={() => navigate('/marketplace')}
-              style={{
-                padding: '18px 40px',
-                background: 'rgba(0, 184, 212, 0.1)',
-                border: '2px solid #00b8d4',
-                borderRadius: '12px',
-                color: '#00b8d4',
-                fontSize: '18px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                boxShadow: '0 0 20px rgba(0, 184, 212, 0.3)',
-                transition: 'all 0.3s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.2)';
-                e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 184, 212, 0.5)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 184, 212, 0.3)';
-              }}
-            >
-              View Marketplace
-            </button>
-          </div>
 
           {/* Cyan Glow Bar - Anchored at bottom of hero */}
           <div style={{
@@ -241,12 +183,13 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Floating Glassmorphic Dashboard Preview */}
+      {/* Floating Glassmorphic Dashboard Preview - Half showing, cut by next section */}
       <section style={{
-        padding: '0 60px 120px',
-        marginTop: '-120px',
+        padding: '0 60px',
+        marginTop: '-60px',
+        marginBottom: '-200px',
         position: 'relative',
-        zIndex: 20
+        zIndex: 30
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -263,8 +206,8 @@ const LandingPage = () => {
           {/* Outer glow effect */}
           <div style={{
             position: 'absolute',
-            inset: '-40px',
-            background: 'radial-gradient(circle at center, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+            inset: '-60px',
+            background: 'radial-gradient(circle at center, rgba(0, 184, 212, 0.2) 0%, transparent 70%)',
             pointerEvents: 'none',
             zIndex: -1
           }} />
@@ -282,24 +225,51 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* What is DealLinked Section */}
+      {/* What is DealLinked Section - With radial gradient transition */}
       <section style={{
-        padding: '100px 60px',
+        padding: '280px 60px 100px',
         background: '#000',
         position: 'relative',
-        zIndex: 1
+        zIndex: 20,
+        overflow: 'hidden'
       }}>
-        <h2 style={{
-          fontSize: '48px',
-          fontWeight: '800',
-          color: '#fff',
-          textAlign: 'center',
-          marginBottom: '80px',
-          letterSpacing: '-0.02em',
-          textShadow: '0 0 30px rgba(0, 184, 212, 0.3)'
-        }}>
-          What is DealLinked?
-        </h2>
+        {/* Radial gradient for smooth transition from center */}
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100%',
+          height: '600px',
+          background: 'radial-gradient(ellipse at center top, rgba(0, 184, 212, 0.08) 0%, transparent 60%)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }} />
+        
+        {/* Background depth gradient */}
+        <div style={{
+          position: 'absolute',
+          top: '40%',
+          left: '0',
+          right: '0',
+          height: '400px',
+          background: 'radial-gradient(ellipse at center, rgba(0, 184, 212, 0.05) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }} />
+
+        <div style={{ position: 'relative', zIndex: 10 }}>
+          <h2 style={{
+            fontSize: '48px',
+            fontWeight: '800',
+            color: '#fff',
+            textAlign: 'center',
+            marginBottom: '80px',
+            letterSpacing: '-0.02em',
+            textShadow: '0 0 30px rgba(0, 184, 212, 0.3)'
+          }}>
+            What is DealLinked?
+          </h2>
 
         <div style={{
           display: 'grid',
