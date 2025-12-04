@@ -98,6 +98,36 @@ const LandingPage = () => {
         background: 'transparent',
         overflow: 'visible'
       }}>
+        {/* Lightning Ray Effect from Top Right */}
+        <div style={{
+          position: 'absolute',
+          top: '-20%',
+          right: '-10%',
+          width: '800px',
+          height: '1200px',
+          background: 'conic-gradient(from 225deg at 80% 20%, rgba(0, 184, 212, 0.15) 0deg, rgba(0, 184, 212, 0.08) 45deg, transparent 90deg)',
+          pointerEvents: 'none',
+          zIndex: 1,
+          opacity: 0.8,
+          transform: 'rotate(-15deg)',
+          filter: 'blur(30px)',
+          mixBlendMode: 'screen'
+        }} />
+        
+        {/* Additional sharp light beam */}
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          right: '0',
+          width: '600px',
+          height: '800px',
+          background: 'linear-gradient(155deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 184, 212, 0.1) 30%, transparent 60%)',
+          pointerEvents: 'none',
+          zIndex: 2,
+          opacity: 0.6,
+          clipPath: 'polygon(100% 0%, 100% 40%, 0% 100%, 0% 0%)'
+        }} />
+
         <div style={{ position: 'relative', zIndex: 10 }}>
           <h1 style={{
             fontSize: '72px',
