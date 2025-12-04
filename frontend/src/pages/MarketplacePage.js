@@ -298,44 +298,167 @@ const MarketplacePage = () => {
             </button>
           </div>
 
-          {/* Quick Filters */}
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {filterOptions?.available_filters?.markets?.slice(0, 5).map(market => (
-              <button
-                key={market}
-                onClick={() => {
-                  setFilters({...filters, market: filters.market === market ? '' : market});
-                  setTimeout(fetchDeals, 100);
-                }}
-                style={{
-                  padding: '10px 18px',
-                  background: filters.market === market ? gradients.primaryButton : colors.elevated,
-                  border: filters.market === market ? 'none' : `1px solid ${colors.border}`,
-                  borderRadius: borderRadius.full,
-                  color: filters.market === market ? '#000' : colors.textTertiary,
-                  fontSize: '13px',
-                  fontWeight: filters.market === market ? '600' : '500',
-                  cursor: 'pointer',
-                  transition: transitions.fast,
-                  boxShadow: filters.market === market ? shadows.glowCyan : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (filters.market !== market) {
-                    e.currentTarget.style.background = colors.hover;
-                    e.currentTarget.style.borderColor = colors.borderHover;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (filters.market !== market) {
-                    e.currentTarget.style.background = colors.elevated;
-                    e.currentTarget.style.borderColor = colors.border;
-                  }
-                }}
-              >
-                {market}
-              </button>
-            ))}
-          </div>
+          {/* Collapsible Filter Panel */}
+          {showFilters && (
+            <div style={{
+              marginTop: '20px',
+              padding: '24px',
+              background: colors.surface,
+              border: `1px solid ${colors.border}`,
+              borderRadius: borderRadius.lg,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '20px'
+            }}>
+              {/* Market Filter */}
+              <div>
+                <label style={{ display: 'block', color: colors.textSecondary, fontSize: '13px', fontWeight: '600', marginBottom: '8px' }}>
+                  Market
+                </label>
+                <select
+                  value={filters.market}
+                  onChange={(e) => {
+                    setFilters({...filters, market: e.target.value});
+                    setTimeout(fetchDeals, 100);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: colors.elevated,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.md,
+                    color: colors.textPrimary,
+                    fontSize: '14px'
+                  }}
+                >
+                  <option value="">All Markets</option>
+                  {filterOptions?.available_filters?.markets?.map(market => (
+                    <option key={market} value={market}>{market}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Asset Type Filter */}
+              <div>
+                <label style={{ display: 'block', color: colors.textSecondary, fontSize: '13px', fontWeight: '600', marginBottom: '8px' }}>
+                  Asset Type
+                </label>
+                <select
+                  value={filters.asset_type}
+                  onChange={(e) => {
+                    setFilters({...filters, asset_type: e.target.value});
+                    setTimeout(fetchDeals, 100);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: colors.elevated,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.md,
+                    color: colors.textPrimary,
+                    fontSize: '14px'
+                  }}
+                >
+                  <option value="">All Types</option>
+                  {filterOptions?.available_filters?.asset_types?.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Strategy Filter */}
+              <div>
+                <label style={{ display: 'block', color: colors.textSecondary, fontSize: '13px', fontWeight: '600', marginBottom: '8px' }}>
+                  Strategy
+                </label>
+                <select
+                  value={filters.strategy}
+                  onChange={(e) => {
+                    setFilters({...filters, strategy: e.target.value});
+                    setTimeout(fetchDeals, 100);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: colors.elevated,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.md,
+                    color: colors.textPrimary,
+                    fontSize: '14px'
+                  }}
+                >
+                  <option value="">All Strategies</option>
+                  {filterOptions?.available_filters?.strategies?.map(strategy => (
+                    <option key={strategy} value={strategy}>{strategy}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Price Range */}
+              <div>
+                <label style={{ display: 'block', color: colors.textSecondary, fontSize: '13px', fontWeight: '600', marginBottom: '8px' }}>
+                  Min Price
+                </label>
+                <input
+                  type="number"
+                  value={filters.min_price}
+                  onChange={(e) => setFilters({...filters, min_price: e.target.value})}
+                  placeholder="Min $"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: colors.elevated,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.md,
+                    color: colors.textPrimary,
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', color: colors.textSecondary, fontSize: '13px', fontWeight: '600', marginBottom: '8px' }}>
+                  Max Price
+                </label>
+                <input
+                  type="number"
+                  value={filters.max_price}
+                  onChange={(e) => setFilters({...filters, max_price: e.target.value})}
+                  placeholder="Max $"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: colors.elevated,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.md,
+                    color: colors.textPrimary,
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
+
+              {/* Apply Filters Button */}
+              <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                <button
+                  onClick={fetchDeals}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    background: gradients.primaryButton,
+                    border: 'none',
+                    borderRadius: borderRadius.md,
+                    color: '#000',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    boxShadow: shadows.glowCyan
+                  }}
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Deals Grid */}
