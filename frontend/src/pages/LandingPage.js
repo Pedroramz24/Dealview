@@ -216,8 +216,9 @@ const LandingPage = () => {
             position: 'relative'
           }}>
             <div style={{
-              background: 'rgba(0, 0, 0, 0.3)',
-              backdropFilter: 'blur(20px)',
+              background: 'rgba(0, 0, 0, 0.2)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               borderRadius: '23px',
               overflow: 'hidden',
               padding: '16px'
