@@ -115,7 +115,7 @@ const LandingPage = () => {
       {/* Hero Section with Wireframe Background */}
       <section style={{
         position: 'relative',
-        padding: '80px 60px 120px',
+        padding: '100px 60px 80px',
         textAlign: 'center',
         background: 'transparent',
         overflow: 'visible'
@@ -160,63 +160,107 @@ const LandingPage = () => {
           <p style={{
             fontSize: '22px',
             color: 'rgba(255,255,255,0.7)',
-            marginBottom: '80px',
+            marginBottom: '48px',
             maxWidth: '900px',
-            margin: '0 auto 80px',
+            margin: '0 auto 48px',
             lineHeight: '1.6'
           }}>
             Connect brokers with serious investors. Post quality-controlled off-market deals.
             <br />
             Find your next investment with NCND protection.
           </p>
+
+          {/* Get Started Button under hero */}
+          <button
+            onClick={() => navigate('/signup')}
+            style={{
+              padding: '18px 48px',
+              background: '#00b8d4',
+              border: 'none',
+              borderRadius: '12px',
+              color: '#000',
+              fontSize: '18px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              boxShadow: '0 4px 20px rgba(0, 184, 212, 0.4)',
+              transition: 'all 0.3s',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '80px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 184, 212, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 184, 212, 0.4)';
+            }}
+          >
+            Get Started
+            <ArrowRight size={20} />
+          </button>
         </div>
       </section>
 
-      {/* Floating Glassmorphic Dashboard Preview - Half showing, cut by next section */}
+      {/* Dashboard Screenshot - Smaller with glassmorphism border and blue highlight */}
       <section style={{
-        padding: '0 60px',
-        marginTop: '-60px',
-        marginBottom: '-350px',
+        padding: '0 60px 120px',
         position: 'relative',
         zIndex: 30
       }}>
+        {/* Blue circular highlight design behind screenshot */}
         <div style={{
-          maxWidth: '1200px',
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '800px',
+          height: '800px',
+          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+          filter: 'blur(40px)'
+        }} />
+
+        <div style={{
+          maxWidth: '950px',
           margin: '0 auto',
-          background: 'rgba(255, 255, 255, 0.03)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(0, 184, 212, 0.4)',
-          borderRadius: '20px',
-          overflow: 'hidden',
-          boxShadow: '0 0 80px rgba(0, 184, 212, 0.5), 0 30px 80px rgba(0, 0, 0, 0.8)',
-          padding: '12px',
-          position: 'relative'
+          position: 'relative',
+          zIndex: 10
         }}>
-          {/* Outer glow effect */}
+          {/* Glassmorphism border container */}
           <div style={{
-            position: 'absolute',
-            inset: '-60px',
-            background: 'radial-gradient(circle at center, rgba(0, 184, 212, 0.2) 0%, transparent 70%)',
-            pointerEvents: 'none',
-            zIndex: -1
-          }} />
-          
-          <img 
-            src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/of5y58m3_image.png" 
-            alt="DealLinked Dashboard" 
-            style={{ 
-              width: '100%', 
-              display: 'block',
-              borderRadius: '16px',
-              boxShadow: 'inset 0 0 40px rgba(0, 184, 212, 0.1)'
-            }}
-          />
+            padding: '2px',
+            background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 50%, rgba(0, 184, 212, 0.4) 100%)',
+            borderRadius: '20px',
+            position: 'relative'
+          }}>
+            <div style={{
+              background: 'rgba(10, 10, 10, 0.4)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '18px',
+              overflow: 'hidden',
+              padding: '12px'
+            }}>
+              <img 
+                src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/of5y58m3_image.png" 
+                alt="DealLinked Dashboard" 
+                style={{ 
+                  width: '100%', 
+                  display: 'block',
+                  borderRadius: '12px'
+                }}
+              />
+            </div>
+          </div>
         </div>
       </section>
 
       {/* What is DealLinked Section - With radial gradient transition */}
       <section style={{
-        padding: '400px 60px 100px',
+        padding: '100px 60px',
         background: 'transparent',
         position: 'relative',
         zIndex: 20,
