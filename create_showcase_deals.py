@@ -15,13 +15,13 @@ SUPABASE_SERVICE_KEY = os.environ.get('SUPABASE_SERVICE_KEY')
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 # Get a user to be the owner (use first user in system)
-users = supabase.table('user_profiles').select('id, email').limit(1).execute()
+users = supabase.table('user_profiles').select('id').limit(1).execute()
 if not users.data or len(users.data) == 0:
     print("No users found. Please create a user first.")
     sys.exit(1)
 
 owner_id = users.data[0]['id']
-print(f"Using owner: {users.data[0]['email']} ({owner_id})")
+print(f"Using owner ID: {owner_id}")
 
 # Placeholder deals
 deals = [
