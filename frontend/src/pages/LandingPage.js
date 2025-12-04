@@ -844,15 +844,14 @@ const LandingPage = () => {
           marginBottom: '60px'
         }}>
           <div>
-            <div style={{
-              fontSize: '24px',
-              fontWeight: '800',
-              color: '#00b8d4',
-              marginBottom: '16px',
-              textShadow: '0 0 20px rgba(0, 184, 212, 0.5)'
-            }}>
-              DealLinked
-            </div>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/72aahevp_DealLinked.png"
+              alt="DealLinked"
+              style={{
+                height: '28px',
+                marginBottom: '16px'
+              }}
+            />
             <p style={{
               fontSize: '14px',
               lineHeight: '1.6',
