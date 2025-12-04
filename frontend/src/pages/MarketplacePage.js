@@ -172,15 +172,15 @@ const MarketplacePage = () => {
                   anchor="bottom"
                   onClick={() => handleDealClick(deal.id)}
                 >
-                  <div style={{
-                    background: '#00b8d4',
-                    borderRadius: '50%',
-                    width: '24px',
-                    height: '24px',
-                    border: '3px solid #000',
-                    cursor: 'pointer',
-                    boxShadow: '0 0 12px rgba(0, 212, 170, 0.5)'
-                  }} />
+                  <svg width="30" height="40" viewBox="0 0 30 40" style={{ cursor: 'pointer' }}>
+                    <path
+                      d="M15 0C6.716 0 0 6.716 0 15c0 8.284 15 25 15 25s15-16.716 15-25C30 6.716 23.284 0 15 0z"
+                      fill="#00b8d4"
+                      stroke="#000"
+                      strokeWidth="2"
+                    />
+                    <circle cx="15" cy="15" r="5" fill="#000" />
+                  </svg>
                 </Marker>
               )
             ))}
