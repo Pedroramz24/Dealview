@@ -170,18 +170,39 @@ const MarketplacePage = () => {
                   key={deal.id}
                   latitude={deal.latitude}
                   longitude={deal.longitude}
-                  anchor="bottom"
+                  anchor="center"
                   onClick={() => handleDealClick(deal.id)}
                 >
-                  <svg width="30" height="40" viewBox="0 0 30 40" style={{ cursor: 'pointer' }}>
-                    <path
-                      d="M15 0C6.716 0 0 6.716 0 15c0 8.284 15 25 15 25s15-16.716 15-25C30 6.716 23.284 0 15 0z"
-                      fill="#00b8d4"
-                      stroke="#000"
-                      strokeWidth="2"
-                    />
-                    <circle cx="15" cy="15" r="5" fill="#000" />
-                  </svg>
+                  <div style={{
+                    position: 'relative',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s'
+                  }}>
+                    {/* Outer glow */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: 'rgba(48, 99, 255, 0.3)',
+                      filter: 'blur(8px)',
+                      animation: 'pulse 2s infinite'
+                    }} />
+                    {/* Main dot */}
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      background: '#3063ff',
+                      border: '3px solid #fff',
+                      boxShadow: '0 0 0 2px rgba(48, 99, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4)',
+                      position: 'relative',
+                      zIndex: 10
+                    }} />
+                  </div>
                 </Marker>
               )
             ))}
