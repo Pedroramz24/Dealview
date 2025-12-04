@@ -34,7 +34,8 @@ const LandingPage = () => {
       background: 'radial-gradient(circle, rgba(19, 15, 64, 1), rgba(0, 0, 0, 1))',
       minHeight: '100vh',
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      fontFamily: '"Articulat CF", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     }}>
       {/* Navigation */}
       <nav style={{
