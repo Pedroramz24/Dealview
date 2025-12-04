@@ -270,23 +270,28 @@ const MarketplacePage = () => {
             </button>
 
             <button
+              onClick={() => setShowFilters(!showFilters)}
               style={{
                 padding: '14px',
-                background: colors.elevated,
-                border: `1px solid ${colors.border}`,
+                background: showFilters ? gradients.primaryButton : colors.elevated,
+                border: showFilters ? 'none' : `1px solid ${colors.border}`,
                 borderRadius: borderRadius.md,
-                color: colors.textTertiary,
+                color: showFilters ? '#000' : colors.textTertiary,
                 cursor: 'pointer',
                 transition: transitions.fast,
-                boxShadow: shadows.sm
+                boxShadow: showFilters ? shadows.glowCyan : shadows.sm
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = colors.hover;
-                e.currentTarget.style.borderColor = colors.borderHover;
+                if (!showFilters) {
+                  e.currentTarget.style.background = colors.hover;
+                  e.currentTarget.style.borderColor = colors.borderHover;
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = colors.elevated;
-                e.currentTarget.style.borderColor = colors.border;
+                if (!showFilters) {
+                  e.currentTarget.style.background = colors.elevated;
+                  e.currentTarget.style.borderColor = colors.border;
+                }
               }}
             >
               <SlidersHorizontal size={20} />
