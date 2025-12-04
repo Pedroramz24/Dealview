@@ -709,10 +709,17 @@ const LandingPage = () => {
               letterSpacing: '-0.03em',
               fontFamily: '"Inter", sans-serif',
               filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))',
-              margin: 0
+              margin: '0 0 8px 0'
             }}>
               What Our Members Say
             </h2>
+            <p style={{
+              fontSize: '16px',
+              color: 'rgba(255,255,255,0.5)',
+              margin: 0
+            }}>
+              Real results from real people
+            </p>
             <button
               onClick={() => navigate('/signup')}
               style={{
