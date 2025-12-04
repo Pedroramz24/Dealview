@@ -681,17 +681,13 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials Section */}
+      {/* Testimonials Section - Grid Layout */}
       <section style={{
         padding: '100px 60px',
         background: 'transparent',
         position: 'relative',
         zIndex: 1
       }}>
-      {/* Testimonials Section - Grid Layout */}
-      <section style={{
-        padding: '100px 60px',
-        background: 'transparent',
-        position: 'relative',
         zIndex: 1
       }}>
         <div style={{
