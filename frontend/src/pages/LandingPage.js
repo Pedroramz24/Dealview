@@ -37,7 +37,7 @@ const LandingPage = () => {
       overflow: 'hidden',
       fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     }}>
-      {/* Glassmorphism Sticky Navigation */}
+      {/* Glassmorphism Sticky Navigation - Shows reflection underneath */}
       <nav style={{
         padding: '20px 60px',
         display: 'flex',
@@ -46,66 +46,46 @@ const LandingPage = () => {
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        background: 'rgba(255, 255, 255, 0.02)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        WebkitBackdropFilter: 'blur(20px) saturate(180%)'
+        background: 'rgba(0, 0, 0, 0.3)',
+        backdropFilter: 'blur(24px) saturate(180%)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)'
       }}>
-        <div style={{
-          fontSize: '26px',
-          fontWeight: '700',
-          color: '#00b8d4',
-          letterSpacing: '-0.02em'
-        }}>
-          DealLinked
-        </div>
+        <img 
+          src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/72aahevp_DealLinked.png"
+          alt="DealLinked"
+          style={{
+            height: '32px',
+            cursor: 'pointer'
+          }}
+          onClick={() => navigate('/')}
+        />
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <button
             onClick={() => navigate('/login')}
             style={{
               padding: '10px 24px',
-              background: 'rgba(0, 184, 212, 0.08)',
+              background: 'rgba(255, 255, 255, 0.05)',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(0, 184, 212, 0.2)',
+              WebkitBackdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '10px',
-              color: '#00b8d4',
+              color: 'rgba(255, 255, 255, 0.9)',
               fontSize: '14px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
-              e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
             }}
           >
             Login
-          </button>
-          <button
-            onClick={() => navigate('/signup')}
-            style={{
-              padding: '10px 20px',
-              background: '#00b8d4',
-              border: 'none',
-              borderRadius: '20px',
-              color: '#000',
-              fontSize: '14px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              transition: 'all 0.3s'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-          >
-            Get Started
           </button>
         </div>
       </nav>
