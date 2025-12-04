@@ -688,8 +688,6 @@ const LandingPage = () => {
         position: 'relative',
         zIndex: 1
       }}>
-        zIndex: 1
-      }}>
         <div style={{
           maxWidth: '1200px',
           margin: '0 auto'
