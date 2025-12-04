@@ -138,10 +138,10 @@ const LandingPage = () => {
             onClick={() => navigate('/signup')}
             style={{
               padding: '14px 32px',
-              background: '#00b8d4',
+              background: '#3063ff',
               border: 'none',
               borderRadius: '30px',
-              color: '#000',
+              color: '#fff',
               fontSize: '16px',
               fontWeight: '700',
               cursor: 'pointer',
