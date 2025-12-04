@@ -116,7 +116,7 @@ const LandingPage = () => {
         position: 'relative',
         padding: '80px 60px 120px',
         textAlign: 'center',
-        background: '#000',
+        background: 'transparent',
         overflow: 'visible'
       }}>
         {/* Wireframe Background Image - Positioned higher */}
