@@ -428,6 +428,7 @@ const LandingPage = () => {
             </ul>
           </div>
         </div>
+        </div>
       </section>
 
       {/* Features Section */}
