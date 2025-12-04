@@ -422,7 +422,7 @@ const LandingPage = () => {
       {/* Features Section */}
       <section style={{
         padding: '100px 60px',
-        background: '#000',
+        background: 'transparent',
         position: 'relative',
         zIndex: 1
       }}>
