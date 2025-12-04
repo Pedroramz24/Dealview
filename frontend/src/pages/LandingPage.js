@@ -258,7 +258,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* What is DealLinked Section - With radial gradient transition */}
+      {/* What is DealLinked Section */}
       <section style={{
         padding: '100px 60px',
         background: 'transparent',
@@ -266,43 +266,17 @@ const LandingPage = () => {
         zIndex: 20,
         overflow: 'hidden'
       }}>
-        {/* Radial gradient for smooth transition from center */}
-        <div style={{
-          position: 'absolute',
-          top: '0',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '100%',
-          height: '600px',
-          background: 'radial-gradient(ellipse at center top, rgba(0, 184, 212, 0.08) 0%, transparent 60%)',
-          pointerEvents: 'none',
-          zIndex: 0
-        }} />
-        
-        {/* Background depth gradient */}
-        <div style={{
-          position: 'absolute',
-          top: '40%',
-          left: '0',
-          right: '0',
-          height: '400px',
-          background: 'radial-gradient(ellipse at center, rgba(0, 184, 212, 0.05) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          zIndex: 0
-        }} />
-
-        <div style={{ position: 'relative', zIndex: 10 }}>
-          <h2 style={{
-            fontSize: '48px',
-            fontWeight: '800',
-            color: '#fff',
-            textAlign: 'center',
-            marginBottom: '80px',
-            letterSpacing: '-0.02em',
-            textShadow: '0 0 30px rgba(0, 184, 212, 0.3)'
-          }}>
-            What is DealLinked?
-          </h2>
+        <h2 style={{
+          fontSize: '48px',
+          fontWeight: '800',
+          color: '#fff',
+          textAlign: 'center',
+          marginBottom: '80px',
+          letterSpacing: '-0.02em',
+          textShadow: '0 0 30px rgba(0, 184, 212, 0.3)'
+        }}>
+          What is DealLinked?
+        </h2>
 
         <div style={{
           display: 'grid',
