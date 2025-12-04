@@ -46,16 +46,16 @@ const LandingPage = () => {
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        background: 'rgba(0, 0, 0, 0.3)',
-        backdropFilter: 'blur(24px) saturate(180%)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-        WebkitBackdropFilter: 'blur(24px) saturate(180%)'
+        background: 'rgba(0, 0, 0, 0.4)',
+        backdropFilter: 'blur(30px) saturate(180%)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+        WebkitBackdropFilter: 'blur(30px) saturate(180%)'
       }}>
         <img 
           src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/72aahevp_DealLinked.png"
           alt="DealLinked"
           style={{
-            height: '32px',
+            height: '48px',
             cursor: 'pointer'
           }}
           onClick={() => navigate('/')}
