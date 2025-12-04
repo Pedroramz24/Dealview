@@ -716,21 +716,21 @@ const LandingPage = () => {
             <button
               onClick={() => navigate('/signup')}
               style={{
-                padding: '12px 28px',
-                background: '#00b8d4',
+                padding: '0',
+                background: 'transparent',
                 border: 'none',
-                borderRadius: '10px',
-                color: '#000',
+                color: '#00b8d4',
                 fontSize: '15px',
-                fontWeight: '700',
+                fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'all 0.3s'
+                transition: 'all 0.3s',
+                textDecoration: 'none'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.opacity = '0.8';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.opacity = '1';
               }}
             >
               Join others
