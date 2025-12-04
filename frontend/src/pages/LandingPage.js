@@ -100,35 +100,32 @@ const LandingPage = () => {
       }}>
         <div style={{ position: 'relative', zIndex: 10 }}>
           <h1 style={{
-            fontSize: '80px',
-            fontWeight: '700',
+            fontSize: '72px',
+            fontWeight: '600',
             color: '#fff',
             marginBottom: '28px',
-            lineHeight: '1.05',
-            letterSpacing: '-0.04em',
+            lineHeight: '1.1',
+            letterSpacing: '-0.03em',
             fontFamily: '"Inter", sans-serif'
           }}>
-            Off-Market Commercial
+            The Private Marketplace for
             <br />
-            Real Estate.{' '}
-            <span style={{
-              color: '#00b8d4'
-            }}>
-              Simplified.
-            </span>
+            Real Dealmakers
           </h1>
           <p style={{
-            fontSize: '20px',
-            color: 'rgba(255,255,255,0.6)',
-            marginBottom: '40px',
-            maxWidth: '700px',
-            margin: '0 auto 40px',
-            lineHeight: '1.6',
+            fontSize: '19px',
+            color: 'rgba(255,255,255,0.65)',
+            marginBottom: '44px',
+            maxWidth: '780px',
+            margin: '0 auto 44px',
+            lineHeight: '1.65',
             fontWeight: '400'
           }}>
-            Connect brokers with serious investors. Post quality-controlled
+            A curated off-market exchange built for serious operators. Discover real deals,
             <br />
-            off-market deals. Find your next investment with NCND protection.
+            engage real decision-makers, and manage everything end-to-end with the
+            <br />
+            industry's first fully integrated deal OS.
           </p>
 
           {/* Get Started Button under hero */}
