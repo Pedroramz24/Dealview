@@ -35,51 +35,52 @@ const LandingPage = () => {
       minHeight: '100vh',
       position: 'relative',
       overflow: 'hidden',
-      fontFamily: '"Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     }}>
-      {/* Navigation */}
+      {/* Glassmorphism Sticky Navigation */}
       <nav style={{
-        padding: '24px 60px',
+        padding: '20px 60px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        position: 'relative',
-        zIndex: 100,
-        background: 'rgba(0,0,0,0.8)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(0, 184, 212, 0.1)'
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        background: 'rgba(255, 255, 255, 0.02)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)'
       }}>
         <div style={{
-          fontSize: '28px',
-          fontWeight: '800',
+          fontSize: '26px',
+          fontWeight: '700',
           color: '#00b8d4',
-          letterSpacing: '-0.02em',
-          textShadow: '0 0 20px rgba(0, 184, 212, 0.5)'
+          letterSpacing: '-0.02em'
         }}>
           DealLinked
         </div>
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <button
             onClick={() => navigate('/login')}
             style={{
-              padding: '12px 28px',
-              background: 'transparent',
-              border: '2px solid #00b8d4',
+              padding: '10px 24px',
+              background: 'rgba(0, 184, 212, 0.08)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(0, 184, 212, 0.2)',
               borderRadius: '10px',
               color: '#00b8d4',
-              fontSize: '15px',
+              fontSize: '14px',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.3s',
-              boxShadow: '0 0 20px rgba(0, 184, 212, 0.2)'
+              transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
-              e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+              e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 184, 212, 0.2)';
+              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
             }}
           >
             Login
@@ -87,24 +88,21 @@ const LandingPage = () => {
           <button
             onClick={() => navigate('/signup')}
             style={{
-              padding: '12px 28px',
+              padding: '10px 20px',
               background: '#00b8d4',
               border: 'none',
-              borderRadius: '10px',
+              borderRadius: '20px',
               color: '#000',
-              fontSize: '15px',
+              fontSize: '14px',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 0 30px rgba(0, 184, 212, 0.5), 0 4px 20px rgba(0, 184, 212, 0.3)',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.7), 0 6px 30px rgba(0, 184, 212, 0.4)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 184, 212, 0.5), 0 4px 20px rgba(0, 184, 212, 0.3)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.transform = 'scale(1)';
             }}
           >
             Get Started
@@ -112,99 +110,79 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Wireframe Background */}
+      {/* Hero Section - Clean with gradient background */}
       <section style={{
         position: 'relative',
-        padding: '100px 60px 80px',
+        padding: '120px 60px 60px',
         textAlign: 'center',
         background: 'transparent',
         overflow: 'visible'
       }}>
-        {/* Wireframe Background Image - Positioned higher */}
-        <div style={{
-          position: 'absolute',
-          top: '-20%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '140%',
-          height: '140%',
-          backgroundImage: 'url(https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/qbhrh82j_Gemini_Generated_Image_jjqn5hjjqn5hjjqn.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'top center',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.15,
-          zIndex: 0,
-          pointerEvents: 'none'
-        }} />
-
-        {/* Content */}
         <div style={{ position: 'relative', zIndex: 10 }}>
           <h1 style={{
-            fontSize: '72px',
-            fontWeight: '800',
+            fontSize: '80px',
+            fontWeight: '700',
             color: '#fff',
-            marginBottom: '24px',
-            lineHeight: '1.1',
-            letterSpacing: '-0.03em',
-            textShadow: '0 0 40px rgba(0, 184, 212, 0.3)'
+            marginBottom: '28px',
+            lineHeight: '1.05',
+            letterSpacing: '-0.04em',
+            fontFamily: '"Inter", sans-serif'
           }}>
-            Off-Market Commercial Real Estate.
+            Off-Market Commercial
             <br />
+            Real Estate.{' '}
             <span style={{
-              color: '#00b8d4',
-              textShadow: '0 0 60px rgba(0, 184, 212, 0.8)'
+              color: '#00b8d4'
             }}>
               Simplified.
             </span>
           </h1>
           <p style={{
-            fontSize: '22px',
-            color: 'rgba(255,255,255,0.7)',
-            marginBottom: '48px',
-            maxWidth: '900px',
-            margin: '0 auto 48px',
-            lineHeight: '1.6'
+            fontSize: '20px',
+            color: 'rgba(255,255,255,0.6)',
+            marginBottom: '40px',
+            maxWidth: '700px',
+            margin: '0 auto 40px',
+            lineHeight: '1.6',
+            fontWeight: '400'
           }}>
-            Connect brokers with serious investors. Post quality-controlled off-market deals.
+            Connect brokers with serious investors. Post quality-controlled
             <br />
-            Find your next investment with NCND protection.
+            off-market deals. Find your next investment with NCND protection.
           </p>
 
           {/* Get Started Button under hero */}
           <button
             onClick={() => navigate('/signup')}
             style={{
-              padding: '18px 48px',
+              padding: '14px 32px',
               background: '#00b8d4',
               border: 'none',
-              borderRadius: '12px',
+              borderRadius: '30px',
               color: '#000',
-              fontSize: '18px',
+              fontSize: '16px',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 4px 20px rgba(0, 184, 212, 0.4)',
               transition: 'all 0.3s',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              marginBottom: '80px'
+              marginBottom: '100px'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-3px)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 184, 212, 0.5)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 184, 212, 0.4)';
             }}
           >
             Get Started
-            <ArrowRight size={20} />
+            <ArrowRight size={18} />
           </button>
         </div>
       </section>
 
-      {/* Dashboard Screenshot - Smaller with glassmorphism border and blue highlight */}
+      {/* Dashboard Screenshot - Clear glass border */}
       <section style={{
         padding: '0 60px 120px',
         position: 'relative',
@@ -216,12 +194,12 @@ const LandingPage = () => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: '800px',
-          height: '800px',
-          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+          width: '900px',
+          height: '900px',
+          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.12) 0%, transparent 70%)',
           pointerEvents: 'none',
           zIndex: 0,
-          filter: 'blur(40px)'
+          filter: 'blur(60px)'
         }} />
 
         <div style={{
@@ -230,19 +208,19 @@ const LandingPage = () => {
           position: 'relative',
           zIndex: 10
         }}>
-          {/* Glassmorphism border container */}
+          {/* Clear glassmorphism border container */}
           <div style={{
-            padding: '2px',
-            background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 50%, rgba(0, 184, 212, 0.4) 100%)',
-            borderRadius: '20px',
+            padding: '1px',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%)',
+            borderRadius: '24px',
             position: 'relative'
           }}>
             <div style={{
-              background: 'rgba(10, 10, 10, 0.4)',
+              background: 'rgba(0, 0, 0, 0.3)',
               backdropFilter: 'blur(20px)',
-              borderRadius: '18px',
+              borderRadius: '23px',
               overflow: 'hidden',
-              padding: '12px'
+              padding: '16px'
             }}>
               <img 
                 src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/of5y58m3_image.png" 
@@ -250,7 +228,7 @@ const LandingPage = () => {
                 style={{ 
                   width: '100%', 
                   display: 'block',
-                  borderRadius: '12px'
+                  borderRadius: '16px'
                 }}
               />
             </div>
