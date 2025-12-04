@@ -78,13 +78,6 @@ const MarketplaceDealDetail = () => {
     fetchDealDetail();
   };
 
-  useEffect(() => {
-    // Only fetch deal if NCND is not required or already signed
-    if (!checkingNCND && ncndStatus && (!ncndStatus.requires_signature || (ncndStatus.has_signed && !ncndStatus.is_expired))) {
-      fetchDealDetail();
-    }
-  }, [checkingNCND, ncndStatus]);
-
   const fetchDealDetail = async () => {
     try {
       setLoading(true);
