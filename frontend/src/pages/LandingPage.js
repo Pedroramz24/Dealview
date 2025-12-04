@@ -855,7 +855,7 @@ const LandingPage = () => {
       {/* Footer */}
       <footer style={{
         padding: '60px 60px 40px',
-        background: '#000',
+        background: 'transparent',
         color: 'rgba(255,255,255,0.5)',
         position: 'relative',
         zIndex: 1,
