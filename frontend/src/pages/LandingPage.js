@@ -31,7 +31,7 @@ const LandingPage = () => {
 
   return (
     <div style={{ 
-      background: '#000',
+      background: 'radial-gradient(circle, rgba(19, 15, 64, 1), rgba(0, 0, 0, 1))',
       minHeight: '100vh',
       position: 'relative',
       overflow: 'hidden'
