@@ -541,12 +541,16 @@ const LandingPage = () => {
       }}>
         <h2 style={{
           fontSize: '48px',
-          fontWeight: '800',
-          color: '#fff',
+          fontWeight: '600',
+          background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
           textAlign: 'center',
           marginBottom: '20px',
-          letterSpacing: '-0.02em',
-          textShadow: '0 0 30px rgba(0, 184, 212, 0.3)'
+          letterSpacing: '-0.03em',
+          fontFamily: '"Inter", sans-serif',
+          filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
         }}>
           Simple, Transparent Pricing
         </h2>
