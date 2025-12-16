@@ -128,7 +128,7 @@ class MarketplaceTester:
                     self.log_result(
                         "Marketplace Filters - Asset Types", 
                         False, 
-                        f"Too few asset types returned: {len(asset_types)} (expected 60+)",
+                        f"Too few asset types returned: {len(asset_types)} (expected 50+)",
                         f"Asset types: {asset_types}"
                     )
                 
