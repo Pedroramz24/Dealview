@@ -55,7 +55,7 @@ from dashboard_service import dashboard_router
 from llc_service import llc_router
 
 # Import extracted route modules (ready for Marketplace features)
-from routes import auth_router, deal_router, dashboard_router as dashboard_routes_router, marketplace_router, messaging_router, onboarding_router, admin_router, reputation_router
+from routes import auth_router, deal_router, dashboard_router as dashboard_routes_router, marketplace_router, messaging_router, onboarding_router, admin_router, reputation_router, roles_router
 
 # Initialize database connections
 db = get_db()
