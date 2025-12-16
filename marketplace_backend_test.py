@@ -41,24 +41,34 @@ class MarketplaceTester:
     def authenticate(self):
         """Authenticate with Supabase credentials"""
         try:
-            response = requests.post(
-                f"{self.base_url}/auth/login",
-                json=TEST_CREDENTIALS,
-                timeout=10
-            )
+            from supabase import create_client
+            import os
+            from dotenv import load_dotenv
             
-            if response.status_code == 200:
-                data = response.json()
-                self.token = data.get("access_token")
+            load_dotenv('/app/backend/.env')
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_ANON_KEY']
+            
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Try to sign in with Supabase
+            result = supabase.auth.sign_in_with_password({
+                'email': TEST_CREDENTIALS['email'],
+                'password': TEST_CREDENTIALS['password']
+            })
+            
+            if result.session:
+                self.token = result.session.access_token
                 self.headers = {"Authorization": f"Bearer {self.token}"}
-                self.log_result("Authentication", True, f"Successfully logged in as {TEST_CREDENTIALS['email']}")
+                self.log_result("Authentication", True, f"Successfully logged in as {TEST_CREDENTIALS['email']} via Supabase")
                 return True
             else:
-                self.log_result("Authentication", False, f"Login failed with status {response.status_code}", response.text)
+                self.log_result("Authentication", False, "No session returned from Supabase")
                 return False
                 
         except Exception as e:
-            self.log_result("Authentication", False, f"Authentication error: {str(e)}")
+            self.log_result("Authentication", False, f"Supabase authentication error: {str(e)}")
             return False
     
     def test_marketplace_filters(self):
