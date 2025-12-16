@@ -1,127 +1,212 @@
 <analysis>**original_problem_statement:**
-The user's initial request was to fix a missing global background gradient. This quickly evolved into a series of iterative UI/UX enhancements for the AI Dashboard, driven by user-provided CSS and reference images. The core goals were:
-1.  Achieve a specific background gradient aesthetic (testing various linear, radial, and image-based backgrounds).
-2.  Redesign the content sections on the AI Dashboard to move from a flat black void to a modern, layered glassmorphism look, where content panels appear as floating, translucent glass on top of the gradient background.
-3.  Compare different background gradients on different pages ( vs. ) while maintaining a consistent glassmorphism card style.
+The user's initial goal was to fix a background gradient. This quickly evolved into a multi-phase, feature-rich development effort. The primary objectives were:
+1.  **Implement Advanced Publishing Features:** Build a comprehensive Publish to Marketplace wizard with features like listing completeness scores (requiring 80% to publish), dynamic fields based on property type, an NCND (Non-Circumvention Non-Disclosure) signature gate before viewing deal details, and a sophisticated broker reputation system based on verified on-platform actions.
+2.  **Build a New Landing Page:** Create a visually rich, one-page marketing website, initially modeled after  and later after , through an extensive iterative design process to match a dark, futuristic, glassmorphism aesthetic with cyan and blue accents.
+3.  **Establish a Scalable Architecture:** Define a long-term architectural strategy for the application, distinguishing between Broker, Seller, and Buyer roles, and planning for features like role-specific dashboards, profiles, and onboarding wizards. The core principle is to use a unified codebase with role-based conditional rendering, not separate pages/marketplaces for each user type.
+4.  **Populate with Showcase Data:** Create realistic placeholder data for properties in San Antonio and Austin to facilitate screenshots and demos.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application now features a glassmorphism UI design on two key pages.
--   The **AI Dashboard** () has been significantly redesigned. Its content sections (header, metric cards, etc.) are now styled as ultra-light, translucent glass panels. This page uses a radial purple-to-black gradient for its background.
--   The **Marketplace Analytics** page () has been updated to match the same glassmorphism card styling. However, it uses a different, user-specified diagonal purple-to-black gradient to allow for a side-by-side design comparison.
--   The rest of the application pages (Pipeline, Contacts, etc.) remain in their previous state with solid-colored cards and no prominent background gradient.
+The application features are largely built but are blocked by a critical infrastructure issue.
+-   **Backend:** New data models (, , ) and API endpoints (, , ) have been created to support the advanced publishing wizard, NCND system, and broker reputation engine.
+-   **Frontend:**
+    -   An  component has replaced the old publish modal.
+    -   An  is integrated into the  page to gate access.
+    -    and completeness scores have been integrated into marketplace and deal detail pages.
+    -   A complete, multi-section  has been built and iteratively redesigned to a final, user-approved dark, futuristic aesthetic.
+-   **Database:** 6 realistic showcase deals have been created for the Austin and San Antonio markets. The user has manually applied the necessary database migrations for the new features.
+-   **Blocker:** The application is non-functional as it cannot connect to the Supabase backend (), preventing login and all data operations.
 
 **Last working item**:
--   **Last item agent was working:** Applying the ultra-light glassmorphism card style to the  page, but with a different user-specified background gradient (). The purpose was to create a visual comparison with the  page, which uses a radial gradient.
+-   **Last item agent was working:** The agent was engaged in a high-level architectural planning discussion with the user. After the user provided detailed requirements for a unified, role-based system, the agent proposed a revised development roadmap and was waiting for user approval to begin implementation. This was a planning/strategy task, as the last code-related task (fixing login) was blocked by the Supabase infrastructure issue.
 -   **Status:** USER VERIFICATION PENDING
--   **Agent Testing Done:** Y
--   **Which testing method agent to use?** screenshot tool
+-   **Agent Testing Done:** N/A (Item is a plan/roadmap)
+-   **Which testing method agent to use?** N/A
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Inconsistent UI/UX across the CRM (P0)** The new, user-approved glassmorphism design is only applied to  and . The rest of the CRM pages have an outdated, inconsistent appearance.
+-   **Issue 1: Supabase Instance Unreachable (P0, BLOCKER)**
+-   **Issue 2: Deal Detail Page Instability (P1)**
+-   **Issue 3: Incomplete Marketplace Filter Functionality (P2)**
+-   **Issue 4: Inconsistent UI/UX Across CRM (P3)**
 
 **Issues Detail:**
 -   **Issue 1:**
-    -   **Attempted fixes:** None yet for the remaining pages. The focus has been on perfecting the design on the test pages first.
+    -   **Description:** The application cannot resolve the DNS for the Supabase URL (), resulting in an  on all authentication and database requests. This makes the entire application unusable.
+    -   **Attempted fixes:** The agent verified the URL in the  file and confirmed via  that the host is unreachable. This is an infrastructure issue, not a code issue.
     -   **Next debug checklist:**
-        1.  Confirm with the user which background gradient (the radial one from Dashboard, the diagonal one from Analytics, or a new one) should be applied globally across the app.
-        2.  Get final approval to roll out the ultra-light glassmorphism card style to all other CRM pages.
-        3.  Identify the list of pages to be updated (e.g., Pipeline, Deals, Contacts, Map).
-        4.  Refactor the main content containers on each page to use the approved glassmorphism styles (e.g., , ).
-        5.  Apply the chosen global gradient to the  tag in  and ensure all page-level wrappers are transparent.
-    -   **Why fix this issue and what will be achieved with the fix?** To create a cohesive, modern, and visually stunning user experience across the entire application, fulfilling the user's design vision.
-    -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
+        1.  The user needs to check their Supabase project status to ensure it is not paused, deleted, or that the URL has not changed.
+        2.  Once the Supabase instance is confirmed to be active, re-test the login functionality.
+    -   **Why fix this issue and what will be achieved with the fix?** This is a critical blocker. Fixing it will restore all application functionality, including login, registration, and data browsing.
+    -   **Status:** BLOCKED
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Both
+    -   **Blocked on other issue:** Blocked on external infrastructure (Supabase project status).
+-   **Issue 2:**
+    -   **Description:** The user has repeatedly reported that the deal detail page gets stuck in an infinite loading state. While the agent fixed one cause (a duplicate  hook), the recurrence of this complaint suggests potential instability.
+    -   **Attempted fixes:** Removed a redundant  in .
+    -   **Next debug checklist:**
+        1.  Once the Supabase issue is resolved, perform a thorough end-to-end test: Log in, navigate to the marketplace, and click on multiple deals.
+        2.  Monitor the browser's network tab and console for any errors during the  and NCND check process.
+        3.  Verify that both the deal data and the NCND status are fetched correctly and that the UI transitions from the loading state.
+    -   **Why fix this issue and what will be achieved with the fix?** This is core functionality. Users must be able to view deal details.
+    -   **Status:** TESTING PENDING
+    -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
-    -   **Blocked on other issue:** Awaiting user decision on the final gradient and go-ahead for global implementation.
+    -   **Blocked on other issue:** Issue 1: Supabase Instance Unreachable
+-   **Issue 3:**
+    -   **Description:** A filter side panel was added to the marketplace page, but the actual filter controls (e.g., for asset type, price range) have not been implemented. The UI exists but is not functional.
+    -   **Status:** NOT STARTED
+-   **Issue 4:**
+    -   **Description:** The new glassmorphism UI/UX is only applied to the AI Dashboard and Broker Analytics pages. The rest of the CRM pages (Deals, Contacts, etc.) have an outdated appearance. This was the original task of the parent job.
+    -   **Status:** NOT STARTED
 
 **In progress Task List**:
--   None.
+-   **Task 1: Finalize Architectural Roadmap (P0)**
+    -   **Where to resume:** The agent has provided a revised roadmap based on the user's direction for a unified, role-based architecture. Awaiting user confirmation or further adjustments.
+    -   **What will be achieved with this?** A clear, user-approved plan for all future development, ensuring a scalable and maintainable application structure.
+    -   **Status:** USER VERIFICATION PENDING
+    -   **Should Test frontend/backend/both after fix?** N/A
+    -   **Blocked on something:** User feedback.
 
 **Upcoming and Future Tasks**
--   **Upcoming Tasks:**
-    -   **(P0) Global UI Rollout:** Based on user feedback, apply the finalized glassmorphism design and background gradient to all remaining CRM pages (Pipeline, Contacts, Deals, Map, etc.).
-    -   **(P1) Advanced Publishing Features:** (Carried over) Implement quality control mechanisms like NCND gates, listing completeness scores, and broker reputation systems.
+-   **Upcoming Tasks (Based on approved roadmap):**
+    -   **(P0) Phase 1: Role & Permission Foundation:** Implement the backend models and frontend context for a hybrid roles system (primary role + additional verified roles).
+    -   **(P1) Phase 2: Buyer Experience Loop:** Build out the core buyer journey: browsing the unified marketplace, saving deals, messaging, and a simple offer/task management system within their dashboard.
+    -   **(P2) Phase 3: Admin Dashboard:** Build the admin dashboard for overseeing pending deal approvals and user verification requests.
+    -   **(P3) Phase 4: Public Broker Profiles & Leaderboard:** Create the public-facing (members-only initially) broker profiles and the quality-score-driven leaderboard.
 -   **Future Tasks:**
-    -   **(P1) Stripe Integration:** Implement subscription payments.
-    -   **(P2) Community Feature:** Build out the Community section.
-    -   **(P2) Final Animation Polish:** Add micro-animations and transitions.
+    -   Implement Seller/Buyer/Broker onboarding wizards.
+    -   Implement Seller/Buyer/Broker profile pages.
+    -   Implement the universal Seller Dashboard.
+    -   Globally apply the glassmorphism UI design to all remaining CRM pages.
+    -   Integrate Stripe for subscription payments.
+    -   Build out the Community feature.
 
 **Completed work in this session**
--   **Critical Bug Fix:** Identified and resolved a major blocker where the agent was editing the wrong file () instead of the correct one () for the  route, which caused user-requested changes not to appear.
--   **UI/UX Redesign of AI Dashboard:** Transformed the  page from a solid-card layout to a sophisticated ultra-light glassmorphism design with a radial gradient background, based on extensive iterative feedback from the user.
--   **Comparative UI Implementation:** Applied the same glassmorphism card style to the  page but with a different (diagonal) gradient, enabling the user to compare the two aesthetics side-by-side.
+-   **Advanced Publishing Features (Phases 1-3):**
+    -   Built backend models, routes, and DB migrations for an enhanced publishing flow, NCND system, and broker reputation engine.
+    -   Built and integrated frontend components: , , and .
+    -   Added listing completeness score calculation and display, with an 80% threshold for publishing.
+-   **Landing Page Development:**
+    -   Designed and built a complete, multi-section landing page from scratch.
+    -   Iteratively redesigned the page through multiple user feedback cycles to achieve a dark, futuristic, glassmorphic aesthetic with custom fonts, a sticky header, and specific brand colors.
+    -   Integrated the user's provided logo.
+-   **Marketplace Enhancement:**
+    -   Created a Python script to populate the database with 6 realistic showcase deals in Austin and San Antonio.
+    -   Updated the marketplace map style to a standard street map theme (OpenStreetMap).
+    -   Modernized map markers from image icons to CSS-styled pins.
+-   **Bug Fixing & UI Polish:**
+    -   Removed all emojis from UI components for a more professional look.
+    -   Fixed a critical bug causing infinite loading on the deal detail page.
+    -   Fixed a JSX syntax error that was breaking the landing page.
+    -   Diagnosed the root cause of the Failed to fetch login error as an unreachable Supabase instance.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: OpenCorporates search is inaccurate**
--   **Issue 2:  in backend**
--   **Issue 3: One deal has incorrect longitude data**
--   **Issue 4: Supabase authentication fails in testing environment**
+-   OpenCorporates search is inaccurate
+-    in backend
+-   One deal has incorrect longitude data
 
 **Known issue recurrence from previous fork**
--   **Issue recurrence in previous fork:** Supabase authentication fails in testing environment.
--   **Recurrence count:** 1
--   **Status:** NOT STARTED
+-   **Issue recurrence in previous fork:** Supabase authentication fails.
+-   **Recurrence count:** 2
+-   **Status:** BLOCKED (This recurrence is due to an infrastructure outage, not a code error like before).
 
 **Code Architecture**
-No changes to the overall file or directory structure. All changes were inline style modifications within specific React component files.
+-   **Frameworks:** React (frontend) + FastAPI (backend).
+-   **Database:** Supabase (PostgreSQL).
+-   **Frontend:**
+    -   New page: .
+    -   New major components: , , , .
+    -   Significant modifications to  (map style, pins, filter panel) and  (NCND integration, bug fixes).
+-   **Backend:**
+    -   New data models: , , .
+    -   New route file: .
+    -   Major modifications to  (new publish endpoint, completeness endpoint) and  (NCND routes, sorting logic).
+    -   Main server file  updated to include the new reputation router.
 
 **Key Technical Concepts**
--   **Glassmorphism:** A UI design trend implemented using a combination of CSS properties: semi-transparent backgrounds (), , and subtle borders to create a frosted-glass look.
--   **Iterative UI Prototyping:** A workflow where the agent rapidly applies user-provided CSS snippets, generates a screenshot for visual confirmation, and awaits further instructions, allowing for quick design exploration.
--   **CSS Debugging:** Diagnosed and resolved issues related to CSS specificity, caching, and, most importantly, identifying that edits were being made to an incorrect, un-rendered component file.
+-   **Role-Based Architecture:** The core principle for future development, using a single codebase with conditional rendering for different user roles (Broker, Seller, Buyer).
+-   **Iterative UI/UX Development:** The landing page was built through rapid, feedback-driven cycles based on user-provided references and detailed instructions.
+-   **Glassmorphism:** The target design aesthetic, using transparency, blur, and subtle borders. Implemented heavily on the landing page and new UI components.
+-   **Database Seeding:** A Python script () was used to populate the database with realistic placeholder data for demos.
+-   **Infrastructure Debugging:** Diagnosed a critical application failure by tracing a frontend error () to a DNS resolution failure () of the Supabase backend URL.
 
 **key DB schema**
--   No changes made in this session.
+-   **deals:** Heavily augmented with fields from  model (e.g., , , , , , , ).
+-   **ncnd_signatures:** New table to track which user has signed an NCND for which deal.
+-   **broker_reputation_feedback:** New table to store private, structured feedback on deals.
+-   **users:** Will be updated to include a  and an array for .
 
 **changes in tech stack**
 -   None.
 
 **All files of reference**
--   : **CRITICAL.** This is the correct file for the AI Operations Dashboard and contains the final approved glassmorphism design. All future dashboard edits must target this file.
--   : The second page that was updated with the glassmorphism style for comparison purposes.
--   : The central stylesheet where the final global background gradient should be applied.
--   : **NOTE:** This file was edited by mistake for a large part of the session, causing confusion. It is not currently rendered in the main dashboard route.
+-    (New, heavily iterated)
+-    (New)
+-    (New)
+-    (Modified for map style, pins, filters)
+-    (Modified for NCND and bug fixes)
+-    (Modified to use new wizard)
+-    (New)
+-    (New)
+-    (New)
+-    (Heavily modified)
+-    (New)
+-    (Documentation created for user)
+-    (Utility script for seeding data)
+-    (Contains SQL migration files for the new features)
+
+**Areas that need refactoring**:
+-   None explicitly identified, but the unified role architecture will require careful refactoring of components like dashboards and profiles to be role-adaptive rather than creating new ones.
+
+**key api endpoints**
+-   : Publishes a deal with enhanced details.
+-   : Calculates the listing quality score.
+-   : Records a user signing an NCND.
+-   : Checks if the current user has signed the NCND.
+-   : Submits feedback on a deal.
+-   : Calculates a broker's reputation score.
 
 **Critical Info for New Agent**
--   **TARGET THE CORRECT FILE:** The route  renders the component from , **NOT** . This was the source of significant user frustration and wasted effort. Always verify the correct component is being edited.
--   **USER-DRIVEN CSS:** The user is very hands-on with design and will provide specific CSS code to test. The expected workflow is: apply the code, take a screenshot, present the result, and ask for the next step.
--   **FOCUS ON GLASSMORPHISM:** The approved design language is ultra-light glassmorphism. This involves a highly transparent background (), a significant backdrop blur (), and a subtle border.
+-   **TOP PRIORITY BLOCKER:** The Supabase instance at  is unreachable. All development is blocked until the user resolves this infrastructure issue. Do not attempt to fix this with code changes.
+-   **ARCHITECTURAL MANDATE:** All future development must follow the **unified, role-based architecture** strategy. Do not build separate pages for Brokers, Sellers, and Buyers. Instead, build single, shared components and pages that adapt their content and actions based on the user's role. Refer to the latest architectural discussion for details.
+-   **USER-DRIVEN DESIGN:** The user is highly involved in UI/UX and provides specific visual references and detailed feedback. Expect to perform iterative, pixel-perfect design work, especially for new pages and components.
+-   **MANUAL MIGRATIONS:** The user has been applying database migrations manually. Any new database changes will require creating a migration file and instructing the user to apply it.
 
 **documents created in this job**
--   None.
+-   /app/PHASE_1_PUBLISHING_COMPLETE.md
+-   /app/PHASE_2_NCND_COMPLETE.md
+-   /app/COMPLETE_SETUP_GUIDE.md
+-   /app/IMPLEMENTATION_VERIFICATION.md
+-   /app/SENIOR_DEV_TECHNICAL_OVERVIEW.md
 
 **Last 10 User Messages and any pending user messages**
-1.  **User:** Requests a purple-to-black diagonal gradient for the background. (Status: **Completed**)
-2.  **User:** Requests a brighter purple diagonal gradient. (Status: **Completed**)
-3.  **User:** Requests a dark blue vertical gradient. (Status: **Completed**)
-4.  **User:** Asks to make the section cards solid dark grey to distinguish them from the gradient. (Status: **Completed**)
-5.  **User:** Dislikes the solid look (we went backwards) and asks for a new gradient with lighter grey cards. (Status: **Completed**)
-6.  **User:** Reverts again, asking to go back to the glass look but with a stained grey tint. (Status: **Completed**)
-7.  **User:** Asks for a purple diagonal gradient to go with the new stained glass cards. (Status: **Completed**)
-8.  **User:** Redefines the vision to true glassmorphism (softer transparency, more blur) and provides a new radial gradient. (Status: **Completed**)
-9.  **User:** Provides the final CSS for the radial gradient on the dashboard. (Status: **Completed**)
-10. **User:** Asks to apply the same glassmorphism UI to the Marketplace Analytics page, but with a different (diagonal) gradient for comparison. (Status: **Completed and awaiting verification**)
+1.  **User:** Asks for a detailed technical overview of the project for a senior developer. (Status: **Completed**)
+2.  **User:** Initiates a major architectural planning session, outlining all current and desired pages and roles (Broker, Seller, Buyer). (Status: **Agent responded, awaiting feedback**)
+3.  **User:** Confirms the goal is a **unified and simple** build, not three separate marketplaces. One map, one marketplace, with role-based views. (Status: **Agent confirmed, awaiting feedback**)
+4.  **User:** Provides detailed answers to the agent's architectural questions, defining the hybrid roles model, per-property verification, build priorities, and profile designs. (Status: **Agent responded, awaiting feedback**)
+5.  **User:** Confirms the build priority and dashboard strategy (Option B: one universal dashboard). (Status: **Agent responded, awaiting feedback**)
+6.  **User:** Clarifies the plan: Seller dashboard should also be part of a single shell, and onboarding wizards are needed. (Status: **Agent responded, awaiting feedback**)
+7.  **User (pending):** Needs to review and approve the agent's final proposed roadmap before implementation can begin.
 
 **Project Health Check:**
--   **Broken:** The UI is now visually inconsistent. The AI Dashboard and Analytics pages have a new, modern design, while all other pages retain the old look.
--   **Mocked:** None.
+-   **Broken:** The application is completely non-functional due to the Supabase instance being unreachable, which prevents login and all data-dependent features.
 
-**3rd Party Integrations**:
--   Supabase (Database, Auth, Storage)
+**3rd Party Integrations**
+-   Supabase (Database, Auth, Storage) - **Currently Unreachable**
 -   Esri ArcGIS (Map imagery)
 -   CARTO (Map labels/styles)
 
 **Testing status**
 -   **Testing agent used after significant changes:** NO
--   **Troubleshoot agent used after agent stuck in loop:** YES, the troubleshoot agent was called to investigate why CSS changes weren't appearing. It correctly diagnosed that the build process was working, which helped the main agent realize the issue was a wrong file path.
--   **Test files created:** None
--   **Known regressions:** None.
+-   **Troubleshoot agent used after agent stuck in loop:** NO
+-   **Test files created:** []
+-   **Known regressions:** Login is completely broken due to the Supabase outage.
 
 **Credentials to test flow:**
--    / 
+-    /  (Note: Login will fail until the Supabase issue is resolved).
 
 **What agent forgot to execute**
--   For a significant portion of the session, the agent failed to verify which React component was being rendered by the target URL (). This led to editing the wrong file () and caused a long loop where user-requested changes did not appear, leading to frustration. This was eventually discovered and corrected.</analysis>
+-   Initially, the agent built the components for the Advanced Publishing Features (Phases 1-3) but forgot to integrate them into the live application pages. This was pointed out by the user and subsequently corrected by the agent.</analysis>

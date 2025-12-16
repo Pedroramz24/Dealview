@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://sleek-dashboard-36.preview.emergentagent.com/api"
+BASE_URL = "https://dealflow-connect-2.preview.emergentagent.com/api"
 
 class EmailCampaignTester:
     def __init__(self):
