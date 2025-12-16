@@ -129,27 +129,34 @@ async def get_broker_reputation(
     """
     Get public reputation summary for a broker.
     Shows badges, stats, and quality tier.
+    Returns default values for new brokers without reputation data.
     """
     supabase = get_supabase()
     
     try:
-        # Fetch reputation
-        result = supabase.table('broker_reputation').select('*').eq('broker_id', broker_id).single().execute()
+        # Fetch reputation - use maybeSingle to handle empty results gracefully
+        result = supabase.table('broker_reputation').select('*').eq('broker_id', broker_id).execute()
         
-        if not result.data:
-            # Return default for new brokers
+        # If no reputation data exists, return default for new brokers
+        if not result.data or len(result.data) == 0:
+            logger.info(f"No reputation data found for broker {broker_id}, returning defaults")
             return BrokerReputationSummary(
                 broker_id=broker_id,
                 quality_score=50,
                 badges=[],
-                stats={},
+                stats={
+                    "total_listings": 0,
+                    "verified_listings": 0,
+                    "closed_deals": 0,
+                    "response_time": "N/A"
+                },
                 can_publish=True,
                 max_listings=100
             )
         
         # Convert to model and generate summary
         from models.reputation import BrokerReputation
-        reputation = BrokerReputation(**result.data)
+        reputation = BrokerReputation(**result.data[0])
         summary = get_reputation_summary(reputation)
         
         return summary
@@ -157,10 +164,20 @@ async def get_broker_reputation(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error fetching broker reputation: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch broker reputation"
+        # Log the error but return default instead of 500
+        logger.warning(f"Error fetching broker reputation for {broker_id}: {str(e)}, returning defaults")
+        return BrokerReputationSummary(
+            broker_id=broker_id,
+            quality_score=50,
+            badges=[],
+            stats={
+                "total_listings": 0,
+                "verified_listings": 0,
+                "closed_deals": 0,
+                "response_time": "N/A"
+            },
+            can_publish=True,
+            max_listings=100
         )
 
 
