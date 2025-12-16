@@ -2470,7 +2470,7 @@ async def delete_pipeline_stage(
 # ============================================================================
 
 
-# Register extracted route modules (auth, deals, dashboard, marketplace, messaging, onboarding, admin)
+# Register extracted route modules (auth, deals, dashboard, marketplace, messaging, onboarding, admin, reputation, roles)
 api_router.include_router(auth_router)
 api_router.include_router(deal_router)
 api_router.include_router(dashboard_routes_router)
@@ -2479,6 +2479,7 @@ api_router.include_router(messaging_router)
 api_router.include_router(onboarding_router)
 api_router.include_router(admin_router)
 api_router.include_router(reputation_router)
+api_router.include_router(roles_router)
 
 # Register main API router and service routers
 app.include_router(api_router)
