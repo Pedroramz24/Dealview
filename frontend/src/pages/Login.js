@@ -1,18 +1,24 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../App';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
+import RoleSelectionStep from '../components/onboarding/RoleSelectionStep';
+import UnifiedOnboardingWizard from '../components/onboarding/UnifiedOnboardingWizard';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
   const { login, signup } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
@@ -24,9 +30,10 @@ const Login = () => {
         // Login with Supabase
         await login(email, password);
       } else {
-        // Signup with Supabase
-        await signup(email, password, { full_name: fullName });
-        toast.success('Account created! Please check your email to verify.');
+        // Redirect to onboarding flow for signups
+        setShowOnboarding(true);
+        setLoading(false);
+        return;
       }
     } catch (error) {
       toast.error(error.message || 'Authentication failed');
@@ -34,6 +41,34 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  const handleRoleSelect = (role) => {
+    setSelectedRole(role);
+  };
+
+  const handleOnboardingComplete = () => {
+    navigate('/marketplace');
+  };
+
+  const handleBackToLogin = () => {
+    setShowOnboarding(false);
+    setSelectedRole(null);
+  };
+
+  // Show onboarding flow if user clicked signup
+  if (showOnboarding && !selectedRole) {
+    return <RoleSelectionStep onSelect={handleRoleSelect} />;
+  }
+
+  if (showOnboarding && selectedRole) {
+    return (
+      <UnifiedOnboardingWizard
+        selectedRole={selectedRole}
+        onComplete={handleOnboardingComplete}
+        onBack={() => setSelectedRole(null)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-base)' }}>
