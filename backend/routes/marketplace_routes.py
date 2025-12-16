@@ -4,6 +4,11 @@ from fastapi.security import HTTPAuthorizationCredentials
 from typing import List, Optional
 from datetime import datetime, timezone
 import logging
+import sys
+import os
+
+# Add parent directory to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models.marketplace import SavedDeal, SavedDealCreate, DealView
 from models import Deal
@@ -12,6 +17,7 @@ from models.ncnd import (
 )
 from utils.auth_helpers import get_current_user_supabase, security
 from utils.db import get_supabase
+from constants.asset_types import COMPREHENSIVE_ASSET_TYPES, LEGACY_ASSET_TYPES, ALL_ASSET_TYPES
 
 router = APIRouter(prefix="/marketplace", tags=["Marketplace"])
 logger = logging.getLogger(__name__)
@@ -292,7 +298,7 @@ async def get_available_markets(user = Depends(get_current_user_supabase)):
 async def get_marketplace_filters(user = Depends(get_current_user_supabase)):
     """
     Get available filter options (markets, asset types, strategies).
-    Returns user's buy_box_preferences as defaults.
+    Returns comprehensive asset types list and user's buy_box_preferences as defaults.
     """
     supabase = get_supabase()
     
@@ -301,21 +307,24 @@ async def get_marketplace_filters(user = Depends(get_current_user_supabase)):
         profile = supabase.table('user_profiles').select('buy_box_preferences').eq('id', str(user.id)).single().execute()
         buy_box = profile.data.get('buy_box_preferences', {}) if profile.data else {}
         
-        # Get distinct values from published deals
+        # Get distinct values from published deals for markets and strategies
         deals = supabase.table('deals').select(
             'public_market, public_asset_type, public_strategy'
         ).eq('is_published', True).eq('public_status', 'published').execute()
         
         markets = list(set([d['public_market'] for d in deals.data if d.get('public_market')]))
-        asset_types = list(set([d['public_asset_type'] for d in deals.data if d.get('public_asset_type')]))
+        # Get asset types from deals but also include all comprehensive types
+        deal_asset_types = list(set([d['public_asset_type'] for d in deals.data if d.get('public_asset_type')]))
+        # Combine and deduplicate: prioritize comprehensive types, then add any custom types from deals
+        all_types = sorted(list(set(COMPREHENSIVE_ASSET_TYPES + deal_asset_types)))
         strategies = list(set([d['public_strategy'] for d in deals.data if d.get('public_strategy')]))
         
         return {
             "user_preferences": buy_box,
             "available_filters": {
-                "markets": sorted(markets),
-                "asset_types": sorted(asset_types),
-                "strategies": sorted(strategies)
+                "markets": sorted(markets) if markets else ["Austin", "San Antonio", "Dallas", "Houston"],
+                "asset_types": all_types,
+                "strategies": sorted(strategies) if strategies else ["Core", "Core Plus", "Value Add", "Opportunistic"]
             }
         }
         
