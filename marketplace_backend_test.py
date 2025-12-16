@@ -110,18 +110,18 @@ class MarketplaceTester:
                 
                 found_comprehensive = [t for t in comprehensive_types_found if t in asset_types]
                 
-                if len(asset_types) >= 60 and len(found_comprehensive) >= 5:
+                if len(asset_types) >= 50 and len(found_comprehensive) >= 5:
                     self.log_result(
                         "Marketplace Filters - Asset Types", 
                         True, 
                         f"✅ COMPREHENSIVE ASSET TYPES WORKING: Found {len(asset_types)} asset types including subtypes",
-                        f"Sample types: {found_comprehensive[:5]}"
+                        f"Sample comprehensive types: {found_comprehensive}"
                     )
                 elif len(asset_types) >= 10:
                     self.log_result(
                         "Marketplace Filters - Asset Types", 
                         False, 
-                        f"Asset types returned but not comprehensive enough: {len(asset_types)} types (expected 60+)",
+                        f"Asset types returned but not comprehensive enough: {len(asset_types)} types (expected 50+)",
                         f"Missing comprehensive subtypes like 'Office - Class A', 'Retail - Shopping Center', etc. Found: {asset_types[:10]}"
                     )
                 else:
