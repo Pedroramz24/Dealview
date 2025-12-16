@@ -435,8 +435,6 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
     }
   };
 
-  const nextImage = () => {
-
   const handleOwnerLookup = async () => {
     const ownerName = data.owner || data.owner_name || data.ownername;
     
@@ -489,6 +487,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
     }
   };
 
+  const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
