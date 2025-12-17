@@ -261,6 +261,164 @@ async def request_ownership_verification(
                 status_code=403,
                 detail="You must have the seller role to request ownership verification"
             )
+
+
+@router.post("/admin/reject-role-verification")
+async def reject_role_verification(
+    rejection_data: RejectRoleRequest,
+    user = Depends(get_current_user_supabase)
+):
+    """
+    Admin only: Reject a role verification request.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Check if user is admin
+        profile_result = supabase.table('user_profiles').select('is_admin').eq('id', str(user.id)).single().execute()
+        
+        if not profile_result.data or not profile_result.data.get('is_admin'):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        # Fetch the request
+        request_result = supabase.table('role_verification_requests').select('*').eq(
+            'id', rejection_data.request_id
+        ).single().execute()
+        
+        if not request_result.data:
+            raise HTTPException(status_code=404, detail="Verification request not found")
+        
+        request_data = request_result.data
+        
+        if request_data['status'] != 'pending':
+            raise HTTPException(
+                status_code=400,
+                detail=f"Request is already {request_data['status']}"
+            )
+        
+        # Update request status
+        supabase.table('role_verification_requests').update({
+            'status': 'rejected',
+            'reviewed_at': datetime.now(timezone.utc).isoformat(),
+            'reviewed_by': str(user.id),
+            'rejection_reason': rejection_data.rejection_reason,
+            'admin_notes': rejection_data.admin_notes
+        }).eq('id', rejection_data.request_id).execute()
+        
+        # Log admin action
+        supabase.table('admin_actions').insert({
+            'admin_id': str(user.id),
+            'action_type': 'reject_role',
+            'target_type': 'role_verification',
+            'target_id': rejection_data.request_id,
+            'action_details': {
+                'user_id': request_data['user_id'],
+                'role': request_data['requested_role'],
+                'reason': rejection_data.rejection_reason
+            },
+            'notes': rejection_data.admin_notes
+        }).execute()
+        
+        return {
+            "success": True,
+            "message": f"{request_data['requested_role'].capitalize()} verification request rejected"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error rejecting role verification: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to reject verification"
+        )
+
+
+@router.post("/admin/approve-ownership-verification")
+async def approve_ownership_verification(
+    approval_data: ApproveOwnershipRequest,
+    user = Depends(get_current_user_supabase)
+):
+    """Admin only: Approve an ownership verification request."""
+    supabase = get_supabase()
+    
+    try:
+        # Check admin
+        profile_result = supabase.table('user_profiles').select('is_admin').eq('id', str(user.id)).single().execute()
+        if not profile_result.data or not profile_result.data.get('is_admin'):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        # Fetch verification
+        verification_result = supabase.table('ownership_verifications').select('*').eq(
+            'id', approval_data.verification_id
+        ).single().execute()
+        
+        if not verification_result.data:
+            raise HTTPException(status_code=404, detail="Verification not found")
+        
+        verification = verification_result.data
+        
+        # Update status
+        supabase.table('ownership_verifications').update({
+            'status': 'approved',
+            'reviewed_at': datetime.now(timezone.utc).isoformat(),
+            'reviewed_by': str(user.id),
+            'admin_notes': approval_data.admin_notes
+        }).eq('id', approval_data.verification_id).execute()
+        
+        # Log action
+        supabase.table('admin_actions').insert({
+            'admin_id': str(user.id),
+            'action_type': 'approve_ownership',
+            'target_type': 'ownership_verification',
+            'target_id': approval_data.verification_id,
+            'action_details': {
+                'user_id': verification['user_id'],
+                'property_address': verification['property_address']
+            },
+            'notes': approval_data.admin_notes
+        }).execute()
+        
+        return {"success": True, "message": "Ownership verification approved"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error approving ownership: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to approve ownership verification")
+
+
+@router.post("/admin/reject-ownership-verification")
+async def reject_ownership_verification(
+    rejection_data: RejectOwnershipRequest,
+    user = Depends(get_current_user_supabase)
+):
+    """Admin only: Reject an ownership verification request."""
+    supabase = get_supabase()
+    
+    try:
+        # Check admin
+        profile_result = supabase.table('user_profiles').select('is_admin').eq('id', str(user.id)).single().execute()
+        if not profile_result.data or not profile_result.data.get('is_admin'):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        # Update status
+        supabase.table('ownership_verifications').update({
+            'status': 'rejected',
+            'reviewed_at': datetime.now(timezone.utc).isoformat(),
+            'reviewed_by': str(user.id),
+            'rejection_reason': rejection_data.rejection_reason,
+            'admin_notes': rejection_data.admin_notes
+        }).eq('id', rejection_data.verification_id).execute()
+        
+        return {"success": True, "message": "Ownership verification rejected"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error rejecting ownership: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to reject ownership verification")
+
         
         # Check if already verified for this property
         existing_verification = supabase.table('ownership_verifications').select('id, status').eq(
