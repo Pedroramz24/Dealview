@@ -720,33 +720,6 @@ const MarketplacePage = () => {
                         {deal.description}
                       </p>
                     )}
-
-                    {/* Stats with Icons */}
-                    <div style={{
-                      display: 'flex',
-                      gap: '20px',
-                      paddingTop: '16px',
-                      borderTop: `1px solid ${colors.divider}`
-                    }}>
-                      <span style={{ 
-                        color: colors.textMuted, 
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}>
-                        👁 <span style={{ color: colors.textSecondary, fontWeight: '600' }}>{deal.marketplace_views_count || 0}</span> views
-                      </span>
-                      <span style={{ 
-                        color: colors.textMuted, 
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}>
-                        💬 <span style={{ color: colors.textSecondary, fontWeight: '600' }}>{deal.marketplace_inquiries_count || 0}</span> inquiries
-                      </span>
-                    </div>
                   </div>
                 </div>
               ))}
