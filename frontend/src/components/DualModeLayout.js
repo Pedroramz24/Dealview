@@ -61,13 +61,13 @@ const DualModeLayout = () => {
       position: 'relative'
     }}>
       {/* Toggle Button for Marketplace Mode - Only on feed page */}
-      {showToggle && (
+      {showToggle && !sidebarCollapsed && (
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           style={{
             position: 'fixed',
             top: '20px',
-            left: sidebarCollapsed ? '20px' : '100px',
+            left: '100px',
             zIndex: 200,
             background: 'rgba(0, 184, 212, 0.9)',
             border: 'none',
