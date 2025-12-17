@@ -130,10 +130,10 @@ const MarketplacePage = () => {
       background: 'transparent',  // Let body gradient show through
       overflow: 'hidden'
     }}>
-      {/* Map Section - Left Side */}
+      {/* Map Section - 65% width when visible */}
       {showMap && (
         <div style={{ 
-          width: '50%', 
+          width: '65%', 
           height: '100%',
           position: 'relative'
         }}>
@@ -210,9 +210,9 @@ const MarketplacePage = () => {
         </div>
       )}
 
-      {/* Deals List Section - Right Side */}
+      {/* Deals List Section - 35% when map visible, 100% when map hidden */}
       <div style={{ 
-        width: showMap ? '50%' : '100%',
+        width: showMap ? '35%' : '100%',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -224,7 +224,9 @@ const MarketplacePage = () => {
           borderBottom: `1px solid ${colors.border}`,
           background: `${colors.surface}f5`,
           backdropFilter: 'blur(20px)',
-          boxShadow: shadows.sm
+          boxShadow: shadows.sm,
+          position: 'relative',
+          zIndex: 10
         }}>
           <div style={{ 
             display: 'flex', 
@@ -240,7 +242,8 @@ const MarketplacePage = () => {
                   left: '16px', 
                   top: '50%', 
                   transform: 'translateY(-50%)',
-                  color: colors.textMuted
+                  color: colors.textMuted,
+                  zIndex: 1
                 }} 
               />
               <input
@@ -257,7 +260,8 @@ const MarketplacePage = () => {
                   color: colors.textPrimary,
                   fontSize: '15px',
                   transition: transitions.fast,
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
+                  position: 'relative'
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = colors.borderHover;
@@ -284,7 +288,8 @@ const MarketplacePage = () => {
                 alignItems: 'center',
                 gap: '8px',
                 transition: transitions.fast,
-                boxShadow: showMap ? shadows.glowCyan : shadows.sm
+                boxShadow: showMap ? shadows.glowCyan : shadows.sm,
+                flexShrink: 0
               }}
             >
               <MapIcon size={20} />
@@ -300,7 +305,8 @@ const MarketplacePage = () => {
                 color: showFilters ? '#000' : colors.textTertiary,
                 cursor: 'pointer',
                 transition: transitions.fast,
-                boxShadow: showFilters ? shadows.glowCyan : shadows.sm
+                boxShadow: showFilters ? shadows.glowCyan : shadows.sm,
+                flexShrink: 0
               }}
               onMouseEnter={(e) => {
                 if (!showFilters) {
