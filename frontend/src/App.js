@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import LandingPage from './pages/LandingPage';
 import AIDashboard from './pages/AIDashboard';
 import UnifiedDashboard from './pages/UnifiedDashboard';
+import UnifiedProfile from './pages/UnifiedProfile';
+import AdminDashboard from './pages/AdminDashboard';
 import MapView from './pages/MapView';
 import DealsList from './pages/DealsList';
 import DealDetails from './pages/DealDetails';
@@ -132,6 +134,7 @@ function App() {
             element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
             <Route path="dashboard" element={<UnifiedDashboard />} />
+            <Route path="profile/:userId" element={<UnifiedProfile />} />
             <Route path="map" element={<MapView />} />
             <Route path="deals" element={<Pipeline />} />
             <Route path="deals/:dealId" element={<DealDetails />} />
@@ -140,11 +143,13 @@ function App() {
             <Route path="calendar" element={<CalendarView />} />
             <Route path="team" element={<Team />} />
             <Route path="admin/approvals" element={<AdminApprovalQueue />} />
+            <Route path="admin/dashboard" element={<AdminDashboard />} />
             <Route path="marketplace-analytics" element={<BrokerAnalytics />} />
           </Route>
 
-          {/* Simple /dashboard redirect */}
+          {/* Simple /dashboard and /profile redirects */}
           <Route path="/dashboard" element={user ? <Navigate to="/workspace/dashboard" /> : <Navigate to="/login" />} />
+          <Route path="/profile/:userId" element={user ? <Navigate to={`/workspace/profile/${user.id}`} /> : <Navigate to="/login" />} />
 
           {/* Settings - MainLayout */}
           <Route
