@@ -261,6 +261,38 @@ async def request_ownership_verification(
                 status_code=403,
                 detail="You must have the seller role to request ownership verification"
             )
+        
+        # Create ownership verification request
+        ownership_data = {
+            'user_id': str(user.id),
+            'property_address': request_data.property_address,
+            'proof_type': request_data.proof_type,
+            'proof_document_url': request_data.proof_document_url,
+            'status': 'pending',
+            'submitted_at': 'now()'
+        }
+        
+        result = supabase.table('ownership_verification_requests').insert(ownership_data).execute()
+        
+        if not result.data:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create ownership verification request"
+            )
+        
+        return OwnershipVerificationResponse(
+            request_id=result.data[0]['id'],
+            status='pending'
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating ownership verification request: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to submit ownership verification request"
+        )
 
 
 @router.post("/admin/reject-role-verification")
