@@ -214,7 +214,18 @@ const Login = () => {
 
           <div className="mt-6 text-center">
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                if (!isLogin) {
+                  // Switching from signup back to login
+                  setIsLogin(true);
+                  setShowOnboarding(false);
+                  setSelectedRole(null);
+                } else {
+                  // Switching from login to signup - trigger onboarding immediately
+                  setIsLogin(false);
+                  setShowOnboarding(true);
+                }
+              }}
               data-testid="toggle-auth-mode"
               style={{
                 background: 'none',
