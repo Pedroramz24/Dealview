@@ -23,18 +23,17 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Redirect to onboarding flow for signups
+    if (!isLogin) {
+      setShowOnboarding(true);
+      return;
+    }
+    
+    // Handle login
     setLoading(true);
-
     try {
-      if (isLogin) {
-        // Login with Supabase
-        await login(email, password);
-      } else {
-        // Redirect to onboarding flow for signups
-        setShowOnboarding(true);
-        setLoading(false);
-        return;
-      }
+      await login(email, password);
     } catch (error) {
       toast.error(error.message || 'Authentication failed');
     } finally {
