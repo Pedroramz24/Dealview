@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import { CapabilitiesProvider } from './contexts/CapabilitiesContext';
 import '@/App.css';
 import Login from './pages/Login';
 import LandingPage from './pages/LandingPage';
@@ -109,8 +110,9 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ user, login, signup, logout }}>
-      <BrowserRouter>
-        <Routes>
+      <CapabilitiesProvider>
+        <BrowserRouter>
+          <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/marketplace" />} />
           <Route path="/reset-password" element={<ResetPassword />} />
