@@ -165,7 +165,8 @@ function App() {
           <Route path="/" element={user ? <Navigate to="/marketplace" replace /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
-    </AuthContext.Provider>
+    </CapabilitiesProvider>
+  </AuthContext.Provider>
   );
 }
 
