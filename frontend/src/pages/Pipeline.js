@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { AuthContext, API } from '../App';
+import { useCapabilities } from '../contexts/CapabilitiesContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
@@ -35,6 +36,8 @@ const nextActionTypes = [
 ];
 
 const Pipeline = () => {
+  const { capabilities } = useCapabilities();
+  
   // Pipeline state
   const [pipelines, setPipelines] = useState([]);
   const [selectedPipeline, setSelectedPipeline] = useState(null);
@@ -57,6 +60,9 @@ const Pipeline = () => {
   const boardRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  
+  // Determine pipeline mode based on capabilities
+  const pipelineMode = capabilities?.modules.pipeline || 'journey'; // 'operations' | 'listings' | 'journey'
 
   // Setup dnd-kit sensors for deal cards
   const sensors = useSensors(
