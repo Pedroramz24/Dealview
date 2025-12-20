@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef, useCallback } from 'rea
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
+import { useCapabilities } from '../contexts/CapabilitiesContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -59,6 +60,7 @@ const statusOptions = [
 ];
 
 const Contacts = () => {
+  const { capabilities } = useCapabilities();
   const [searchParams] = useSearchParams();
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
@@ -87,6 +89,9 @@ const Contacts = () => {
   const [showEmailCompose, setShowEmailCompose] = useState(false);
   const [emailRecipient, setEmailRecipient] = useState(null);
   const [token, setToken] = useState(null);
+  
+  // Determine contacts mode based on capabilities
+  const contactsMode = capabilities?.modules.contacts || 'relationships'; // 'crm' | 'relationships'
 
   // Get Supabase session token
   useEffect(() => {
