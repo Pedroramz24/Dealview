@@ -147,9 +147,8 @@ function App() {
             <Route path="marketplace-analytics" element={<BrokerAnalytics />} />
           </Route>
 
-          {/* Simple /dashboard and /profile redirects */}
+          {/* Simple /dashboard redirect */}
           <Route path="/dashboard" element={user ? <Navigate to="/workspace/dashboard" /> : <Navigate to="/login" />} />
-          <Route path="/profile/:userId" element={user ? <Navigate to={`/workspace/profile/${user.id}`} /> : <Navigate to="/login" />} />
 
           {/* Settings - MainLayout */}
           <Route
