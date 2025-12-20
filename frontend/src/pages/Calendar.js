@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { supabase } from '../supabaseClient';
+import { useCapabilities } from '../contexts/CapabilitiesContext';
 import { Plus, X, CheckCircle, Edit2, ExternalLink, MapPin, DollarSign, FileText, Clock, User, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +20,7 @@ const EVENT_COLORS = {
 };
 
 const CalendarView = () => {
+  const { capabilities } = useCapabilities();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,9 @@ const CalendarView = () => {
   const [rescheduleTime, setRescheduleTime] = useState('');
   const [currentMonth, setCurrentMonth] = useState(new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
   const calendarRef = React.useRef(null);
+  
+  // Determine calendar context based on role
+  const calendarContext = capabilities?.primary_role || 'buyer'; // Used for event filtering/labeling
 
   const fetchCalendarEvents = useCallback(async () => {
     setLoading(true);
@@ -77,11 +82,21 @@ const CalendarView = () => {
         console.warn('Calendar events table may not exist yet:', err);
       }
 
-      // Fetch deals
-      const { data: deals } = await supabase
-        .from('deals')
-        .select('*')
-        .eq('owner_id', user.id);
+      // Fetch deals - Mode-adaptive filtering
+      let dealsQuery = supabase.from('deals').select('*');
+      
+      if (calendarContext === 'seller') {
+        // Seller: Only their listings
+        dealsQuery = dealsQuery.eq('owner_id', user.id);
+      } else if (calendarContext === 'buyer') {
+        // Buyer: Only published deals or saved deals
+        dealsQuery = dealsQuery.eq('is_published', true);
+      } else {
+        // Broker: All deals
+        dealsQuery = dealsQuery.eq('owner_id', user.id);
+      }
+      
+      const { data: deals } = await dealsQuery;
 
       if (deals) {
         deals.forEach(deal => {
