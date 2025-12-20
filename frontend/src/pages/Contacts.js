@@ -154,10 +154,52 @@ const Contacts = () => {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .order('created_at', { ascending: false });
+      console.log('[Contacts] Fetching contacts for mode:', contactsMode);
+      
+      let query = supabase.from('contacts').select('*');
+      
+      // Mode-adaptive scoping
+      if (contactsMode === 'relationships') {
+        // Seller/Buyer: Only show contacts with active engagements
+        // Filter to contacts linked to deals they own or have interacted with
+        console.log('[Contacts] Relationships mode: Scoping to active connections');
+        
+        // Get contact IDs from deals they're involved in
+        const { data: userDeals } = await supabase
+          .from('deals')
+          .select('id')
+          .eq('owner_id', user.id);
+        
+        if (userDeals && userDeals.length > 0) {
+          const dealIds = userDeals.map(d => d.id);
+          
+          // Get contacts linked to these deals
+          const { data: linkedContacts } = await supabase
+            .from('contact_deal_links')
+            .select('contact_id')
+            .in('deal_id', dealIds);
+          
+          if (linkedContacts && linkedContacts.length > 0) {
+            const contactIds = [...new Set(linkedContacts.map(l => l.contact_id))];
+            query = query.in('id', contactIds);
+          } else {
+            // No linked contacts, return empty
+            setContacts([]);
+            setLoading(false);
+            return;
+          }
+        } else {
+          // No deals, return empty
+          setContacts([]);
+          setLoading(false);
+          return;
+        }
+      }
+      // CRM Mode (broker): Show all contacts (no filter)
+      
+      query = query.order('created_at', { ascending: false });
+      
+      const { data, error } = await query;
 
       if (error) throw error;
       
