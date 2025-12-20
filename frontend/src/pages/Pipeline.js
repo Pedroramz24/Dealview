@@ -442,11 +442,39 @@ const Pipeline = () => {
       <div className="px-8 pt-8 pb-4">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-              Deals
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+              <h1 className="text-4xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                {pipelineMode === 'operations' && 'Deal Pipeline'}
+                {pipelineMode === 'listings' && 'Listing Management'}
+                {pipelineMode === 'journey' && 'Purchase Tracker'}
+              </h1>
+              {/* Mode Badge */}
+              <span style={{
+                padding: '4px 12px',
+                background: pipelineMode === 'operations' ? 'rgba(0,184,212,0.15)' 
+                  : pipelineMode === 'listings' ? 'rgba(0,212,170,0.15)' 
+                  : 'rgba(167,139,250,0.15)',
+                border: `1px solid ${pipelineMode === 'operations' ? 'rgba(0,184,212,0.3)' 
+                  : pipelineMode === 'listings' ? 'rgba(0,212,170,0.3)' 
+                  : 'rgba(167,139,250,0.3)'}`,
+                borderRadius: '6px',
+                fontSize: '11px',
+                fontWeight: '600',
+                color: pipelineMode === 'operations' ? '#00b8d4' 
+                  : pipelineMode === 'listings' ? '#00d4aa' 
+                  : '#a78bfa',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {pipelineMode === 'operations' && 'Broker Operations'}
+                {pipelineMode === 'listings' && 'Seller View'}
+                {pipelineMode === 'journey' && 'Buyer Journey'}
+              </span>
+            </div>
             <p style={{ color: 'var(--text-secondary)' }}>
-              {viewMode === 'pipeline' ? 'Visual deal flow with drag & drop' : 'Manage all your deals in table view'}
+              {pipelineMode === 'operations' && (viewMode === 'pipeline' ? 'Visual deal flow with drag & drop' : 'Manage all your deals in table view')}
+              {pipelineMode === 'listings' && 'Track your property listings through the sales process'}
+              {pipelineMode === 'journey' && 'Monitor your investment opportunities and offers'}
             </p>
           </div>
           
