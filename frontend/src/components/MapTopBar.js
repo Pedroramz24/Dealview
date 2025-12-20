@@ -10,8 +10,24 @@ const MapTopBar = ({
   measurementMode,
   onSetMeasurementMode,
   annotationMode,
-  onToggleAnnotationMode
+  onToggleAnnotationMode,
+  mapMode
 }) => {
+  const getModeConfig = () => {
+    switch (mapMode) {
+      case 'prospecting':
+        return { label: 'Prospecting', color: '#00b8d4', description: 'Full research tools' };
+      case 'portfolio':
+        return { label: 'Portfolio', color: '#00d4aa', description: 'Your listings' };
+      case 'discovery':
+        return { label: 'Discovery', color: '#a78bfa', description: 'Marketplace deals' };
+      default:
+        return { label: 'Map', color: '#6b7280', description: '' };
+    }
+  };
+
+  const modeConfig = getModeConfig();
+
   return (
     <div style={{
       position: 'absolute',
@@ -30,8 +46,8 @@ const MapTopBar = ({
       gap: '20px',
       boxShadow: '0 2px 12px rgba(0, 0, 0, 0.3)'
     }}>
-      {/* Left: Layer Manager Button Only */}
-      <div style={{ flex: '0 0 auto' }}>
+      {/* Left: Layer Manager Button + Mode Badge */}
+      <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
         <button
           onClick={onToggleLayersPanel}
           style={{
@@ -51,6 +67,21 @@ const MapTopBar = ({
         >
           <Layers size={20} />
         </button>
+
+        {/* Mode Indicator Badge */}
+        <div style={{
+          padding: '6px 14px',
+          background: `${modeConfig.color}15`,
+          border: `1px solid ${modeConfig.color}30`,
+          borderRadius: '6px',
+          fontSize: '12px',
+          fontWeight: '600',
+          color: modeConfig.color,
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px'
+        }}>
+          {modeConfig.label}
+        </div>
       </div>
 
       {/* Center: Address Search Bar - Flush with header */}
