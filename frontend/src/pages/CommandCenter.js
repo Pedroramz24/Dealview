@@ -41,31 +41,53 @@ const CommandCenter = () => {
       // Fetch based on role
       if (capabilities.primary_role === 'broker') {
         // Broker: Use existing AI Dashboard endpoints
-        const snapshotRes = await fetch(`${API}/dashboard/snapshot`, { headers });
+        const [snapshotRes, prioritiesRes, calendarRes] = await Promise.all([
+          fetch(`${API}/dashboard/snapshot`, { headers }),
+          fetch(`${API}/dashboard/priorities`, { headers }),
+          fetch(`${API}/dashboard/calendar`, { headers })
+        ]);
+
         if (snapshotRes.ok) setSnapshot(await snapshotRes.json());
-
-        const prioritiesRes = await fetch(`${API}/dashboard/priorities`, { headers });
         if (prioritiesRes.ok) setPriorities(await prioritiesRes.json());
-
-        const calendarRes = await fetch(`${API}/dashboard/calendar`, { headers });
         if (calendarRes.ok) setCalendarData(await calendarRes.json());
       } else if (capabilities.primary_role === 'seller') {
-        // Seller: Fetch listing performance data
-        // TODO: Create /api/dashboard/seller-metrics endpoint
-        setSnapshot({
-          active_listings: 0,
-          total_views: 0,
-          total_inquiries: 0,
-          pending_offers: 0
-        });
+        // Seller: Fetch listing performance data (absorbing BrokerAnalytics logic)
+        const supabaseClient = await import('../supabaseClient').then(m => m.supabase);
+        
+        const { data: deals } = await supabaseClient
+          .from('deals')
+          .select('marketplace_views_count, marketplace_inquiries_count, marketplace_saves_count')
+          .eq('owner_id', session.user.id)
+          .eq('is_published', true);
+        
+        if (deals) {
+          const totals = deals.reduce((acc, deal) => ({
+            views: acc.views + (deal.marketplace_views_count || 0),
+            inquiries: acc.inquiries + (deal.marketplace_inquiries_count || 0),
+            saves: acc.saves + (deal.marketplace_saves_count || 0)
+          }), { views: 0, inquiries: 0, saves: 0 });
+          
+          setSnapshot({
+            active_listings: deals.length,
+            total_views: totals.views,
+            total_inquiries: totals.inquiries,
+            pending_offers: 0 // TODO: Add offers data
+          });
+        }
       } else {
         // Buyer: Fetch buyer activity data
-        // TODO: Create /api/dashboard/buyer-metrics endpoint
+        const supabaseClient = await import('../supabaseClient').then(m => m.supabase);
+        
+        const { data: savedDeals } = await supabaseClient
+          .from('marketplace_saved_deals')
+          .select('*')
+          .eq('user_id', session.user.id);
+        
         setSnapshot({
-          saved_deals: 0,
-          active_conversations: 0,
-          new_matches: 0,
-          offers_pending: 0
+          saved_deals: savedDeals?.length || 0,
+          active_conversations: 0, // TODO: Add messages count
+          new_matches: 0, // TODO: Add buy-box matching logic
+          offers_pending: 0 // TODO: Add offers data
         });
       }
     } catch (error) {
