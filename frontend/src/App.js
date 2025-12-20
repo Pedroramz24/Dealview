@@ -6,6 +6,7 @@ import '@/App.css';
 import Login from './pages/Login';
 import LandingPage from './pages/LandingPage';
 import AIDashboard from './pages/AIDashboard';
+import CommandCenter from './pages/CommandCenter';
 import UnifiedDashboard from './pages/UnifiedDashboard';
 import UnifiedProfile from './pages/UnifiedProfile';
 import AdminDashboard from './pages/AdminDashboard';
@@ -135,7 +136,7 @@ function App() {
             path="/workspace"
             element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
-            <Route path="dashboard" element={<UnifiedDashboard />} />
+            <Route path="dashboard" element={<CommandCenter />} />
             <Route path="profile/:userId" element={<UnifiedProfile />} />
             <Route path="map" element={<MapView />} />
             <Route path="deals" element={<Pipeline />} />
