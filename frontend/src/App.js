@@ -135,7 +135,6 @@ function App() {
             element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
             <Route path="dashboard" element={<CommandCenter />} />
-            <Route path="profile/:userId" element={<UnifiedProfile />} />
             <Route path="map" element={<MapView />} />
             <Route path="deals" element={<Pipeline />} />
             <Route path="deals/:dealId" element={<DealDetails />} />
