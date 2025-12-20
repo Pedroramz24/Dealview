@@ -145,12 +145,31 @@ const Pipeline = () => {
     }
 
     try {
-      // Use left join instead of inner join to include deals without pipeline_stage_id
-      const { data, error } = await supabase
+      console.log('[Pipeline] Fetching deals for mode:', pipelineMode);
+      
+      // Base query with pipeline filter
+      let query = supabase
         .from('deals')
         .select('*, pipeline_stages(id, name, color, stage_weight, display_order)')
-        .eq('pipeline_id', selectedPipeline.id)
-        .order('created_at', { ascending: false });
+        .eq('pipeline_id', selectedPipeline.id);
+      
+      // Mode-adaptive filtering
+      if (pipelineMode === 'listings') {
+        // Seller Listings Mode: Only their published/draft listings
+        console.log('[Pipeline] Listings mode: Filtering to owner deals');
+        query = query.eq('owner_id', user.id);
+      } else if (pipelineMode === 'journey') {
+        // Buyer Journey Mode: Only deals they've saved or engaged with
+        console.log('[Pipeline] Journey mode: Filtering to buyer-relevant deals');
+        // TODO: Add saved deals join or engagement filter
+        // For now, show published deals they've interacted with
+        query = query.eq('is_published', true);
+      }
+      // Operations Mode (broker): Show all deals in pipeline (no filter)
+      
+      query = query.order('created_at', { ascending: false });
+      
+      const { data, error } = await query;
 
       if (error) throw error;
       
