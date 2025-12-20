@@ -1140,6 +1140,7 @@ const MapView = () => {
               }}
             />
           }
+          mapMode={mapMode}
         />
 
         <div className={mapStyle === 'street' ? 'custom-dark-map' : ''} style={{ width: '100%', height: '100%' }}>
