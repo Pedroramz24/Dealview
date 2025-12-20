@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../App';
+import { useCapabilities } from '../contexts/CapabilitiesContext';
+import { getVisibleNavItems } from '../utils/capabilities';
 import { 
   Store, 
   Briefcase, 
@@ -13,12 +15,19 @@ import {
   Mail, 
   Calendar, 
   UsersRound,
-  ChevronRight
+  ChevronRight,
+  Shield,
+  MessageCircle
 } from 'lucide-react';
 import { gradients } from '../styles/designSystem';
 
+const iconMap = {
+  Store, Briefcase, LayoutDashboard, Map, Trello, Users, Mail, Calendar, UsersRound, Shield, Settings, MessageCircle
+};
+
 const DualModeLayout = () => {
   const { user, logout } = useContext(AuthContext);
+  const { capabilities, loading: capabilitiesLoading } = useCapabilities();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -35,16 +44,15 @@ const DualModeLayout = () => {
     navigate('/login');
   };
 
-  // Workspace sub-items (CRM tools)
-  const workspaceItems = [
-    { path: '/workspace/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/workspace/map', label: 'Map', icon: Map },
-    { path: '/workspace/deals', label: 'Deals', icon: Trello },
-    { path: '/workspace/contacts', label: 'Contacts', icon: Users },
-    { path: '/workspace/campaigns', label: 'Campaigns', icon: Mail },
-    { path: '/workspace/calendar', label: 'Calendar', icon: Calendar },
-    { path: '/workspace/team', label: 'Team', icon: UsersRound },
-  ];
+  // Get workspace items filtered by capabilities
+  const workspaceItems = capabilities && !capabilitiesLoading
+    ? getVisibleNavItems(capabilities)
+        .filter(item => item.path.startsWith('/workspace'))
+        .map(item => ({
+          ...item,
+          icon: iconMap[item.icon] || Briefcase
+        }))
+    : [];
 
   const isActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(path + '/');

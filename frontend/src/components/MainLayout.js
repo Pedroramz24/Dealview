@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../App';
+import { useCapabilities } from '../contexts/CapabilitiesContext';
+import { getVisibleNavItems } from '../utils/capabilities';
 import { 
   Store, 
   Briefcase,
@@ -14,11 +16,17 @@ import {
   LogOut,
   Inbox,
   TrendingUp,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Shield
 } from 'lucide-react';
+
+const iconMap = {
+  Store, Briefcase, LayoutDashboard, Map, Trello, Users, Mail, Calendar, UsersRound, Shield, TrendingUp, SettingsIcon
+};
 
 const MainLayout = () => {
   const { user, logout } = useContext(AuthContext);
+  const { capabilities, loading: capabilitiesLoading } = useCapabilities();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,24 +35,18 @@ const MainLayout = () => {
     navigate('/login');
   };
 
-  const navItems = [
-    { path: '/marketplace', label: 'Marketplace', icon: Store, isMarketplace: true },
-    { path: '/workspace/dashboard', label: 'Dashboard', icon: LayoutDashboard, isWorkspace: true },
-    { path: '/workspace/marketplace-analytics', label: 'Analytics', icon: TrendingUp, isWorkspace: true },
-    { path: '/workspace/map', label: 'Map View', icon: Map, isWorkspace: true },
-    { path: '/workspace/deals', label: 'Deals', icon: Trello, isWorkspace: true },
-    { path: '/workspace/contacts', label: 'Contacts', icon: Users, isWorkspace: true },
-    { path: '/workspace/campaigns', label: 'Campaigns', icon: Mail, isWorkspace: true },
-    { path: '/workspace/calendar', label: 'Calendar', icon: Calendar, isWorkspace: true },
-    { path: '/workspace/team', label: 'Team', icon: UsersRound, isWorkspace: true },
-  ];
+  // Get filtered nav items based on capabilities
+  const navItems = capabilities && !capabilitiesLoading
+    ? getVisibleNavItems(capabilities).map(item => ({
+        ...item,
+        icon: iconMap[item.icon] || Briefcase
+      }))
+    : [];
 
   const isActive = (path, exact = false) => {
-    // Handle marketplace path
     if (path === '/marketplace') {
       return location.pathname.startsWith('/marketplace');
     }
-    // Handle workspace dashboard
     if (path === '/workspace/dashboard') {
       return location.pathname === '/workspace/dashboard';
     }
