@@ -3,6 +3,7 @@ import Map, { Marker, Popup, NavigationControl, ScaleControl, Source, Layer } fr
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthContext, API } from '../App';
+import { useCapabilities } from '../contexts/CapabilitiesContext';
 import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { calculateArea, calculateDistance, formatMeasurement } from '../utils/measurementUtils';
@@ -29,6 +30,7 @@ const pmtilesProtocol = new Protocol();
 maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
 
 const MapView = () => {
+  const { capabilities } = useCapabilities();
   const [deals, setDeals] = useState([]);
   const [teamDeals, setTeamDeals] = useState([]);
   const [showTeamDeals, setShowTeamDeals] = useState(false);
@@ -92,6 +94,9 @@ const MapView = () => {
   });
   const mapRef = useRef();
   const navigate = useNavigate();
+  
+  // Determine map mode based on capabilities
+  const mapMode = capabilities?.modules.map || 'discovery'; // 'prospecting' | 'portfolio' | 'discovery'
   
   // Track viewState using ref to avoid re-renders during map interaction
   const handleMoveEnd = useCallback((evt) => {
