@@ -7,8 +7,6 @@ import Login from './pages/Login';
 import LandingPage from './pages/LandingPage';
 import AIDashboard from './pages/AIDashboard';
 import CommandCenter from './pages/CommandCenter';
-import UnifiedDashboard from './pages/UnifiedDashboard';
-import UnifiedProfile from './pages/UnifiedProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import MapView from './pages/MapView';
 import DealsList from './pages/DealsList';
