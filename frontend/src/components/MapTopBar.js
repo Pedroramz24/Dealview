@@ -91,7 +91,7 @@ const MapTopBar = ({
 
       {/* Right: Tools (Icons Only) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '0 0 auto' }}>
-        {/* Measure Distance */}
+        {/* Measure Distance - All modes */}
         <button
           onClick={() => onSetMeasurementMode(measurementMode === 'distance' ? null : 'distance')}
           style={{
@@ -114,7 +114,7 @@ const MapTopBar = ({
           <Ruler size={20} />
         </button>
 
-        {/* Measure Area */}
+        {/* Measure Area - All modes */}
         <button
           onClick={() => onSetMeasurementMode(measurementMode === 'area' ? null : 'area')}
           style={{
@@ -137,7 +137,7 @@ const MapTopBar = ({
           <Square size={20} />
         </button>
 
-        {/* Text Annotation Button */}
+        {/* Text Annotation - All modes */}
         <button
           onClick={onToggleAnnotationMode}
           style={{
@@ -158,26 +158,28 @@ const MapTopBar = ({
           <Type size={20} />
         </button>
 
-        {/* AI Research Button */}
-        <button
-          onClick={onToggleAIResearch}
-          style={{
-            width: '44px',
-            height: '44px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-            border: `1px solid ${aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`,
-            borderRadius: '8px',
-            color: aiResearchPanelOpen ? '#a855f7' : 'rgba(255, 255, 255, 0.7)',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          title="AI Market Research"
-        >
-          <Sparkles size={20} />
-        </button>
+        {/* AI Research - Only in Prospecting Mode (Broker) */}
+        {mapMode === 'prospecting' && (
+          <button
+            onClick={onToggleAIResearch}
+            style={{
+              width: '44px',
+              height: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+              border: `1px solid ${aiResearchPanelOpen ? 'rgba(168, 85, 247, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`,
+              borderRadius: '8px',
+              color: aiResearchPanelOpen ? '#a855f7' : 'rgba(255, 255, 255, 0.7)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            title="AI Market Research"
+          >
+            <Sparkles size={20} />
+          </button>
+        )}
       </div>
     </div>
   );
