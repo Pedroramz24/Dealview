@@ -595,12 +595,25 @@ const MapView = () => {
     }
 
     try {
-      console.log('[MapView] Fetching deals for user:', user.id);
+      console.log('[MapView] Fetching deals for user:', user.id, 'Mode:', mapMode);
       
-      const { data, error } = await supabase
-        .from('deals')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Mode-adaptive deal filtering
+      let query = supabase.from('deals').select('*');
+      
+      if (mapMode === 'portfolio') {
+        // Seller Portfolio Mode: Only show deals/listings owned by current user
+        console.log('[MapView] Portfolio mode: Filtering to owner_id =', user.id);
+        query = query.eq('owner_id', user.id);
+      } else if (mapMode === 'discovery') {
+        // Buyer Discovery Mode: Only show published marketplace deals + saved deals
+        console.log('[MapView] Discovery mode: Showing published marketplace deals');
+        query = query.eq('is_published', true).eq('public_status', 'published');
+      }
+      // Prospecting Mode (broker): Show all deals (no filter) - for full CRM access
+      
+      query = query.order('created_at', { ascending: false });
+      
+      const { data, error } = await query;
 
       if (error) {
         console.error('[MapView] Supabase error:', error);
