@@ -77,7 +77,24 @@ const MarketplacePage = () => {
       if (!response.ok) throw new Error('Failed to fetch deals');
       
       const data = await response.json();
-      setDeals(data.deals || []);
+      let fetchedDeals = data.deals || [];
+      
+      // Add placeholder images to deals for screenshot purposes
+      const placeholderImages = [
+        'https://customer-assets.emergentagent.com/job_unifydash/artifacts/tsv091yj_attachment%20%285%29.jpg',
+        'https://customer-assets.emergentagent.com/job_unifydash/artifacts/kecuougl_attachment%20%286%29.jpg',
+        'https://customer-assets.emergentagent.com/job_unifydash/artifacts/cnmjpvgh_attachment%20%287%29.jpg',
+        'https://customer-assets.emergentagent.com/job_unifydash/artifacts/qjfjmjk2_attachment%20%284%29.png',
+        'https://customer-assets.emergentagent.com/job_unifydash/artifacts/5srsygx4_attachment%20%285%29.png'
+      ];
+      
+      // Add images to existing deals or fallback to placeholder images
+      fetchedDeals = fetchedDeals.map((deal, idx) => ({
+        ...deal,
+        image_url: deal.image_url || placeholderImages[idx % placeholderImages.length]
+      }));
+      
+      setDeals(fetchedDeals);
     } catch (error) {
       console.error('Error fetching deals:', error);
       toast.error('Failed to load marketplace deals');
