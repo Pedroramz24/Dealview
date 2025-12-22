@@ -93,11 +93,14 @@ const LandingPage = () => {
       {/* Hero Section with Animated Video Background */}
       <section style={{
         position: 'relative',
-        padding: '120px 60px 60px',
+        padding: '0',
         textAlign: 'center',
         background: 'transparent',
         overflow: 'hidden',
-        minHeight: '900px'
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
         {/* Animated Video Background */}
         <video
@@ -123,8 +126,13 @@ const LandingPage = () => {
           <source src="https://customer-assets.emergentagent.com/job_843c97fb-d8fe-47b5-ae4b-2303d92d5677/artifacts/4xsod2l2_huly_laser.webm" type="video/webm" />
         </video>
         
-        {/* Content overlay */}
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        {/* Content overlay - Vertically Centered */}
+        <div style={{ 
+          position: 'relative', 
+          zIndex: 1,
+          padding: '80px 60px',
+          maxWidth: '100%'
+        }}>
           <h1 style={{
             fontSize: '72px',
             fontWeight: '600',
@@ -132,7 +140,7 @@ const LandingPage = () => {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            marginBottom: '28px',
+            marginBottom: '32px',
             lineHeight: '1.1',
             letterSpacing: '-0.03em',
             fontFamily: '"Inter", sans-serif',
@@ -146,9 +154,9 @@ const LandingPage = () => {
           <p style={{
             fontSize: '19px',
             color: 'rgba(255,255,255,0.65)',
-            marginBottom: '40px',
+            marginBottom: '48px',
             maxWidth: '780px',
-            margin: '0 auto 40px',
+            margin: '0 auto 48px',
             lineHeight: '1.65',
             fontWeight: '400'
           }}>
@@ -159,11 +167,11 @@ const LandingPage = () => {
             industry's first fully integrated deal OS.
           </p>
 
-          {/* Get Started Button under hero - Reduced gap */}
+          {/* Get Started Button */}
           <button
             onClick={() => navigate('/signup')}
             style={{
-              padding: '14px 32px',
+              padding: '16px 40px',
               background: '#3063ff',
               border: 'none',
               borderRadius: '30px',
@@ -174,14 +182,15 @@ const LandingPage = () => {
               transition: 'all 0.3s',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '8px',
-              marginBottom: '60px'
+              gap: '8px'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 10px 30px rgba(48, 99, 255, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
             }}
           >
             Get Started
@@ -192,7 +201,7 @@ const LandingPage = () => {
 
       {/* Dashboard Screenshot - Clear glass border */}
       <section style={{
-        padding: '0 60px 120px',
+        padding: '120px 60px 120px',
         position: 'relative',
         zIndex: 30
       }}>
