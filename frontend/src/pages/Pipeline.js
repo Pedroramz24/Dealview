@@ -437,13 +437,17 @@ const Pipeline = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen" style={{ background: 'var(--bg-base)' }} data-testid="pipeline-page">
+    <div className="flex flex-col h-screen" style={{ 
+      background: '#130F40',
+      backgroundImage: 'radial-gradient(circle, rgba(19, 15, 64, 1) 0%, rgba(0, 0, 0, 1) 100%)',
+      overflow: 'hidden'
+    }} data-testid="pipeline-page">
       {/* Header */}
       <div className="px-8 pt-8 pb-4">
         <div className="flex items-center justify-between mb-2">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-              <h1 className="text-4xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+              <h1 className="text-4xl font-bold" style={{ color: '#ffffff', letterSpacing: '-0.02em' }}>
                 {pipelineMode === 'operations' && 'Deal Pipeline'}
                 {pipelineMode === 'listings' && 'Listing Management'}
                 {pipelineMode === 'journey' && 'Purchase Tracker'}
@@ -471,7 +475,7 @@ const Pipeline = () => {
                 {pipelineMode === 'journey' && 'Buyer Journey'}
               </span>
             </div>
-            <p style={{ color: 'var(--text-secondary)' }}>
+            <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
               {pipelineMode === 'operations' && (viewMode === 'pipeline' ? 'Visual deal flow with drag & drop' : 'Manage all your deals in table view')}
               {pipelineMode === 'listings' && 'Track your property listings through the sales process'}
               {pipelineMode === 'journey' && 'Monitor your investment opportunities and offers'}

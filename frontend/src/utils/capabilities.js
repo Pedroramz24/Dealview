@@ -122,7 +122,7 @@ export const NAV_ITEMS = [
   { 
     id: 'messages', 
     label: 'Messages', 
-    path: '/messages', 
+    path: '/workspace/messages', 
     icon: 'MessageCircle',
     always: true,
     description: 'Conversations and inquiries'
