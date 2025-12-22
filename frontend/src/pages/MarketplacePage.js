@@ -199,34 +199,25 @@ const MarketplacePage = () => {
                   latitude={deal.latitude}
                   longitude={deal.longitude}
                   anchor="center"
-                  onClick={() => handleDealClick(deal.id)}
                 >
-                  <div style={{
-                    position: 'relative',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s'
-                  }}>
-                    {/* Outer glow */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      background: 'rgba(48, 99, 255, 0.3)',
-                      filter: 'blur(8px)',
-                      animation: 'pulse 2s infinite'
-                    }} />
-                    {/* Main dot */}
+                  <div 
+                    style={{
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedDeal(deal);
+                    }}
+                  >
+                    {/* Main dot without glow */}
                     <div style={{
                       width: '16px',
                       height: '16px',
                       borderRadius: '50%',
                       background: '#3063ff',
                       border: '3px solid #fff',
-                      boxShadow: '0 0 0 2px rgba(48, 99, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4)',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
                       position: 'relative',
                       zIndex: 10
                     }} />
@@ -234,6 +225,121 @@ const MarketplacePage = () => {
                 </Marker>
               )
             ))}
+            
+            {/* Deal Popup */}
+            {selectedDeal && selectedDeal.latitude && selectedDeal.longitude && (
+              <Popup
+                latitude={selectedDeal.latitude}
+                longitude={selectedDeal.longitude}
+                anchor="bottom"
+                onClose={() => setSelectedDeal(null)}
+                closeOnClick={false}
+                style={{ zIndex: 100 }}
+              >
+                <div style={{
+                  width: '280px',
+                  background: colors.surface,
+                  borderRadius: borderRadius.lg,
+                  overflow: 'hidden',
+                  boxShadow: shadows.xl
+                }}>
+                  {/* Close button */}
+                  <button
+                    onClick={() => setSelectedDeal(null)}
+                    style={{
+                      position: 'absolute',
+                      top: '8px',
+                      right: '8px',
+                      background: 'rgba(0,0,0,0.7)',
+                      backdropFilter: 'blur(10px)',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '28px',
+                      height: '28px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      zIndex: 10,
+                      transition: transitions.fast
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,0,0,0.8)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(0,0,0,0.7)';
+                    }}
+                  >
+                    <X size={16} color="#fff" />
+                  </button>
+                  
+                  {/* Property Image */}
+                  {selectedDeal.image_url && (
+                    <div style={{
+                      height: '160px',
+                      backgroundImage: `url(${selectedDeal.image_url})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }} />
+                  )}
+                  
+                  {/* Deal Info */}
+                  <div style={{ padding: '16px' }}>
+                    <h3 style={{
+                      fontSize: '16px',
+                      fontWeight: '700',
+                      color: colors.text,
+                      marginBottom: '8px',
+                      lineHeight: '1.3'
+                    }}>
+                      {selectedDeal.title}
+                    </h3>
+                    <p style={{
+                      fontSize: '13px',
+                      color: colors.textSecondary,
+                      marginBottom: '12px',
+                      lineHeight: '1.4'
+                    }}>
+                      {selectedDeal.address}
+                    </p>
+                    <div style={{
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      color: colors.primary,
+                      marginBottom: '12px'
+                    }}>
+                      ${(selectedDeal.asking_price / 1000000).toFixed(2)}M
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedDeal(null);
+                        handleDealClick(selectedDeal.id);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        background: colors.primary,
+                        border: 'none',
+                        borderRadius: borderRadius.md,
+                        color: '#000',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: transitions.default
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = colors.primaryHover;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = colors.primary;
+                      }}
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </Popup>
+            )}
           </Map>
         </div>
       )}
