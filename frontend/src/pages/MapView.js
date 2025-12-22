@@ -649,7 +649,20 @@ const MapView = () => {
         }
         
         const dealsWithCoords = data.filter(deal => 
-
+          deal.longitude && deal.latitude && !isNaN(deal.longitude) && !isNaN(deal.latitude)
+        );
+        console.log('[MapView] ✅ Deals with valid coordinates:', dealsWithCoords.length);
+      }
+    } catch (error) {
+      console.error('[MapView] Error loading deals:', error);
+      // Don't show toast for empty results
+      if (error.code !== 'PGRST116') {
+        toast.error('Failed to load deals');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch Saved Deals for Buyer Discovery Mode
   const fetchSavedDeals = async () => {
@@ -680,21 +693,6 @@ const MapView = () => {
       }
     } catch (error) {
       console.error('[MapView] Error loading saved deals:', error);
-    }
-  };
-
-          deal.longitude && deal.latitude && !isNaN(deal.longitude) && !isNaN(deal.latitude)
-        );
-        console.log('[MapView] ✅ Deals with valid coordinates:', dealsWithCoords.length);
-      }
-    } catch (error) {
-      console.error('[MapView] Error loading deals:', error);
-      // Don't show toast for empty results
-      if (error.code !== 'PGRST116') {
-        toast.error('Failed to load deals');
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
