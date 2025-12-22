@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre';
-import { Search, SlidersHorizontal, MapIcon, Grid3x3, Heart, Check, AlertCircle } from 'lucide-react';
+import Map, { Marker, NavigationControl, Popup } from 'react-map-gl/maplibre';
+import { Search, SlidersHorizontal, MapIcon, Grid3x3, Heart, Check, AlertCircle, X } from 'lucide-react';
 import { API } from '../App';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ const MarketplacePage = () => {
   const [loading, setLoading] = useState(true);
   const [showMap, setShowMap] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     market: '',
@@ -88,10 +89,20 @@ const MarketplacePage = () => {
         'https://customer-assets.emergentagent.com/job_unifydash/artifacts/5srsygx4_attachment%20%285%29.png'
       ];
       
-      // Add images to existing deals or fallback to placeholder images
+      // Updated titles to match the placeholder images
+      const placeholderTitles = [
+        'Commercial Strip Center - San Antonio',
+        'Industrial Warehouse Complex - San Antonio',
+        'Mixed-Use Development',
+        'Multi-Family Complex',
+        'Retail Development Land'
+      ];
+      
+      // Add images and update titles for existing deals
       fetchedDeals = fetchedDeals.map((deal, idx) => ({
         ...deal,
-        image_url: deal.image_url || placeholderImages[idx % placeholderImages.length]
+        image_url: deal.image_url || placeholderImages[idx % placeholderImages.length],
+        title: idx < 2 ? placeholderTitles[idx] : deal.title // Update first 2 titles
       }));
       
       setDeals(fetchedDeals);
