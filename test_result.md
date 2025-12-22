@@ -1369,3 +1369,19 @@ agent_communication:
       message: "Completed capabilities-based architecture refactor (Sessions 1-6). Need comprehensive testing of all role-based modes and UI preservation for buyer role (contact@pedroarmando.com)."
     - agent: "testing"
       message: "✅ COMPREHENSIVE TESTING COMPLETE: All 6 capability tests passed successfully. Command Center shows correct buyer-focused dashboard with 'Investment Command Center' title and buyer metrics (Saved Deals, Active Conversations, New Matches, Offers Pending). Map displays 'Discovery' mode badge with marketplace deals only - AI Research correctly hidden (broker-only). Pipeline shows 'Purchase Tracker' with 'BUYER JOURNEY' badge and buyer-focused description. Contacts and Calendar pages load correctly. Navigation filtering working perfectly - Campaigns and Team hidden for buyer role, only universal and buyer-relevant items visible. Premium glassmorphic UI preserved across all pages. FIXED: Removed missing UnifiedDashboard and UnifiedProfile imports causing compilation errors. User contact@pedroarmando.com has admin flag so Admin link is visible (expected behavior). All URLs work correctly with role-scoped data. No JavaScript errors detected. Ready for production."
+
+  - task: "Landing Page - Hero Section, Spacing, and Marketplace Preview"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/LandingPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE LANDING PAGE TEST COMPLETE: All requirements verified successfully. HERO SECTION: ✅ Video background playing correctly (autoplay, loop, muted attributes confirmed, readyState=4, currentTime>0, video source: 4xsod2l2_huly_laser.webm). ✅ Headline 'The Private Marketplace for Real Dealmakers' and supporting text 'A curated off-market exchange...' are correctly displayed. ✅ Content is vertically centered within full viewport height (minHeight: 100vh/1080px, display: flex, align-items: center, justify-content: center). SPACING: ✅ Dashboard screenshot section has exactly 120px padding-top, providing adequate spacing between hero video and dashboard sections. MARKETPLACE SECTION: ✅ Section exists with heading 'Featured Marketplace Listings'. ✅ All 5 property cards present with correct data: (1) Commercial Strip Center - San Antonio, TX - $1.85M, (2) Industrial Warehouse - Austin, TX - $3.2M, (3) Mixed-Use Development - Houston, TX - $5.4M, (4) Multi-Family Complex - Dallas, TX - $2.7M, (5) Retail Development Land - Fort Worth, TX - $4.1M. ✅ All property cards have images (loaded successfully), titles, locations, prices, and verified badges (5 badges found). ✅ 'View All Marketplace Listings' button is present, visible, and clickable. Button correctly redirects to /login (expected behavior for unauthenticated users - authentication required to access marketplace). PAGE LOAD: ✅ Page loads without errors. No error messages detected. All sections render correctly. SCREENSHOTS: Captured 4 screenshots showing hero section, dashboard section, marketplace section, and login redirect. CONCLUSION: Landing page is working perfectly - all 6 requirements from review request verified and passing."
+
+agent_communication:
+  - agent: "testing"
+    message: "✅ LANDING PAGE TESTING COMPLETE: Tested landing page per review request. All 6 requirements verified: (1) Hero video background playing and content vertically centered in full viewport, (2) 120px spacing between hero and dashboard sections, (3) Marketplace section with 5 property cards, (4) All cards have images/titles/locations/prices/verified badges, (5) 'View All Marketplace Listings' button present and clickable, (6) Page loads without errors. Landing page is production-ready. No issues found."
