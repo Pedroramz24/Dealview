@@ -308,16 +308,17 @@ const MarketplacePage = () => {
                     }}>
                       {selectedDeal.address}
                     </p>
-                    {selectedDeal.asking_price && (
-                      <div style={{
-                        fontSize: '22px',
-                        fontWeight: '700',
-                        color: '#3063ff',
-                        marginBottom: '16px'
-                      }}>
-                        ${(selectedDeal.asking_price / 1000000).toFixed(2)}M
-                      </div>
-                    )}
+                    <div style={{
+                      fontSize: '22px',
+                      fontWeight: '700',
+                      color: '#00b8d4',
+                      marginBottom: '16px'
+                    }}>
+                      {selectedDeal.asking_price 
+                        ? `$${(selectedDeal.asking_price / 1000000).toFixed(2)}M`
+                        : 'Price Available Upon Request'
+                      }
+                    </div>
                     <button
                       onClick={() => {
                         setSelectedDeal(null);
@@ -326,20 +327,20 @@ const MarketplacePage = () => {
                       style={{
                         width: '100%',
                         padding: '12px',
-                        background: '#3063ff',
+                        background: '#00b8d4',
                         border: 'none',
                         borderRadius: borderRadius.md,
-                        color: '#fff',
+                        color: '#000',
                         fontSize: '15px',
-                        fontWeight: '600',
+                        fontWeight: '700',
                         cursor: 'pointer',
                         transition: transitions.default
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#4573ff';
+                        e.currentTarget.style.background = '#00d4ed';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = '#3063ff';
+                        e.currentTarget.style.background = '#00b8d4';
                       }}
                     >
                       View Details
