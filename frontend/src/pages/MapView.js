@@ -102,9 +102,6 @@ const MapView = () => {
   const mapRef = useRef();
   const navigate = useNavigate();
   
-  // Determine map mode based on capabilities
-  const mapMode = capabilities?.modules.map || 'discovery'; // 'prospecting' | 'portfolio' | 'discovery'
-  
   // Track viewState using ref to avoid re-renders during map interaction
   const handleMoveEnd = useCallback((evt) => {
     viewStateRef.current = evt.viewState;
