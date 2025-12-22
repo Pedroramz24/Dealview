@@ -42,7 +42,12 @@ const MapView = () => {
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [parcels, setParcels] = useState(null);
   const [showParcels, setShowParcels] = useState(false);
-  const [mapStyle, setMapStyle] = useState('street'); // Discovery mode uses street map
+  
+  // Determine map mode based on capabilities
+  const mapMode = capabilities?.modules.map || 'discovery'; // 'prospecting' | 'portfolio' | 'discovery'
+  
+  // Set map style based on mode
+  const [mapStyle, setMapStyle] = useState(mapMode === 'discovery' ? 'street' : 'satellite'); // Discovery uses street map
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
   const [reportAllParcel, setReportAllParcel] = useState(null);
