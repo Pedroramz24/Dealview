@@ -32,15 +32,17 @@ maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
 const MapView = () => {
   const { capabilities } = useCapabilities();
   const [deals, setDeals] = useState([]);
+  const [savedDeals, setSavedDeals] = useState([]); // For buyer's saved deals
   const [teamDeals, setTeamDeals] = useState([]);
   const [showTeamDeals, setShowTeamDeals] = useState(false);
+  const [showSavedDeals, setShowSavedDeals] = useState(true); // Auto-show for buyers
   const [teamDealsAssetTypeFilter, setTeamDealsAssetTypeFilter] = useState([]); // Empty array = show all
   const [loading, setLoading] = useState(true);
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [parcels, setParcels] = useState(null);
   const [showParcels, setShowParcels] = useState(false);
-  const [mapStyle, setMapStyle] = useState('satellite'); // 'satellite' or 'street'
+  const [mapStyle, setMapStyle] = useState('street'); // Discovery mode uses street map
   const [identifyTooltip, setIdentifyTooltip] = useState(null); // For layer feature tooltips
   const [showReportAllParcels, setShowReportAllParcels] = useState(false); // OFF by default
   const [reportAllParcel, setReportAllParcel] = useState(null);

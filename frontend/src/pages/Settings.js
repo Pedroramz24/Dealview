@@ -142,17 +142,25 @@ const Settings = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#000', color: '#fff', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ 
+      minHeight: '100vh', 
+      background: '#130F40',
+      backgroundImage: 'radial-gradient(circle, rgba(19, 15, 64, 1) 0%, rgba(0, 0, 0, 1) 100%)',
+      color: '#fff', 
+      display: 'flex', 
+      flexDirection: 'column' 
+    }}>
       <div style={{ display: 'flex', flex: 1 }}>
         {/* Left Sidebar */}
         <div style={{
           width: '260px',
-          borderRight: '1px solid rgba(255, 255, 255, 0.06)',
+          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
           padding: '40px 20px',
           height: '100vh',
           position: 'sticky',
           top: 0,
-          background: 'rgba(0, 0, 0, 0.4)'
+          background: 'rgba(255, 255, 255, 0.02)',
+          backdropFilter: 'blur(16px)'
         }}>
           <div style={{ marginBottom: '40px' }}>
             <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>

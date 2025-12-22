@@ -573,7 +573,10 @@ const Contacts = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen" style={{ background: 'var(--bg-base)' }} data-testid="contacts-page">
+    <div className="flex flex-col h-screen" style={{ 
+      background: '#130F40',
+      backgroundImage: 'radial-gradient(circle, rgba(19, 15, 64, 1) 0%, rgba(0, 0, 0, 1) 100%)'
+    }} data-testid="contacts-page">
       {/* Header */}
       <div className="px-8 pt-8 pb-4">
         <div className="flex justify-between items-center">
