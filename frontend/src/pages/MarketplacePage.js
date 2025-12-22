@@ -91,7 +91,7 @@ const MarketplacePage = () => {
       
       // Updated titles to match the placeholder images
       const placeholderTitles = [
-        'Commercial Strip Center - San Antonio',
+        'Hotel Property - San Antonio',
         'Industrial Warehouse Complex - San Antonio',
         'Mixed-Use Development',
         'Multi-Family Complex',
@@ -237,79 +237,87 @@ const MarketplacePage = () => {
                 style={{ zIndex: 100 }}
               >
                 <div style={{
-                  width: '280px',
+                  width: '300px',
                   background: colors.surface,
                   borderRadius: borderRadius.lg,
                   overflow: 'hidden',
-                  boxShadow: shadows.xl
+                  boxShadow: shadows.xl,
+                  position: 'relative'
                 }}>
-                  {/* Close button */}
-                  <button
-                    onClick={() => setSelectedDeal(null)}
-                    style={{
-                      position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      background: 'rgba(0,0,0,0.7)',
-                      backdropFilter: 'blur(10px)',
-                      border: 'none',
-                      borderRadius: '50%',
-                      width: '28px',
-                      height: '28px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      zIndex: 10,
-                      transition: transitions.fast
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,0,0,0.8)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(0,0,0,0.7)';
-                    }}
-                  >
-                    <X size={16} color="#fff" />
-                  </button>
-                  
                   {/* Property Image */}
                   {selectedDeal.image_url && (
                     <div style={{
-                      height: '160px',
+                      height: '180px',
                       backgroundImage: `url(${selectedDeal.image_url})`,
                       backgroundSize: 'cover',
-                      backgroundPosition: 'center'
-                    }} />
+                      backgroundPosition: 'center',
+                      position: 'relative'
+                    }}>
+                      {/* Close button positioned in corner */}
+                      <button
+                        onClick={() => setSelectedDeal(null)}
+                        style={{
+                          position: 'absolute',
+                          top: '12px',
+                          right: '12px',
+                          background: 'rgba(0,0,0,0.8)',
+                          backdropFilter: 'blur(10px)',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          zIndex: 10,
+                          transition: transitions.fast
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(255,0,0,0.9)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(0,0,0,0.8)';
+                        }}
+                      >
+                        <X size={18} color="#fff" />
+                      </button>
+                    </div>
                   )}
                   
-                  {/* Deal Info */}
-                  <div style={{ padding: '16px' }}>
+                  {/* Deal Info - Black background for readability */}
+                  <div style={{ 
+                    padding: '20px',
+                    background: '#000',
+                    color: '#fff'
+                  }}>
                     <h3 style={{
-                      fontSize: '16px',
+                      fontSize: '17px',
                       fontWeight: '700',
-                      color: colors.text,
-                      marginBottom: '8px',
+                      color: '#fff',
+                      marginBottom: '10px',
                       lineHeight: '1.3'
                     }}>
                       {selectedDeal.title}
                     </h3>
                     <p style={{
-                      fontSize: '13px',
-                      color: colors.textSecondary,
-                      marginBottom: '12px',
+                      fontSize: '14px',
+                      color: 'rgba(255,255,255,0.7)',
+                      marginBottom: '14px',
                       lineHeight: '1.4'
                     }}>
                       {selectedDeal.address}
                     </p>
-                    <div style={{
-                      fontSize: '20px',
-                      fontWeight: '700',
-                      color: colors.primary,
-                      marginBottom: '12px'
-                    }}>
-                      ${(selectedDeal.asking_price / 1000000).toFixed(2)}M
-                    </div>
+                    {selectedDeal.asking_price && (
+                      <div style={{
+                        fontSize: '22px',
+                        fontWeight: '700',
+                        color: '#3063ff',
+                        marginBottom: '16px'
+                      }}>
+                        ${(selectedDeal.asking_price / 1000000).toFixed(2)}M
+                      </div>
+                    )}
                     <button
                       onClick={() => {
                         setSelectedDeal(null);
@@ -317,21 +325,21 @@ const MarketplacePage = () => {
                       }}
                       style={{
                         width: '100%',
-                        padding: '10px',
-                        background: colors.primary,
+                        padding: '12px',
+                        background: '#3063ff',
                         border: 'none',
                         borderRadius: borderRadius.md,
-                        color: '#000',
-                        fontSize: '14px',
+                        color: '#fff',
+                        fontSize: '15px',
                         fontWeight: '600',
                         cursor: 'pointer',
                         transition: transitions.default
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = colors.primaryHover;
+                        e.currentTarget.style.background = '#4573ff';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = colors.primary;
+                        e.currentTarget.style.background = '#3063ff';
                       }}
                     >
                       View Details
