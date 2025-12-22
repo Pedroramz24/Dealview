@@ -17,12 +17,13 @@ import {
   UsersRound,
   ChevronRight,
   Shield,
-  MessageCircle
+  MessageCircle,
+  Send
 } from 'lucide-react';
 import { gradients } from '../styles/designSystem';
 
 const iconMap = {
-  Store, Briefcase, LayoutDashboard, Map, Trello, Users, Mail, Calendar, UsersRound, Shield, Settings, MessageCircle
+  Store, Briefcase, LayoutDashboard, Map, Trello, Users, Mail, Calendar, UsersRound, Shield, Settings, MessageCircle, Send
 };
 
 const DualModeLayout = () => {

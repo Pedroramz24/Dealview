@@ -643,6 +643,40 @@ const MapView = () => {
         }
         
         const dealsWithCoords = data.filter(deal => 
+
+
+  // Fetch Saved Deals for Buyer Discovery Mode
+  const fetchSavedDeals = async () => {
+    if (!user || mapMode !== 'discovery') return;
+
+    try {
+      console.log('[MapView] Fetching saved deals for buyer');
+      
+      // Get saved deal IDs
+      const { data: savedDealIds } = await supabase
+        .from('marketplace_saved_deals')
+        .select('deal_id')
+        .eq('user_id', user.id);
+
+      if (savedDealIds && savedDealIds.length > 0) {
+        const dealIds = savedDealIds.map(s => s.deal_id);
+        
+        // Fetch full deal data for saved deals
+        const { data: savedDealsData } = await supabase
+          .from('deals')
+          .select('*')
+          .in('id', dealIds);
+        
+        console.log('[MapView] Fetched saved deals:', savedDealsData?.length || 0);
+        setSavedDeals(savedDealsData || []);
+      } else {
+        setSavedDeals([]);
+      }
+    } catch (error) {
+      console.error('[MapView] Error loading saved deals:', error);
+    }
+  };
+
           deal.longitude && deal.latitude && !isNaN(deal.longitude) && !isNaN(deal.latitude)
         );
         console.log('[MapView] ✅ Deals with valid coordinates:', dealsWithCoords.length);

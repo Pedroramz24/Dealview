@@ -17,11 +17,12 @@ import {
   Inbox,
   TrendingUp,
   Settings as SettingsIcon,
-  Shield
+  Shield,
+  Send
 } from 'lucide-react';
 
 const iconMap = {
-  Store, Briefcase, LayoutDashboard, Map, Trello, Users, Mail, Calendar, UsersRound, Shield, TrendingUp, SettingsIcon
+  Store, Briefcase, LayoutDashboard, Map, Trello, Users, Mail, Calendar, UsersRound, Shield, TrendingUp, SettingsIcon, Send
 };
 
 const MainLayout = () => {
