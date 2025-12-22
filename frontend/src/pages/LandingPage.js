@@ -90,35 +90,41 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Unicorn Studio Animated Background */}
+      {/* Hero Section with Animated Video Background */}
       <section style={{
         position: 'relative',
         padding: '120px 60px 60px',
         textAlign: 'center',
         background: 'transparent',
-        overflow: 'visible',
+        overflow: 'hidden',
         minHeight: '900px'
       }}>
-        {/* Unicorn Studio Animated Background */}
-        <div 
-          data-us-project="TVdXChuQCapwlaj0vwhw" 
+        {/* Animated Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           style={{
             position: 'absolute',
-            top: 0,
+            top: '50%',
             left: '50%',
-            transform: 'translateX(-50%)',
-            width: '1440px',
-            height: '900px',
-            maxWidth: '100vw',
+            transform: 'translate(-50%, -50%)',
+            minWidth: '100%',
+            minHeight: '100%',
+            width: 'auto',
+            height: 'auto',
             zIndex: 0,
-            pointerEvents: 'none',
-            opacity: 0.7
+            opacity: 0.6,
+            objectFit: 'cover',
+            pointerEvents: 'none'
           }}
-        />
+        >
+          <source src="https://customer-assets.emergentagent.com/job_843c97fb-d8fe-47b5-ae4b-2303d92d5677/artifacts/4xsod2l2_huly_laser.webm" type="video/webm" />
+        </video>
         
         {/* Content overlay */}
         <div style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{ position: 'relative', zIndex: 10 }}>
           <h1 style={{
             fontSize: '72px',
             fontWeight: '600',
