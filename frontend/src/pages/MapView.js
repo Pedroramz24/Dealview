@@ -542,9 +542,13 @@ const MapView = () => {
   };
 
   useEffect(() => {
-    fetchDeals();
-    fetchTeamDeals();
-  }, []);
+    if (user) {
+      fetchDeals();
+      if (mapMode === 'discovery') {
+        fetchSavedDeals(); // Fetch saved deals for buyer
+      }
+    }
+  }, [user, mapMode]);
 
   useEffect(() => {
     if (!showParcels) return;
@@ -1705,6 +1709,74 @@ const MapView = () => {
                 </div>
               </div>
             </Marker>
+          ))}
+
+          {/* Saved Deals Markers - Gold/Star pins for buyer's saved properties (Discovery Mode) */}
+          {mapMode === 'discovery' && showSavedDeals && savedDeals.map((deal) => (
+            deal.latitude && deal.longitude && !isNaN(deal.latitude) && !isNaN(deal.longitude) && (
+              <Marker
+                key={`saved-${deal.id}`}
+                longitude={deal.longitude}
+                latitude={deal.latitude}
+                anchor="center"
+                onClick={() => {
+                  setSelectedDeal(deal);
+                  setPropertyPanelData(deal);
+                  setPropertyPanelOpen(true);
+                  
+                  if (mapRef.current) {
+                    mapRef.current.flyTo({
+                      center: [deal.longitude, deal.latitude],
+                      zoom: 15,
+                      duration: 1000,
+                      essential: true,
+                      offset: [150, 0]
+                    });
+                  }
+                }}
+              >
+                <div style={{
+                  position: 'relative',
+                  width: `${pinSizes.outer + 4}px`,
+                  height: `${pinSizes.outer + 4}px`,
+                  cursor: 'pointer',
+                  transition: 'transform 0.3s ease',
+                  filter: 'drop-shadow(0 4px 12px rgba(251, 191, 36, 0.6))'
+                }}>
+                  {/* Pulsing outer ring - gold for saved deals */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    width: `${pinSizes.outer + 4}px`,
+                    height: `${pinSizes.outer + 4}px`,
+                    borderRadius: '50%',
+                    background: 'rgba(251, 191, 36, 0.4)',
+                    animation: 'pulse 2s ease-out infinite'
+                  }} />
+                  {/* Main marker - gold */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '2px',
+                    left: '2px',
+                    width: `${pinSizes.inner + 4}px`,
+                    height: `${pinSizes.inner + 4}px`,
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '3px solid #ffffff',
+                    boxShadow: '0 0 20px rgba(251, 191, 36, 0.6)'
+                  }}>
+                    {/* Star icon for saved */}
+                    <svg width={pinSizes.dot * 1.5} height={pinSizes.dot * 1.5} viewBox="0 0 24 24" fill="#ffffff">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  </div>
+                </div>
+              </Marker>
+            )
           ))}
 
           {/* Searched Address Marker - Green pin for searched locations */}
