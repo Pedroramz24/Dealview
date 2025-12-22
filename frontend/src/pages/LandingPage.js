@@ -90,14 +90,34 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section - Clean with gradient background */}
+      {/* Hero Section with Unicorn Studio Animated Background */}
       <section style={{
         position: 'relative',
         padding: '120px 60px 60px',
         textAlign: 'center',
         background: 'transparent',
-        overflow: 'visible'
+        overflow: 'visible',
+        minHeight: '900px'
       }}>
+        {/* Unicorn Studio Animated Background */}
+        <div 
+          data-us-project="TVdXChuQCapwlaj0vwhw" 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '1440px',
+            height: '900px',
+            maxWidth: '100vw',
+            zIndex: 0,
+            pointerEvents: 'none',
+            opacity: 0.7
+          }}
+        />
+        
+        {/* Content overlay */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ position: 'relative', zIndex: 10 }}>
           <h1 style={{
             fontSize: '72px',
