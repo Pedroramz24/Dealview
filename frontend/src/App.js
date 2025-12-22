@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import AIDashboard from './pages/AIDashboard';
 import CommandCenter from './pages/CommandCenter';
 import AdminDashboard from './pages/AdminDashboard';
+import Messages from './pages/Messages';
 import MapView from './pages/MapView';
 import DealsList from './pages/DealsList';
 import DealDetails from './pages/DealDetails';
@@ -135,6 +136,7 @@ function App() {
             element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
             <Route path="dashboard" element={<CommandCenter />} />
+            <Route path="messages" element={<Messages />} />
             <Route path="map" element={<MapView />} />
             <Route path="deals" element={<Pipeline />} />
             <Route path="deals/:dealId" element={<DealDetails />} />
