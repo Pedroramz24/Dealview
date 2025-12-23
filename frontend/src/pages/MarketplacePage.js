@@ -98,11 +98,23 @@ const MarketplacePage = () => {
         'Retail Development Land'
       ];
       
-      // Add images and update titles for existing deals
+      // Updated descriptions to match the property types
+      const placeholderDescriptions = [
+        'Located at 1524 E Commerce St, this 19-room hotel offers guests the perfect blend of cultural charm and convenience. The hotel is styled after traditional Mexican culture, providing a unique and authentic experience for visitors. Situated just a short distance from the Alamo Dome, downtown San Antonio, and popular nightclubs like 1902, guests will find themselves immersed in the vibrant atmosphere of the city. Additionally, the hotel is near the famous River Walk, allowing easy access to some of San Antonio\'s most popular attractions.',
+        'Multi-tenant industrial warehouse complex in prime San Antonio location. High ceiling clearance, multiple loading docks, and excellent access to major highways. Perfect for distribution, manufacturing, or logistics operations.',
+        null, // Keep original
+        null, // Keep original
+        null  // Keep original
+      ];
+      
+      // Add images and update titles/descriptions for existing deals
       fetchedDeals = fetchedDeals.map((deal, idx) => ({
         ...deal,
         image_url: deal.image_url || placeholderImages[idx % placeholderImages.length],
-        title: idx < 2 ? placeholderTitles[idx] : deal.title // Update first 2 titles
+        title: idx < 2 ? placeholderTitles[idx] : deal.title, // Update first 2 titles
+        description: (idx < placeholderDescriptions.length && placeholderDescriptions[idx]) 
+          ? placeholderDescriptions[idx] 
+          : deal.description // Update description if placeholder exists
       }));
       
       setDeals(fetchedDeals);
