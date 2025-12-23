@@ -92,7 +92,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Unicorn Studio Animation Background */}
+      {/* Hero Section with Animated Video Background - Mobile Optimized */}
       <section style={{
         position: 'relative',
         padding: '0',
@@ -104,40 +104,52 @@ const LandingPage = () => {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        {/* Unicorn Studio Animated Background */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 0,
-          opacity: 0.8
-        }}>
-          <UnicornAnimation 
-            animationData={heroAnimationData}
-            style={{
-              width: '100%',
-              height: '100%'
-            }}
-          />
-        </div>
+        {/* Animated Video Background - loops from 3s to end */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          onLoadedMetadata={(e) => {
+            e.target.currentTime = 3;
+          }}
+          onEnded={(e) => {
+            e.target.currentTime = 3;
+            e.target.play();
+          }}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            minWidth: '100%',
+            minHeight: '100%',
+            width: 'auto',
+            height: 'auto',
+            zIndex: 0,
+            opacity: 0.6,
+            objectFit: 'cover',
+            pointerEvents: 'none'
+          }}
+        >
+          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/dxv4dxpk_huly_laser%20%281%29.webm" type="video/webm" />
+        </video>
         
-        {/* Content overlay - Vertically Centered */}
+        {/* Content overlay - Vertically Centered - Responsive */}
         <div style={{ 
           position: 'relative', 
           zIndex: 1,
-          padding: '80px 60px',
+          padding: 'clamp(40px, 8vh, 80px) clamp(20px, 5vw, 60px)',
           maxWidth: '100%'
         }}>
           <h1 style={{
-            fontSize: 'clamp(48px, 8vw, 72px)',
+            fontSize: 'clamp(36px, 6vw, 72px)',
             fontWeight: '600',
             background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            marginBottom: '32px',
+            marginBottom: 'clamp(20px, 3vh, 32px)',
             lineHeight: '1.1',
             letterSpacing: '-0.03em',
             fontFamily: '"Inter", sans-serif',
@@ -149,32 +161,31 @@ const LandingPage = () => {
             Real Dealmakers
           </h1>
           <p style={{
-            fontSize: 'clamp(16px, 2vw, 19px)',
+            fontSize: 'clamp(15px, 1.8vw, 19px)',
             color: 'rgba(255,255,255,0.65)',
-            marginBottom: '48px',
+            marginBottom: 'clamp(32px, 5vh, 48px)',
             maxWidth: '780px',
-            margin: '0 auto 48px',
+            margin: '0 auto',
+            marginBottom: 'clamp(32px, 5vh, 48px)',
             lineHeight: '1.65',
             fontWeight: '400',
             padding: '0 20px'
           }}>
             A curated off-market exchange built for serious operators. Discover real deals,
-            <br />
             engage real decision-makers, and manage everything end-to-end with the
-            <br />
             industry's first fully integrated deal OS.
           </p>
 
-          {/* Get Started Button */}
+          {/* Get Started Button - Responsive */}
           <button
             onClick={() => navigate('/signup')}
             style={{
-              padding: '16px 40px',
+              padding: 'clamp(12px, 1.5vh, 16px) clamp(28px, 4vw, 40px)',
               background: '#3063ff',
               border: 'none',
               borderRadius: '30px',
               color: '#fff',
-              fontSize: '16px',
+              fontSize: 'clamp(14px, 1.5vw, 16px)',
               fontWeight: '700',
               cursor: 'pointer',
               transition: 'all 0.3s',
