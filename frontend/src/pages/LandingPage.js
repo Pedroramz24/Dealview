@@ -37,26 +37,27 @@ const LandingPage = () => {
       overflow: 'hidden',
       fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     }}>
-      {/* Glassmorphism Sticky Navigation - Shows reflection underneath */}
+      {/* Transparent Navigation Overlay */}
       <nav style={{
         padding: '20px 60px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 1000,
-        background: 'rgba(0, 0, 0, 0.4)',
-        backdropFilter: 'blur(30px) saturate(180%)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-        WebkitBackdropFilter: 'blur(30px) saturate(180%)'
+        background: 'transparent',
+        borderBottom: 'none'
       }}>
         <img 
           src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/72aahevp_DealLinked.png"
           alt="DealLinked"
           style={{
             height: '48px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))'
           }}
           onClick={() => navigate('/')}
         />
@@ -65,24 +66,25 @@ const LandingPage = () => {
             onClick={() => navigate('/login')}
             style={{
               padding: '10px 24px',
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: 'rgba(0, 0, 0, 0.6)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '10px',
-              color: 'rgba(255, 255, 255, 0.9)',
+              color: 'rgba(255, 255, 255, 0.95)',
               fontSize: '14px',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.3s'
+              transition: 'all 0.3s',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
             }}
           >
             Login
@@ -95,19 +97,26 @@ const LandingPage = () => {
         position: 'relative',
         padding: '0',
         textAlign: 'center',
-        background: 'transparent',
+        background: '#000',
         overflow: 'hidden',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        {/* Animated Video Background */}
+        {/* Animated Video Background - loops from 3s to end */}
         <video
           autoPlay
           loop
           muted
           playsInline
+          onLoadedMetadata={(e) => {
+            e.target.currentTime = 3;
+          }}
+          onEnded={(e) => {
+            e.target.currentTime = 3;
+            e.target.play();
+          }}
           style={{
             position: 'absolute',
             top: '50%',
