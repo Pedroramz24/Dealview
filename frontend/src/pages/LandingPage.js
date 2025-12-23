@@ -228,7 +228,7 @@ const LandingPage = () => {
             padding: '0'
           }}
         >
-          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/9hcw2yqq_copy_of_huly_laser.webm" type="video/webm" />
+          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/xoab08ed_second_section.webm" type="video/webm" />
         </video>
       </section>
 
