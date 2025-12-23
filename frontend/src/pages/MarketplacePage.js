@@ -314,7 +314,12 @@ const MarketplacePage = () => {
                       color: '#00b8d4',
                       marginBottom: '16px'
                     }}>
-                      ${(selectedDeal.asking_price / 1000000).toFixed(2)}M
+                      {selectedDeal.asking_price 
+                        ? (selectedDeal.asking_price >= 1000000 
+                            ? `$${(selectedDeal.asking_price / 1000000).toFixed(2)}M`
+                            : `$${selectedDeal.asking_price.toFixed(2)}M`)
+                        : 'Contact for Price'
+                      }
                     </div>
                     <button
                       onClick={() => {

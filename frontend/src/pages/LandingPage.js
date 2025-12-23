@@ -132,7 +132,7 @@ const LandingPage = () => {
             pointerEvents: 'none'
           }}
         >
-          <source src="https://customer-assets.emergentagent.com/job_843c97fb-d8fe-47b5-ae4b-2303d92d5677/artifacts/4xsod2l2_huly_laser.webm" type="video/webm" />
+          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/dxv4dxpk_huly_laser%20%281%29.webm" type="video/webm" />
         </video>
         
         {/* Content overlay - Vertically Centered */}
