@@ -208,13 +208,14 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Dashboard Screenshot - Clear glass border */}
+      {/* Application Showcase Video */}
       <section style={{
-        padding: '120px 60px 120px',
+        padding: '120px 60px',
         position: 'relative',
-        zIndex: 30
+        zIndex: 30,
+        background: 'transparent'
       }}>
-        {/* Blue circular highlight design behind screenshot */}
+        {/* Blue circular highlight design behind video */}
         <div style={{
           position: 'absolute',
           top: '50%',
@@ -229,7 +230,7 @@ const LandingPage = () => {
         }} />
 
         <div style={{
-          maxWidth: '950px',
+          maxWidth: '1200px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10
@@ -247,17 +248,21 @@ const LandingPage = () => {
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               borderRadius: '23px',
               overflow: 'hidden',
-              padding: '16px'
+              padding: '8px'
             }}>
-              <img 
-                src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/of5y58m3_image.png" 
-                alt="DealLinked Dashboard" 
+              <video 
+                autoPlay
+                loop
+                muted
+                playsInline
                 style={{ 
-                  width: '100%', 
+                  width: '100%',
                   display: 'block',
                   borderRadius: '16px'
                 }}
-              />
+              >
+                <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/v7gqp9uu_liar_remix.webm" type="video/webm" />
+              </video>
             </div>
           </div>
         </div>
