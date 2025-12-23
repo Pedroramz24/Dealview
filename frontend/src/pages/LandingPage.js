@@ -132,7 +132,7 @@ const LandingPage = () => {
             pointerEvents: 'none'
           }}
         >
-          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/dxv4dxpk_huly_laser%20%281%29.webm" type="video/webm" />
+          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/gxi2bcy6_alcove_hero_remix.webm" type="video/webm" />
         </video>
         
         {/* Content overlay - Vertically Centered - Responsive */}
@@ -228,7 +228,7 @@ const LandingPage = () => {
             padding: '0'
           }}
         >
-          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/wlnchej5_second_section%20%281%29.webm" type="video/webm" />
+          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/e5h658ph_second_section%20%282%29.webm" type="video/webm" />
         </video>
       </section>
 
