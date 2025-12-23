@@ -208,64 +208,28 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Application Showcase Video */}
+      {/* Application Showcase Video - Full Width */}
       <section style={{
-        padding: '120px 60px',
+        padding: '0',
         position: 'relative',
         zIndex: 30,
-        background: 'transparent'
+        background: '#000',
+        width: '100%'
       }}>
-        {/* Blue circular highlight design behind video */}
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '900px',
-          height: '900px',
-          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.12) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-          filter: 'blur(60px)'
-        }} />
-
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          position: 'relative',
-          zIndex: 10
-        }}>
-          {/* Clear glassmorphism border container */}
-          <div style={{
-            padding: '1px',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%)',
-            borderRadius: '24px',
-            position: 'relative'
-          }}>
-            <div style={{
-              background: 'rgba(0, 0, 0, 0.2)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              borderRadius: '23px',
-              overflow: 'hidden',
-              padding: '8px'
-            }}>
-              <video 
-                autoPlay
-                loop
-                muted
-                playsInline
-                style={{ 
-                  width: '100%',
-                  display: 'block',
-                  borderRadius: '16px'
-                }}
-              >
-                <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/v7gqp9uu_liar_remix.webm" type="video/webm" />
-              </video>
-            </div>
-          </div>
-        </div>
+        <video 
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{ 
+            width: '100%',
+            display: 'block',
+            margin: '0',
+            padding: '0'
+          }}
+        >
+          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/v7gqp9uu_liar_remix.webm" type="video/webm" />
+        </video>
       </section>
 
       {/* What is DealLinked Section */}
