@@ -96,7 +96,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Animated Video Background */}
+      {/* Hero Section with Unicorn Studio Animation Background */}
       <section style={{
         position: 'relative',
         padding: '0',
@@ -108,36 +108,24 @@ const LandingPage = () => {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        {/* Animated Video Background - loops from 3s to end */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          onLoadedMetadata={(e) => {
-            e.target.currentTime = 3;
-          }}
-          onEnded={(e) => {
-            e.target.currentTime = 3;
-            e.target.play();
-          }}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            minWidth: '100%',
-            minHeight: '100%',
-            width: 'auto',
-            height: 'auto',
-            zIndex: 0,
-            opacity: 0.6,
-            objectFit: 'cover',
-            pointerEvents: 'none'
-          }}
-        >
-          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/dxv4dxpk_huly_laser%20%281%29.webm" type="video/webm" />
-        </video>
+        {/* Unicorn Studio Animated Background */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+          opacity: 0.8
+        }}>
+          <UnicornAnimation 
+            animationData={heroAnimationData}
+            style={{
+              width: '100%',
+              height: '100%'
+            }}
+          />
+        </div>
         
         {/* Content overlay - Vertically Centered */}
         <div style={{ 
@@ -147,7 +135,7 @@ const LandingPage = () => {
           maxWidth: '100%'
         }}>
           <h1 style={{
-            fontSize: '72px',
+            fontSize: 'clamp(48px, 8vw, 72px)',
             fontWeight: '600',
             background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
             WebkitBackgroundClip: 'text',
@@ -165,13 +153,14 @@ const LandingPage = () => {
             Real Dealmakers
           </h1>
           <p style={{
-            fontSize: '19px',
+            fontSize: 'clamp(16px, 2vw, 19px)',
             color: 'rgba(255,255,255,0.65)',
             marginBottom: '48px',
             maxWidth: '780px',
             margin: '0 auto 48px',
             lineHeight: '1.65',
-            fontWeight: '400'
+            fontWeight: '400',
+            padding: '0 20px'
           }}>
             A curated off-market exchange built for serious operators. Discover real deals,
             <br />
