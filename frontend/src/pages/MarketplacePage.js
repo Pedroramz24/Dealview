@@ -107,14 +107,41 @@ const MarketplacePage = () => {
         null  // Keep original
       ];
       
-      // Add images and update titles/descriptions for existing deals
+      // Updated addresses
+      const placeholderAddresses = [
+        '1524 E Commerce St, San Antonio, 78205',
+        '625 Humble Ave, San Antonio, TX, 78225',
+        null, // Keep original
+        null, // Keep original
+        null  // Keep original
+      ];
+      
+      // Updated asset types (tags)
+      const placeholderAssetTypes = [
+        'HOTEL',
+        'INDUSTRIAL',
+        null, // Keep original
+        null, // Keep original
+        null  // Keep original
+      ];
+      
+      // Add images and update titles/descriptions/addresses/tags for existing deals
       fetchedDeals = fetchedDeals.map((deal, idx) => ({
         ...deal,
         image_url: deal.image_url || placeholderImages[idx % placeholderImages.length],
-        title: idx < 2 ? placeholderTitles[idx] : deal.title, // Update first 2 titles
+        title: idx < 2 ? placeholderTitles[idx] : deal.title,
         description: (idx < placeholderDescriptions.length && placeholderDescriptions[idx]) 
           ? placeholderDescriptions[idx] 
-          : deal.description // Update description if placeholder exists
+          : deal.description,
+        address: (idx < placeholderAddresses.length && placeholderAddresses[idx])
+          ? placeholderAddresses[idx]
+          : deal.address,
+        public_asset_type: (idx < placeholderAssetTypes.length && placeholderAssetTypes[idx])
+          ? placeholderAssetTypes[idx]
+          : deal.public_asset_type,
+        asset_type: (idx < placeholderAssetTypes.length && placeholderAssetTypes[idx])
+          ? placeholderAssetTypes[idx]
+          : deal.asset_type
       }));
       
       setDeals(fetchedDeals);
