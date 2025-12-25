@@ -143,7 +143,7 @@ const LandingPage = () => {
           maxWidth: '100%'
         }}>
           <h1 style={{
-            fontSize: 'clamp(36px, 6vw, 72px)',
+            fontSize: 'clamp(36px, 7vw, 84px)',
             fontWeight: '600',
             background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
             WebkitBackgroundClip: 'text',
@@ -163,10 +163,9 @@ const LandingPage = () => {
           <p style={{
             fontSize: 'clamp(15px, 1.8vw, 19px)',
             color: 'rgba(255,255,255,0.65)',
-            marginBottom: 'clamp(32px, 5vh, 48px)',
             maxWidth: '780px',
             margin: '0 auto',
-            marginBottom: 'clamp(32px, 5vh, 48px)',
+            marginBottom: 'clamp(40px, 6vh, 60px)',
             lineHeight: '1.65',
             fontWeight: '400',
             padding: '0 20px'
