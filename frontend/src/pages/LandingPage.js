@@ -207,28 +207,62 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Application Showcase Video - Full Width */}
+      {/* Application Showcase Section - Video Background with Screenshot Overlay */}
       <section style={{
-        padding: '0',
+        padding: '120px 0',
         position: 'relative',
         zIndex: 30,
         background: '#000',
-        width: '100%'
+        width: '100%',
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
+        {/* Background Video */}
         <video 
           autoPlay
           loop
           muted
           playsInline
           style={{ 
-            width: '100%',
-            display: 'block',
-            margin: '0',
-            padding: '0'
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            minWidth: '100%',
+            minHeight: '100%',
+            width: 'auto',
+            height: 'auto',
+            zIndex: 0,
+            objectFit: 'cover',
+            opacity: 0.4
           }}
         >
-          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/e5h658ph_second_section%20%282%29.webm" type="video/webm" />
+          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/9padxudt_copy_of_second_section.webm" type="video/webm" />
         </video>
+
+        {/* Screenshot Overlay - Centered and Responsive */}
+        <div style={{
+          position: 'relative',
+          zIndex: 10,
+          width: '100%',
+          maxWidth: 'min(90vw, 1400px)',
+          padding: '0 clamp(20px, 5vw, 60px)'
+        }}>
+          <img 
+            src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/z39y8gol_Screenshot%202025-12-23%20at%2012.04.52%E2%80%AFPM.png"
+            alt="DealLinked Platform Showcase"
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              borderRadius: '16px',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(0, 184, 212, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}
+          />
+        </div>
       </section>
 
       {/* What is DealLinked Section */}
