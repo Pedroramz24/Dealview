@@ -163,7 +163,7 @@ const Login = () => {
 
             {/* Forgot Password Link - Only show in login mode */}
             {isLogin && (
-              <div style={{ textAlign: 'right', marginTop: '-8px' }}>
+              <div style={{ textAlign: 'right', marginTop: '16px' }}>
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
