@@ -878,30 +878,30 @@ const LandingPage = () => {
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             gap: '32px'
           }}>
-            {/* Brokers */}
+            {/* Brokers - Cyan */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
               backdropFilter: 'blur(20px) saturate(180%)',
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               padding: '40px 32px',
               borderRadius: '20px',
-              border: '1px solid rgba(48, 99, 255, 0.2)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
+              border: '1px solid rgba(0, 184, 212, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
               textAlign: 'center'
             }}>
               <div style={{
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
-                border: '2px solid rgba(48, 99, 255, 0.4)',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
               }}>
-                <Building2 size={32} color="#3063ff" />
+                <Building2 size={32} color="#00b8d4" />
               </div>
               <h3 style={{
                 fontSize: '24px',
@@ -920,7 +920,7 @@ const LandingPage = () => {
               </p>
             </div>
 
-            {/* Investors */}
+            {/* Investors - Blue */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
               backdropFilter: 'blur(20px) saturate(180%)',
@@ -962,30 +962,30 @@ const LandingPage = () => {
               </p>
             </div>
 
-            {/* Owners */}
+            {/* Owners - Purple */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
               backdropFilter: 'blur(20px) saturate(180%)',
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               padding: '40px 32px',
               borderRadius: '20px',
-              border: '1px solid rgba(16, 185, 129, 0.2)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(16, 185, 129, 0.05)',
+              border: '1px solid rgba(139, 92, 246, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(139, 92, 246, 0.05)',
               textAlign: 'center'
             }}>
               <div style={{
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.1) 70%)',
-                border: '2px solid rgba(16, 185, 129, 0.4)',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0.1) 70%)',
+                border: '2px solid rgba(139, 92, 246, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)'
+                boxShadow: '0 0 30px rgba(139, 92, 246, 0.4)'
               }}>
-                <Award size={32} color="#10b981" />
+                <Award size={32} color="#8b5cf6" />
               </div>
               <h3 style={{
                 fontSize: '24px',
