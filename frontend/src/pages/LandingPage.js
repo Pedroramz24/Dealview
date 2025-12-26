@@ -31,7 +31,7 @@ const LandingPage = () => {
           src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png"
           alt="DealLinked"
           style={{
-            height: '48px',
+            height: '96px',
             cursor: 'pointer',
             filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))'
           }}
