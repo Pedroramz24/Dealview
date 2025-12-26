@@ -28,7 +28,7 @@ const LandingPage = () => {
         borderBottom: 'none'
       }}>
         <img 
-          src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/72aahevp_DealLinked.png"
+          src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png"
           alt="DealLinked"
           style={{
             height: '48px',
