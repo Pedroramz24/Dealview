@@ -568,11 +568,11 @@ const LandingPage = () => {
                     <div key={idx} style={{
                       flex: 1,
                       padding: '8px 4px',
-                      background: idx < 2 ? 'rgba(48, 99, 255, 0.15)' : 'rgba(100, 100, 100, 0.1)',
-                      border: `1px solid ${idx < 2 ? 'rgba(48, 99, 255, 0.3)' : 'rgba(100, 100, 100, 0.2)'}`,
+                      background: idx < 2 ? 'rgba(255, 255, 255, 0.1)' : 'rgba(100, 100, 100, 0.1)',
+                      border: `1px solid ${idx < 2 ? 'rgba(255, 255, 255, 0.2)' : 'rgba(100, 100, 100, 0.2)'}`,
                       borderRadius: '6px',
                       fontSize: '10px',
-                      color: idx < 2 ? '#3063ff' : 'rgba(255,255,255,0.5)',
+                      color: idx < 2 ? '#fff' : 'rgba(255,255,255,0.5)',
                       fontWeight: '700',
                       textAlign: 'center'
                     }}>
