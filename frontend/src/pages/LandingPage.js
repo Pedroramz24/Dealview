@@ -1,33 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Building2, Users, Shield, TrendingUp, Award, Clock, FileCheck } from 'lucide-react';
+import { ArrowRight, CheckCircle, Building2, Users, Shield, TrendingUp, Award, FileCheck } from 'lucide-react';
 
-const LandingPage = () => {
+const LandingPageNew = () => {
   const navigate = useNavigate();
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-
-  const testimonials = [
-    {
-      text: "DealLinked transformed how I source off-market deals. The quality control and NCND protection give me confidence every deal is legitimate.",
-      author: "Sarah M.",
-      role: "Commercial Real Estate Investor"
-    },
-    {
-      text: "As a broker, the reputation system helps me stand out. My verified listings get priority visibility, and I've closed 3 deals in the first month.",
-      author: "Michael R.",
-      role: "Commercial Broker"
-    },
-    {
-      text: "Finally, a marketplace that weeds out the noise. Only serious brokers with quality deals. The completeness requirements ensure I'm not wasting time.",
-      author: "Jennifer L.",
-      role: "Private Equity Investor"
-    },
-    {
-      text: "The NCND digital signature system is brilliant. I feel protected sharing my off-market opportunities, and buyers appreciate the professionalism.",
-      author: "David K.",
-      role: "Off-Market Specialist"
-    }
-  ];
 
   return (
     <div style={{ 
@@ -92,7 +68,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Animated Video Background - Mobile Optimized */}
+      {/* SECTION 1 - HERO (Keep as is from original) */}
       <section style={{
         position: 'relative',
         padding: '0',
@@ -207,486 +183,792 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Application Showcase Section - Video Background with Screenshot Overlay */}
+      {/* SECTION 2 - THE PAIN */}
       <section style={{
-        padding: '120px 0',
+        padding: '120px clamp(20px, 5vw, 60px)',
+        background: 'transparent',
         position: 'relative',
-        zIndex: 30,
-        background: '#000',
-        width: '100%',
+        zIndex: 20,
         overflow: 'hidden',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        textAlign: 'center'
       }}>
-        {/* Background Video */}
-        <video 
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{ 
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            minWidth: '100%',
-            minHeight: '100%',
-            width: 'auto',
-            height: 'auto',
-            zIndex: 0,
-            objectFit: 'cover',
-            opacity: 0.4
-          }}
-        >
-          <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/9padxudt_copy_of_second_section.webm" type="video/webm" />
-        </video>
-
-        {/* Screenshot Overlay - Centered and Responsive */}
+        {/* Chaotic background effect */}
         <div style={{
-          position: 'relative',
-          zIndex: 10,
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: '100%',
-          maxWidth: 'min(90vw, 1400px)',
-          padding: '0 clamp(20px, 5vw, 60px)'
-        }}>
-          <img 
-            src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/z39y8gol_Screenshot%202025-12-23%20at%2012.04.52%E2%80%AFPM.png"
-            alt="DealLinked Platform Showcase"
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              borderRadius: '16px',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(0, 184, 212, 0.2)',
-              border: '1px solid rgba(255, 255, 255, 0.1)'
-            }}
-          />
+          height: '100%',
+          background: 'radial-gradient(circle at 30% 50%, rgba(255, 50, 50, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(150, 150, 150, 0.05) 0%, transparent 50%)',
+          zIndex: 0
+        }} />
+        
+        {/* Fragmented UI elements to show chaos */}
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '10%',
+          width: '200px',
+          height: '120px',
+          background: 'rgba(255, 255, 255, 0.02)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '12px',
+          transform: 'rotate(-8deg)',
+          filter: 'blur(2px)',
+          opacity: 0.3
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: '40%',
+          right: '15%',
+          width: '180px',
+          height: '100px',
+          background: 'rgba(255, 255, 255, 0.02)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '12px',
+          transform: 'rotate(12deg)',
+          filter: 'blur(2px)',
+          opacity: 0.3
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '25%',
+          left: '20%',
+          width: '150px',
+          height: '90px',
+          background: 'rgba(255, 255, 255, 0.02)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '12px',
+          transform: 'rotate(5deg)',
+          filter: 'blur(2px)',
+          opacity: 0.3
+        }} />
+
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '900px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 56px)',
+            fontWeight: '600',
+            background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            marginBottom: '32px',
+            letterSpacing: '-0.03em',
+            fontFamily: '"Inter", sans-serif',
+            filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
+          }}>
+            Off-Market Deals Shouldn't Live in Facebook Groups
+          </h2>
+          <p style={{
+            fontSize: 'clamp(16px, 2vw, 20px)',
+            color: 'rgba(255,255,255,0.6)',
+            lineHeight: '1.7',
+            maxWidth: '780px',
+            margin: '0 auto',
+            fontWeight: '400'
+          }}>
+            Most off-market deal flow today is scattered across unorganized chats, comment threads, and unverifiable posts. Serious opportunities get buried in noise, time is wasted chasing intent, and real operators are left without structure or trust.
+          </p>
         </div>
       </section>
 
-      {/* What is DealLinked Section */}
+      {/* SECTION 3 - THE SOLUTION */}
       <section style={{
-        padding: '100px 60px',
+        padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
         position: 'relative',
         zIndex: 20,
         overflow: 'hidden'
       }}>
-        <h2 style={{
-          fontSize: '48px',
-          fontWeight: '600',
-          background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          textAlign: 'center',
-          marginBottom: '80px',
-          letterSpacing: '-0.03em',
-          fontFamily: '"Inter", sans-serif',
-          filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
-        }}>
-          What is DealLinked?
-        </h2>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          {/* For Brokers */}
-          <div style={{
-            background: 'rgba(10, 10, 10, 0.8)',
-            backdropFilter: 'blur(16px)',
-            padding: '40px',
-            borderRadius: '20px',
-            border: '2px solid rgba(0, 184, 212, 0.3)',
-            boxShadow: '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)',
-            transition: 'all 0.3s'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.6)';
-            e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)';
-            e.currentTarget.style.transform = 'translateY(-4px)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
-            e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)';
-            e.currentTarget.style.transform = 'translateY(0)';
-          }}
-          >
-            <div style={{
-              width: '64px',
-              height: '64px',
-              background: 'rgba(0, 184, 212, 0.15)',
-              borderRadius: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '24px',
-              boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)',
-              border: '1px solid rgba(0, 184, 212, 0.3)'
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <h2 style={{
+              fontSize: 'clamp(32px, 5vw, 56px)',
+              fontWeight: '600',
+              background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              marginBottom: '28px',
+              letterSpacing: '-0.03em',
+              fontFamily: '"Inter", sans-serif',
+              filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
             }}>
-              <Building2 size={32} color="#00b8d4" />
-            </div>
-            <h3 style={{
-              fontSize: '28px',
-              fontWeight: '700',
-              color: '#fff',
-              marginBottom: '16px'
-            }}>
-              For Brokers
-            </h3>
+              DealLinked Replaces Noise With Signal
+            </h2>
             <p style={{
-              fontSize: '16px',
-              color: 'rgba(255,255,255,0.6)',
+              fontSize: 'clamp(16px, 2vw, 20px)',
+              color: 'rgba(255,255,255,0.65)',
               lineHeight: '1.7',
-              marginBottom: '24px'
+              maxWidth: '850px',
+              margin: '0 auto 20px',
+              fontWeight: '400'
             }}>
-              Publish your off-market deals with confidence. Our quality control system ensures only complete, 
-              verified listings go live. Build your reputation with every successful transaction.
+              DealLinked is a private, role-aware marketplace where brokers, buyers, and owners operate inside one trusted system. Every listing, conversation, and interaction is tied to verified users, structured workflows, and real intent — not anonymous posts or DMs.
             </p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {[
-                'Quality-controlled publishing (80% completeness)',
-                'Merit-based reputation system',
-                'NCND legal protection built-in',
-                'Direct investor communication',
-                'Deal lifecycle tracking'
-              ].map((item, idx) => (
-                <li key={idx} style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  marginBottom: '12px',
-                  color: 'rgba(255,255,255,0.8)',
-                  fontSize: '15px'
-                }}>
-                  <CheckCircle size={20} color="#00b8d4" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <p style={{
+              fontSize: 'clamp(13px, 1.5vw, 15px)',
+              color: 'rgba(0, 184, 212, 0.9)',
+              fontWeight: '600',
+              letterSpacing: '0.5px'
+            }}>
+              Verified participants. Structured deal flow. Private by design.
+            </p>
           </div>
 
-          {/* For Investors */}
+          {/* Glassmorphic Diagram Grid - Vortasky Style */}
           <div style={{
-            background: 'rgba(10, 10, 10, 0.8)',
-            backdropFilter: 'blur(16px)',
-            padding: '40px',
-            borderRadius: '20px',
-            border: '2px solid rgba(0, 184, 212, 0.3)',
-            boxShadow: '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)',
-            transition: 'all 0.3s'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.6)';
-            e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)';
-            e.currentTarget.style.transform = 'translateY(-4px)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
-            e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)';
-            e.currentTarget.style.transform = 'translateY(0)';
-          }}
-          >
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '24px'
+          }}>
+            {/* Card 1: Verified Participants */}
             <div style={{
-              width: '64px',
-              height: '64px',
-              background: 'rgba(0, 184, 212, 0.15)',
-              borderRadius: '16px',
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              position: 'relative',
+              minHeight: '420px',
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '24px',
-              boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)',
-              border: '1px solid rgba(0, 184, 212, 0.3)'
+              transition: 'all 0.3s'
             }}>
-              <Users size={32} color="#00b8d4" />
-            </div>
-            <h3 style={{
-              fontSize: '28px',
-              fontWeight: '700',
-              color: '#fff',
-              marginBottom: '16px'
-            }}>
-              For Investors
-            </h3>
-            <p style={{
-              fontSize: '16px',
-              color: 'rgba(255,255,255,0.6)',
-              lineHeight: '1.7',
-              marginBottom: '24px'
-            }}>
-              Find verified off-market commercial properties from trusted brokers. Browse quality-controlled 
-              listings with complete information and NCND protection on every deal.
-            </p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {[
-                'Verified off-market listings only',
-                'Broker reputation scores visible',
-                'NCND protection before viewing',
-                'Complete deal information guaranteed',
-                'Direct broker communication'
-              ].map((item, idx) => (
-                <li key={idx} style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  marginBottom: '12px',
-                  color: 'rgba(255,255,255,0.8)',
-                  fontSize: '15px'
-                }}>
-                  <CheckCircle size={20} color="#00b8d4" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section style={{
-        padding: '100px 60px',
-        background: 'transparent',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        <h2 style={{
-          fontSize: '48px',
-          fontWeight: '600',
-          background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          textAlign: 'center',
-          marginBottom: '20px',
-          letterSpacing: '-0.03em',
-          fontFamily: '"Inter", sans-serif',
-          filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
-        }}>
-          Built for Serious Professionals
-        </h2>
-        <p style={{
-          fontSize: '18px',
-          color: 'rgba(255,255,255,0.6)',
-          textAlign: 'center',
-          marginBottom: '80px',
-          maxWidth: '700px',
-          margin: '0 auto 80px'
-        }}>
-          Advanced tools that ensure deal quality, protect your information, and reward integrity.
-        </p>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '30px',
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          {[
-            {
-              icon: <Shield size={32} />,
-              title: 'NCND Protection',
-              description: 'Digital signatures with complete audit trail. Every interaction is legally protected.'
-            },
-            {
-              icon: <Award size={32} />,
-              title: 'Broker Reputation',
-              description: 'Data-driven quality scores. Premium brokers get priority visibility.'
-            },
-            {
-              icon: <FileCheck size={32} />,
-              title: '80% Completeness',
-              description: 'Quality control on every listing. No incomplete or speculative deals.'
-            },
-            {
-              icon: <TrendingUp size={32} />,
-              title: 'Deal Tracking',
-              description: 'Full lifecycle tracking from published to closed. Complete transparency.'
-            },
-            {
-              icon: <Clock size={32} />,
-              title: 'Fast Response',
-              description: 'Response time tracking. Fast brokers get rewarded with better visibility.'
-            },
-            {
-              icon: <Users size={32} />,
-              title: 'Verified Community',
-              description: 'Merit-based system. Only legitimate deals from committed sellers.'
-            }
-          ].map((feature, idx) => (
-            <div
-              key={idx}
-              style={{
-                background: 'rgba(10, 10, 10, 0.6)',
-                backdropFilter: 'blur(16px)',
-                padding: '32px',
-                borderRadius: '16px',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.1), inset 0 0 40px rgba(0, 184, 212, 0.02)',
-                transition: 'all 0.3s',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.5)';
-                e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 184, 212, 0.3), inset 0 0 40px rgba(0, 184, 212, 0.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
-                e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 184, 212, 0.1), inset 0 0 40px rgba(0, 184, 212, 0.02)';
-              }}
-            >
+              {/* Icon */}
               <div style={{
-                width: '56px',
-                height: '56px',
-                background: 'rgba(0, 184, 212, 0.15)',
-                borderRadius: '12px',
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '20px',
-                color: '#00b8d4',
-                boxShadow: '0 0 20px rgba(0, 184, 212, 0.4)',
-                border: '1px solid rgba(0, 184, 212, 0.3)'
+                marginBottom: '32px',
+                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
               }}>
-                {feature.icon}
+                <Shield size={36} color="#00b8d4" />
               </div>
+
+              {/* Verified User Badges */}
+              <div style={{ marginBottom: '32px', width: '100%' }}>
+                {['Broker', 'Buyer', 'Owner'].map((role, idx) => (
+                  <div key={idx} style={{
+                    background: 'rgba(0, 184, 212, 0.12)',
+                    border: '1px solid rgba(0, 184, 212, 0.25)',
+                    borderRadius: '12px',
+                    padding: '12px 16px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(100, 200, 255, 0.3))',
+                      border: '2px solid rgba(0, 184, 212, 0.5)'
+                    }} />
+                    <div style={{ flex: 1, textAlign: 'left' }}>
+                      <div style={{ fontSize: '14px', color: '#fff', fontWeight: '600' }}>
+                        {role} Verified
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'rgba(0, 184, 212, 0.8)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <CheckCircle size={12} />
+                        Active
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               <h3 style={{
                 fontSize: '20px',
                 fontWeight: '700',
                 color: '#fff',
-                marginBottom: '12px'
+                marginBottom: '12px',
+                marginTop: 'auto'
               }}>
-                {feature.title}
+                Verified Participants Only
               </h3>
               <p style={{
-                fontSize: '15px',
+                fontSize: '14px',
                 color: 'rgba(255,255,255,0.6)',
-                lineHeight: '1.6'
+                lineHeight: '1.6',
+                textAlign: 'center'
               }}>
-                {feature.description}
+                Every user is verified by role and intent. No anonymous posts, no unqualified leads.
               </p>
             </div>
-          ))}
+
+            {/* Card 2: Structured Deal Flow */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              position: 'relative',
+              minHeight: '420px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              transition: 'all 0.3s'
+            }}>
+              {/* Icon */}
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '32px',
+                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+              }}>
+                <TrendingUp size={36} color="#00b8d4" />
+              </div>
+
+              {/* Pipeline Stages Flowchart */}
+              <div style={{ marginBottom: '32px', width: '100%' }}>
+                {[
+                  { stage: 'Discovery', status: 'Active', color: '#00b8d4' },
+                  { stage: 'NCND Signed', status: 'Completed', color: '#10b981' },
+                  { stage: 'Due Diligence', status: 'In Progress', color: '#00b8d4' },
+                  { stage: 'Close', status: 'Pending', color: '#6b7280' }
+                ].map((item, idx) => (
+                  <div key={idx} style={{ marginBottom: '8px' }}>
+                    <div style={{
+                      background: item.status === 'Completed' 
+                        ? 'rgba(16, 185, 129, 0.15)' 
+                        : item.status === 'Active' || item.status === 'In Progress'
+                        ? 'rgba(0, 184, 212, 0.15)'
+                        : 'rgba(100, 100, 100, 0.1)',
+                      border: `1px solid ${
+                        item.status === 'Completed' 
+                          ? 'rgba(16, 185, 129, 0.3)' 
+                          : item.status === 'Active' || item.status === 'In Progress'
+                          ? 'rgba(0, 184, 212, 0.3)'
+                          : 'rgba(100, 100, 100, 0.2)'
+                      }`,
+                      borderRadius: '10px',
+                      padding: '12px 16px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <span style={{ fontSize: '13px', color: '#fff', fontWeight: '600' }}>
+                        {item.stage}
+                      </span>
+                      <span style={{
+                        fontSize: '10px',
+                        color: item.color,
+                        fontWeight: '700',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        {item.status}
+                      </span>
+                    </div>
+                    {idx < 3 && (
+                      <div style={{
+                        width: '2px',
+                        height: '12px',
+                        background: 'rgba(0, 184, 212, 0.3)',
+                        margin: '0 auto'
+                      }} />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px',
+                marginTop: 'auto'
+              }}>
+                Structured Deal Lifecycle
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.6)',
+                lineHeight: '1.6',
+                textAlign: 'center'
+              }}>
+                From discovery to close, every step is tracked and managed in one system.
+              </p>
+            </div>
+
+            {/* Card 3: Role-Based Workspace */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              position: 'relative',
+              minHeight: '420px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              transition: 'all 0.3s'
+            }}>
+              {/* Icon */}
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '32px',
+                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+              }}>
+                <Users size={36} color="#00b8d4" />
+              </div>
+
+              {/* Role Dashboards */}
+              <div style={{ marginBottom: '32px', width: '100%' }}>
+                {[
+                  { icon: Building2, role: 'Broker', color: '#00b8d4' },
+                  { icon: Users, role: 'Buyer', color: '#3063ff' },
+                  { icon: Award, role: 'Owner', color: '#10b981' }
+                ].map((item, idx) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <div key={idx} style={{
+                      background: `rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.12)`,
+                      border: `1px solid rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.25)`,
+                      borderRadius: '10px',
+                      padding: '14px 18px',
+                      marginBottom: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '14px'
+                    }}>
+                      <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '8px',
+                        background: `rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.2)`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <IconComponent size={20} color={item.color} />
+                      </div>
+                      <div style={{ fontSize: '15px', color: '#fff', fontWeight: '600' }}>
+                        {item.role} Dashboard
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px',
+                marginTop: 'auto'
+              }}>
+                Role-Aware Workspaces
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.6)',
+                lineHeight: '1.6',
+                textAlign: 'center'
+              }}>
+                Each user sees only what matters to their role — no clutter, just clarity.
+              </p>
+            </div>
+
+            {/* Card 4: End-to-End Platform */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              position: 'relative',
+              minHeight: '420px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              transition: 'all 0.3s'
+            }}>
+              {/* Icon */}
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '32px',
+                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+              }}>
+                <FileCheck size={36} color="#00b8d4" />
+              </div>
+
+              {/* Integrated Tools List */}
+              <div style={{ marginBottom: '32px', width: '100%' }}>
+                {[
+                  { tool: 'Marketplace', emoji: '🗺️' },
+                  { tool: 'CRM Pipeline', emoji: '📊' },
+                  { tool: 'Messages', emoji: '💬' },
+                  { tool: 'Documents', emoji: '📄' },
+                  { tool: 'Calendar', emoji: '📅' }
+                ].map((item, idx) => (
+                  <div key={idx} style={{
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    marginBottom: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>{item.emoji}</span>
+                    <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.85)', fontWeight: '500' }}>
+                      {item.tool}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px',
+                marginTop: 'auto'
+              }}>
+                All Tools, One Platform
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.6)',
+                lineHeight: '1.6',
+                textAlign: 'center'
+              }}>
+                Marketplace, CRM, messaging, docs, and calendar — fully integrated.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Pricing Section - BuyBoxCartel Structure with DealLinked Aesthetic */}
+      {/* SECTION 4 - THE PRODUCT */}
       <section style={{
-        padding: '100px 60px',
+        padding: '120px clamp(20px, 5vw, 60px)',
+        position: 'relative',
+        zIndex: 30,
+        background: 'transparent',
+        overflow: 'hidden'
+      }}>
+        {/* Radial gradient backdrop */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '1000px',
+          height: '1000px',
+          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+          filter: 'blur(80px)'
+        }} />
+
+        <div style={{ position: 'relative', zIndex: 10, maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <h2 style={{
+              fontSize: 'clamp(32px, 5vw, 56px)',
+              fontWeight: '600',
+              background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              marginBottom: '28px',
+              letterSpacing: '-0.03em',
+              fontFamily: '"Inter", sans-serif',
+              filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
+            }}>
+              From Discovery to Close — In One Platform
+            </h2>
+            <p style={{
+              fontSize: 'clamp(16px, 2vw, 20px)',
+              color: 'rgba(255,255,255,0.65)',
+              lineHeight: '1.7',
+              maxWidth: '900px',
+              margin: '0 auto',
+              fontWeight: '400'
+            }}>
+              Browse off-market opportunities on a live marketplace map, engage through gated conversations and NDAs, and manage deals, documents, deadlines, and performance — all without switching tools.
+            </p>
+          </div>
+
+          {/* Product Screenshot */}
+          <div style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '1200px',
+            margin: '0 auto'
+          }}>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/z39y8gol_Screenshot%202025-12-23%20at%2012.04.52%E2%80%AFPM.png"
+              alt="DealLinked Platform"
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                borderRadius: '20px',
+                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(0, 184, 212, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
+              }}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5 - WHO IT'S FOR */}
+      <section style={{
+        padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
         position: 'relative',
-        zIndex: 1
+        zIndex: 20
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 56px)',
+            fontWeight: '600',
+            background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textAlign: 'center',
+            marginBottom: '80px',
+            letterSpacing: '-0.03em',
+            fontFamily: '"Inter", sans-serif',
+            filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
+          }}>
+            Built for Brokers, Buyers, and Owners
+          </h2>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '32px'
+          }}>
+            {/* Brokers */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(0, 184, 212, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              textAlign: 'center',
+              transition: 'all 0.3s'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+              }}>
+                <Building2 size={32} color="#00b8d4" />
+              </div>
+              <h3 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '16px'
+              }}>
+                Brokers
+              </h3>
+              <p style={{
+                fontSize: '15px',
+                color: 'rgba(255,255,255,0.7)',
+                lineHeight: '1.7'
+              }}>
+                Publish listings, manage inquiries, run your pipeline, and track performance — all in one operating system.
+              </p>
+            </div>
+
+            {/* Buyers */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(48, 99, 255, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
+              textAlign: 'center',
+              transition: 'all 0.3s'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+              }}>
+                <Users size={32} color="#3063ff" />
+              </div>
+              <h3 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '16px'
+              }}>
+                Buyers
+              </h3>
+              <p style={{
+                fontSize: '15px',
+                color: 'rgba(255,255,255,0.7)',
+                lineHeight: '1.7'
+              }}>
+                Discover real opportunities, manage conversations and offers, and stay ahead of deadlines without chasing deals.
+              </p>
+            </div>
+
+            {/* Owners */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(16, 185, 129, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(16, 185, 129, 0.05)',
+              textAlign: 'center',
+              transition: 'all 0.3s'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.1) 70%)',
+                border: '2px solid rgba(16, 185, 129, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)'
+              }}>
+                <Award size={32} color="#10b981" />
+              </div>
+              <h3 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '16px'
+              }}>
+                Owners
+              </h3>
+              <p style={{
+                fontSize: '15px',
+                color: 'rgba(255,255,255,0.7)',
+                lineHeight: '1.7'
+              }}>
+                Track listing exposure, buyer interest, and next steps without unnecessary CRM complexity.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6 - PRICING & CTA */}
+      <section style={{
+        padding: '120px clamp(20px, 5vw, 60px)',
+        background: 'rgba(0, 184, 212, 0.03)',
+        borderTop: '1px solid rgba(0, 184, 212, 0.15)',
+        borderBottom: '1px solid rgba(0, 184, 212, 0.15)',
+        position: 'relative',
+        zIndex: 20,
+        textAlign: 'center'
       }}>
         <h2 style={{
-          fontSize: '48px',
+          fontSize: 'clamp(32px, 5vw, 52px)',
           fontWeight: '600',
           background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
-          textAlign: 'center',
           marginBottom: '20px',
           letterSpacing: '-0.03em',
           fontFamily: '"Inter", sans-serif',
           filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
         }}>
-          Simple, Transparent Pricing
+          One Platform. One Price. Real Deal Flow.
         </h2>
-        <p style={{
-          fontSize: '18px',
-          color: 'rgba(255,255,255,0.6)',
-          textAlign: 'center',
-          marginBottom: '60px'
-        }}>
-          One plan. Full access. No hidden fees.
-        </p>
 
         <div style={{
-          maxWidth: '520px',
-          margin: '0 auto',
-          background: 'rgba(15, 15, 15, 0.9)',
-          backdropFilter: 'blur(16px)',
+          marginTop: '60px',
+          display: 'inline-block',
+          background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          padding: '60px 80px',
           borderRadius: '24px',
-          padding: '48px',
-          border: '3px solid #00b8d4',
-          boxShadow: '0 0 80px rgba(0, 184, 212, 0.6), inset 0 0 80px rgba(0, 184, 212, 0.05)',
-          position: 'relative',
-          transition: 'all 0.3s'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = '0 0 100px rgba(0, 184, 212, 0.8), inset 0 0 80px rgba(0, 184, 212, 0.08)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = '0 0 80px rgba(0, 184, 212, 0.6), inset 0 0 80px rgba(0, 184, 212, 0.05)';
-        }}
-        >
+          border: '2px solid rgba(0, 184, 212, 0.3)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+          minWidth: '400px'
+        }}>
           <div style={{
-            position: 'absolute',
-            top: '-16px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            padding: '8px 24px',
-            background: '#00b8d4',
-            borderRadius: '20px',
-            color: '#000',
-            fontSize: '13px',
-            fontWeight: '700',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-            boxShadow: '0 0 30px rgba(0, 184, 212, 0.8)'
+            fontSize: 'clamp(56px, 8vw, 72px)',
+            fontWeight: '800',
+            color: '#fff',
+            marginBottom: '12px',
+            textShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
           }}>
-            Professional
+            $50
+            <span style={{ fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: '600', color: 'rgba(255,255,255,0.6)' }}>/month</span>
           </div>
-
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <div style={{ 
-              fontSize: '56px', 
-              fontWeight: '800', 
-              color: '#fff', 
-              marginBottom: '8px',
-              textShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
-            }}>
-              $39.99
-              <span style={{ fontSize: '24px', fontWeight: '600', color: 'rgba(255,255,255,0.5)' }}>/month</span>
-            </div>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px' }}>
-              Full access to broker and investor features
-            </p>
-          </div>
-
-          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0' }}>
-            {[
-              'Unlimited deal publishing',
-              'Browse entire marketplace',
-              'NCND digital signatures',
-              'Broker reputation system',
-              'Advanced CRM tools',
-              'Deal lifecycle tracking',
-              'Direct messaging',
-              'Priority support'
-            ].map((feature, idx) => (
-              <li key={idx} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '14px',
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '15px',
-                fontWeight: '500'
-              }}>
-                <CheckCircle size={20} color="#00b8d4" style={{ flexShrink: 0 }} />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
+          <p style={{
+            color: 'rgba(255,255,255,0.7)',
+            fontSize: 'clamp(14px, 1.8vw, 17px)',
+            marginBottom: '40px',
+            lineHeight: '1.6'
+          }}>
+            Full access to the marketplace, community, and workspace.<br/>No tiers. No noise.
+          </p>
 
           <button
             onClick={() => navigate('/signup')}
@@ -697,430 +979,47 @@ const LandingPage = () => {
               border: 'none',
               borderRadius: '12px',
               color: '#000',
-              fontSize: '18px',
+              fontSize: 'clamp(16px, 2vw, 18px)',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 0 40px rgba(0, 184, 212, 0.6), 0 6px 20px rgba(0, 184, 212, 0.3)',
-              transition: 'all 0.3s'
+              boxShadow: '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 24px rgba(0, 184, 212, 0.3)',
+              transition: 'all 0.3s',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.8), 0 10px 30px rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.8), 0 12px 32px rgba(0, 184, 212, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.6), 0 6px 20px rgba(0, 184, 212, 0.3)';
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 24px rgba(0, 184, 212, 0.3)';
             }}
           >
-            Get Started Now
+            Get Started
+            <ArrowRight size={20} />
           </button>
-
-          <p style={{
-            textAlign: 'center',
-            color: 'rgba(255,255,255,0.4)',
-            fontSize: '13px',
-            marginTop: '16px'
-          }}>
-            No credit card required to start
-          </p>
         </div>
-      </section>
-
-      {/* Testimonials Section */}
-      {/* Testimonials Section - Grid Layout */}
-      <section style={{
-        padding: '100px 60px',
-        background: 'transparent',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          {/* Header with Join Others button */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '60px'
-          }}>
-            <h2 style={{
-              fontSize: '48px',
-              fontWeight: '600',
-              background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              letterSpacing: '-0.03em',
-              fontFamily: '"Inter", sans-serif',
-              filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))',
-              margin: '0 0 8px 0'
-            }}>
-              What Our Members Say
-            </h2>
-            <p style={{
-              fontSize: '16px',
-              color: 'rgba(255,255,255,0.5)',
-              margin: 0
-            }}>
-              Real results from real people
-            </p>
-            <button
-              onClick={() => navigate('/signup')}
-              style={{
-                padding: '0',
-                background: 'transparent',
-                border: 'none',
-                color: '#00b8d4',
-                fontSize: '15px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                textDecoration: 'none'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = '0.8';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = '1';
-              }}
-            >
-              Join others
-            </button>
-          </div>
-
-          {/* Reviews Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '24px'
-          }}>
-            {[
-              {
-                text: "DealLinked transformed how I source off-market deals. The quality control and NCND protection give me confidence every deal is legitimate.",
-                author: "Sarah M.",
-                role: "Commercial Real Estate Investor"
-              },
-              {
-                text: "As a broker, the reputation system helps me stand out. My verified listings get priority visibility, and I've closed 3 deals in the first month.",
-                author: "Michael R.",
-                role: "Commercial Broker"
-              },
-              {
-                text: "Finally, a marketplace that weeds out the noise. Only serious brokers with quality deals. The completeness requirements ensure I'm not wasting time.",
-                author: "Jennifer L.",
-                role: "Private Equity Investor"
-              },
-              {
-                text: "The NCND digital signature system is brilliant. I feel protected sharing my off-market opportunities, and buyers appreciate the professionalism.",
-                author: "David K.",
-                role: "Off-Market Specialist"
-              },
-              {
-                text: "Best platform for commercial real estate. The deal tracking and CRM features keep everything organized in one place.",
-                author: "Robert T.",
-                role: "Real Estate Developer"
-              },
-              {
-                text: "Quality over quantity - exactly what the industry needed. Every listing I've seen has been complete and from committed sellers.",
-                author: "Amanda S.",
-                role: "Institutional Investor"
-              }
-            ].map((review, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'rgba(10, 10, 10, 0.6)',
-                  backdropFilter: 'blur(16px)',
-                  padding: '32px',
-                  borderRadius: '16px',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  transition: 'all 0.3s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                {/* Profile Picture Placeholder */}
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 100%)',
-                  border: '2px solid rgba(0, 184, 212, 0.3)',
-                  marginBottom: '20px'
-                }} />
-
-                {/* Review Text */}
-                <p style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  lineHeight: '1.6',
-                  marginBottom: '20px',
-                  fontFamily: '"Inter", sans-serif'
-                }}>
-                  "{review.text}"
-                </p>
-
-                {/* Author Info */}
-                <div>
-                  <div style={{
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#fff',
-                    marginBottom: '4px'
-                  }}>
-                    {review.author}
-                  </div>
-                  <div style={{
-                    fontSize: '13px',
-                    color: 'rgba(255, 255, 255, 0.5)',
-                    fontWeight: '400'
-                  }}>
-                    {review.role}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section style={{
-        padding: '100px 60px',
-        background: 'rgba(0, 184, 212, 0.05)',
-        textAlign: 'center',
-        position: 'relative',
-        zIndex: 1,
-        borderTop: '1px solid rgba(0, 184, 212, 0.2)',
-        borderBottom: '1px solid rgba(0, 184, 212, 0.2)'
-      }}>
-        <h2 style={{
-          fontSize: '52px',
-          fontWeight: '600',
-          background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          marginBottom: '24px',
-          letterSpacing: '-0.03em',
-          fontFamily: '"Inter", sans-serif',
-          filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
-        }}>
-          Ready to Get Started?
-        </h2>
-        <p style={{
-          fontSize: '20px',
-          color: 'rgba(255,255,255,0.7)',
-          marginBottom: '48px',
-          maxWidth: '700px',
-          margin: '0 auto 48px'
-        }}>
-          Join the marketplace where quality meets opportunity. 
-          Connect with serious investors and trusted brokers today.
-        </p>
-        
-        <button
-          onClick={() => navigate('/signup')}
-          style={{
-            padding: '20px 48px',
-            background: '#00b8d4',
-            border: 'none',
-            borderRadius: '12px',
-            color: '#000',
-            fontSize: '20px',
-            fontWeight: '700',
-            cursor: 'pointer',
-            boxShadow: '0 0 50px rgba(0, 184, 212, 0.6), 0 10px 40px rgba(0, 184, 212, 0.3)',
-            transition: 'all 0.3s',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '10px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)';
-            e.currentTarget.style.boxShadow = '0 0 70px rgba(0, 184, 212, 0.8), 0 15px 50px rgba(0, 184, 212, 0.4)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 184, 212, 0.6), 0 10px 40px rgba(0, 184, 212, 0.3)';
-          }}
-        >
-          Start Free Trial
-          <ArrowRight size={24} />
-        </button>
       </section>
 
       {/* Footer */}
       <footer style={{
-        padding: '60px 60px 40px',
-        background: 'transparent',
-        color: 'rgba(255,255,255,0.5)',
-        position: 'relative',
-        zIndex: 1,
-        borderTop: '1px solid rgba(0, 184, 212, 0.1)'
+        padding: '40px clamp(20px, 5vw, 60px)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        textAlign: 'center',
+        background: 'transparent'
       }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '60px',
-          marginBottom: '60px'
+        <p style={{
+          color: 'rgba(255,255,255,0.4)',
+          fontSize: '14px'
         }}>
-          <div>
-            <img 
-              src="https://customer-assets.emergentagent.com/job_805e556f-4159-4595-8a8e-d3bb43ff0c72/artifacts/72aahevp_DealLinked.png"
-              alt="DealLinked"
-              style={{
-                height: '28px',
-                marginBottom: '16px'
-              }}
-            />
-            <p style={{
-              fontSize: '14px',
-              lineHeight: '1.6',
-              color: 'rgba(255,255,255,0.5)'
-            }}>
-              The professional marketplace for off-market commercial real estate.
-            </p>
-          </div>
-
-          <div>
-            <h4 style={{
-              fontSize: '14px',
-              fontWeight: '700',
-              color: '#fff',
-              marginBottom: '16px',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}>
-              Product
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {['Features', 'Pricing', 'Marketplace', 'CRM'].map(item => (
-                <li key={item} style={{ marginBottom: '10px' }}>
-                  <a 
-                    href="#" 
-                    style={{ 
-                      color: 'rgba(255,255,255,0.5)', 
-                      textDecoration: 'none', 
-                      fontSize: '14px',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#00b8d4';
-                      e.currentTarget.style.textShadow = '0 0 10px rgba(0, 184, 212, 0.6)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
-                      e.currentTarget.style.textShadow = 'none';
-                    }}
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 style={{
-              fontSize: '14px',
-              fontWeight: '700',
-              color: '#fff',
-              marginBottom: '16px',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}>
-              Company
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {['About', 'Blog', 'Careers', 'Contact'].map(item => (
-                <li key={item} style={{ marginBottom: '10px' }}>
-                  <a 
-                    href="#" 
-                    style={{ 
-                      color: 'rgba(255,255,255,0.5)', 
-                      textDecoration: 'none', 
-                      fontSize: '14px',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#00b8d4';
-                      e.currentTarget.style.textShadow = '0 0 10px rgba(0, 184, 212, 0.6)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
-                      e.currentTarget.style.textShadow = 'none';
-                    }}
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 style={{
-              fontSize: '14px',
-              fontWeight: '700',
-              color: '#fff',
-              marginBottom: '16px',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}>
-              Legal
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {['Privacy Policy', 'Terms of Service', 'NCND Agreement'].map(item => (
-                <li key={item} style={{ marginBottom: '10px' }}>
-                  <a 
-                    href="#" 
-                    style={{ 
-                      color: 'rgba(255,255,255,0.5)', 
-                      textDecoration: 'none', 
-                      fontSize: '14px',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#00b8d4';
-                      e.currentTarget.style.textShadow = '0 0 10px rgba(0, 184, 212, 0.6)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
-                      e.currentTarget.style.textShadow = 'none';
-                    }}
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div style={{
-          borderTop: '1px solid rgba(0, 184, 212, 0.1)',
-          paddingTop: '32px',
-          textAlign: 'center',
-          fontSize: '14px',
-          color: 'rgba(255,255,255,0.4)'
-        }}>
-          © 2025 DealLinked. All Rights Reserved.
-        </div>
+          © 2025 DealLinked. The professional marketplace for off-market commercial real estate.
+        </p>
       </footer>
     </div>
   );
 };
 
-export default LandingPage;
+export default LandingPageNew;
