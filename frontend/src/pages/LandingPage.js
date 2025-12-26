@@ -488,7 +488,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* SECTION 5 - WHO IT'S FOR */}
+      {/* SECTION 6 - PRICING & CTA */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
@@ -903,7 +903,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* SECTION 5 - WHO IT'S FOR */}
+      {/* SECTION 6 - PRICING & CTA */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
