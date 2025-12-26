@@ -1221,6 +1221,7 @@ const LandingPage = () => {
                 style={{
                   minWidth: '400px',
                   maxWidth: '400px',
+                  height: '260px',
                   background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
                   backdropFilter: 'blur(20px) saturate(180%)',
                   WebkitBackdropFilter: 'blur(20px) saturate(180%)',
@@ -1228,7 +1229,10 @@ const LandingPage = () => {
                   borderRadius: '16px',
                   border: '1px solid rgba(255, 255, 255, 0.08)',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                  flexShrink: 0
+                  flexShrink: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
                 }}
               >
                 {/* Stars */}
@@ -1241,46 +1245,55 @@ const LandingPage = () => {
                     <div key={i} style={{
                       width: '16px',
                       height: '16px',
-                      color: '#00b8d4'
+                      color: '#00b8d4',
+                      fontSize: '16px',
+                      lineHeight: '1'
                     }}>★</div>
                   ))}
                 </div>
 
-                {/* Review text */}
+                {/* Review text - Fixed height */}
                 <p style={{
                   fontSize: '15px',
                   color: 'rgba(255,255,255,0.8)',
                   lineHeight: '1.6',
                   marginBottom: '20px',
-                  fontStyle: 'italic'
+                  fontStyle: 'italic',
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center'
                 }}>
                   "{testimonial.text}"
                 </p>
 
-                {/* Author */}
+                {/* Author - Fixed position at bottom */}
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px'
+                  gap: '12px',
+                  height: '48px'
                 }}>
                   <div style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '48px',
+                    height: '48px',
                     borderRadius: '50%',
                     background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(100, 200, 255, 0.3))',
-                    border: '2px solid rgba(0, 184, 212, 0.4)'
+                    border: '2px solid rgba(0, 184, 212, 0.4)',
+                    flexShrink: 0
                   }} />
                   <div>
                     <div style={{
                       fontSize: '14px',
                       color: '#fff',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      lineHeight: '1.4'
                     }}>
                       DealLinked User
                     </div>
                     <div style={{
                       fontSize: '12px',
-                      color: 'rgba(0, 184, 212, 0.8)'
+                      color: 'rgba(0, 184, 212, 0.8)',
+                      lineHeight: '1.4'
                     }}>
                       {testimonial.role}
                     </div>
