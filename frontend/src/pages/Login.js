@@ -89,8 +89,8 @@ const Login = () => {
         <div className="glass-surface p-8">
           <div className="text-center mb-8 flex flex-col items-center">
             <img 
-              src="/dealview-logo.svg" 
-              alt="Dealview" 
+              src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png" 
+              alt="DealLinked" 
               className="mb-6"
               style={{ 
                 height: '120px',
