@@ -255,7 +255,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* SECTION 3 - PROBLEM + SOLUTION (Side by Side) */}
+      {/* SECTION 3 - PROBLEM + SOLUTION (Side by Side - Symmetrical) */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
@@ -266,12 +266,17 @@ const LandingPage = () => {
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '60px',
-            alignItems: 'center'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: 'clamp(40px, 6vw, 80px)',
+            alignItems: 'stretch'
           }}>
-            {/* LEFT: The Problem */}
-            <div style={{ position: 'relative' }}>
+            {/* LEFT: The Problem - Symmetrical Height */}
+            <div style={{ 
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: '400px'
+            }}>
               {/* Chaotic background elements */}
               <div style={{
                 position: 'absolute',
@@ -337,8 +342,13 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* RIGHT: The Solution */}
-            <div style={{ position: 'relative' }}>
+            {/* RIGHT: The Solution - Symmetrical Height */}
+            <div style={{ 
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: '400px'
+            }}>
               {/* Clean structured background */}
               <div style={{
                 position: 'absolute',
