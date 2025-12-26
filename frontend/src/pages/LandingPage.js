@@ -636,7 +636,7 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Feature 4: Parcel Intelligence */}
+            {/* Feature 4: Active Investor Network */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
               backdropFilter: 'blur(20px) saturate(180%)',
@@ -661,7 +661,7 @@ const LandingPage = () => {
                 marginBottom: '24px',
                 boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
               }}>
-                <Layers size={32} color="#00b8d4" />
+                <Users size={32} color="#00b8d4" />
               </div>
               <h3 style={{
                 fontSize: '20px',
@@ -669,7 +669,7 @@ const LandingPage = () => {
                 color: '#fff',
                 marginBottom: '12px'
               }}>
-                Parcel Intelligence
+                Active Investor Network
               </h3>
               <p style={{
                 fontSize: '14px',
@@ -677,23 +677,24 @@ const LandingPage = () => {
                 lineHeight: '1.6',
                 flex: 1
               }}>
-                Deep property data, zoning overlays, market insights, and comparable analysis built into every listing.
+                Connect with hundreds of verified investors actively searching for off-market opportunities. Your listings reach serious buyers from day one.
               </p>
-              {/* Layers visual */}
+              {/* Network activity indicators */}
               <div style={{ marginTop: '20px', display: 'flex', gap: '8px' }}>
-                {['Zoning', 'Market', 'Comps'].map((layer, idx) => (
+                {[
+                  { count: '200+', label: 'Investors' },
+                  { count: '150+', label: 'Brokers' }
+                ].map((stat, idx) => (
                   <div key={idx} style={{
                     flex: 1,
-                    padding: '8px 6px',
+                    padding: '10px 8px',
                     background: 'rgba(0, 184, 212, 0.1)',
                     border: '1px solid rgba(0, 184, 212, 0.2)',
-                    borderRadius: '6px',
-                    fontSize: '10px',
-                    color: '#00b8d4',
-                    fontWeight: '700',
+                    borderRadius: '8px',
                     textAlign: 'center'
                   }}>
-                    {layer}
+                    <div style={{ fontSize: '16px', color: '#00b8d4', fontWeight: '700' }}>{stat.count}</div>
+                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)' }}>{stat.label}</div>
                   </div>
                 ))}
               </div>
