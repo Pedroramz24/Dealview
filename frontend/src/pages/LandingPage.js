@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Building2, Users, Shield, TrendingUp, Award, FileCheck } from 'lucide-react';
+import { ArrowRight, CheckCircle, Building2, Users, Shield, TrendingUp, Award, FileCheck, MapPin, BarChart3, MessageSquare, Layers, Calendar, Share2, X } from 'lucide-react';
 
-const LandingPageNew = () => {
+const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
@@ -68,7 +68,7 @@ const LandingPageNew = () => {
         </div>
       </nav>
 
-      {/* SECTION 1 - HERO (Keep as is from original) */}
+      {/* SECTION 1 - HERO */}
       <section style={{
         position: 'relative',
         padding: '0',
@@ -80,7 +80,7 @@ const LandingPageNew = () => {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        {/* Animated Video Background - loops from 3s to end */}
+        {/* Animated Video Background */}
         <video
           autoPlay
           loop
@@ -111,7 +111,7 @@ const LandingPageNew = () => {
           <source src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/gxi2bcy6_alcove_hero_remix.webm" type="video/webm" />
         </video>
         
-        {/* Content overlay - Vertically Centered - Responsive */}
+        {/* Content overlay */}
         <div style={{ 
           position: 'relative', 
           zIndex: 1,
@@ -151,7 +151,6 @@ const LandingPageNew = () => {
             industry's first fully integrated deal OS.
           </p>
 
-          {/* Get Started Button - Responsive */}
           <button
             onClick={() => navigate('/signup')}
             style={{
@@ -183,96 +182,7 @@ const LandingPageNew = () => {
         </div>
       </section>
 
-      {/* SECTION 2 - THE PAIN */}
-      <section style={{
-        padding: '120px clamp(20px, 5vw, 60px)',
-        background: 'transparent',
-        position: 'relative',
-        zIndex: 20,
-        overflow: 'hidden',
-        textAlign: 'center'
-      }}>
-        {/* Chaotic background effect */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'radial-gradient(circle at 30% 50%, rgba(255, 50, 50, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(150, 150, 150, 0.05) 0%, transparent 50%)',
-          zIndex: 0
-        }} />
-        
-        {/* Fragmented UI elements to show chaos */}
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '10%',
-          width: '200px',
-          height: '120px',
-          background: 'rgba(255, 255, 255, 0.02)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
-          borderRadius: '12px',
-          transform: 'rotate(-8deg)',
-          filter: 'blur(2px)',
-          opacity: 0.3
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '40%',
-          right: '15%',
-          width: '180px',
-          height: '100px',
-          background: 'rgba(255, 255, 255, 0.02)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
-          borderRadius: '12px',
-          transform: 'rotate(12deg)',
-          filter: 'blur(2px)',
-          opacity: 0.3
-        }} />
-        <div style={{
-          position: 'absolute',
-          bottom: '25%',
-          left: '20%',
-          width: '150px',
-          height: '90px',
-          background: 'rgba(255, 255, 255, 0.02)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
-          borderRadius: '12px',
-          transform: 'rotate(5deg)',
-          filter: 'blur(2px)',
-          opacity: 0.3
-        }} />
-
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '900px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 5vw, 56px)',
-            fontWeight: '600',
-            background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            marginBottom: '32px',
-            letterSpacing: '-0.03em',
-            fontFamily: '"Inter", sans-serif',
-            filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
-          }}>
-            Off-Market Deals Shouldn't Live in Facebook Groups
-          </h2>
-          <p style={{
-            fontSize: 'clamp(16px, 2vw, 20px)',
-            color: 'rgba(255,255,255,0.6)',
-            lineHeight: '1.7',
-            maxWidth: '780px',
-            margin: '0 auto',
-            fontWeight: '400'
-          }}>
-            Most off-market deal flow today is scattered across unorganized chats, comment threads, and unverifiable posts. Serious opportunities get buried in noise, time is wasted chasing intent, and real operators are left without structure or trust.
-          </p>
-        </div>
-      </section>
-
-      {/* SECTION 3 - THE SOLUTION */}
+      {/* SECTION 2 - PROBLEM + SOLUTION (Side by Side) */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
@@ -281,406 +191,158 @@ const LandingPageNew = () => {
         overflow: 'hidden'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-            <h2 style={{
-              fontSize: 'clamp(32px, 5vw, 56px)',
-              fontWeight: '600',
-              background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              marginBottom: '28px',
-              letterSpacing: '-0.03em',
-              fontFamily: '"Inter", sans-serif',
-              filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
-            }}>
-              DealLinked Replaces Noise With Signal
-            </h2>
-            <p style={{
-              fontSize: 'clamp(16px, 2vw, 20px)',
-              color: 'rgba(255,255,255,0.65)',
-              lineHeight: '1.7',
-              maxWidth: '850px',
-              margin: '0 auto 20px',
-              fontWeight: '400'
-            }}>
-              DealLinked is a private, role-aware marketplace where brokers, buyers, and owners operate inside one trusted system. Every listing, conversation, and interaction is tied to verified users, structured workflows, and real intent — not anonymous posts or DMs.
-            </p>
-            <p style={{
-              fontSize: 'clamp(13px, 1.5vw, 15px)',
-              color: 'rgba(0, 184, 212, 0.9)',
-              fontWeight: '600',
-              letterSpacing: '0.5px'
-            }}>
-              Verified participants. Structured deal flow. Private by design.
-            </p>
-          </div>
-
-          {/* Glassmorphic Diagram Grid - Vortasky Style */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '24px'
+            gap: '60px',
+            alignItems: 'center'
           }}>
-            {/* Card 1: Verified Participants */}
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              padding: '40px 32px',
-              borderRadius: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
-              position: 'relative',
-              minHeight: '420px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              transition: 'all 0.3s'
-            }}>
-              {/* Icon */}
+            {/* LEFT: The Problem */}
+            <div style={{ position: 'relative' }}>
+              {/* Chaotic background elements */}
               <div style={{
-                width: '80px',
+                position: 'absolute',
+                top: '10%',
+                left: '5%',
+                width: '160px',
+                height: '100px',
+                background: 'rgba(255, 50, 50, 0.08)',
+                border: '1px solid rgba(255, 100, 100, 0.15)',
+                borderRadius: '12px',
+                transform: 'rotate(-8deg)',
+                filter: 'blur(1px)',
+                opacity: 0.5
+              }} />
+              <div style={{
+                position: 'absolute',
+                top: '35%',
+                right: '10%',
+                width: '140px',
                 height: '80px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
-              }}>
-                <Shield size={36} color="#00b8d4" />
-              </div>
+                background: 'rgba(150, 150, 150, 0.06)',
+                border: '1px solid rgba(150, 150, 150, 0.1)',
+                borderRadius: '12px',
+                transform: 'rotate(12deg)',
+                filter: 'blur(1px)',
+                opacity: 0.5
+              }} />
 
-              {/* Verified User Badges */}
-              <div style={{ marginBottom: '32px', width: '100%' }}>
-                {['Broker', 'Buyer', 'Owner'].map((role, idx) => (
-                  <div key={idx} style={{
-                    background: 'rgba(0, 184, 212, 0.12)',
-                    border: '1px solid rgba(0, 184, 212, 0.25)',
-                    borderRadius: '12px',
-                    padding: '12px 16px',
-                    marginBottom: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                  }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(100, 200, 255, 0.3))',
-                      border: '2px solid rgba(0, 184, 212, 0.5)'
-                    }} />
-                    <div style={{ flex: 1, textAlign: 'left' }}>
-                      <div style={{ fontSize: '14px', color: '#fff', fontWeight: '600' }}>
-                        {role} Verified
-                      </div>
-                      <div style={{ fontSize: '11px', color: 'rgba(0, 184, 212, 0.8)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <CheckCircle size={12} />
-                        Active
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{
+                  display: 'inline-block',
+                  padding: '8px 16px',
+                  background: 'rgba(255, 50, 50, 0.15)',
+                  border: '1px solid rgba(255, 50, 50, 0.3)',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  color: 'rgba(255, 100, 100, 0.9)',
+                  fontWeight: '700',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  marginBottom: '24px'
+                }}>
+                  The Problem
+                </div>
+                <h2 style={{
+                  fontSize: 'clamp(28px, 4.5vw, 48px)',
+                  fontWeight: '600',
+                  color: '#fff',
+                  marginBottom: '24px',
+                  lineHeight: '1.2',
+                  letterSpacing: '-0.02em'
+                }}>
+                  Off-Market Deals Shouldn't Live in Facebook Groups
+                </h2>
+                <p style={{
+                  fontSize: 'clamp(15px, 1.8vw, 18px)',
+                  color: 'rgba(255,255,255,0.55)',
+                  lineHeight: '1.7',
+                  fontWeight: '400'
+                }}>
+                  Scattered chats, unverifiable posts, buried opportunities. Time wasted chasing intent. No structure, no trust, no accountability.
+                </p>
               </div>
-
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#fff',
-                marginBottom: '12px',
-                marginTop: 'auto'
-              }}>
-                Verified Participants Only
-              </h3>
-              <p style={{
-                fontSize: '14px',
-                color: 'rgba(255,255,255,0.6)',
-                lineHeight: '1.6',
-                textAlign: 'center'
-              }}>
-                Every user is verified by role and intent. No anonymous posts, no unqualified leads.
-              </p>
             </div>
 
-            {/* Card 2: Structured Deal Flow */}
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              padding: '40px 32px',
-              borderRadius: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
-              position: 'relative',
-              minHeight: '420px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              transition: 'all 0.3s'
-            }}>
-              {/* Icon */}
+            {/* RIGHT: The Solution */}
+            <div style={{ position: 'relative' }}>
+              {/* Clean structured background */}
               <div style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
-              }}>
-                <TrendingUp size={36} color="#00b8d4" />
-              </div>
-
-              {/* Pipeline Stages Flowchart */}
-              <div style={{ marginBottom: '32px', width: '100%' }}>
-                {[
-                  { stage: 'Discovery', status: 'Active', color: '#00b8d4' },
-                  { stage: 'NCND Signed', status: 'Completed', color: '#10b981' },
-                  { stage: 'Due Diligence', status: 'In Progress', color: '#00b8d4' },
-                  { stage: 'Close', status: 'Pending', color: '#6b7280' }
-                ].map((item, idx) => (
-                  <div key={idx} style={{ marginBottom: '8px' }}>
-                    <div style={{
-                      background: item.status === 'Completed' 
-                        ? 'rgba(16, 185, 129, 0.15)' 
-                        : item.status === 'Active' || item.status === 'In Progress'
-                        ? 'rgba(0, 184, 212, 0.15)'
-                        : 'rgba(100, 100, 100, 0.1)',
-                      border: `1px solid ${
-                        item.status === 'Completed' 
-                          ? 'rgba(16, 185, 129, 0.3)' 
-                          : item.status === 'Active' || item.status === 'In Progress'
-                          ? 'rgba(0, 184, 212, 0.3)'
-                          : 'rgba(100, 100, 100, 0.2)'
-                      }`,
-                      borderRadius: '10px',
-                      padding: '12px 16px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
-                    }}>
-                      <span style={{ fontSize: '13px', color: '#fff', fontWeight: '600' }}>
-                        {item.stage}
-                      </span>
-                      <span style={{
-                        fontSize: '10px',
-                        color: item.color,
-                        fontWeight: '700',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {item.status}
-                      </span>
-                    </div>
-                    {idx < 3 && (
-                      <div style={{
-                        width: '2px',
-                        height: '12px',
-                        background: 'rgba(0, 184, 212, 0.3)',
-                        margin: '0 auto'
-                      }} />
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#fff',
-                marginBottom: '12px',
-                marginTop: 'auto'
-              }}>
-                Structured Deal Lifecycle
-              </h3>
-              <p style={{
-                fontSize: '14px',
-                color: 'rgba(255,255,255,0.6)',
-                lineHeight: '1.6',
-                textAlign: 'center'
-              }}>
-                From discovery to close, every step is tracked and managed in one system.
-              </p>
-            </div>
-
-            {/* Card 3: Role-Based Workspace */}
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              padding: '40px 32px',
-              borderRadius: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
-              position: 'relative',
-              minHeight: '420px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              transition: 'all 0.3s'
-            }}>
-              {/* Icon */}
+                position: 'absolute',
+                top: '15%',
+                left: '8%',
+                width: '140px',
+                height: '100px',
+                background: 'rgba(0, 184, 212, 0.08)',
+                border: '1px solid rgba(0, 184, 212, 0.2)',
+                borderRadius: '12px',
+                opacity: 0.6
+              }} />
               <div style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
-              }}>
-                <Users size={36} color="#00b8d4" />
+                position: 'absolute',
+                bottom: '20%',
+                right: '5%',
+                width: '120px',
+                height: '90px',
+                background: 'rgba(0, 184, 212, 0.08)',
+                border: '1px solid rgba(0, 184, 212, 0.2)',
+                borderRadius: '12px',
+                opacity: 0.6
+              }} />
+
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{
+                  display: 'inline-block',
+                  padding: '8px 16px',
+                  background: 'rgba(0, 184, 212, 0.15)',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  color: 'rgba(0, 184, 212, 0.9)',
+                  fontWeight: '700',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  marginBottom: '24px'
+                }}>
+                  The Solution
+                </div>
+                <h2 style={{
+                  fontSize: 'clamp(28px, 4.5vw, 48px)',
+                  fontWeight: '600',
+                  background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  marginBottom: '24px',
+                  lineHeight: '1.2',
+                  letterSpacing: '-0.02em'
+                }}>
+                  DealLinked Replaces Noise With Signal
+                </h2>
+                <p style={{
+                  fontSize: 'clamp(15px, 1.8vw, 18px)',
+                  color: 'rgba(255,255,255,0.7)',
+                  lineHeight: '1.7',
+                  fontWeight: '400',
+                  marginBottom: '20px'
+                }}>
+                  A private, role-aware marketplace where brokers, buyers, and owners operate inside one trusted system. Every listing, conversation, and interaction is tied to verified users, structured workflows, and real intent.
+                </p>
+                <p style={{
+                  fontSize: 'clamp(13px, 1.5vw, 15px)',
+                  color: 'rgba(0, 184, 212, 0.9)',
+                  fontWeight: '600',
+                  letterSpacing: '0.5px'
+                }}>
+                  Verified participants. Structured deal flow. Private by design.
+                </p>
               </div>
-
-              {/* Role Dashboards */}
-              <div style={{ marginBottom: '32px', width: '100%' }}>
-                {[
-                  { icon: Building2, role: 'Broker', color: '#00b8d4' },
-                  { icon: Users, role: 'Buyer', color: '#3063ff' },
-                  { icon: Award, role: 'Owner', color: '#10b981' }
-                ].map((item, idx) => {
-                  const IconComponent = item.icon;
-                  return (
-                    <div key={idx} style={{
-                      background: `rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.12)`,
-                      border: `1px solid rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.25)`,
-                      borderRadius: '10px',
-                      padding: '14px 18px',
-                      marginBottom: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '14px'
-                    }}>
-                      <div style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '8px',
-                        background: `rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.2)`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        <IconComponent size={20} color={item.color} />
-                      </div>
-                      <div style={{ fontSize: '15px', color: '#fff', fontWeight: '600' }}>
-                        {item.role} Dashboard
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#fff',
-                marginBottom: '12px',
-                marginTop: 'auto'
-              }}>
-                Role-Aware Workspaces
-              </h3>
-              <p style={{
-                fontSize: '14px',
-                color: 'rgba(255,255,255,0.6)',
-                lineHeight: '1.6',
-                textAlign: 'center'
-              }}>
-                Each user sees only what matters to their role — no clutter, just clarity.
-              </p>
-            </div>
-
-            {/* Card 4: End-to-End Platform */}
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              padding: '40px 32px',
-              borderRadius: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
-              position: 'relative',
-              minHeight: '420px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              transition: 'all 0.3s'
-            }}>
-              {/* Icon */}
-              <div style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
-              }}>
-                <FileCheck size={36} color="#00b8d4" />
-              </div>
-
-              {/* Integrated Tools List */}
-              <div style={{ marginBottom: '32px', width: '100%' }}>
-                {[
-                  { tool: 'Marketplace', emoji: '🗺️' },
-                  { tool: 'CRM Pipeline', emoji: '📊' },
-                  { tool: 'Messages', emoji: '💬' },
-                  { tool: 'Documents', emoji: '📄' },
-                  { tool: 'Calendar', emoji: '📅' }
-                ].map((item, idx) => (
-                  <div key={idx} style={{
-                    background: 'rgba(255, 255, 255, 0.04)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: '8px',
-                    padding: '10px 14px',
-                    marginBottom: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px'
-                  }}>
-                    <span style={{ fontSize: '16px' }}>{item.emoji}</span>
-                    <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.85)', fontWeight: '500' }}>
-                      {item.tool}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#fff',
-                marginBottom: '12px',
-                marginTop: 'auto'
-              }}>
-                All Tools, One Platform
-              </h3>
-              <p style={{
-                fontSize: '14px',
-                color: 'rgba(255,255,255,0.6)',
-                lineHeight: '1.6',
-                textAlign: 'center'
-              }}>
-                Marketplace, CRM, messaging, docs, and calendar — fully integrated.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 4 - THE PRODUCT */}
+      {/* SECTION 3 - THE PRODUCT */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         position: 'relative',
@@ -716,7 +378,7 @@ const LandingPageNew = () => {
               fontFamily: '"Inter", sans-serif',
               filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
             }}>
-              From Discovery to Close — In One Platform
+              From Discovery to Close in One Platform
             </h2>
             <p style={{
               fontSize: 'clamp(16px, 2vw, 20px)',
@@ -726,7 +388,7 @@ const LandingPageNew = () => {
               margin: '0 auto',
               fontWeight: '400'
             }}>
-              Browse off-market opportunities on a live marketplace map, engage through gated conversations and NDAs, and manage deals, documents, deadlines, and performance — all without switching tools.
+              Browse off-market opportunities on a live marketplace map, engage through gated conversations and NDAs, and manage deals, documents, deadlines, and performance without switching tools.
             </p>
           </div>
 
@@ -753,7 +415,7 @@ const LandingPageNew = () => {
         </div>
       </section>
 
-      {/* SECTION 5 - WHO IT'S FOR */}
+      {/* SECTION 4 - PLATFORM FEATURES (What the App Does) */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
@@ -774,8 +436,431 @@ const LandingPageNew = () => {
             fontFamily: '"Inter", sans-serif',
             filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
           }}>
-            Built for Brokers, Buyers, and Owners
+            Everything You Need to Close Deals
           </h2>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '24px'
+          }}>
+            {/* Feature 1: Marketplace Map */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              minHeight: '320px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '24px',
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+              }}>
+                <MapPin size={32} color="#00b8d4" />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px'
+              }}>
+                Marketplace Map
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: '1.6',
+                flex: 1
+              }}>
+                Browse off-market deals on an interactive map with real-time filters, save listings, and discover opportunities by location.
+              </p>
+              {/* Mini visual indicator */}
+              <div style={{
+                marginTop: '20px',
+                padding: '12px',
+                background: 'rgba(0, 184, 212, 0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(0, 184, 212, 0.2)',
+                fontSize: '12px',
+                color: 'rgba(0, 184, 212, 0.9)',
+                fontWeight: '600',
+                textAlign: 'center'
+              }}>
+                Live Property Mapping
+              </div>
+            </div>
+
+            {/* Feature 2: Pipeline & CRM */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              minHeight: '320px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '24px',
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+              }}>
+                <BarChart3 size={32} color="#00b8d4" />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px'
+              }}>
+                Pipeline & CRM
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: '1.6',
+                flex: 1
+              }}>
+                Manage your entire deal flow from first contact to close. Track stages, tasks, and performance in one visual pipeline.
+              </p>
+              {/* Pipeline stages mini visual */}
+              <div style={{ marginTop: '20px' }}>
+                <div style={{
+                  display: 'flex',
+                  gap: '6px',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {['Discovery', 'NCND', 'DD', 'Close'].map((stage, idx) => (
+                    <div key={idx} style={{
+                      flex: 1,
+                      padding: '8px 4px',
+                      background: idx < 2 ? 'rgba(0, 184, 212, 0.15)' : 'rgba(100, 100, 100, 0.1)',
+                      border: `1px solid ${idx < 2 ? 'rgba(0, 184, 212, 0.3)' : 'rgba(100, 100, 100, 0.2)'}`,
+                      borderRadius: '6px',
+                      fontSize: '10px',
+                      color: idx < 2 ? '#00b8d4' : 'rgba(255,255,255,0.5)',
+                      fontWeight: '700',
+                      textAlign: 'center'
+                    }}>
+                      {stage}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Feature 3: Messaging */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              minHeight: '320px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '24px',
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+              }}>
+                <MessageSquare size={32} color="#00b8d4" />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px'
+              }}>
+                Secure Messaging
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: '1.6',
+                flex: 1
+              }}>
+                Gated conversations with verified participants. NCND protection before disclosure. Every message tied to a deal.
+              </p>
+              {/* Message visual */}
+              <div style={{ marginTop: '20px' }}>
+                <div style={{
+                  padding: '10px 12px',
+                  background: 'rgba(0, 184, 212, 0.1)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  fontSize: '11px',
+                  color: 'rgba(255,255,255,0.7)',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <Shield size={14} color="#00b8d4" />
+                  <span>NCND Required</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature 4: Parcel Intelligence */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              minHeight: '320px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '24px',
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+              }}>
+                <Layers size={32} color="#00b8d4" />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px'
+              }}>
+                Parcel Intelligence
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: '1.6',
+                flex: 1
+              }}>
+                Deep property data, zoning overlays, market insights, and comparable analysis built into every listing.
+              </p>
+              {/* Layers visual */}
+              <div style={{ marginTop: '20px', display: 'flex', gap: '8px' }}>
+                {['Zoning', 'Market', 'Comps'].map((layer, idx) => (
+                  <div key={idx} style={{
+                    flex: 1,
+                    padding: '8px 6px',
+                    background: 'rgba(0, 184, 212, 0.1)',
+                    border: '1px solid rgba(0, 184, 212, 0.2)',
+                    borderRadius: '6px',
+                    fontSize: '10px',
+                    color: '#00b8d4',
+                    fontWeight: '700',
+                    textAlign: 'center'
+                  }}>
+                    {layer}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Feature 5: Calendar & Tasks */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              minHeight: '320px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '24px',
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+              }}>
+                <Calendar size={32} color="#00b8d4" />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px'
+              }}>
+                Calendar & Deadlines
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: '1.6',
+                flex: 1
+              }}>
+                Never miss a showing, deadline, or follow up with integrated scheduling tied to every deal and contact.
+              </p>
+              {/* Calendar visual */}
+              <div style={{ marginTop: '20px' }}>
+                <div style={{
+                  padding: '10px 12px',
+                  background: 'rgba(0, 184, 212, 0.1)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  fontSize: '11px',
+                  color: 'rgba(255,255,255,0.7)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span>Due Diligence Deadline</span>
+                  <span style={{ color: '#00b8d4', fontWeight: '700' }}>Jan 15</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature 6: Deal Sharing */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              minHeight: '320px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
+                border: '2px solid rgba(0, 184, 212, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '24px',
+                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+              }}>
+                <Share2 size={32} color="#00b8d4" />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#fff',
+                marginBottom: '12px'
+              }}>
+                Easy Deal Sharing
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: '1.6',
+                flex: 1
+              }}>
+                Share curated deals with clients instantly. No forwarding PDFs, no email chains. Just one clean link.
+              </p>
+              {/* Share visual */}
+              <div style={{ marginTop: '20px' }}>
+                <div style={{
+                  padding: '10px 12px',
+                  background: 'rgba(0, 184, 212, 0.1)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  fontSize: '11px',
+                  color: '#00b8d4',
+                  fontWeight: '600',
+                  textAlign: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}>
+                  <Share2 size={12} />
+                  Share Deal
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5 - WHO IT'S FOR */}
+      <section style={{
+        padding: '120px clamp(20px, 5vw, 60px)',
+        background: 'transparent',
+        position: 'relative',
+        zIndex: 20
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: 'clamp(32px, 5vw, 56px)',
+            fontWeight: '600',
+            background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            textAlign: 'center',
+            marginBottom: '24px',
+            letterSpacing: '-0.03em',
+            fontFamily: '"Inter", sans-serif',
+            filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
+          }}>
+            Built for Brokers, Investors, and Owners
+          </h2>
+          <p style={{
+            fontSize: 'clamp(14px, 1.6vw, 16px)',
+            color: 'rgba(0, 184, 212, 0.8)',
+            textAlign: 'center',
+            marginBottom: '80px',
+            fontWeight: '600'
+          }}>
+            Join a growing network of active investors searching for off-market opportunities daily.
+          </p>
 
           <div style={{
             display: 'grid',
@@ -791,8 +876,7 @@ const LandingPageNew = () => {
               borderRadius: '20px',
               border: '1px solid rgba(0, 184, 212, 0.2)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
-              textAlign: 'center',
-              transition: 'all 0.3s'
+              textAlign: 'center'
             }}>
               <div style={{
                 width: '64px',
@@ -821,11 +905,11 @@ const LandingPageNew = () => {
                 color: 'rgba(255,255,255,0.7)',
                 lineHeight: '1.7'
               }}>
-                Publish listings, manage inquiries, run your pipeline, and track performance — all in one operating system.
+                Publish listings, manage inquiries, run your pipeline, and track performance all in one operating system.
               </p>
             </div>
 
-            {/* Buyers */}
+            {/* Investors */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
               backdropFilter: 'blur(20px) saturate(180%)',
@@ -834,8 +918,7 @@ const LandingPageNew = () => {
               borderRadius: '20px',
               border: '1px solid rgba(48, 99, 255, 0.2)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
-              textAlign: 'center',
-              transition: 'all 0.3s'
+              textAlign: 'center'
             }}>
               <div style={{
                 width: '64px',
@@ -849,7 +932,7 @@ const LandingPageNew = () => {
                 margin: '0 auto 24px',
                 boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <Users size={32} color="#3063ff" />
+                <TrendingUp size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '24px',
@@ -857,7 +940,7 @@ const LandingPageNew = () => {
                 color: '#fff',
                 marginBottom: '16px'
               }}>
-                Buyers
+                Investors
               </h3>
               <p style={{
                 fontSize: '15px',
@@ -877,8 +960,7 @@ const LandingPageNew = () => {
               borderRadius: '20px',
               border: '1px solid rgba(16, 185, 129, 0.2)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(16, 185, 129, 0.05)',
-              textAlign: 'center',
-              transition: 'all 0.3s'
+              textAlign: 'center'
             }}>
               <div style={{
                 width: '64px',
@@ -938,9 +1020,17 @@ const LandingPageNew = () => {
         }}>
           One Platform. One Price. Real Deal Flow.
         </h2>
+        <p style={{
+          fontSize: 'clamp(14px, 1.6vw, 16px)',
+          color: 'rgba(255,255,255,0.5)',
+          marginBottom: '60px',
+          maxWidth: '700px',
+          margin: '0 auto 60px'
+        }}>
+          Unlike LoopNet or CoStar, we don't hide deals behind expensive paywalls or tiered access.
+        </p>
 
         <div style={{
-          marginTop: '60px',
           display: 'inline-block',
           background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%)',
           backdropFilter: 'blur(20px) saturate(180%)',
@@ -967,7 +1057,7 @@ const LandingPageNew = () => {
             marginBottom: '40px',
             lineHeight: '1.6'
           }}>
-            Full access to the marketplace, community, and workspace.<br/>No tiers. No noise.
+            Full access to the marketplace, community, and workspace.<br/>One tier. No fluff.
           </p>
 
           <button
@@ -1022,4 +1112,4 @@ const LandingPageNew = () => {
   );
 };
 
-export default LandingPageNew;
+export default LandingPage;
