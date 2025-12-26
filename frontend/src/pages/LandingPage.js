@@ -198,7 +198,7 @@ const LandingPage = () => {
           transform: 'translate(-50%, -50%)',
           width: '1000px',
           height: '1000px',
-          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(48, 99, 255, 0.15) 0%, transparent 70%)',
           pointerEvents: 'none',
           zIndex: 0,
           filter: 'blur(80px)'
@@ -247,7 +247,7 @@ const LandingPage = () => {
                 height: 'auto',
                 display: 'block',
                 borderRadius: '20px',
-                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(0, 184, 212, 0.3)',
+                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(48, 99, 255, 0.3)',
                 border: '1px solid rgba(255, 255, 255, 0.1)'
               }}
             />
@@ -356,8 +356,8 @@ const LandingPage = () => {
                 left: '8%',
                 width: '140px',
                 height: '100px',
-                background: 'rgba(0, 184, 212, 0.08)',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
+                background: 'rgba(48, 99, 255, 0.08)',
+                border: '1px solid rgba(48, 99, 255, 0.2)',
                 borderRadius: '12px',
                 opacity: 0.6
               }} />
@@ -367,8 +367,8 @@ const LandingPage = () => {
                 right: '5%',
                 width: '120px',
                 height: '90px',
-                background: 'rgba(0, 184, 212, 0.08)',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
+                background: 'rgba(48, 99, 255, 0.08)',
+                border: '1px solid rgba(48, 99, 255, 0.2)',
                 borderRadius: '12px',
                 opacity: 0.6
               }} />
@@ -377,11 +377,11 @@ const LandingPage = () => {
                 <div style={{
                   display: 'inline-block',
                   padding: '8px 16px',
-                  background: 'rgba(0, 184, 212, 0.15)',
-                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  background: 'rgba(48, 99, 255, 0.15)',
+                  border: '1px solid rgba(48, 99, 255, 0.3)',
                   borderRadius: '20px',
                   fontSize: '13px',
-                  color: 'rgba(0, 184, 212, 0.9)',
+                  color: 'rgba(48, 99, 255, 0.9)',
                   fontWeight: '700',
                   textTransform: 'uppercase',
                   letterSpacing: '1px',
@@ -413,7 +413,7 @@ const LandingPage = () => {
                 </p>
                 <p style={{
                   fontSize: 'clamp(13px, 1.5vw, 15px)',
-                  color: 'rgba(0, 184, 212, 0.9)',
+                  color: 'rgba(48, 99, 255, 0.9)',
                   fontWeight: '600',
                   letterSpacing: '0.5px'
                 }}>
@@ -462,7 +462,7 @@ const LandingPage = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
               minHeight: '320px',
               display: 'flex',
               flexDirection: 'column'
@@ -471,15 +471,15 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <MapPin size={32} color="#00b8d4" />
+                <MapPin size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
@@ -501,11 +501,11 @@ const LandingPage = () => {
               <div style={{
                 marginTop: '20px',
                 padding: '12px',
-                background: 'rgba(0, 184, 212, 0.1)',
+                background: 'rgba(48, 99, 255, 0.1)',
                 borderRadius: '8px',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
+                border: '1px solid rgba(48, 99, 255, 0.2)',
                 fontSize: '12px',
-                color: 'rgba(0, 184, 212, 0.9)',
+                color: 'rgba(48, 99, 255, 0.9)',
                 fontWeight: '600',
                 textAlign: 'center'
               }}>
@@ -521,7 +521,7 @@ const LandingPage = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
               minHeight: '320px',
               display: 'flex',
               flexDirection: 'column'
@@ -530,15 +530,15 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <BarChart3 size={32} color="#00b8d4" />
+                <BarChart3 size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
@@ -568,11 +568,11 @@ const LandingPage = () => {
                     <div key={idx} style={{
                       flex: 1,
                       padding: '8px 4px',
-                      background: idx < 2 ? 'rgba(0, 184, 212, 0.15)' : 'rgba(100, 100, 100, 0.1)',
-                      border: `1px solid ${idx < 2 ? 'rgba(0, 184, 212, 0.3)' : 'rgba(100, 100, 100, 0.2)'}`,
+                      background: idx < 2 ? 'rgba(48, 99, 255, 0.15)' : 'rgba(100, 100, 100, 0.1)',
+                      border: `1px solid ${idx < 2 ? 'rgba(48, 99, 255, 0.3)' : 'rgba(100, 100, 100, 0.2)'}`,
                       borderRadius: '6px',
                       fontSize: '10px',
-                      color: idx < 2 ? '#00b8d4' : 'rgba(255,255,255,0.5)',
+                      color: idx < 2 ? '#3063ff' : 'rgba(255,255,255,0.5)',
                       fontWeight: '700',
                       textAlign: 'center'
                     }}>
@@ -591,7 +591,7 @@ const LandingPage = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
               minHeight: '320px',
               display: 'flex',
               flexDirection: 'column'
@@ -600,15 +600,15 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <MessageSquare size={32} color="#00b8d4" />
+                <MessageSquare size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
@@ -630,9 +630,9 @@ const LandingPage = () => {
               <div style={{ marginTop: '20px' }}>
                 <div style={{
                   padding: '10px 12px',
-                  background: 'rgba(0, 184, 212, 0.1)',
+                  background: 'rgba(48, 99, 255, 0.1)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  border: '1px solid rgba(48, 99, 255, 0.2)',
                   fontSize: '11px',
                   color: 'rgba(255,255,255,0.7)',
                   textAlign: 'left',
@@ -640,7 +640,7 @@ const LandingPage = () => {
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  <Shield size={14} color="#00b8d4" />
+                  <Shield size={14} color="#3063ff" />
                   <span>NCND Required</span>
                 </div>
               </div>
@@ -654,7 +654,7 @@ const LandingPage = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
               minHeight: '320px',
               display: 'flex',
               flexDirection: 'column'
@@ -663,15 +663,15 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <Users size={32} color="#00b8d4" />
+                <Users size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
@@ -698,12 +698,12 @@ const LandingPage = () => {
                   <div key={idx} style={{
                     flex: 1,
                     padding: '10px 8px',
-                    background: 'rgba(0, 184, 212, 0.1)',
-                    border: '1px solid rgba(0, 184, 212, 0.2)',
+                    background: 'rgba(48, 99, 255, 0.1)',
+                    border: '1px solid rgba(48, 99, 255, 0.2)',
                     borderRadius: '8px',
                     textAlign: 'center'
                   }}>
-                    <div style={{ fontSize: '16px', color: '#00b8d4', fontWeight: '700' }}>{stat.count}</div>
+                    <div style={{ fontSize: '16px', color: '#3063ff', fontWeight: '700' }}>{stat.count}</div>
                     <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)' }}>{stat.label}</div>
                   </div>
                 ))}
@@ -718,7 +718,7 @@ const LandingPage = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
               minHeight: '320px',
               display: 'flex',
               flexDirection: 'column'
@@ -727,15 +727,15 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <Calendar size={32} color="#00b8d4" />
+                <Calendar size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
@@ -757,9 +757,9 @@ const LandingPage = () => {
               <div style={{ marginTop: '20px' }}>
                 <div style={{
                   padding: '10px 12px',
-                  background: 'rgba(0, 184, 212, 0.1)',
+                  background: 'rgba(48, 99, 255, 0.1)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  border: '1px solid rgba(48, 99, 255, 0.2)',
                   fontSize: '11px',
                   color: 'rgba(255,255,255,0.7)',
                   display: 'flex',
@@ -767,7 +767,7 @@ const LandingPage = () => {
                   alignItems: 'center'
                 }}>
                   <span>Due Diligence Deadline</span>
-                  <span style={{ color: '#00b8d4', fontWeight: '700' }}>Jan 15</span>
+                  <span style={{ color: '#3063ff', fontWeight: '700' }}>Jan 15</span>
                 </div>
               </div>
             </div>
@@ -780,7 +780,7 @@ const LandingPage = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
               minHeight: '320px',
               display: 'flex',
               flexDirection: 'column'
@@ -789,15 +789,15 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <Share2 size={32} color="#00b8d4" />
+                <Share2 size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
@@ -819,11 +819,11 @@ const LandingPage = () => {
               <div style={{ marginTop: '20px' }}>
                 <div style={{
                   padding: '10px 12px',
-                  background: 'rgba(0, 184, 212, 0.1)',
+                  background: 'rgba(48, 99, 255, 0.1)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  border: '1px solid rgba(48, 99, 255, 0.2)',
                   fontSize: '11px',
-                  color: '#00b8d4',
+                  color: '#3063ff',
                   fontWeight: '600',
                   textAlign: 'center',
                   display: 'flex',
@@ -865,7 +865,7 @@ const LandingPage = () => {
           </h2>
           <p style={{
             fontSize: 'clamp(14px, 1.6vw, 16px)',
-            color: 'rgba(0, 184, 212, 0.8)',
+            color: 'rgba(48, 99, 255, 0.8)',
             textAlign: 'center',
             marginBottom: '80px',
             fontWeight: '600'
@@ -885,23 +885,23 @@ const LandingPage = () => {
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               padding: '40px 32px',
               borderRadius: '20px',
-              border: '1px solid rgba(0, 184, 212, 0.2)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              border: '1px solid rgba(48, 99, 255, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(48, 99, 255, 0.05)',
               textAlign: 'center'
             }}>
               <div style={{
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
+                border: '2px solid rgba(48, 99, 255, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
               }}>
-                <Building2 size={32} color="#00b8d4" />
+                <Building2 size={32} color="#3063ff" />
               </div>
               <h3 style={{
                 fontSize: '24px',
@@ -1010,9 +1010,9 @@ const LandingPage = () => {
       {/* SECTION 6 - PRICING & CTA */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
-        background: 'rgba(0, 184, 212, 0.03)',
-        borderTop: '1px solid rgba(0, 184, 212, 0.15)',
-        borderBottom: '1px solid rgba(0, 184, 212, 0.15)',
+        background: 'rgba(48, 99, 255, 0.03)',
+        borderTop: '1px solid rgba(48, 99, 255, 0.15)',
+        borderBottom: '1px solid rgba(48, 99, 255, 0.15)',
         position: 'relative',
         zIndex: 20,
         textAlign: 'center'
@@ -1048,8 +1048,8 @@ const LandingPage = () => {
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           padding: '60px 80px',
           borderRadius: '24px',
-          border: '2px solid rgba(0, 184, 212, 0.3)',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+          border: '2px solid rgba(48, 99, 255, 0.3)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(48, 99, 255, 0.2), inset 0 0 60px rgba(48, 99, 255, 0.05)',
           minWidth: '400px'
         }}>
           <div style={{
@@ -1057,7 +1057,7 @@ const LandingPage = () => {
             fontWeight: '800',
             color: '#fff',
             marginBottom: '12px',
-            textShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+            textShadow: '0 0 40px rgba(48, 99, 255, 0.4)'
           }}>
             $50
             <span style={{ fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: '600', color: 'rgba(255,255,255,0.6)' }}>/month</span>
@@ -1076,14 +1076,14 @@ const LandingPage = () => {
             style={{
               width: '100%',
               padding: '18px',
-              background: '#00b8d4',
+              background: '#3063ff',
               border: 'none',
               borderRadius: '12px',
               color: '#000',
               fontSize: 'clamp(16px, 2vw, 18px)',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 24px rgba(0, 184, 212, 0.3)',
+              boxShadow: '0 0 40px rgba(48, 99, 255, 0.6), 0 8px 24px rgba(48, 99, 255, 0.3)',
               transition: 'all 0.3s',
               display: 'inline-flex',
               alignItems: 'center',
@@ -1092,11 +1092,11 @@ const LandingPage = () => {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.8), 0 12px 32px rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.boxShadow = '0 0 60px rgba(48, 99, 255, 0.8), 0 12px 32px rgba(48, 99, 255, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 24px rgba(0, 184, 212, 0.3)';
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(48, 99, 255, 0.6), 0 8px 24px rgba(48, 99, 255, 0.3)';
             }}
           >
             Get Started
@@ -1245,7 +1245,7 @@ const LandingPage = () => {
                     <div key={i} style={{
                       width: '16px',
                       height: '16px',
-                      color: '#00b8d4',
+                      color: '#3063ff',
                       fontSize: '16px',
                       lineHeight: '1'
                     }}>★</div>
@@ -1277,8 +1277,8 @@ const LandingPage = () => {
                     width: '48px',
                     height: '48px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(100, 200, 255, 0.3))',
-                    border: '2px solid rgba(0, 184, 212, 0.4)',
+                    background: 'linear-gradient(135deg, rgba(48, 99, 255, 0.3), rgba(100, 200, 255, 0.3))',
+                    border: '2px solid rgba(48, 99, 255, 0.4)',
                     flexShrink: 0
                   }} />
                   <div>
@@ -1292,7 +1292,7 @@ const LandingPage = () => {
                     </div>
                     <div style={{
                       fontSize: '12px',
-                      color: 'rgba(0, 184, 212, 0.8)',
+                      color: 'rgba(48, 99, 255, 0.8)',
                       lineHeight: '1.4'
                     }}>
                       {testimonial.role}
