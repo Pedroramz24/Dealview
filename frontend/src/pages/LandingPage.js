@@ -630,17 +630,17 @@ const LandingPage = () => {
               <div style={{ marginTop: '20px' }}>
                 <div style={{
                   padding: '10px 12px',
-                  background: 'rgba(48, 99, 255, 0.1)',
+                  background: 'rgba(255, 255, 255, 0.1)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(48, 99, 255, 0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
                   fontSize: '11px',
-                  color: 'rgba(255,255,255,0.7)',
+                  color: '#fff',
                   textAlign: 'left',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  <Shield size={14} color="#3063ff" />
+                  <Shield size={14} color="#fff" />
                   <span>NCND Required</span>
                 </div>
               </div>
