@@ -501,11 +501,11 @@ const LandingPage = () => {
               <div style={{
                 marginTop: '20px',
                 padding: '12px',
-                background: 'rgba(48, 99, 255, 0.1)',
+                background: 'rgba(255, 255, 255, 0.1)',
                 borderRadius: '8px',
-                border: '1px solid rgba(48, 99, 255, 0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 fontSize: '12px',
-                color: 'rgba(48, 99, 255, 0.9)',
+                color: '#fff',
                 fontWeight: '600',
                 textAlign: 'center'
               }}>
@@ -698,12 +698,12 @@ const LandingPage = () => {
                   <div key={idx} style={{
                     flex: 1,
                     padding: '10px 8px',
-                    background: 'rgba(48, 99, 255, 0.1)',
-                    border: '1px solid rgba(48, 99, 255, 0.2)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
                     borderRadius: '8px',
                     textAlign: 'center'
                   }}>
-                    <div style={{ fontSize: '16px', color: '#3063ff', fontWeight: '700' }}>{stat.count}</div>
+                    <div style={{ fontSize: '16px', color: '#fff', fontWeight: '700' }}>{stat.count}</div>
                     <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)' }}>{stat.label}</div>
                   </div>
                 ))}
@@ -757,17 +757,17 @@ const LandingPage = () => {
               <div style={{ marginTop: '20px' }}>
                 <div style={{
                   padding: '10px 12px',
-                  background: 'rgba(48, 99, 255, 0.1)',
+                  background: 'rgba(255, 255, 255, 0.1)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(48, 99, 255, 0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
                   fontSize: '11px',
-                  color: 'rgba(255,255,255,0.7)',
+                  color: '#fff',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center'
                 }}>
                   <span>Due Diligence Deadline</span>
-                  <span style={{ color: '#3063ff', fontWeight: '700' }}>Jan 15</span>
+                  <span style={{ color: '#fff', fontWeight: '700' }}>Jan 15</span>
                 </div>
               </div>
             </div>
@@ -819,11 +819,11 @@ const LandingPage = () => {
               <div style={{ marginTop: '20px' }}>
                 <div style={{
                   padding: '10px 12px',
-                  background: 'rgba(48, 99, 255, 0.1)',
+                  background: 'rgba(255, 255, 255, 0.1)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(48, 99, 255, 0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
                   fontSize: '11px',
-                  color: '#3063ff',
+                  color: '#fff',
                   fontWeight: '600',
                   textAlign: 'center',
                   display: 'flex',
