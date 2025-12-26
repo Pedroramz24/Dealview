@@ -182,7 +182,80 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* SECTION 2 - PROBLEM + SOLUTION (Side by Side) */}
+      {/* SECTION 2 - THE PRODUCT */}
+      <section style={{
+        padding: '120px clamp(20px, 5vw, 60px)',
+        position: 'relative',
+        zIndex: 30,
+        background: 'transparent',
+        overflow: 'hidden'
+      }}>
+        {/* Radial gradient backdrop */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '1000px',
+          height: '1000px',
+          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+          filter: 'blur(80px)'
+        }} />
+
+        <div style={{ position: 'relative', zIndex: 10, maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <h2 style={{
+              fontSize: 'clamp(32px, 5vw, 56px)',
+              fontWeight: '600',
+              background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              marginBottom: '28px',
+              letterSpacing: '-0.03em',
+              fontFamily: '"Inter", sans-serif',
+              filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))'
+            }}>
+              From Discovery to Close in One Platform
+            </h2>
+            <p style={{
+              fontSize: 'clamp(16px, 2vw, 20px)',
+              color: 'rgba(255,255,255,0.65)',
+              lineHeight: '1.7',
+              maxWidth: '900px',
+              margin: '0 auto',
+              fontWeight: '400'
+            }}>
+              Browse off-market opportunities on a live marketplace map, engage through gated conversations and NDAs, and manage deals, documents, deadlines, and performance without switching tools.
+            </p>
+          </div>
+
+          {/* Product Screenshot */}
+          <div style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '1200px',
+            margin: '0 auto'
+          }}>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/z39y8gol_Screenshot%202025-12-23%20at%2012.04.52%E2%80%AFPM.png"
+              alt="DealLinked Platform"
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                borderRadius: '20px',
+                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(0, 184, 212, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
+              }}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3 - PROBLEM + SOLUTION (Side by Side) */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
@@ -342,7 +415,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* SECTION 3 - THE PRODUCT */}
+      {/* SECTION 4 - PLATFORM FEATURES */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         position: 'relative',
@@ -415,7 +488,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* SECTION 4 - PLATFORM FEATURES (What the App Does) */}
+      {/* SECTION 5 - WHO IT'S FOR */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
         background: 'transparent',
