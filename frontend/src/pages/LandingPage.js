@@ -1105,6 +1105,205 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* TESTIMONIALS SECTION - Conveyor Belt Animation */}
+      <section style={{
+        padding: '80px 0',
+        background: 'transparent',
+        position: 'relative',
+        zIndex: 20,
+        overflow: 'hidden'
+      }}>
+        <h2 style={{
+          fontSize: 'clamp(32px, 5vw, 48px)',
+          fontWeight: '600',
+          background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          textAlign: 'center',
+          marginBottom: '60px',
+          letterSpacing: '-0.03em',
+          fontFamily: '"Inter", sans-serif',
+          filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))',
+          padding: '0 20px'
+        }}>
+          Trusted by Real Estate Professionals
+        </h2>
+
+        {/* Scrolling testimonials container */}
+        <div style={{
+          width: '100%',
+          overflow: 'hidden',
+          position: 'relative'
+        }}>
+          {/* Gradient fade edges */}
+          <div style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: '100px',
+            background: 'linear-gradient(to right, #000 0%, transparent 100%)',
+            zIndex: 10,
+            pointerEvents: 'none'
+          }} />
+          <div style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '100px',
+            background: 'linear-gradient(to left, #000 0%, transparent 100%)',
+            zIndex: 10,
+            pointerEvents: 'none'
+          }} />
+
+          {/* Animated testimonials track */}
+          <div style={{
+            display: 'flex',
+            gap: '24px',
+            animation: 'scroll-left 40s linear infinite',
+            paddingLeft: '24px'
+          }}>
+            {[
+              {
+                text: "DealLinked streamlined our entire deal flow. We've closed 3 off-market acquisitions in the last 2 months.",
+                role: "Investor"
+              },
+              {
+                text: "Finally, a marketplace that connects me with serious buyers. The NCND protection gives me confidence to share exclusive listings.",
+                role: "Broker"
+              },
+              {
+                text: "The quality control is refreshing. Every inquiry I receive is from a verified, qualified buyer.",
+                role: "Owner"
+              },
+              {
+                text: "Best platform for sourcing off-market commercial deals. The map view and filters save me hours every week.",
+                role: "Investor"
+              },
+              {
+                text: "My reputation score has helped me stand out. I'm getting more inquiries than ever before.",
+                role: "Broker"
+              },
+              {
+                text: "Love the integrated CRM. I can manage everything in one place without switching between tools.",
+                role: "Broker"
+              },
+              {
+                text: "The network of active investors is impressive. My listings get visibility to the right audience immediately.",
+                role: "Broker"
+              },
+              {
+                text: "Game changer for finding off-market opportunities. Much better than Facebook groups and cold calls.",
+                role: "Investor"
+              }
+            ].concat([
+              {
+                text: "DealLinked streamlined our entire deal flow. We've closed 3 off-market acquisitions in the last 2 months.",
+                role: "Investor"
+              },
+              {
+                text: "Finally, a marketplace that connects me with serious buyers. The NCND protection gives me confidence to share exclusive listings.",
+                role: "Broker"
+              },
+              {
+                text: "The quality control is refreshing. Every inquiry I receive is from a verified, qualified buyer.",
+                role: "Owner"
+              },
+              {
+                text: "Best platform for sourcing off-market commercial deals. The map view and filters save me hours every week.",
+                role: "Investor"
+              }
+            ]).map((testimonial, idx) => (
+              <div
+                key={idx}
+                style={{
+                  minWidth: '400px',
+                  maxWidth: '400px',
+                  background: 'linear-gradient(135deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%)',
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                  padding: '32px',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                  flexShrink: 0
+                }}
+              >
+                {/* Stars */}
+                <div style={{
+                  display: 'flex',
+                  gap: '4px',
+                  marginBottom: '16px'
+                }}>
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} style={{
+                      width: '16px',
+                      height: '16px',
+                      color: '#00b8d4'
+                    }}>★</div>
+                  ))}
+                </div>
+
+                {/* Review text */}
+                <p style={{
+                  fontSize: '15px',
+                  color: 'rgba(255,255,255,0.8)',
+                  lineHeight: '1.6',
+                  marginBottom: '20px',
+                  fontStyle: 'italic'
+                }}>
+                  "{testimonial.text}"
+                </p>
+
+                {/* Author */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(100, 200, 255, 0.3))',
+                    border: '2px solid rgba(0, 184, 212, 0.4)'
+                  }} />
+                  <div>
+                    <div style={{
+                      fontSize: '14px',
+                      color: '#fff',
+                      fontWeight: '600'
+                    }}>
+                      DealLinked User
+                    </div>
+                    <div style={{
+                      fontSize: '12px',
+                      color: 'rgba(0, 184, 212, 0.8)'
+                    }}>
+                      {testimonial.role}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Add keyframes animation */}
+        <style>{`
+          @keyframes scroll-left {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+        `}</style>
+      </section>
+
       {/* Footer */}
       <footer style={{
         padding: '40px clamp(20px, 5vw, 60px)',
