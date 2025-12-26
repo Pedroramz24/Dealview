@@ -122,28 +122,20 @@ const DualModeLayout = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingLeft: workspaceExpanded ? '20px' : '0'
-        }}>
-          {workspaceExpanded ? (
-            <div style={{ color: '#00b8d4', fontSize: '24px', fontWeight: '700' }}>
-              DealLinked
-            </div>
-          ) : (
-            <div style={{ 
-              width: '48px', 
-              height: '48px',
-              background: 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '20px',
-              fontWeight: '700',
-              color: '#000'
-            }}>
-              DL
-            </div>
-          )}
+          paddingLeft: workspaceExpanded ? '20px' : '0',
+          cursor: 'pointer'
+        }}
+        onClick={() => navigate('/workspace/dashboard')}
+        >
+          <img 
+            src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png"
+            alt="DealLinked"
+            style={{
+              height: workspaceExpanded ? '40px' : '48px',
+              width: 'auto',
+              filter: 'drop-shadow(0 0 8px rgba(48, 99, 255, 0.3))'
+            }}
+          />
         </div>
 
         {/* Primary Navigation */}
