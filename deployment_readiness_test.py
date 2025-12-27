@@ -129,16 +129,15 @@ class DeploymentReadinessTest:
         print("2. DEALS API - FULL CRUD TESTING")
         print("="*60)
         
-        # CREATE Deal with all required fields
+        # CREATE Deal with all required fields matching actual schema
         deal_data = {
-            "deal_title": "Test Deal - Deployment Verification",
-            "property_address": "123 Test Street, San Antonio, TX 78201",
+            "title": "Test Deal - Deployment Verification",
+            "address": "123 Test Street, San Antonio, TX 78201",
             "asset_type": "Office",
-            "asking_price": 2500000,
+            "price": 2500000,
             "latitude": 29.4241,
             "longitude": -98.4936,
-            "building_size": 15000,
-            "lot_size": 25000,
+            "size": 15000,
             "description": "Test deal for deployment readiness verification"
         }
         
