@@ -201,7 +201,7 @@ const Dashboard = () => {
             icon: AlertCircle,
             color: '#f59e0b',
             message: `You haven't followed up with ${contact.full_name} in ${daysDiff} days.`,
-            action: () => navigate('/contacts'),
+            action: () => navigate('/workspace/contacts'),
             actionLabel: 'View Contact'
           });
         }
@@ -218,7 +218,7 @@ const Dashboard = () => {
           icon: Clock,
           color: '#ef4444',
           message: `${event.title} is due tomorrow.`,
-          action: () => navigate('/calendar'),
+          action: () => navigate('/workspace/calendar'),
           actionLabel: 'View Calendar'
         });
       }
@@ -235,7 +235,7 @@ const Dashboard = () => {
         icon: Target,
         color: '#3b82f6',
         message: `${untouchedLeads.length} leads in your pipeline haven't been contacted.`,
-        action: () => navigate('/pipeline'),
+        action: () => navigate('/workspace/deals'),
         actionLabel: 'View Pipeline'
       });
     }
@@ -248,7 +248,7 @@ const Dashboard = () => {
         icon: CheckCircle2,
         color: '#10b981',
         message: `You have ${underContractDeals.length} deal${underContractDeals.length > 1 ? 's' : ''} under contract. Keep the momentum!`,
-        action: () => navigate('/pipeline'),
+        action: () => navigate('/workspace/deals'),
         actionLabel: 'Track Progress'
       });
     }
@@ -260,7 +260,7 @@ const Dashboard = () => {
         icon: Activity,
         color: '#8b5cf6',
         message: `Your pipeline value is ${formatCurrency(deals.reduce((sum, d) => sum + (d.price || 0), 0))}. ${deals.length} active opportunities.`,
-        action: () => navigate('/deals'),
+        action: () => navigate('/workspace/deals'),
         actionLabel: 'View Deals'
       });
     }
