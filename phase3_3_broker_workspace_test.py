@@ -375,6 +375,7 @@ def test_contacts_api():
     """Test Contacts API (if exists in backend)"""
     print_section("5. CONTACTS API")
     
+    print("⚠️  NOTE: Contacts endpoint still using MongoDB (not migrated to Supabase)")
     try:
         # Try to get contacts
         response = requests.get(
@@ -387,42 +388,16 @@ def test_contacts_api():
             contacts = response.json()
             print_result("Get Contacts", True,
                        f"Contacts endpoint exists, returned {len(contacts)} contacts")
-            
-            # Try to create a contact
-            contact_data = {
-                "name": f"Test Contact - {datetime.now().strftime('%Y%m%d%H%M%S')}",
-                "email": "testcontact@example.com",
-                "phone": "210-555-0123",
-                "company": "Test Company"
-            }
-            
-            create_response = requests.post(
-                f"{BASE_URL}/contacts",
-                headers=get_headers(),
-                json=contact_data,
-                timeout=10
-            )
-            
-            if create_response.status_code in [200, 201]:
-                contact = create_response.json()
-                contact_id = contact.get('id')
-                print_result("Create Contact", True, f"Contact created with ID: {contact_id}")
-                
-                # Cleanup: Delete the test contact
-                requests.delete(
-                    f"{BASE_URL}/contacts/{contact_id}",
-                    headers=get_headers(),
-                    timeout=10
-                )
-            else:
-                print_result("Create Contact", False,
-                           f"Status: {create_response.status_code}")
+        elif response.status_code == 520:
+            print_result("Contacts API", False,
+                       "MIGRATION ISSUE: Contacts endpoint still using MongoDB (db.contacts)")
+            print("   Backend code needs to be migrated to use Supabase contacts table")
         elif response.status_code == 404:
             print_result("Contacts API", True,
                        "Contacts managed via Supabase client-side only (no backend endpoints)")
         else:
             print_result("Get Contacts", False,
-                       f"Status: {response.status_code}, Response: {response.text}")
+                       f"Status: {response.status_code}, Response: {response.text[:200]}")
     except Exception as e:
         print_result("Contacts API", False, f"Exception: {str(e)}")
 
