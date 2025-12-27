@@ -115,7 +115,7 @@ class CriticalPathTester:
                 self.created_deal_id = created_deal.get('id')
                 
                 # Verify required fields are present
-                required_fields = ["id", "title", "address", "asset_type", "asking_price"]
+                required_fields = ["id", "property_address", "asset_type", "asking_price"]
                 missing_fields = [f for f in required_fields if f not in created_deal]
                 
                 if missing_fields:
