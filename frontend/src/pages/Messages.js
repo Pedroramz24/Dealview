@@ -338,7 +338,8 @@ const Messages = () => {
 // Conversation List Item
 const ConversationItem = ({ conversation, selected, onClick }) => {
   const getTimeAgo = (timestamp) => {
-    const diff = Date.now() - new Date(timestamp).getTime();
+    const now = new Date();
+    const diff = now.getTime() - new Date(timestamp).getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
