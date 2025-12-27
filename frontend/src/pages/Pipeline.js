@@ -338,6 +338,26 @@ const Pipeline = () => {
     }
   };
 
+  const handleDeleteDeal = async (dealId, dealTitle) => {
+    if (!window.confirm(`Delete "${dealTitle || 'this deal'}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      
+      await axios.delete(`${API}/deals/${dealId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success('Deal deleted successfully');
+      fetchDeals(); // Refresh the list
+    } catch (error) {
+      console.error('Error deleting deal:', error);
+      toast.error('Failed to delete deal');
+    }
+  };
+
   const formatPrice = (price) => {
     if (!price) return '$0';
     return new Intl.NumberFormat('en-US', {
