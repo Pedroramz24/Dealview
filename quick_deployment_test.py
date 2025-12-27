@@ -10,6 +10,8 @@ from typing import Dict, List
 
 # Configuration
 BASE_URL = "https://mockdata-hub.preview.emergentagent.com/api"
+SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0"
 EMAIL = "contact@pedroarmando.com"
 PASSWORD = "Flin141812$"
 
@@ -20,15 +22,21 @@ class DeploymentTester:
         self.times = []
         
     def login(self) -> bool:
-        """Authenticate and get token"""
+        """Authenticate with Supabase and get token"""
         try:
+            # Use Supabase Auth API
             response = requests.post(
-                f"{BASE_URL}/auth/login",
+                f"{SUPABASE_URL}/auth/v1/token?grant_type=password",
                 json={"email": EMAIL, "password": PASSWORD},
+                headers={
+                    "apikey": SUPABASE_ANON_KEY,
+                    "Content-Type": "application/json"
+                },
                 timeout=10
             )
             if response.status_code == 200:
-                self.token = response.json().get("access_token")
+                data = response.json()
+                self.token = data.get("access_token")
                 return True
             else:
                 print(f"❌ Login failed: {response.status_code} - {response.text}")
