@@ -230,7 +230,7 @@ class DeploymentReadinessTest:
         
         # UPDATE Deal
         update_data = {
-            "asking_price": 2750000,
+            "price": 2750000,
             "description": "Updated test deal"
         }
         
@@ -247,7 +247,7 @@ class DeploymentReadinessTest:
                 self.log_result(
                     "Update Deal",
                     True,
-                    f"Deal updated. New price: ${updated_deal.get('asking_price', 0):,.0f}",
+                    f"Deal updated. New price: ${updated_deal.get('price', 0):,.0f}",
                     response_time=resp_time
                 )
             else:
