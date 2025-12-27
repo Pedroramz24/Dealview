@@ -85,7 +85,7 @@ class DeploymentTester:
                 "title": "Test Property - Final Verification",
                 "address": "123 Main St, San Antonio, TX 78205",
                 "asset_type": "Office",
-                "price": 2500000,  # asking_price maps to price
+                "asking_price": 2500000,  # Use asking_price as per schema
                 "size": 15000,
                 "latitude": 29.4241,
                 "longitude": -98.4936
