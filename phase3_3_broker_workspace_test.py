@@ -38,27 +38,30 @@ def print_result(test_name, success, details=""):
         print(f"   Details: {details}")
 
 def authenticate():
-    """Authenticate and get JWT token"""
-    global auth_token
+    """Authenticate with Supabase and get JWT token"""
+    global auth_token, supabase
     print_section("AUTHENTICATION")
     
     try:
-        response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": TEST_EMAIL, "password": TEST_PASSWORD},
-            timeout=10
-        )
+        # Initialize Supabase client
+        supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
         
-        if response.status_code == 200:
-            data = response.json()
-            auth_token = data.get('access_token')
-            print_result("Login", True, f"Token obtained (length: {len(auth_token)})")
+        # Sign in with email and password
+        auth_response = supabase.auth.sign_in_with_password({
+            "email": TEST_EMAIL,
+            "password": TEST_PASSWORD
+        })
+        
+        if auth_response.user:
+            auth_token = auth_response.session.access_token
+            print_result("Supabase Login", True, 
+                       f"Token obtained (length: {len(auth_token)}, User ID: {auth_response.user.id})")
             return True
         else:
-            print_result("Login", False, f"Status: {response.status_code}, Response: {response.text}")
+            print_result("Supabase Login", False, "No user returned from Supabase")
             return False
     except Exception as e:
-        print_result("Login", False, f"Exception: {str(e)}")
+        print_result("Supabase Login", False, f"Exception: {str(e)}")
         return False
 
 def get_headers():
