@@ -49,12 +49,17 @@ class DeploymentTester:
         self.created_deal_id = None
         
     def authenticate(self) -> Tuple[bool, str]:
-        """Test authentication and get token"""
+        """Test authentication and get token via Supabase"""
         try:
             start = time.time()
+            # Authenticate with Supabase
             response = requests.post(
-                f"{BASE_URL}/auth/login",
+                f"{SUPABASE_URL}/auth/v1/token?grant_type=password",
                 json={"email": EMAIL, "password": PASSWORD},
+                headers={
+                    "apikey": SUPABASE_ANON_KEY,
+                    "Content-Type": "application/json"
+                },
                 timeout=10
             )
             duration = time.time() - start
@@ -63,10 +68,10 @@ class DeploymentTester:
                 data = response.json()
                 self.token = data.get("access_token")
                 self.headers = {"Authorization": f"Bearer {self.token}"}
-                log_test("Authentication", True, f"Login successful, token received", duration)
+                log_test("Authentication", True, f"Login successful, token received ({len(self.token)} chars)", duration)
                 return True, "Success"
             else:
-                log_test("Authentication", False, f"Login failed: {response.status_code}", duration)
+                log_test("Authentication", False, f"Login failed: {response.status_code} - {response.text[:200]}", duration)
                 return False, f"Status {response.status_code}"
         except Exception as e:
             log_test("Authentication", False, f"Exception: {str(e)}", 0)
