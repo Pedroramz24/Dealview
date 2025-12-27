@@ -379,40 +379,62 @@ class DeploymentTester:
         
         print("\n--- CRITICAL PATH: End-to-End Deal Flow ---")
         result, duration = self.test_create_deal()
-        log_test("1. Create Deal", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("1. Create Deal", passed, message, duration)
         
         result, duration = self.test_get_deals()
-        log_test("2. Get Deals", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("2. Get Deals", passed, message, duration)
         
         result, duration = self.test_update_deal()
-        log_test("3. Update Deal Price", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("3. Update Deal Price", passed, message, duration)
         
         result, duration = self.test_move_pipeline_stage()
-        log_test("4. Move Pipeline Stage", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("4. Move Pipeline Stage", passed, message, duration)
         
         result, duration = self.test_delete_deal()
-        log_test("5. Delete Deal", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("5. Delete Deal", passed, message, duration)
         
         print("\n--- CRITICAL PATH: Pipeline & Stage Management ---")
         result, duration = self.test_get_pipelines()
-        log_test("6. Get Pipelines with Stages", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("6. Get Pipelines with Stages", passed, message, duration)
         
         print("\n--- CRITICAL PATH: Core APIs ---")
         result, duration = self.test_dashboard_stats()
-        log_test("7. Dashboard Stats", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("7. Dashboard Stats", passed, message, duration)
         
         result, duration = self.test_messages_conversations()
-        log_test("8. Messages Conversations", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("8. Messages Conversations", passed, message, duration)
         
         result, duration = self.test_teams()
-        log_test("9. Teams", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("9. Teams", passed, message, duration)
         
         print("\n--- SECURITY: Authorization ---")
         result, duration = self.test_invalid_token()
-        log_test("10. Invalid Token (401)", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("10. Invalid Token (401)", passed, message, duration)
         
         result, duration = self.test_missing_token()
-        log_test("11. Missing Token (403)", result, result[1] if isinstance(result, tuple) else str(result), duration)
+        passed = result[0] if isinstance(result, tuple) else result
+        message = result[1] if isinstance(result, tuple) else str(result)
+        log_test("11. Missing Token (403)", passed, message, duration)
         
         # Generate final report
         self.generate_report()
