@@ -39,21 +39,21 @@ async def create_deal(deal_data: DealCreate, current_user: User = Depends(get_cu
         'status': deal_data.status,
         'stage': deal_data.stage,
         'priority': deal_data.priority,
-        'owner_visibility': deal_data.owner_visibility,
         'description': deal_data.description,
         'latitude': deal_data.latitude,
         'longitude': deal_data.longitude,
-        'display_on_map': deal_data.display_on_map,
         'asking_price': deal_data.asking_price,  # Mapped to asking_price after schema fix
         'size': deal_data.size,  # Mapped to size (not building_size)
         'lot_size': deal_data.lot_size,
         'year_built': deal_data.year_built,
         'zoning': deal_data.zoning,
         'occupancy': deal_data.occupancy,
-        'parking_spaces': deal_data.parking_spaces,
         'noi': deal_data.noi,
         'cap_rate': deal_data.cap_rate,
         'primary_contact_id': deal_data.primary_contact_id,
+        'notes': deal_data.notes,
+        'pipeline_id': deal_data.pipeline_id,
+        'pipeline_stage_id': deal_data.pipeline_stage_id,
         'created_at': datetime.now(timezone.utc).isoformat(),
         'updated_at': datetime.now(timezone.utc).isoformat()
     }
