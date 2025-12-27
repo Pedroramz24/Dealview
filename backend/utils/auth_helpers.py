@@ -1,4 +1,4 @@
-"""Authentication and JWT helper functions."""
+"""Authentication and JWT helper functions - Supabase only."""
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
@@ -8,7 +8,7 @@ import os
 import logging
 
 from models.user import User
-from utils.db import get_db, get_supabase
+from utils.db import get_supabase
 
 # Initialize
 security = HTTPBearer()
@@ -44,22 +44,33 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
 
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
-    """Get current user from JWT token (MongoDB-based auth)."""
-    db = get_db()
+    """Get current user from Supabase JWT token."""
+    supabase = get_supabase()
     try:
         token = credentials.credentials
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-    
-    user_doc = await db.users.find_one({"email": email}, {"_id": 0})
-    if user_doc is None:
-        raise HTTPException(status_code=401, detail="User not found")
-    
-    return User(**user_doc)
+        
+        # Verify token with Supabase
+        user_response = supabase.auth.get_user(token)
+        
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+        
+        # Get user profile from Supabase
+        user_data = user_response.user
+        
+        # Create User model from Supabase auth data
+        return User(
+            id=user_data.id,
+            email=user_data.email,
+            full_name=user_data.user_metadata.get('full_name', ''),
+            phone=user_data.user_metadata.get('phone'),
+            role=user_data.user_metadata.get('role', 'broker')
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f\"Error getting current user: {str(e)}\")
+        raise HTTPException(status_code=401, detail=\"Invalid authentication credentials\")
 
 
 async def get_current_user_supabase(credentials: HTTPAuthorizationCredentials = Depends(security)):
