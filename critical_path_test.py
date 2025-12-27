@@ -90,13 +90,13 @@ class CriticalPathTester:
         print("="*80)
         
         deal_data = {
-            "title": "Test Deal - Critical Path",
-            "address": "123 Test St, San Antonio, TX 78253",
+            "property_address": "123 Test St, San Antonio, TX 78253",
             "asset_type": "Office",
             "asking_price": 1500000,
-            "size": 5000,
+            "building_size": 5000,
             "latitude": 29.4241,
-            "longitude": -98.4936
+            "longitude": -98.4936,
+            "notes": "Test deal for critical path verification"
         }
         
         try:
