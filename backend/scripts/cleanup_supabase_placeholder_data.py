@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
-Script to remove all placeholder CRM data from Supabase
-This will delete deals, contacts, and calendar events for the specified user
+⚠️ DEV/TESTING ONLY - DO NOT RUN IN PRODUCTION ⚠️
+
+Script to remove placeholder CRM data from Supabase.
+This will delete ALL deals, contacts, and calendar events for the specified user.
+
+Usage: python3 backend/scripts/cleanup_supabase_placeholder_data.py
 """
 import os
 import sys

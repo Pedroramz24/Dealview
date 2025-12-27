@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
-Script to add placeholder CRM data to Supabase for screenshot purposes
-This will populate Pipeline, Contacts, Calendar, and Messages with realistic test data
+⚠️ DEV/TESTING ONLY - DO NOT RUN IN PRODUCTION ⚠️
+
+Script to add placeholder CRM data to Supabase for screenshot/testing purposes.
+This will populate Pipeline, Contacts, Calendar with realistic test data.
+
+Usage: python3 backend/scripts/add_supabase_placeholder_data.py
+Cleanup: python3 backend/scripts/cleanup_supabase_placeholder_data.py
 """
 import os
 import sys
