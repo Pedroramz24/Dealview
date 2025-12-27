@@ -468,6 +468,48 @@ class Phase2Tester:
             print(f"   Traceback: {traceback.format_exc()}")
             return False
     
+    def create_test_deal_for_messages(self):
+        """Create a test deal that will persist for message tests"""
+        try:
+            from supabase import create_client
+            import uuid
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_SERVICE_KEY']
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Create a test deal directly in Supabase
+            deal_id = str(uuid.uuid4())
+            deal_data = {
+                "id": deal_id,
+                "owner_id": self.user_id,
+                "title": "Test Deal for Messages",
+                "address": "456 Message Test St, San Antonio, TX 78201",
+                "asset_type": "Office",
+                "price": 500000,
+                "latitude": 29.4241,
+                "longitude": -98.4936,
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            supabase.table('deals').insert(deal_data).execute()
+            
+            # Store deal_id for message tests
+            self.test_deal_id = deal_id
+            
+            self.log_result(
+                "Setup - Create Test Deal for Messages",
+                True,
+                f"Successfully created test deal for message tests",
+                f"Deal ID: {deal_id}"
+            )
+            return True
+                
+        except Exception as e:
+            self.log_result("Setup - Create Test Deal", False, f"Test error: {str(e)}")
+            return False
+    
     def test_deal_deletion_flow(self):
         """Test 6: Complete deal deletion flow - create, delete, verify"""
         try:
