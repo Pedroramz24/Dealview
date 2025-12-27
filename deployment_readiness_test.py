@@ -129,16 +129,15 @@ class DeploymentReadinessTest:
         print("2. DEALS API - FULL CRUD TESTING")
         print("="*60)
         
-        # CREATE Deal
+        # CREATE Deal with all required fields
         deal_data = {
-            "title": "Test Deal - Deployment Verification",
-            "address": "123 Test Street",
-            "city": "San Antonio",
-            "state": "TX",
-            "zip_code": "78201",
+            "deal_title": "Test Deal - Deployment Verification",
+            "property_address": "123 Test Street, San Antonio, TX 78201",
             "asset_type": "Office",
-            "price": 2500000,
-            "size": 15000,
+            "asking_price": 2500000,
+            "latitude": 29.4241,
+            "longitude": -98.4936,
+            "building_size": 15000,
             "lot_size": 25000,
             "description": "Test deal for deployment readiness verification"
         }
@@ -212,7 +211,7 @@ class DeploymentReadinessTest:
             if response.status_code == 200:
                 deal = response.json()
                 # Verify asking_price field
-                price = deal.get('price') or deal.get('asking_price')
+                price = deal.get('asking_price')
                 self.log_result(
                     "Get Single Deal",
                     True,
@@ -232,7 +231,7 @@ class DeploymentReadinessTest:
         
         # UPDATE Deal
         update_data = {
-            "price": 2750000,
+            "asking_price": 2750000,
             "description": "Updated test deal"
         }
         
@@ -249,7 +248,7 @@ class DeploymentReadinessTest:
                 self.log_result(
                     "Update Deal",
                     True,
-                    f"Deal updated. New price: ${updated_deal.get('price', 0):,.0f}",
+                    f"Deal updated. New price: ${updated_deal.get('asking_price', 0):,.0f}",
                     response_time=resp_time
                 )
             else:
