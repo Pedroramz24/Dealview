@@ -290,11 +290,15 @@ def test_deal_move():
     try:
         deal_data = {
             "title": f"Move Test Deal - {datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "property_address": "456 Move Test Ave",
             "address": "456 Move Test Ave",
             "city": "San Antonio",
             "state": "TX",
             "asset_type": "Retail",
-            "price": 2000000
+            "price": 2000000,
+            "asking_price": 2000000,
+            "latitude": 29.4241,
+            "longitude": -98.4936
         }
         
         response = requests.post(
