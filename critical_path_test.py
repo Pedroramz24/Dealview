@@ -50,27 +50,33 @@ class CriticalPathTester:
             print(f"   Details: {details}")
     
     def authenticate(self):
-        """Authenticate and get access token"""
+        """Authenticate using Supabase and get access token"""
         print("\n" + "="*80)
         print("AUTHENTICATION")
         print("="*80)
         try:
+            from supabase import create_client
+            
             start_time = time.time()
-            response = requests.post(
-                f"{self.base_url}/auth/login",
-                json=CREDENTIALS,
-                timeout=10
-            )
+            
+            # Create Supabase client
+            supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+            
+            # Sign in with password
+            result = supabase.auth.sign_in_with_password({
+                'email': CREDENTIALS['email'],
+                'password': CREDENTIALS['password']
+            })
+            
             response_time = time.time() - start_time
             
-            if response.status_code == 200:
-                data = response.json()
-                self.token = data.get("access_token")
+            if result.session:
+                self.token = result.session.access_token
                 self.headers = {"Authorization": f"Bearer {self.token}"}
                 self.log_result("Authentication", True, f"Successfully logged in as {CREDENTIALS['email']}", response_time=response_time)
                 return True
             else:
-                self.log_result("Authentication", False, f"Login failed with status {response.status_code}", response.text, response_time)
+                self.log_result("Authentication", False, "No session returned from Supabase", None, response_time)
                 return False
                 
         except Exception as e:
