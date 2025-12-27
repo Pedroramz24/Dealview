@@ -12,6 +12,8 @@ from typing import Dict, List, Tuple
 
 # Configuration
 BASE_URL = "https://mockdata-hub.preview.emergentagent.com/api"
+SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0"
 EMAIL = "contact@pedroarmando.com"
 PASSWORD = "Flin141812$"
 
