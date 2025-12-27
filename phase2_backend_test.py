@@ -143,11 +143,19 @@ class Phase2Tester:
             
             recipient_id = users.data[0]['id']
             
-            # Use a dummy deal ID (foreign key constraint may not be enforced)
-            import uuid
-            deal_id = str(uuid.uuid4())
+            # Use the test deal ID created earlier
+            deal_id = getattr(self, 'test_deal_id', None)
+            if not deal_id:
+                self.log_result(
+                    "Message Deletion - Authorization (Sender)",
+                    False,
+                    "No test deal available - deal creation may have failed",
+                    "Run deal creation test first"
+                )
+                return False
             
             # First, create a test message
+            import uuid
             test_message_id = str(uuid.uuid4())
             test_conversation_id = str(uuid.uuid4())
             
