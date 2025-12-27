@@ -426,7 +426,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
       } else {
         // Fallback for DealDetails page - navigate away
         if (window.location.pathname.includes('/deals/')) {
-          navigate('/deals');
+          navigate('/workspace/deals');
         }
       }
     } catch (error) {

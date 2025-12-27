@@ -96,7 +96,7 @@ const DealDetails = () => {
     } catch (error) {
       console.error('Error fetching deal:', error);
       toast.error('Failed to load deal');
-      navigate('/deals');
+      navigate('/workspace/deals');
     } finally {
       setLoading(false);
     }

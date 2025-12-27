@@ -1041,7 +1041,7 @@ const DealsList = () => {
                           {/* Create New Contact Option */}
                           <div
                             onClick={() => {
-                              navigate('/contacts?create=true&name=' + encodeURIComponent(contactSearchTerm));
+                              navigate('/workspace/contacts?create=true&name=' + encodeURIComponent(contactSearchTerm));
                             }}
                             style={{
                               padding: '12px',
@@ -1953,7 +1953,7 @@ const DealsList = () => {
                               size="sm"
                               onClick={() => {
                                 setShowEditPanel(false);
-                                navigate('/contacts');
+                                navigate('/workspace/contacts');
                               }}
                               className="bg-blue-600 hover:bg-blue-700"
                             >
