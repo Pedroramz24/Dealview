@@ -1657,3 +1657,16 @@ agent_communication:
 
     - agent: "testing"
       message: "PHASE 3.2 MARKETPLACE TESTING COMPLETE. CRITICAL FINDING: Marketplace UI and functionality are working correctly, but there are NO PUBLISHED DEALS in the database. All marketplace features (map, filters, search, deal cards, detail page, save functionality, messaging) are implemented correctly and production-ready. The empty state is expected behavior. ROOT CAUSE: Database has no deals with is_published=true, public_status='published', and approval_status='approved'. Backend API returns HTTP 200 with empty array (correct behavior). RECOMMENDATION: Main agent should either: (1) Create sample marketplace deals for testing, OR (2) Inform user that marketplace is ready but needs deals to be published by brokers. Map loads with CARTO Light tiles correctly, all filters functional, saved deals page working, messaging infrastructure in place."
+
+  - task: "Phase 3.3 - Broker Workspace Backend Audit"
+    implemented: true
+    working: false
+    file: "/app/backend/routes/deal_routes.py, /app/backend/routes/dashboard_routes.py, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "✅ PARTIAL SUCCESS - Phase 3.3 Broker Workspace Backend Audit completed. AUTHENTICATION: ✅ Supabase authentication working perfectly (contact@pedroarmando.com). DASHBOARD STATS API: ✅ GET /api/dashboard/stats working correctly - returns all required fields (total_pipeline_value, total_deals, avg_deal_size, asset_type_distribution, stage_counts), handles empty state gracefully with zero values. PIPELINE API: ✅ GET /api/pipelines FIXED AND WORKING - Previously reported user['id'] bug has been FIXED. Endpoint now correctly uses user.id (line 2144). Retrieved 2 pipelines with 8 stages each. Pipeline-stages relationship loads correctly. TEAMS API: ✅ Both endpoints working - GET /api/teams returns 2 teams with proper role data, GET /api/teams/{id}/members returns team members with full profile data (name, email, role). CALENDAR API: ✅ No backend endpoints (managed client-side via Supabase). ❌ CRITICAL ISSUES FOUND: (1) DEALS CRUD API - ALL OPERATIONS FAILING with 520 error: 'Could not find the additional_contacts column of deals in the schema cache' (PGRST204). ROOT CAUSE: Supabase deals table is missing the 'additional_contacts' column that is required in the Deal model (/app/backend/models/deal.py line 48). This is a DATABASE SCHEMA MIGRATION ISSUE. The Deal model expects additional_contacts: List[Dict[str, str]] = [] but the Supabase table doesn't have this column. IMPACT: Cannot create, update, or test any deal operations. Deal Move API also fails for same reason. (2) CONTACTS API - FAILING with 520 error. ROOT CAUSE: Backend contacts endpoints (/app/backend/server.py lines 70-120) are still using MongoDB (db.contacts.find(), db.contacts.insert_one()) instead of Supabase. This is a MIGRATION INCOMPLETE issue. The contacts endpoints were never migrated from MongoDB to Supabase. AUTHORIZATION: ⚠️ Minor issue - unauthenticated requests return 403 instead of 401 (RLS policy behavior, not critical). SUMMARY: 5/8 endpoint groups working correctly. 2 critical blockers: (1) Missing database column for deals, (2) Contacts not migrated to Supabase."
+
