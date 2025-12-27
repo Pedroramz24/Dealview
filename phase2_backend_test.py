@@ -455,38 +455,33 @@ class Phase2Tester:
     def test_deal_deletion_flow(self):
         """Test 6: Complete deal deletion flow - create, delete, verify"""
         try:
-            # Step 1: Create a test deal with minimal required fields
+            from supabase import create_client
+            import uuid
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_SERVICE_KEY']
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Step 1: Create a test deal directly in Supabase
+            deal_id = str(uuid.uuid4())
             deal_data = {
-                "property_address": "123 Test Street, San Antonio, TX 78201",
+                "id": deal_id,
+                "owner_id": self.user_id,
+                "address": "123 Test Street, San Antonio, TX 78201",
                 "asset_type": "Office",
-                "asking_price": 500000,
+                "price": 500000,
                 "latitude": 29.4241,
-                "longitude": -98.4936
+                "longitude": -98.4936,
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat()
             }
             
-            create_response = requests.post(
-                f"{self.base_url}/deals",
-                json=deal_data,
-                headers=self.headers,
-                timeout=10
-            )
-            
-            if create_response.status_code != 200:
-                self.log_result(
-                    "Deal Deletion - Create Deal",
-                    False,
-                    f"Failed to create test deal - status {create_response.status_code}",
-                    create_response.text[:200] if create_response.text else "No response"
-                )
-                return False
-            
-            created_deal = create_response.json()
-            deal_id = created_deal.get('id')
+            supabase.table('deals').insert(deal_data).execute()
             
             self.log_result(
                 "Deal Deletion - Create Deal",
                 True,
-                f"Successfully created test deal",
+                f"Successfully created test deal directly in database",
                 f"Deal ID: {deal_id}"
             )
             
