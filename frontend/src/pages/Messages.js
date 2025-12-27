@@ -269,6 +269,9 @@ const Messages = () => {
                   key={idx}
                   message={msg}
                   isOwn={msg.sender_id === currentUserId}
+                  onDelete={(msgId) => {
+                    setMessages(messages.filter(m => m.id !== msgId));
+                  }}
                 />
               ))}
               <div ref={messagesEndRef} />
