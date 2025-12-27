@@ -614,7 +614,8 @@ def main():
     print("\n" + "="*80)
     print("FEATURE 3: DEAL DELETION API (Setup)")
     print("="*80)
-    tester.test_deal_deletion_flow()
+    # Create a deal for message tests
+    tester.create_test_deal_for_messages()
     
     print("\n" + "="*80)
     print("FEATURE 1: MESSAGE DELETION API")
@@ -628,6 +629,11 @@ def main():
     print("FEATURE 2: TEAM ROLES VERIFICATION")
     print("="*80)
     tester.test_team_roles_verification()
+    
+    print("\n" + "="*80)
+    print("FEATURE 3: DEAL DELETION API (Full Test)")
+    print("="*80)
+    tester.test_deal_deletion_flow()
     
     # Print summary
     all_passed = tester.print_summary()
