@@ -355,7 +355,7 @@ def add_calendar_events():
             "start_time": (datetime.now(timezone.utc) + timedelta(days=1, hours=14)).isoformat(),
             "end_time": (datetime.now(timezone.utc) + timedelta(days=1, hours=15)).isoformat(),
             "all_day": False,
-            "event_type": "followup",
+            "event_type": "meeting",
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
         },
