@@ -205,15 +205,17 @@ async def delete_message(
         # Verify message exists and user is the sender
         message_result = supabase.table('marketplace_messages').select('*').eq(
             'id', message_id
-        ).single().execute()
+        ).execute()
         
-        if not message_result.data:
+        if not message_result.data or len(message_result.data) == 0:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Message not found"
             )
         
-        if message_result.data['sender_id'] != str(user.id):
+        message = message_result.data[0]
+        
+        if message['sender_id'] != str(user.id):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You can only delete your own messages"
