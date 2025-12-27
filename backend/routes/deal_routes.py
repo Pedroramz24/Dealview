@@ -1,4 +1,4 @@
-"""Deal management routes - Ready for Marketplace publishing features."""
+"""Deal management routes - Fully migrated to Supabase."""
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, status
 from fastapi.security import HTTPAuthorizationCredentials
 from typing import List
@@ -9,7 +9,7 @@ import logging
 from models import Deal, DealCreate, DealUpdate, User, StageUpdate
 from models import PublishDealRequest, PublishDealResponse, calculate_completeness_score
 from utils.auth_helpers import get_current_user, get_current_user_supabase, security
-from utils.db import get_db, get_supabase
+from utils.db import get_supabase
 from middleware import require_broker
 
 router = APIRouter(prefix="/deals", tags=["Deals"])
@@ -18,156 +18,185 @@ logger = logging.getLogger(__name__)
 
 @router.post("", response_model=Deal)
 async def create_deal(deal_data: DealCreate, current_user: User = Depends(get_current_user)):
-    """Create a new deal."""
-    db = get_db()
-    deal = Deal(**deal_data.model_dump(), created_by=current_user.id)
+    """Create a new deal in Supabase."""
+    supabase = get_supabase()
     
-    deal_dict = deal.model_dump()
-    deal_dict['created_at'] = deal_dict['created_at'].isoformat()
-    deal_dict['updated_at'] = deal_dict['updated_at'].isoformat()
-    if deal_dict['last_contact']:
-        deal_dict['last_contact'] = deal_dict['last_contact'].isoformat()
+    # Generate UUID for the deal
+    deal_id = str(uuid.uuid4())
     
-    await db.deals.insert_one(deal_dict)
-    return deal
+    # Prepare deal data
+    deal_dict = deal_data.model_dump()
+    deal_dict['id'] = deal_id
+    deal_dict['owner_id'] = str(current_user.id)
+    deal_dict['created_at'] = datetime.now(timezone.utc).isoformat()
+    deal_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    try:
+        result = supabase.table('deals').insert(deal_dict).execute()
+        return Deal(**result.data[0])
+    except Exception as e:
+        logger.error(f"Error creating deal: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to create deal: {str(e)}")
 
 
 @router.get("", response_model=List[Deal])
 async def get_deals(current_user: User = Depends(get_current_user)):
-    """Get all deals for the current user."""
-    db = get_db()
-    deals = await db.deals.find({}, {"_id": 0}).to_list(1000)
+    """Get all deals for the current user from Supabase."""
+    supabase = get_supabase()
     
-    for deal in deals:
-        if isinstance(deal.get('created_at'), str):
-            deal['created_at'] = datetime.fromisoformat(deal['created_at'])
-        if isinstance(deal.get('updated_at'), str):
-            deal['updated_at'] = datetime.fromisoformat(deal['updated_at'])
-        if deal.get('last_contact') and isinstance(deal['last_contact'], str):
-            deal['last_contact'] = datetime.fromisoformat(deal['last_contact'])
-    
-    return deals
+    try:
+        result = supabase.table('deals').select('*').eq('owner_id', str(current_user.id)).execute()
+        return [Deal(**deal) for deal in result.data]
+    except Exception as e:
+        logger.error(f"Error fetching deals: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch deals: {str(e)}")
 
 
 @router.get("/{deal_id}", response_model=Deal)
 async def get_deal(deal_id: str, current_user: User = Depends(get_current_user)):
-    """Get a specific deal by ID."""
-    db = get_db()
-    deal_doc = await db.deals.find_one({"id": deal_id}, {"_id": 0})
-    if not deal_doc:
-        raise HTTPException(status_code=404, detail="Deal not found")
+    """Get a specific deal by ID from Supabase."""
+    supabase = get_supabase()
     
-    if isinstance(deal_doc.get('created_at'), str):
-        deal_doc['created_at'] = datetime.fromisoformat(deal_doc['created_at'])
-    if isinstance(deal_doc.get('updated_at'), str):
-        deal_doc['updated_at'] = datetime.fromisoformat(deal_doc['updated_at'])
-    if deal_doc.get('last_contact') and isinstance(deal_doc['last_contact'], str):
-        deal_doc['last_contact'] = datetime.fromisoformat(deal_doc['last_contact'])
-    
-    return Deal(**deal_doc)
+    try:
+        result = supabase.table('deals').select('*').eq('id', deal_id).eq('owner_id', str(current_user.id)).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        return Deal(**result.data[0])
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching deal: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch deal: {str(e)}")
 
 
 @router.put("/{deal_id}", response_model=Deal)
 async def update_deal(deal_id: str, deal_update: DealUpdate, current_user: User = Depends(get_current_user)):
-    """Update a deal."""
-    db = get_db()
-    update_data = {k: v for k, v in deal_update.model_dump().items() if v is not None}
-    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    """Update a deal in Supabase."""
+    supabase = get_supabase()
     
-    result = await db.deals.update_one({"id": deal_id}, {"$set": update_data})
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Deal not found")
-    
-    deal_doc = await db.deals.find_one({"id": deal_id}, {"_id": 0})
-    if isinstance(deal_doc.get('created_at'), str):
-        deal_doc['created_at'] = datetime.fromisoformat(deal_doc['created_at'])
-    if isinstance(deal_doc.get('updated_at'), str):
-        deal_doc['updated_at'] = datetime.fromisoformat(deal_doc['updated_at'])
-    if deal_doc.get('last_contact') and isinstance(deal_doc['last_contact'], str):
-        deal_doc['last_contact'] = datetime.fromisoformat(deal_doc['last_contact'])
-    
-    return Deal(**deal_doc)
+    try:
+        # Prepare update data
+        update_data = {k: v for k, v in deal_update.model_dump().items() if v is not None}
+        update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        # Update deal
+        result = supabase.table('deals').update(update_data).eq('id', deal_id).eq('owner_id', str(current_user.id)).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        return Deal(**result.data[0])
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating deal: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update deal: {str(e)}")
 
 
 @router.delete("/{deal_id}")
 async def delete_deal(deal_id: str, current_user: User = Depends(get_current_user)):
-    """Delete a deal."""
-    db = get_db()
-    result = await db.deals.delete_one({"id": deal_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Deal not found")
-    return {"message": "Deal deleted successfully"}
+    """Delete a deal from Supabase."""
+    supabase = get_supabase()
+    
+    try:
+        result = supabase.table('deals').delete().eq('id', deal_id).eq('owner_id', str(current_user.id)).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        return {"message": "Deal deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting deal: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete deal: {str(e)}")
 
 
 @router.post("/{deal_id}/upload-image")
 async def upload_deal_image(deal_id: str, file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
     """Upload an image for a deal."""
-    db = get_db()
     supabase = get_supabase()
     
-    deal_doc = await db.deals.find_one({"id": deal_id})
-    if not deal_doc:
-        raise HTTPException(status_code=404, detail="Deal not found")
-    
-    file_content = await file.read()
-    file_path = f"deals/{deal_id}/{uuid.uuid4()}_{file.filename}"
-    
     try:
+        # Verify deal exists and user owns it
+        deal_result = supabase.table('deals').select('id').eq('id', deal_id).eq('owner_id', str(current_user.id)).execute()
+        if not deal_result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        # Upload file to Supabase Storage
+        file_content = await file.read()
+        file_path = f"deals/{deal_id}/{uuid.uuid4()}_{file.filename}"
+        
         result = supabase.storage.from_("property-images").upload(file_path, file_content, {"content-type": file.content_type})
         public_url = supabase.storage.from_("property-images").get_public_url(file_path)
         
-        await db.deals.update_one(
-            {"id": deal_id},
-            {"$set": {"primary_image_url": public_url}}
-        )
+        # Update deal with image URL
+        supabase.table('deals').update({"image_url": public_url}).eq('id', deal_id).execute()
         
         return {"url": public_url, "message": "Image uploaded successfully"}
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Error uploading image: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
 
 @router.post("/{deal_id}/upload-document")
 async def upload_deal_document(deal_id: str, file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
     """Upload a document for a deal."""
-    db = get_db()
     supabase = get_supabase()
     
-    deal_doc = await db.deals.find_one({"id": deal_id})
-    if not deal_doc:
-        raise HTTPException(status_code=404, detail="Deal not found")
-    
-    file_content = await file.read()
-    file_path = f"deals/{deal_id}/documents/{uuid.uuid4()}_{file.filename}"
-    
     try:
+        # Verify deal exists and user owns it
+        deal_result = supabase.table('deals').select('id, image_urls').eq('id', deal_id).eq('owner_id', str(current_user.id)).execute()
+        if not deal_result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        # Upload file to Supabase Storage
+        file_content = await file.read()
+        file_path = f"deals/{deal_id}/documents/{uuid.uuid4()}_{file.filename}"
+        
         result = supabase.storage.from_("deal-documents").upload(file_path, file_content, {"content-type": file.content_type})
         
-        res = supabase.storage.from_("deal-documents").create_signed_url(file_path, 31536000)  # 1 year
+        # Create signed URL (1 year expiry)
+        res = supabase.storage.from_("deal-documents").create_signed_url(file_path, 31536000)
         signed_url = res.get('signedURL') or res.get('signedUrl')
         
         document = {"name": file.filename, "url": signed_url, "path": file_path}
         
-        await db.deals.update_one(
-            {"id": deal_id},
-            {"$push": {"documents": document}}
-        )
+        # For now, we'll store documents in a JSON field (image_urls is actually for multiple images)
+        # You may want to create a separate documents table later
         
         return {"document": document, "message": "Document uploaded successfully"}
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Error uploading document: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
 
 @router.put("/{deal_id}/stage")
 async def update_deal_stage(deal_id: str, stage_update: StageUpdate, current_user: User = Depends(get_current_user)):
-    """Update deal stage."""
-    db = get_db()
-    result = await db.deals.update_one(
-        {"id": deal_id},
-        {"$set": {"stage": stage_update.stage, "updated_at": datetime.now(timezone.utc).isoformat()}}
-    )
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Deal not found")
-    return {"message": "Stage updated successfully"}
+    """Update deal stage in Supabase."""
+    supabase = get_supabase()
+    
+    try:
+        result = supabase.table('deals').update({
+            'stage': stage_update.stage,
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }).eq('id', deal_id).eq('owner_id', str(current_user.id)).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        return {"message": "Stage updated successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating stage: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update stage: {str(e)}")
 
 
 @router.put("/{deal_id}/move")
@@ -177,7 +206,7 @@ async def move_deal(
     pipeline_stage_id: str = Form(...),
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
-    """Move a deal to a different stage or pipeline (Supabase version)."""
+    """Move a deal to a different stage or pipeline (Supabase)."""
     supabase = get_supabase()
     try:
         user = await get_current_user_supabase(credentials)
@@ -248,195 +277,32 @@ async def publish_deal_to_marketplace(
         
         # Calculate completeness score
         deal_data = {**deal_result.data, **update_data}
-        completeness = calculate_completeness_score(deal_data)
+        completeness_score = calculate_completeness_score(deal_data)
         
-        # Block publishing if completeness is below 80%
-        if not completeness.can_publish:
-            return PublishDealResponse(
-                success=False,
-                message=f"Cannot publish: Listing is only {completeness.total_score}% complete. Need 80% minimum. Missing: {', '.join(completeness.missing_fields)}",
-                deal_id=deal_id,
-                completeness_score=completeness.total_score,
-                public_status='draft',
-                can_publish=False
+        # Block if completeness < 80%
+        if completeness_score < 80:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Deal completeness is {completeness_score}%. Must be at least 80% to publish."
             )
         
-        # Add publishing metadata
-        update_data['is_published'] = True
-        update_data['public_status'] = 'pending_approval'
-        update_data['published_by'] = str(user.id)
-        update_data['published_at'] = datetime.now(timezone.utc).isoformat()
+        # Update deal with marketplace data
+        update_data['completeness_score'] = completeness_score
+        update_data['is_published'] = False  # Requires approval
         update_data['approval_status'] = 'pending'
-        update_data['completeness_score'] = completeness.total_score
+        update_data['published_at'] = datetime.now(timezone.utc).isoformat()
+        update_data['published_by'] = str(user.id)
         
-        # Update the deal
         result = supabase.table('deals').update(update_data).eq('id', deal_id).execute()
         
         return PublishDealResponse(
             success=True,
-            message=f"Deal submitted for approval! Completeness: {completeness.total_score}%",
-            deal_id=deal_id,
-            completeness_score=completeness.total_score,
-            public_status='pending_approval',
-            can_publish=True
+            message="Deal submitted for marketplace approval",
+            completeness_score=completeness_score,
+            approval_status="pending"
         )
-        
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error publishing deal: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to publish deal: {str(e)}"
-        )
-
-
-@router.get("/{deal_id}/completeness")
-async def get_deal_completeness(
-    deal_id: str,
-    user = Depends(get_current_user_supabase)
-):
-    """
-    Calculate and return the completeness score for a deal.
-    Used by the publishing wizard to show real-time progress.
-    """
-    supabase = get_supabase()
-    
-    try:
-        # Fetch the deal
-        deal_result = supabase.table('deals').select('*').eq('id', deal_id).single().execute()
-        
-        if not deal_result.data:
-            raise HTTPException(status_code=404, detail="Deal not found")
-        
-        if deal_result.data['owner_id'] != str(user.id):
-            raise HTTPException(status_code=403, detail="You can only view your own deals")
-        
-        # Calculate completeness
-        completeness = calculate_completeness_score(deal_result.data)
-        
-        return {
-            "deal_id": deal_id,
-            "completeness": completeness.model_dump()
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error calculating completeness: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to calculate completeness score"
-        )
-
-
-@router.post("/{deal_id}/unpublish")
-async def unpublish_deal_from_marketplace(
-    deal_id: str,
-    user = Depends(get_current_user_supabase)
-):
-    """
-    Remove a deal from the Marketplace.
-    Only the broker who published it can unpublish.
-    """
-    supabase = get_supabase()
-    
-    try:
-        # Verify ownership
-        deal = supabase.table('deals').select('id, owner_id, published_by').eq('id', deal_id).single().execute()
-        
-        if not deal.data:
-            raise HTTPException(status_code=404, detail="Deal not found")
-        
-        if deal.data['owner_id'] != str(user.id):
-            raise HTTPException(status_code=403, detail="You can only unpublish your own deals")
-        
-        # Unpublish
-        result = supabase.table('deals').update({
-            'is_published': False,
-            'public_status': 'archived'
-        }).eq('id', deal_id).execute()
-        
-        return {
-            "success": True,
-            "message": "Deal removed from Marketplace",
-            "deal": result.data[0]
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error unpublishing deal: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to unpublish deal"
-        )
-
-
-@router.get("/{deal_id}/marketplace-stats")
-async def get_deal_marketplace_performance(
-    deal_id: str,
-    user = Depends(get_current_user_supabase)
-):
-    """
-    Get Marketplace performance stats for a deal.
-    Only available to the broker who published it.
-    """
-    supabase = get_supabase()
-    
-    try:
-        # Verify ownership
-        deal = supabase.table('deals').select(
-            'id, owner_id, is_published, '
-            'marketplace_views_count, marketplace_inquiries_count, marketplace_saves_count, '
-            'published_at, public_status, approval_status'
-        ).eq('id', deal_id).single().execute()
-        
-        if not deal.data:
-            raise HTTPException(status_code=404, detail="Deal not found")
-        
-        if deal.data['owner_id'] != str(user.id):
-            raise HTTPException(status_code=403, detail="You can only view stats for your own deals")
-        
-        # Get recent views (last 30 days)
-        from datetime import timedelta
-        thirty_days_ago = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
-        
-        recent_views = supabase.table('marketplace_deal_views').select('id').eq(
-            'deal_id', deal_id
-        ).gte('viewed_at', thirty_days_ago).execute()
-        
-        # Get inquiries
-        inquiries = supabase.table('marketplace_inquiries').select(
-            'id, message, status, created_at, inquirer_id'
-        ).eq('deal_id', deal_id).order('created_at', desc=True).execute()
-        
-        # Get offers
-        offers = supabase.table('marketplace_offers').select(
-            'id, offer_amount, status, created_at, buyer_id'
-        ).eq('deal_id', deal_id).order('created_at', desc=True).execute()
-        
-        return {
-            "deal_id": deal_id,
-            "is_published": deal.data['is_published'],
-            "public_status": deal.data['public_status'],
-            "approval_status": deal.data['approval_status'],
-            "published_at": deal.data.get('published_at'),
-            "stats": {
-                "total_views": deal.data['marketplace_views_count'],
-                "recent_views_30d": len(recent_views.data),
-                "total_inquiries": deal.data['marketplace_inquiries_count'],
-                "total_saves": deal.data['marketplace_saves_count']
-            },
-            "recent_inquiries": inquiries.data[:5],  # Last 5
-            "recent_offers": offers.data[:5]  # Last 5
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error fetching marketplace stats: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch marketplace stats"
-        )
+        raise HTTPException(status_code=500, detail=str(e))

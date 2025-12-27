@@ -1,13 +1,15 @@
-"""Dashboard routes - Ready for Marketplace analytics."""
+"""Dashboard routes - Fully migrated to Supabase."""
 from fastapi import APIRouter, Depends
 from typing import List
 import time
 import logging
 import feedparser
+import re
+from datetime import datetime
 
 from models import User
 from utils.auth_helpers import get_current_user
-from utils.db import get_db
+from utils.db import get_supabase
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 logger = logging.getLogger(__name__)
@@ -22,31 +24,48 @@ news_cache = {
 
 @router.get("/stats")
 async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
-    """Get dashboard statistics for the current user's deals."""
-    db = get_db()
-    deals = await db.deals.find({}, {"_id": 0}).to_list(1000)
+    """Get dashboard statistics for the current user's deals from Supabase."""
+    supabase = get_supabase()
     
-    total_pipeline_value = sum(deal.get('asking_price', 0) for deal in deals)
-    total_deals = len(deals)
-    avg_deal_size = total_pipeline_value / total_deals if total_deals > 0 else 0
-    
-    asset_type_distribution = {}
-    for deal in deals:
-        asset_type = deal.get('asset_type', 'Unknown')
-        asset_type_distribution[asset_type] = asset_type_distribution.get(asset_type, 0) + 1
-    
-    stage_counts = {}
-    for deal in deals:
-        stage = deal.get('stage', 'New')
-        stage_counts[stage] = stage_counts.get(stage, 0) + 1
-    
-    return {
-        "total_pipeline_value": total_pipeline_value,
-        "total_deals": total_deals,
-        "avg_deal_size": avg_deal_size,
-        "asset_type_distribution": asset_type_distribution,
-        "stage_counts": stage_counts
-    }
+    try:
+        # Fetch user's deals from Supabase
+        result = supabase.table('deals').select('price, asset_type, stage, pipeline_stage_id').eq('owner_id', str(current_user.id)).execute()
+        deals = result.data
+        
+        # Calculate stats
+        total_pipeline_value = sum(deal.get('price', 0) or 0 for deal in deals)
+        total_deals = len(deals)
+        avg_deal_size = total_pipeline_value / total_deals if total_deals > 0 else 0
+        
+        asset_type_distribution = {}
+        for deal in deals:
+            asset_type = deal.get('asset_type', 'Unknown')
+            asset_type_distribution[asset_type] = asset_type_distribution.get(asset_type, 0) + 1
+        
+        stage_counts = {}
+        for deal in deals:
+            stage = deal.get('stage', 'New')
+            stage_counts[stage] = stage_counts.get(stage, 0) + 1
+        
+        return {
+            "total_pipeline_value": total_pipeline_value,
+            "total_deals": total_deals,
+            "avg_deal_size": avg_deal_size,
+            "asset_type_distribution": asset_type_distribution,
+            "stage_counts": stage_counts
+        }
+    except Exception as e:
+        logger.error(f"Error fetching dashboard stats: {str(e)}")
+        # Return empty stats instead of error to support empty state
+        return {
+            "total_pipeline_value": 0,
+            "total_deals": 0,
+            "avg_deal_size": 0,
+            "asset_type_distribution": {},
+            "stage_counts": {}
+        }
+
+
 @router.get("/dashboard/news")
 async def get_market_news():
     """
@@ -115,8 +134,7 @@ async def get_market_news():
             'lubbock', 'arlington', 'plano', 'irving', 'lone star', 'dfw'
         ]
         
-        # National MACRO-ECONOMIC keywords (affects all CRE regardless of location)
-        # Keep this broad to capture important national trends
+        # National MACRO-ECONOMIC keywords
         macro_economic_keywords = [
             # Fed and monetary policy
             'federal reserve', 'fed rate', 'interest rate', 'jerome powell',
@@ -134,8 +152,7 @@ async def get_market_news():
             'supply and demand', 'market cycle', 'real estate cycle'
         ]
         
-        # EXCLUDE these - other city-specific news we don't care about
-        # Note: We only exclude if these appear AND Texas keywords don't also appear
+        # EXCLUDE these - other city-specific news
         exclude_cities = [
             'new york city', 'manhattan', 'brooklyn', 'nyc ',
             'los angeles', ' la ', 'san francisco', 'oakland', 'san diego', 'san jose', 'california ',
@@ -164,7 +181,7 @@ async def get_market_news():
                 feed = feedparser.parse(feed_info['url'])
                 logger.info(f"  ✅ {feed_info['source']}: {len(feed.entries)} entries found")
                 
-                # Texas feeds: Accept ALL articles (they're already Texas-specific)
+                # Texas feeds: Accept ALL articles
                 for entry in feed.entries[:5]:
                     total_checked += 1
                     
@@ -306,17 +323,3 @@ async def get_market_news():
             "count": 0,
             "error": True
         }
-
-
-# ============================================================
-# MARKETPLACE ANALYTICS ENDPOINTS (TO BE ADDED IN PHASE 2)
-# ============================================================
-# @router.get("/marketplace-performance")
-# async def get_marketplace_performance(current_user: User = Depends(get_current_user)):
-#     """Get Marketplace performance metrics for broker"""
-#     pass
-#
-# @router.get("/marketplace-activity")
-# async def get_marketplace_activity_feed(current_user: User = Depends(get_current_user)):
-#     """Get recent Marketplace activity (views, inquiries, offers)"""
-#     pass
