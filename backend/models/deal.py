@@ -55,8 +55,8 @@ class Deal(BaseModel):
     
     # Media & Documents
     primary_image_url: Optional[str] = None
-    gallery_images: List[str] = []
-    documents: List[Dict[str, str]] = []  # [{"name": "...", "url": "..."}]
+    gallery_images: Optional[List[str]] = None
+    documents: Optional[List[Dict[str, str]]] = None
     
     # Dates & IDs
     target_close_date: Optional[str] = None
