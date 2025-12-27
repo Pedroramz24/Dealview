@@ -136,7 +136,6 @@ class DeploymentReadinessTest:
             "asking_price": 2500000,
             "latitude": 29.4241,
             "longitude": -98.4936,
-            "building_size": 15000,
             "description": "Test deal for deployment readiness verification"
         }
         
