@@ -102,42 +102,39 @@ class Deal(BaseModel):
 
 
 class DealCreate(BaseModel):
-    # Core Information
-    deal_title: Optional[str] = None
-    property_address: str
+    # Core Information (aligned with Supabase schema)
+    title: Optional[str] = None  # Supabase uses 'title' not 'deal_title'
+    address: str  # Supabase uses 'address' not 'property_address'
     asset_type: str
-    deal_status: str = "New"
-    pipeline_stage: str = "New"
+    status: str = "New"  # Supabase uses 'status' not 'deal_status'
+    stage: str = "New"  # Supabase uses 'stage' not 'pipeline_stage'
     priority: str = "Medium"
     owner_visibility: str = "Team"
     description: str = ""
     
     # Location & Map
-    latitude: float
-    longitude: float
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     display_on_map: bool = True
-    market: Optional[str] = None
-    submarket: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
     
-    # Property Facts
-    building_size: Optional[float] = None
+    # Property Facts (aligned with Supabase schema)
+    size: Optional[float] = None  # Supabase uses 'size' not 'building_size'
     lot_size: Optional[float] = None
-    lot_acres: Optional[float] = None
     year_built: Optional[int] = None
     zoning: Optional[str] = None
     occupancy: Optional[str] = None
     parking_spaces: Optional[int] = None
-    key_features: Optional[str] = None
     
-    # Financials
-    asking_price: float
+    # Financials (aligned with Supabase schema)
+    asking_price: float  # Now matches Supabase after column rename
     noi: Optional[float] = None
     cap_rate: Optional[float] = None
-    lease_type: Optional[str] = None
-    proforma_notes: Optional[str] = None
     
     # Contacts & Roles
-    primary_contact: Optional[str] = None
+    primary_contact_id: Optional[str] = None
     additional_contacts: List[Dict[str, str]] = []
     last_contact_date: Optional[str] = None
     
