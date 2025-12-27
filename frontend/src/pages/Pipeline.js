@@ -965,7 +965,7 @@ const Pipeline = () => {
                                     e.stopPropagation();
                                     navigate(`/workspace/deals/${deal.id}`);
                                   }}
-                                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-opacity-80"
+                                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200"
                                   style={{
                                     background: 'rgba(59, 130, 246, 0.15)',
                                     border: '1px solid rgba(59, 130, 246, 0.4)',
@@ -974,79 +974,43 @@ const Pipeline = () => {
                                     fontWeight: '600'
                                   }}
                                   onMouseDown={(e) => e.stopPropagation()}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.25)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)';
+                                  }}
                                 >
                                   <Eye className="w-3.5 h-3.5" />
                                   View
                                 </button>
                                 
-                                {/* Three-dot Menu */}
-                                <div style={{ position: 'relative' }}>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setOpenMenuDealId(openMenuDealId === deal.id ? null : deal.id);
-                                    }}
-                                    className="px-2 py-2 rounded-lg transition-all duration-200"
-                                    style={{
-                                      background: 'rgba(255, 255, 255, 0.05)',
-                                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                                      color: 'var(--text-muted)',
-                                      cursor: 'pointer'
-                                    }}
-                                    onMouseDown={(e) => e.stopPropagation()}
-                                  >
-                                    <MoreVertical className="w-4 h-4" />
-                                  </button>
-                                  
-                                  {/* Dropdown Menu */}
-                                  {openMenuDealId === deal.id && (
-                                    <div
-                                      style={{
-                                        position: 'absolute',
-                                        top: '100%',
-                                        right: 0,
-                                        marginTop: '4px',
-                                        background: 'rgba(15, 23, 42, 0.98)',
-                                        border: '1px solid rgba(239, 68, 68, 0.3)',
-                                        borderRadius: '8px',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
-                                        zIndex: 1000,
-                                        minWidth: '150px'
-                                      }}
-                                    >
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setOpenMenuDealId(null);
-                                          handleDeleteDeal(deal.id, deal.title || deal.address);
-                                        }}
-                                        style={{
-                                          width: '100%',
-                                          padding: '12px 16px',
-                                          background: 'transparent',
-                                          border: 'none',
-                                          color: '#ef4444',
-                                          fontSize: '13px',
-                                          fontWeight: '600',
-                                          cursor: 'pointer',
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          gap: '8px',
-                                          transition: 'all 0.2s'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                          e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                          e.currentTarget.style.background = 'transparent';
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                        Delete Deal
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
+                                {/* Delete Button - Always Visible */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteDeal(deal.id, deal.title || deal.address);
+                                  }}
+                                  className="px-3 py-2 rounded-lg transition-all duration-200"
+                                  style={{
+                                    background: 'rgba(239, 68, 68, 0.1)',
+                                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                                    color: '#ef4444',
+                                    cursor: 'pointer'
+                                  }}
+                                  onMouseDown={(e) => e.stopPropagation()}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                                    e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                                    e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                                  }}
+                                  title="Delete Deal"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
                               </div>
                             </div>
                           </div>
