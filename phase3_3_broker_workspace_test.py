@@ -165,13 +165,17 @@ def test_deals_crud():
     try:
         deal_data = {
             "title": f"Test Deal - Phase 3.3 - {datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "property_address": "123 Test Street",
             "address": "123 Test Street",
             "city": "San Antonio",
             "state": "TX",
             "zip_code": "78201",
             "asset_type": "Office",
             "price": 1500000,
+            "asking_price": 1500000,
             "size": 5000,
+            "latitude": 29.4241,
+            "longitude": -98.4936,
             "description": "Test deal for Phase 3.3 broker workspace audit"
         }
         
