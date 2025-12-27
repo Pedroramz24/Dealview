@@ -1361,6 +1361,124 @@ const Pipeline = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={deleteConfirmation.open} onOpenChange={(open) => !open && setDeleteConfirmation({ open: false, deal: null })}>
+        <DialogContent className="glass-surface" style={{ 
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          maxWidth: '480px'
+        }}>
+          <DialogHeader>
+            <DialogTitle style={{ color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '12px',
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <AlertCircle className="w-6 h-6" style={{ color: '#ef4444' }} />
+              </div>
+              <span>Delete Deal</span>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              Are you sure you want to delete this deal? This action cannot be undone.
+            </p>
+            
+            {deleteConfirmation.deal && (
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.05)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                borderRadius: '8px',
+                padding: '16px'
+              }}>
+                <p style={{ 
+                  color: 'var(--text-primary)', 
+                  fontWeight: '600',
+                  marginBottom: '4px',
+                  fontSize: '15px'
+                }}>
+                  {deleteConfirmation.deal.title || deleteConfirmation.deal.address || 'Untitled Deal'}
+                </p>
+                {deleteConfirmation.deal.address && deleteConfirmation.deal.title && (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '8px' }}>
+                    {deleteConfirmation.deal.address}
+                  </p>
+                )}
+                <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                  {deleteConfirmation.deal.asset_type && (
+                    <span style={{
+                      padding: '4px 10px',
+                      background: getAssetTypeColor(deleteConfirmation.deal.asset_type).bg,
+                      color: getAssetTypeColor(deleteConfirmation.deal.asset_type).color,
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: '600',
+                      border: `1px solid ${getAssetTypeColor(deleteConfirmation.deal.asset_type).border}`
+                    }}>
+                      {deleteConfirmation.deal.asset_type}
+                    </span>
+                  )}
+                  {deleteConfirmation.deal.price && (
+                    <span style={{
+                      padding: '4px 10px',
+                      background: 'rgba(0, 184, 212, 0.15)',
+                      color: '#00b8d4',
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: '600',
+                      border: '1px solid rgba(0, 184, 212, 0.3)'
+                    }}>
+                      {formatPrice(deleteConfirmation.deal.price)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex justify-end gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteConfirmation({ open: false, deal: null })}
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text-primary)',
+                fontWeight: '600'
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDeleteDeal}
+              style={{
+                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                border: 'none',
+                color: '#ffffff',
+                fontWeight: '700',
+                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(239, 68, 68, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
+              }}
+            >
+              Delete Deal
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
