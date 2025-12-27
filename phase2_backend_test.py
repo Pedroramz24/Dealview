@@ -478,13 +478,13 @@ class Phase2Tester:
             # Step 1: Create a test deal
             deal_data = {
                 "title": "Test Deal for Deletion",
-                "address": "123 Test Street, San Antonio, TX 78201",
+                "property_address": "123 Test Street, San Antonio, TX 78201",
                 "city": "San Antonio",
                 "state": "TX",
                 "zip_code": "78201",
                 "asset_type": "Office",
-                "price": 500000,
-                "size": 5000,
+                "asking_price": 500000,
+                "building_size": 5000,
                 "description": "Test deal created for deletion testing"
             }
             
