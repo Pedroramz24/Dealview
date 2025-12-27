@@ -436,13 +436,12 @@ class DeploymentReadinessTest:
         print("4. MARKETPLACE PUBLISHING FLOW")
         print("="*60)
         
-        # Create a deal to publish with correct field names
+        # Create a deal to publish with correct field names from DealCreate model
         deal_data = {
-            "title": "Test Marketplace Deal",
-            "address": "789 Market Street, San Antonio, TX",
+            "property_address": "789 Market Street, San Antonio, TX",
             "asset_type": "Industrial",
-            "price": 3000000,
-            "size": 20000,
+            "asking_price": 3000000,
+            "building_size": 20000,
             "latitude": 29.4241,
             "longitude": -98.4936,
             "description": "Test deal for marketplace publishing"
