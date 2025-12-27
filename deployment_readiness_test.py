@@ -433,15 +433,15 @@ class DeploymentReadinessTest:
         print("4. MARKETPLACE PUBLISHING FLOW")
         print("="*60)
         
-        # Create a deal to publish
+        # Create a deal to publish with correct field names
         deal_data = {
-            "title": "Test Marketplace Deal",
-            "address": "789 Market Street",
-            "city": "San Antonio",
-            "state": "TX",
+            "deal_title": "Test Marketplace Deal",
+            "property_address": "789 Market Street, San Antonio, TX",
             "asset_type": "Industrial",
-            "price": 3000000,
-            "size": 20000,
+            "asking_price": 3000000,
+            "building_size": 20000,
+            "latitude": 29.4241,
+            "longitude": -98.4936,
             "description": "Test deal for marketplace publishing"
         }
         
@@ -486,11 +486,24 @@ class DeploymentReadinessTest:
                     )
                 
                 # Cleanup
-                self.make_request('DELETE', f'/deals/{deal_id}', headers=self.headers)
-                self.created_resources['deals'].remove(deal_id)
+                try:
+                    self.make_request('DELETE', f'/deals/{deal_id}', headers=self.headers)
+                    self.created_resources['deals'].remove(deal_id)
+                except:
+                    pass
+            else:
+                self.log_result(
+                    "Create Deal for Publishing",
+                    False,
+                    f"Failed with status {response.status_code}",
+                    response.text,
+                    resp_time
+                )
                 
         except Exception as e:
             self.log_result("Marketplace Publishing", False, f"Error: {str(e)}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
     
     # ==================== PIPELINE MANAGEMENT ====================
     
