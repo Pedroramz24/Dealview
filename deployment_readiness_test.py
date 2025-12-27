@@ -434,11 +434,11 @@ class DeploymentReadinessTest:
         
         # Create a deal to publish with correct field names
         deal_data = {
-            "deal_title": "Test Marketplace Deal",
-            "property_address": "789 Market Street, San Antonio, TX",
+            "title": "Test Marketplace Deal",
+            "address": "789 Market Street, San Antonio, TX",
             "asset_type": "Industrial",
-            "asking_price": 3000000,
-            "building_size": 20000,
+            "price": 3000000,
+            "size": 20000,
             "latitude": 29.4241,
             "longitude": -98.4936,
             "description": "Test deal for marketplace publishing"
