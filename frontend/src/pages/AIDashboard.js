@@ -255,14 +255,14 @@ const SnapshotCards = ({ snapshot, navigate }) => {
       label: 'Active Deals', 
       value: snapshot.active_deals,
       color: '#3b82f6',
-      onClick: () => navigate('/deals')
+      onClick: () => navigate('/workspace/deals')
     },
     { 
       icon: Calendar, 
       label: 'Meetings Today', 
       value: snapshot.meetings_today,
       color: '#10b981',
-      onClick: () => navigate('/calendar')
+      onClick: () => navigate('/workspace/calendar')
     },
     { 
       icon: DollarSign, 
@@ -270,7 +270,7 @@ const SnapshotCards = ({ snapshot, navigate }) => {
       value: formatCurrency(snapshot.total_pipeline_value),
       isLarge: true,
       color: '#f59e0b',
-      onClick: () => navigate('/deals')
+      onClick: () => navigate('/workspace/deals')
     },
     { 
       icon: AlertCircle, 
@@ -437,7 +437,7 @@ const TimelineItem = ({ item, navigate }) => {
       transition: 'all 0.3s ease',
       cursor: 'pointer'
     }}
-    onClick={() => item.type === 'event' ? navigate('/calendar') : null}
+    onClick={() => item.type === 'event' ? navigate('/workspace/calendar') : null}
     onMouseEnter={(e) => {
       e.currentTarget.style.background = color.bg;
       e.currentTarget.style.borderColor = `${color.primary}30`;
@@ -597,7 +597,7 @@ const PriorityCard = ({ priority, onAction, navigate }) => {
     if (priority.related_deal) {
       navigate(`/deals/${priority.related_deal.id}`);
     } else if (priority.related_contact) {
-      navigate('/contacts');
+      navigate('/workspace/contacts');
     }
   };
 
