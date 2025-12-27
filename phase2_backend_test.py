@@ -253,11 +253,19 @@ class Phase2Tester:
             
             sender_id = users.data[0]['id']
             
-            # Use a dummy deal ID
-            import uuid
-            deal_id = str(uuid.uuid4())
+            # Use the test deal ID created earlier
+            deal_id = getattr(self, 'test_deal_id', None)
+            if not deal_id:
+                self.log_result(
+                    "Message Deletion - Authorization (Non-Sender)",
+                    False,
+                    "No test deal available - deal creation may have failed",
+                    "Run deal creation test first"
+                )
+                return False
             
             # Create a message from a different sender
+            import uuid
             test_message_id = str(uuid.uuid4())
             test_conversation_id = str(uuid.uuid4())
             
