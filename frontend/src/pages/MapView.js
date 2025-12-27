@@ -1188,6 +1188,15 @@ const MapView = () => {
             initialViewState={viewStateRef.current}
             onMoveEnd={handleMoveEnd}
             onClick={combinedMapClick}
+            onDblClick={(event) => {
+              // Double-click to add deal at this location (prospecting mode only)
+              if (mapMode === 'prospecting') {
+                openCreateDealPanel(
+                  { lat: event.lngLat.lat, lng: event.lngLat.lng },
+                  null // No parcel data, just coordinates
+                );
+              }
+            }}
             style={{ 
               width: '100%', 
               height: '100%', 
