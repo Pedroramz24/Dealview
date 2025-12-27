@@ -69,8 +69,8 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f\"Error getting current user: {str(e)}\")
-        raise HTTPException(status_code=401, detail=\"Invalid authentication credentials\")
+        logger.error(f"Error getting current user: {str(e)}")
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
 
 
 async def get_current_user_supabase(credentials: HTTPAuthorizationCredentials = Depends(security)):
