@@ -521,7 +521,13 @@ class DeploymentReadinessTest:
             )
             
             if response.status_code == 200:
-                pipelines = response.json()
+                data = response.json()
+                # Handle both list and dict responses
+                if isinstance(data, dict):
+                    pipelines = data.get('pipelines', [])
+                else:
+                    pipelines = data
+                    
                 self.log_result(
                     "List Pipelines",
                     True,
@@ -529,7 +535,7 @@ class DeploymentReadinessTest:
                     response_time=resp_time
                 )
                 
-                if pipelines:
+                if pipelines and len(pipelines) > 0:
                     pipeline_id = pipelines[0].get('id')
                     
                     # Get Pipeline Stages
