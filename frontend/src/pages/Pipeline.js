@@ -57,6 +57,7 @@ const Pipeline = () => {
   const [automationData, setAutomationData] = useState({});
   const [viewMode, setViewMode] = useState('pipeline'); // 'pipeline' or 'table'
   const [activeDealId, setActiveDealId] = useState(null); // For drag overlay
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ open: false, deal: null }); // Delete confirmation modal
   
   const boardRef = useRef(null);
   const navigate = useNavigate();
@@ -340,9 +341,14 @@ const Pipeline = () => {
   };
 
   const handleDeleteDeal = async (dealId, dealTitle) => {
-    if (!window.confirm(`Delete "${dealTitle || 'this deal'}"? This action cannot be undone.`)) {
-      return;
-    }
+    // Open confirmation modal instead of browser confirm
+    const deal = deals.find(d => d.id === dealId);
+    setDeleteConfirmation({ open: true, deal: deal });
+  };
+
+  const confirmDeleteDeal = async () => {
+    const dealId = deleteConfirmation.deal?.id;
+    const dealTitle = deleteConfirmation.deal?.title || deleteConfirmation.deal?.address;
 
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
@@ -352,10 +358,12 @@ const Pipeline = () => {
       });
       
       toast.success('Deal deleted successfully');
+      setDeleteConfirmation({ open: false, deal: null });
       fetchDeals(); // Refresh the list
     } catch (error) {
       console.error('Error deleting deal:', error);
       toast.error('Failed to delete deal');
+      setDeleteConfirmation({ open: false, deal: null });
     }
   };
 
