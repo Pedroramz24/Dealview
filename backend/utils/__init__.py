@@ -6,7 +6,7 @@ from .auth_helpers import (
     get_current_user,
     get_current_user_supabase
 )
-from .db import get_db, get_supabase
+from .db import get_supabase
 
 __all__ = [
     # Auth helpers
@@ -16,6 +16,5 @@ __all__ = [
     "get_current_user",
     "get_current_user_supabase",
     # Database
-    "get_db",
     "get_supabase",
 ]
