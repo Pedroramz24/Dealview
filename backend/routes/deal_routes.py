@@ -7,6 +7,7 @@ import uuid
 import logging
 
 from models.deal_simplified import Deal, DealCreate, DealUpdate, StageUpdate
+from models import User
 from models import PublishDealRequest, PublishDealResponse, calculate_completeness_score
 from utils.auth_helpers import get_current_user, get_current_user_supabase, security
 from utils.db import get_supabase
