@@ -57,28 +57,32 @@ def log_test(category, endpoint, status, message, response_time=None, details=No
         print(f"   Details: {details}")
 
 def authenticate():
-    """Authenticate and get JWT token"""
+    """Authenticate using Supabase and get JWT token"""
     print("\n" + "="*80)
     print("AUTHENTICATION")
     print("="*80)
     
     try:
         start = time.time()
-        response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": LOGIN_EMAIL, "password": LOGIN_PASSWORD},
-            timeout=10
-        )
+        
+        # Create Supabase client
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+        
+        # Sign in with email and password
+        auth_response = supabase.auth.sign_in_with_password({
+            "email": LOGIN_EMAIL,
+            "password": LOGIN_PASSWORD
+        })
+        
         elapsed = time.time() - start
         
-        if response.status_code == 200:
-            data = response.json()
-            token = data.get("access_token")
-            user_id = data.get("user", {}).get("id")
+        if auth_response.user and auth_response.session:
+            token = auth_response.session.access_token
+            user_id = auth_response.user.id
             
             log_test(
                 "Authentication",
-                "POST /api/auth/login",
+                "Supabase Auth (signInWithPassword)",
                 "✅",
                 "Login successful",
                 elapsed,
@@ -88,17 +92,17 @@ def authenticate():
         else:
             log_test(
                 "Authentication",
-                "POST /api/auth/login",
+                "Supabase Auth (signInWithPassword)",
                 "❌",
-                f"Login failed: {response.status_code}",
+                "Login failed: No user or session returned",
                 elapsed,
-                response.text[:200]
+                None
             )
             return None, None
     except Exception as e:
         log_test(
             "Authentication",
-            "POST /api/auth/login",
+            "Supabase Auth (signInWithPassword)",
             "❌",
             f"Login error: {str(e)}",
             None,
