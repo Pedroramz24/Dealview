@@ -440,7 +440,6 @@ class DeploymentReadinessTest:
             "property_address": "789 Market Street, San Antonio, TX",
             "asset_type": "Industrial",
             "asking_price": 3000000,
-            "building_size": 20000,
             "latitude": 29.4241,
             "longitude": -98.4936,
             "description": "Test deal for marketplace publishing"
