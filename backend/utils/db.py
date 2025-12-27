@@ -1,24 +1,9 @@
-"""Database connection utilities."""
-from motor.motor_asyncio import AsyncIOMotorClient
+"""Database connection utilities - Supabase only."""
 from supabase import create_client, Client
 import os
 
-# MongoDB client (singleton)
-_mongo_client = None
-_mongo_db = None
-
 # Supabase client (singleton)
 _supabase_client = None
-
-
-def get_db():
-    """Get MongoDB database instance."""
-    global _mongo_client, _mongo_db
-    if _mongo_db is None:
-        mongo_url = os.environ['MONGO_URL']
-        _mongo_client = AsyncIOMotorClient(mongo_url)
-        _mongo_db = _mongo_client[os.environ['DB_NAME']]
-    return _mongo_db
 
 
 def get_supabase() -> Client:
