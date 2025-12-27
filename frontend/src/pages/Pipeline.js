@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { getAssetTypeColor } from '../utils/assetTypeColors';
 import { 
   Search, Filter, SortAsc, DollarSign, Calendar, FileText, 
-  CheckSquare, Phone, Mail, Eye, Edit, Plus, X, Settings, MoreVertical, Trash2
+  CheckSquare, Phone, Mail, Eye, Edit, Plus, X, Settings, MoreVertical, Trash2, AlertCircle
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
