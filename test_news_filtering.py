@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://unifydash.preview.emergentagent.com/api"
+BASE_URL = "https://mockdata-hub.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {
     "email": "pedro@test.com",
     "password": "password123"
