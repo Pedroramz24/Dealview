@@ -338,10 +338,10 @@ class DeploymentReadinessTest:
                 
                 # Create a test deal with correct field names
                 deal_data = {
-                    "deal_title": "Test Deal - Movement",
-                    "property_address": "456 Pipeline Test Ave, San Antonio, TX",
+                    "title": "Test Deal - Movement",
+                    "address": "456 Pipeline Test Ave, San Antonio, TX",
                     "asset_type": "Retail",
-                    "asking_price": 1500000,
+                    "price": 1500000,
                     "latitude": 29.4241,
                     "longitude": -98.4936,
                     "pipeline_id": pipeline_id,
