@@ -337,14 +337,14 @@ class DeploymentReadinessTest:
                     )
                     return False
                 
-                # Create a test deal
+                # Create a test deal with correct field names
                 deal_data = {
-                    "title": "Test Deal - Movement",
-                    "address": "456 Pipeline Test Ave",
-                    "city": "San Antonio",
-                    "state": "TX",
+                    "deal_title": "Test Deal - Movement",
+                    "property_address": "456 Pipeline Test Ave, San Antonio, TX",
                     "asset_type": "Retail",
-                    "price": 1500000,
+                    "asking_price": 1500000,
+                    "latitude": 29.4241,
+                    "longitude": -98.4936,
                     "pipeline_id": pipeline_id,
                     "pipeline_stage_id": stages[0]['id']
                 }
@@ -392,8 +392,20 @@ class DeploymentReadinessTest:
                         )
                     
                     # Cleanup
-                    self.make_request('DELETE', f'/deals/{deal_id}', headers=self.headers)
-                    self.created_resources['deals'].remove(deal_id)
+                    try:
+                        self.make_request('DELETE', f'/deals/{deal_id}', headers=self.headers)
+                        self.created_resources['deals'].remove(deal_id)
+                    except:
+                        pass
+                else:
+                    self.log_result(
+                        "Create Deal for Movement",
+                        False,
+                        f"Failed with status {response.status_code}",
+                        response.text,
+                        resp_time
+                    )
+                    return False
                     
             else:
                 self.log_result(
@@ -407,6 +419,8 @@ class DeploymentReadinessTest:
                 
         except Exception as e:
             self.log_result("Deal Movement", False, f"Error: {str(e)}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
             return False
         
         return True
