@@ -130,6 +130,32 @@ class Phase2Tester:
             supabase_key = os.environ['SUPABASE_SERVICE_KEY']
             supabase = create_client(supabase_url, supabase_key)
             
+            # Get a real recipient user ID (find another user in the system)
+            users = supabase.table('user_profiles').select('id').neq('id', self.user_id).limit(1).execute()
+            if not users.data or len(users.data) == 0:
+                self.log_result(
+                    "Message Deletion - Authorization (Sender)",
+                    False,
+                    "No other users found in system to test with",
+                    "Need at least 2 users in the system"
+                )
+                return False
+            
+            recipient_id = users.data[0]['id']
+            
+            # Get a real deal ID
+            deals = supabase.table('deals').select('id').limit(1).execute()
+            if not deals.data or len(deals.data) == 0:
+                self.log_result(
+                    "Message Deletion - Authorization (Sender)",
+                    False,
+                    "No deals found in system to test with",
+                    "Need at least 1 deal in the system"
+                )
+                return False
+            
+            deal_id = deals.data[0]['id']
+            
             # First, create a test message
             import uuid
             test_message_id = str(uuid.uuid4())
@@ -140,8 +166,8 @@ class Phase2Tester:
                 'id': test_message_id,
                 'conversation_id': test_conversation_id,
                 'sender_id': self.user_id,
-                'recipient_id': '00000000-0000-0000-0000-000000000001',  # Dummy recipient
-                'deal_id': '00000000-0000-0000-0000-000000000002',  # Dummy deal
+                'recipient_id': recipient_id,
+                'deal_id': deal_id,
                 'message': 'Test message for deletion',
                 'read': False,
                 'created_at': datetime.now().isoformat()
