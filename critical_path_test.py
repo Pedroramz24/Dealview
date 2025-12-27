@@ -8,6 +8,11 @@ import requests
 import json
 import time
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv('/app/backend/.env')
 
 # Configuration
 BASE_URL = "https://mockdata-hub.preview.emergentagent.com/api"
@@ -15,6 +20,8 @@ CREDENTIALS = {
     "email": "contact@pedroarmando.com",
     "password": "Flin141812$"
 }
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY')
 
 class CriticalPathTester:
     def __init__(self):
