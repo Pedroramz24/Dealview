@@ -131,15 +131,18 @@ backend:
 
   - task: "Deals API - Supabase Integration"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/routes/deal_routes.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
       - working: true
         agent: "testing"
         comment: "✅ VERIFIED: Deals API (GET /api/deals) working correctly with Supabase. Returns empty array [] when user has no deals. No errors thrown. Gracefully handles empty dataset. Response is valid JSON array. All queries using Supabase deals table with proper RLS filtering (owner_id = current_user.id). Endpoint properly authenticated with Supabase JWT token. No MongoDB queries detected."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL SCHEMA MISMATCH BUG - POST SCHEMA FIX VERIFICATION: Deal CRUD operations completely broken due to Pydantic model mismatch. ROOT CAUSE: The Deal Pydantic model (models/deal.py line 14) expects 'property_address' field, but Supabase database has 'address' column. Similarly, model expects 'building_size' but DB has 'size'. When deal_routes.py tries to convert Supabase response to Deal model (line 65, 78, 95), it fails with validation error: 'property_address Field required'. IMPACT: (1) POST /api/deals - Returns 520 error, cannot create deals. (2) GET /api/deals - Returns 520 error, cannot retrieve deals. (3) PUT /api/deals/{id} - Cannot test, deal creation fails. (4) DELETE /api/deals/{id} - Cannot test, deal creation fails. ADDITIONAL ISSUE: Deal model requires 'notes' to be string (line 54), but Supabase allows NULL values, causing 'Input should be a valid string' error. FIX REQUIRED: Either (A) Update Deal model to match Supabase schema (property_address → address, building_size → size, notes: str → Optional[str]), OR (B) Add field mapping in deal_routes.py to transform Supabase response before validation. TESTING: Attempted to create deal with minimal required fields per review request - all attempts failed. Pass rate: 37.5% (3/8 tests). Performance: Excellent (avg 0.19s). VERDICT: ❌ NOT DEPLOYMENT READY - Deal creation (critical test) fails."
 
   - task: "MongoDB Query Elimination"
     implemented: true
