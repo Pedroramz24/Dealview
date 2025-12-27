@@ -82,17 +82,24 @@ class DeploymentReadinessTest:
         print("="*60)
         
         try:
-            response, resp_time = self.make_request(
-                'POST',
-                '/auth/login',
-                json=TEST_USER
-            )
+            start_time = time.time()
             
-            if response.status_code == 200:
-                data = response.json()
-                self.token = data.get("access_token")
+            # Use Supabase client for authentication
+            supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+            
+            # Sign in with password
+            result = supabase.auth.sign_in_with_password({
+                'email': TEST_USER['email'],
+                'password': TEST_USER['password']
+            })
+            
+            resp_time = time.time() - start_time
+            self.response_times.append(resp_time)
+            
+            if result.session and result.session.access_token:
+                self.token = result.session.access_token
                 self.headers = {"Authorization": f"Bearer {self.token}"}
-                user_id = data.get("user", {}).get("id")
+                user_id = result.user.id if result.user else "unknown"
                 self.log_result(
                     "Authentication",
                     True,
@@ -104,8 +111,8 @@ class DeploymentReadinessTest:
                 self.log_result(
                     "Authentication",
                     False,
-                    f"Login failed with status {response.status_code}",
-                    response.text,
+                    "Login failed - no session returned",
+                    None,
                     resp_time
                 )
                 return False
