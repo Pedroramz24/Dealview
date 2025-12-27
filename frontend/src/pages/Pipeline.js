@@ -1191,97 +1191,71 @@ const Pipeline = () => {
                     </td>
                     <td style={{ padding: '16px', textAlign: 'center' }}>
                       <div className="flex items-center justify-center gap-2">
+                        {/* View Button */}
                         <button
                           onClick={() => navigate(`/deals/${deal.id}`)}
                           style={{
-                            padding: '8px',
+                            padding: '8px 12px',
                             borderRadius: '6px',
                             background: 'rgba(0, 184, 212, 0.1)',
                             border: '1px solid rgba(0, 184, 212, 0.3)',
                             color: '#00b8d4',
                             cursor: 'pointer',
-                            transition: 'all 0.2s ease'
+                            transition: 'all 0.2s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '12px',
+                            fontWeight: '600'
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.background = 'rgba(0, 184, 212, 0.2)';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}
                         >
-                          <Eye size={16} />
+                          <Eye size={14} />
+                          View
                         </button>
                         
-                        {/* Three-dot Menu for Table View */}
-                        <div style={{ position: 'relative' }}>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setOpenMenuDealId(openMenuDealId === deal.id ? null : deal.id);
-                            }}
-                            style={{
-                              padding: '8px',
-                              borderRadius: '6px',
-                              background: 'rgba(255, 255, 255, 0.05)',
-                              border: '1px solid rgba(255, 255, 255, 0.1)',
-                              color: 'var(--text-muted)',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s ease'
-                            }}
-                          >
-                            <MoreVertical size={16} />
-                          </button>
-                          
-                          {openMenuDealId === deal.id && (
-                            <div
-                              style={{
-                                position: 'absolute',
-                                top: '100%',
-                                right: 0,
-                                marginTop: '4px',
-                                background: 'rgba(15, 23, 42, 0.98)',
-                                border: '1px solid rgba(239, 68, 68, 0.3)',
-                                borderRadius: '8px',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
-                                zIndex: 1000,
-                                minWidth: '150px'
-                              }}
-                            >
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setOpenMenuDealId(null);
-                                  handleDeleteDeal(deal.id, deal.title || deal.address);
-                                }}
-                                style={{
-                                  width: '100%',
-                                  padding: '12px 16px',
-                                  background: 'transparent',
-                                  border: 'none',
-                                  color: '#ef4444',
-                                  fontSize: '13px',
-                                  fontWeight: '600',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '8px',
-                                  transition: 'all 0.2s'
-                                }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.background = 'transparent';
-                                }}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                                Delete Deal
-                              </button>
-                            </div>
-                          )}
-                        </div>
+                        {/* Delete Button - Always Visible */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteDeal(deal.id, deal.title || deal.address);
+                          }}
+                          style={{
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            color: '#ef4444',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '12px',
+                            fontWeight: '600'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                            e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }}
+                          title="Delete Deal"
+                        >
+                          <Trash2 size={14} />
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
