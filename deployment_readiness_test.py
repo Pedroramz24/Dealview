@@ -307,8 +307,14 @@ class DeploymentReadinessTest:
             )
             
             if response.status_code == 200:
-                pipelines = response.json()
-                if not pipelines:
+                data = response.json()
+                # Handle both list and dict responses
+                if isinstance(data, dict):
+                    pipelines = data.get('pipelines', [])
+                else:
+                    pipelines = data
+                    
+                if not pipelines or len(pipelines) == 0:
                     self.log_result(
                         "Get Pipelines",
                         False,
