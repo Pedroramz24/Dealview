@@ -141,7 +141,7 @@ class DeploymentTester:
                 return False, "No deal ID available"
             
             update_data = {
-                "price": 2750000  # Updated price
+                "asking_price": 2750000  # Updated price
             }
             
             response = requests.put(
@@ -153,7 +153,7 @@ class DeploymentTester:
             
             if response.status_code == 200:
                 data = response.json()
-                updated_price = data.get("price")
+                updated_price = data.get("asking_price")
                 if updated_price == 2750000:
                     return True, f"Price updated successfully to ${updated_price:,}"
                 else:
