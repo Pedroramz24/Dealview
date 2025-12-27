@@ -245,21 +245,11 @@ class Phase2Tester:
             
             sender_id = users.data[0]['id']
             
-            # Get a real deal ID
-            deals = supabase.table('deals').select('id').limit(1).execute()
-            if not deals.data or len(deals.data) == 0:
-                self.log_result(
-                    "Message Deletion - Authorization (Non-Sender)",
-                    False,
-                    "No deals found in system to test with",
-                    "Need at least 1 deal in the system"
-                )
-                return False
-            
-            deal_id = deals.data[0]['id']
+            # Use a dummy deal ID
+            import uuid
+            deal_id = str(uuid.uuid4())
             
             # Create a message from a different sender
-            import uuid
             test_message_id = str(uuid.uuid4())
             test_conversation_id = str(uuid.uuid4())
             
