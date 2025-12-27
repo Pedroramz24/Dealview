@@ -475,19 +475,13 @@ class Phase2Tester:
     def test_deal_deletion_flow(self):
         """Test 6: Complete deal deletion flow - create, delete, verify"""
         try:
-            # Step 1: Create a test deal
+            # Step 1: Create a test deal with minimal required fields
             deal_data = {
-                "title": "Test Deal for Deletion",
                 "property_address": "123 Test Street, San Antonio, TX 78201",
-                "city": "San Antonio",
-                "state": "TX",
-                "zip_code": "78201",
                 "asset_type": "Office",
                 "asking_price": 500000,
                 "latitude": 29.4241,
-                "longitude": -98.4936,
-                "building_size": 5000,
-                "description": "Test deal created for deletion testing"
+                "longitude": -98.4936
             }
             
             create_response = requests.post(
