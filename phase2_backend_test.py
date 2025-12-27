@@ -484,6 +484,8 @@ class Phase2Tester:
                 "zip_code": "78201",
                 "asset_type": "Office",
                 "asking_price": 500000,
+                "latitude": 29.4241,
+                "longitude": -98.4936,
                 "building_size": 5000,
                 "description": "Test deal created for deletion testing"
             }
