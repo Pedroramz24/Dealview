@@ -534,53 +534,59 @@ class DeploymentReadinessTest:
                     pipeline_id = pipelines[0].get('id')
                     
                     # Get Pipeline Stages
-                    response, resp_time = self.make_request(
-                        'GET',
-                        f'/pipelines/{pipeline_id}/stages',
-                        headers=self.headers
-                    )
-                    
-                    if response.status_code == 200:
-                        stages = response.json()
-                        self.log_result(
-                            "Get Pipeline Stages",
-                            True,
-                            f"Retrieved {len(stages)} stages",
-                            response_time=resp_time
+                    try:
+                        response, resp_time = self.make_request(
+                            'GET',
+                            f'/pipelines/{pipeline_id}/stages',
+                            headers=self.headers
                         )
-                    else:
-                        self.log_result(
-                            "Get Pipeline Stages",
-                            False,
-                            f"Failed with status {response.status_code}",
-                            response.text,
-                            resp_time
-                        )
+                        
+                        if response.status_code == 200:
+                            stages = response.json()
+                            self.log_result(
+                                "Get Pipeline Stages",
+                                True,
+                                f"Retrieved {len(stages)} stages",
+                                response_time=resp_time
+                            )
+                        else:
+                            self.log_result(
+                                "Get Pipeline Stages",
+                                False,
+                                f"Failed with status {response.status_code}",
+                                response.text,
+                                resp_time
+                            )
+                    except Exception as e:
+                        self.log_result("Get Pipeline Stages", False, f"Error: {str(e)}")
                     
                     # Update Pipeline
-                    update_data = {"name": pipelines[0].get('name', 'Test Pipeline')}
-                    response, resp_time = self.make_request(
-                        'PUT',
-                        f'/pipelines/{pipeline_id}',
-                        json=update_data,
-                        headers=self.headers
-                    )
-                    
-                    if response.status_code == 200:
-                        self.log_result(
-                            "Update Pipeline",
-                            True,
-                            "Pipeline updated successfully",
-                            response_time=resp_time
+                    try:
+                        update_data = {"name": pipelines[0].get('name', 'Test Pipeline')}
+                        response, resp_time = self.make_request(
+                            'PUT',
+                            f'/pipelines/{pipeline_id}',
+                            json=update_data,
+                            headers=self.headers
                         )
-                    else:
-                        self.log_result(
-                            "Update Pipeline",
-                            False,
-                            f"Failed with status {response.status_code}",
-                            response.text,
-                            resp_time
-                        )
+                        
+                        if response.status_code == 200:
+                            self.log_result(
+                                "Update Pipeline",
+                                True,
+                                "Pipeline updated successfully",
+                                response_time=resp_time
+                            )
+                        else:
+                            self.log_result(
+                                "Update Pipeline",
+                                False,
+                                f"Failed with status {response.status_code}",
+                                response.text,
+                                resp_time
+                            )
+                    except Exception as e:
+                        self.log_result("Update Pipeline", False, f"Error: {str(e)}")
                 
             else:
                 self.log_result(
@@ -593,6 +599,8 @@ class DeploymentReadinessTest:
                 
         except Exception as e:
             self.log_result("Pipeline Management", False, f"Error: {str(e)}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
     
     # ==================== MESSAGING SYSTEM ====================
     
