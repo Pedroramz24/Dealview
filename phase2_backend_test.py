@@ -467,6 +467,7 @@ class Phase2Tester:
             deal_data = {
                 "id": deal_id,
                 "owner_id": self.user_id,
+                "title": "Test Deal for Deletion",
                 "address": "123 Test Street, San Antonio, TX 78201",
                 "asset_type": "Office",
                 "price": 500000,
@@ -477,6 +478,9 @@ class Phase2Tester:
             }
             
             supabase.table('deals').insert(deal_data).execute()
+            
+            # Store deal_id for message tests
+            self.test_deal_id = deal_id
             
             self.log_result(
                 "Deal Deletion - Create Deal",
