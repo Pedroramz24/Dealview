@@ -26,14 +26,15 @@ supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 USER_EMAIL = "contact@pedroarmando.com"
 
 def get_user_id():
-    """Get user ID from email"""
+    """Get user ID from email via Supabase Auth"""
     try:
-        result = supabase.table("user_profiles").select("id").eq("email", USER_EMAIL).execute()
-        if result.data and len(result.data) > 0:
-            return result.data[0]["id"]
-        else:
-            print(f"❌ User {USER_EMAIL} not found in user_profiles table")
-            sys.exit(1)
+        # Get auth users
+        result = supabase.auth.admin.list_users()
+        for user in result:
+            if user.email == USER_EMAIL:
+                return user.id
+        print(f"❌ User {USER_EMAIL} not found in Supabase Auth")
+        sys.exit(1)
     except Exception as e:
         print(f"❌ Error fetching user: {e}")
         sys.exit(1)
