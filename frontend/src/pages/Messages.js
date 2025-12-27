@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Send, ArrowLeft, Home, DollarSign, MapPin, Phone, Mail, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { Search, Send, ArrowLeft, Home, DollarSign, MapPin, Phone, Mail, Calendar as CalendarIcon, Clock, Trash2 } from 'lucide-react';
 import { API } from '../App';
 import { supabase } from '../supabaseClient';
 import { toast } from 'sonner';
@@ -526,7 +526,7 @@ const DealContextHeader = ({ conversation, navigate }) => {
 
 // Message Bubble
 const MessageBubble = ({ message, isOwn, onDelete }) => {
-  const [showDelete, setShowDelete] = useState(false);
+  const [showActions, setShowActions] = useState(false);
   
   const formatTime = (timestamp) => {
     return new Date(timestamp).toLocaleTimeString('en-US', { 
@@ -542,8 +542,10 @@ const MessageBubble = ({ message, isOwn, onDelete }) => {
     
     try {
       const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      const { API } = await import('../App');
+      const { toast } = await import('sonner');
       
-      const response = await fetch(`${(await import('../App')).API}/messages/${message.id}`, {
+      const response = await fetch(`${API}/messages/${message.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session.access_token}`
@@ -552,13 +554,14 @@ const MessageBubble = ({ message, isOwn, onDelete }) => {
 
       if (response.ok) {
         onDelete(message.id);
-        (await import('sonner')).toast.success('Message deleted');
+        toast.success('Message deleted');
       } else {
-        (await import('sonner')).toast.error('Failed to delete message');
+        toast.error('Failed to delete message');
       }
     } catch (error) {
       console.error('Error deleting message:', error);
-      (await import('sonner')).toast.error('Failed to delete message');
+      const { toast } = await import('sonner');
+      toast.error('Failed to delete message');
     }
   };
 
@@ -568,67 +571,76 @@ const MessageBubble = ({ message, isOwn, onDelete }) => {
         display: 'flex',
         justifyContent: isOwn ? 'flex-end' : 'flex-start',
         marginBottom: '4px',
-        position: 'relative',
-        group: true
-      }}
-      onMouseEnter={() => setShowDelete(true)}
-      onMouseLeave={() => setShowDelete(false)}
-    >
-      <div style={{
-        maxWidth: '70%',
-        padding: '12px 16px',
-        borderRadius: '12px',
-        background: isOwn 
-          ? 'linear-gradient(135deg, #00b8d4 0%, #00a8c0 100%)'
-          : 'rgba(255, 255, 255, 0.05)',
-        border: isOwn ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: isOwn ? '0 2px 8px rgba(0, 184, 212, 0.2)' : 'none',
         position: 'relative'
-      }}>
-        <p style={{
-          color: isOwn ? '#000' : '#fff',
-          fontSize: '14px',
-          lineHeight: '1.5',
-          marginBottom: '6px',
-          wordWrap: 'break-word'
-        }}>
-          {message.message}
-        </p>
+      }}
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => setShowActions(false)}
+    >
+      <div style={{ position: 'relative', maxWidth: '70%' }}>
         <div style={{
-          color: isOwn ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.4)',
-          fontSize: '11px',
-          textAlign: 'right',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '8px'
+          padding: '12px 16px',
+          borderRadius: '12px',
+          background: isOwn 
+            ? 'linear-gradient(135deg, #00b8d4 0%, #00a8c0 100%)'
+            : 'rgba(255, 255, 255, 0.05)',
+          border: isOwn ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: isOwn ? '0 2px 8px rgba(0, 184, 212, 0.2)' : 'none',
+          position: 'relative'
         }}>
-          <span>{formatTime(message.created_at)}</span>
-          {showDelete && isOwn && (
-            <button
-              onClick={handleDelete}
-              style={{
-                background: 'rgba(239, 68, 68, 0.2)',
-                border: '1px solid rgba(239, 68, 68, 0.4)',
-                borderRadius: '4px',
-                padding: '2px 8px',
-                fontSize: '10px',
-                color: '#ef4444',
-                cursor: 'pointer',
-                fontWeight: '600',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
-              }}
-            >
-              Delete
-            </button>
-          )}
+          <p style={{
+            color: isOwn ? '#000' : '#fff',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            marginBottom: '6px',
+            wordWrap: 'break-word'
+          }}>
+            {message.message}
+          </p>
+          <div style={{
+            color: isOwn ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.4)',
+            fontSize: '11px',
+            textAlign: 'right'
+          }}>
+            {formatTime(message.created_at)}
+          </div>
         </div>
+        
+        {/* Delete Button - Appears below message bubble on hover for own messages */}
+        {showActions && isOwn && (
+          <button
+            onClick={handleDelete}
+            style={{
+              position: 'absolute',
+              bottom: '-32px',
+              right: 0,
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              borderRadius: '6px',
+              padding: '6px 12px',
+              fontSize: '11px',
+              color: '#ef4444',
+              cursor: 'pointer',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              transition: 'all 0.2s',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+              zIndex: 10
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(239, 68, 68, 0.25)';
+              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
+              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+            }}
+          >
+            <Trash2 size={12} />
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );
