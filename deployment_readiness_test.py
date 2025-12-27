@@ -208,8 +208,8 @@ class DeploymentReadinessTest:
             
             if response.status_code == 200:
                 deal = response.json()
-                # Verify price field
-                price = deal.get('price')
+                # Verify asking_price field
+                price = deal.get('asking_price')
                 self.log_result(
                     "Get Single Deal",
                     True,
