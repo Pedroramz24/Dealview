@@ -594,7 +594,12 @@ def main():
         print("\n❌ Authentication failed. Cannot proceed with tests.")
         return False
     
-    # Run tests
+    # Run tests - Create deal first so messages can reference it
+    print("\n" + "="*80)
+    print("FEATURE 3: DEAL DELETION API (Setup)")
+    print("="*80)
+    tester.test_deal_deletion_flow()
+    
     print("\n" + "="*80)
     print("FEATURE 1: MESSAGE DELETION API")
     print("="*80)
@@ -607,11 +612,6 @@ def main():
     print("FEATURE 2: TEAM ROLES VERIFICATION")
     print("="*80)
     tester.test_team_roles_verification()
-    
-    print("\n" + "="*80)
-    print("FEATURE 3: DEAL DELETION API")
-    print("="*80)
-    tester.test_deal_deletion_flow()
     
     # Print summary
     all_passed = tester.print_summary()
