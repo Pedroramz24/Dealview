@@ -9,6 +9,12 @@ import json
 from datetime import datetime
 import sys
 import time
+import os
+from dotenv import load_dotenv
+from supabase import create_client
+
+# Load environment variables
+load_dotenv('/app/backend/.env')
 
 # Configuration
 BASE_URL = "https://mockdata-hub.preview.emergentagent.com/api"
@@ -16,6 +22,10 @@ TEST_USER = {
     "email": "contact@pedroarmando.com",
     "password": "Flin141812$"
 }
+
+# Supabase configuration
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_ANON_KEY')
 
 class DeploymentReadinessTest:
     def __init__(self):
