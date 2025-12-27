@@ -7,16 +7,22 @@ Test User: contact@pedroarmando.com / Flin141812$ (has broker role)
 import requests
 import json
 from datetime import datetime
+from supabase import create_client, Client
 
 # Configuration
 BASE_URL = "https://mockdata-hub.preview.emergentagent.com/api"
 TEST_EMAIL = "contact@pedroarmando.com"
 TEST_PASSWORD = "Flin141812$"
 
+# Supabase Configuration
+SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0"
+
 # Global variables
 auth_token = None
 test_deal_id = None
 test_pipeline_id = None
+supabase: Client = None
 
 def print_section(title):
     """Print a formatted section header"""
