@@ -521,7 +521,9 @@ const DealContextHeader = ({ conversation, navigate }) => {
 };
 
 // Message Bubble
-const MessageBubble = ({ message, isOwn }) => {
+const MessageBubble = ({ message, isOwn, onDelete }) => {
+  const [showDelete, setShowDelete] = useState(false);
+  
   const formatTime = (timestamp) => {
     return new Date(timestamp).toLocaleTimeString('en-US', { 
       hour: '2-digit', 
@@ -529,12 +531,45 @@ const MessageBubble = ({ message, isOwn }) => {
     });
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm('Delete this message? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      const { data: { session } } = await (await import('../supabaseClient')).supabase.auth.getSession();
+      
+      const response = await fetch(`${(await import('../App')).API}/messages/${message.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      });
+
+      if (response.ok) {
+        onDelete(message.id);
+        (await import('sonner')).toast.success('Message deleted');
+      } else {
+        (await import('sonner')).toast.error('Failed to delete message');
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      (await import('sonner')).toast.error('Failed to delete message');
+    }
+  };
+
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: isOwn ? 'flex-end' : 'flex-start',
-      marginBottom: '4px'
-    }}>
+    <div 
+      style={{
+        display: 'flex',
+        justifyContent: isOwn ? 'flex-end' : 'flex-start',
+        marginBottom: '4px',
+        position: 'relative',
+        group: true
+      }}
+      onMouseEnter={() => setShowDelete(true)}
+      onMouseLeave={() => setShowDelete(false)}
+    >
       <div style={{
         maxWidth: '70%',
         padding: '12px 16px',
@@ -543,7 +578,8 @@ const MessageBubble = ({ message, isOwn }) => {
           ? 'linear-gradient(135deg, #00b8d4 0%, #00a8c0 100%)'
           : 'rgba(255, 255, 255, 0.05)',
         border: isOwn ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: isOwn ? '0 2px 8px rgba(0, 184, 212, 0.2)' : 'none'
+        boxShadow: isOwn ? '0 2px 8px rgba(0, 184, 212, 0.2)' : 'none',
+        position: 'relative'
       }}>
         <p style={{
           color: isOwn ? '#000' : '#fff',
@@ -557,9 +593,37 @@ const MessageBubble = ({ message, isOwn }) => {
         <div style={{
           color: isOwn ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.4)',
           fontSize: '11px',
-          textAlign: 'right'
+          textAlign: 'right',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '8px'
         }}>
-          {formatTime(message.created_at)}
+          <span>{formatTime(message.created_at)}</span>
+          {showDelete && isOwn && (
+            <button
+              onClick={handleDelete}
+              style={{
+                background: 'rgba(239, 68, 68, 0.2)',
+                border: '1px solid rgba(239, 68, 68, 0.4)',
+                borderRadius: '4px',
+                padding: '2px 8px',
+                fontSize: '10px',
+                color: '#ef4444',
+                cursor: 'pointer',
+                fontWeight: '600',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+              }}
+            >
+              Delete
+            </button>
+          )}
         </div>
       </div>
     </div>
