@@ -242,6 +242,32 @@ class Phase2Tester:
             supabase_key = os.environ['SUPABASE_SERVICE_KEY']
             supabase = create_client(supabase_url, supabase_key)
             
+            # Get a real sender user ID (different from current user)
+            users = supabase.table('user_profiles').select('id').neq('id', self.user_id).limit(1).execute()
+            if not users.data or len(users.data) == 0:
+                self.log_result(
+                    "Message Deletion - Authorization (Non-Sender)",
+                    False,
+                    "No other users found in system to test with",
+                    "Need at least 2 users in the system"
+                )
+                return False
+            
+            sender_id = users.data[0]['id']
+            
+            # Get a real deal ID
+            deals = supabase.table('deals').select('id').limit(1).execute()
+            if not deals.data or len(deals.data) == 0:
+                self.log_result(
+                    "Message Deletion - Authorization (Non-Sender)",
+                    False,
+                    "No deals found in system to test with",
+                    "Need at least 1 deal in the system"
+                )
+                return False
+            
+            deal_id = deals.data[0]['id']
+            
             # Create a message from a different sender
             import uuid
             test_message_id = str(uuid.uuid4())
@@ -250,9 +276,9 @@ class Phase2Tester:
             message_data = {
                 'id': test_message_id,
                 'conversation_id': test_conversation_id,
-                'sender_id': '00000000-0000-0000-0000-000000000001',  # Different sender
+                'sender_id': sender_id,  # Different sender
                 'recipient_id': self.user_id,  # Current user is recipient
-                'deal_id': '00000000-0000-0000-0000-000000000002',
+                'deal_id': deal_id,
                 'message': 'Test message from another user',
                 'read': False,
                 'created_at': datetime.now().isoformat()
