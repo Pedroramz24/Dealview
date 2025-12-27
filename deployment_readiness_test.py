@@ -341,12 +341,11 @@ class DeploymentReadinessTest:
                     )
                     return False
                 
-                # Create a test deal with correct field names
+                # Create a test deal with correct field names from DealCreate model
                 deal_data = {
-                    "title": "Test Deal - Movement",
-                    "address": "456 Pipeline Test Ave, San Antonio, TX",
+                    "property_address": "456 Pipeline Test Ave, San Antonio, TX",
                     "asset_type": "Retail",
-                    "price": 1500000,
+                    "asking_price": 1500000,
                     "latitude": 29.4241,
                     "longitude": -98.4936,
                     "pipeline_id": pipeline_id,
