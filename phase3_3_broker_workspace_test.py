@@ -162,6 +162,7 @@ def test_deals_crud():
     print_section("3. DEALS CRUD API")
     
     # Test 1: Create Deal (POST /api/deals)
+    print("⚠️  NOTE: Deal creation may fail due to schema mismatch (additional_contacts column missing)")
     try:
         deal_data = {
             "title": f"Test Deal - Phase 3.3 - {datetime.now().strftime('%Y%m%d%H%M%S')}",
@@ -191,9 +192,15 @@ def test_deals_crud():
             test_deal_id = created_deal.get('id')
             print_result("Create Deal (POST)", True,
                        f"Deal created with ID: {test_deal_id}")
+        elif response.status_code == 520 and "additional_contacts" in response.text:
+            print_result("Create Deal (POST)", False,
+                       "SCHEMA ISSUE: Supabase deals table missing 'additional_contacts' column")
+            print("   This is a database migration issue, not an API logic issue.")
+            # Skip remaining CRUD tests since we can't create a deal
+            return False
         else:
             print_result("Create Deal (POST)", False,
-                       f"Status: {response.status_code}, Response: {response.text}")
+                       f"Status: {response.status_code}, Response: {response.text[:200]}")
             return False
     except Exception as e:
         print_result("Create Deal (POST)", False, f"Exception: {str(e)}")
