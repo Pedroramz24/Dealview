@@ -413,7 +413,10 @@ const LandingPage = () => {
                 </p>
                 <p style={{
                   fontSize: 'clamp(13px, 1.5vw, 15px)',
-                  color: 'rgba(48, 99, 255, 0.9)',
+                  background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
                   fontWeight: '600',
                   letterSpacing: '0.5px'
                 }}>
@@ -471,21 +474,22 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
-                border: '2px solid rgba(48, 99, 255, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(255, 255, 255, 0.15)'
               }}>
-                <MapPin size={32} color="#3063ff" />
+                <MapPin size={32} color="#fff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
                 fontWeight: '700',
                 color: '#fff',
-                marginBottom: '12px'
+                marginBottom: '12px',
+                textAlign: 'center'
               }}>
                 Marketplace Map
               </h3>
@@ -493,7 +497,8 @@ const LandingPage = () => {
                 fontSize: '14px',
                 color: 'rgba(255,255,255,0.65)',
                 lineHeight: '1.6',
-                flex: 1
+                flex: 1,
+                textAlign: 'center'
               }}>
                 Browse off-market deals on an interactive map with real-time filters, save listings, and discover opportunities by location.
               </p>
@@ -530,21 +535,22 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
-                border: '2px solid rgba(48, 99, 255, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(255, 255, 255, 0.15)'
               }}>
-                <BarChart3 size={32} color="#3063ff" />
+                <BarChart3 size={32} color="#fff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
                 fontWeight: '700',
                 color: '#fff',
-                marginBottom: '12px'
+                marginBottom: '12px',
+                textAlign: 'center'
               }}>
                 Pipeline & CRM
               </h3>
@@ -552,7 +558,8 @@ const LandingPage = () => {
                 fontSize: '14px',
                 color: 'rgba(255,255,255,0.65)',
                 lineHeight: '1.6',
-                flex: 1
+                flex: 1,
+                textAlign: 'center'
               }}>
                 Manage your entire deal flow from first contact to close. Track stages, tasks, and performance in one visual pipeline.
               </p>
@@ -600,21 +607,22 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
-                border: '2px solid rgba(48, 99, 255, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(255, 255, 255, 0.15)'
               }}>
-                <MessageSquare size={32} color="#3063ff" />
+                <MessageSquare size={32} color="#fff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
                 fontWeight: '700',
                 color: '#fff',
-                marginBottom: '12px'
+                marginBottom: '12px',
+                textAlign: 'center'
               }}>
                 Secure Messaging
               </h3>
@@ -622,7 +630,8 @@ const LandingPage = () => {
                 fontSize: '14px',
                 color: 'rgba(255,255,255,0.65)',
                 lineHeight: '1.6',
-                flex: 1
+                flex: 1,
+                textAlign: 'center'
               }}>
                 Gated conversations with verified participants. NCND protection before disclosure. Every message tied to a deal.
               </p>
@@ -663,21 +672,22 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
-                border: '2px solid rgba(48, 99, 255, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(255, 255, 255, 0.15)'
               }}>
-                <Users size={32} color="#3063ff" />
+                <Users size={32} color="#fff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
                 fontWeight: '700',
                 color: '#fff',
-                marginBottom: '12px'
+                marginBottom: '12px',
+                textAlign: 'center'
               }}>
                 Active Investor Network
               </h3>
@@ -685,7 +695,8 @@ const LandingPage = () => {
                 fontSize: '14px',
                 color: 'rgba(255,255,255,0.65)',
                 lineHeight: '1.6',
-                flex: 1
+                flex: 1,
+                textAlign: 'center'
               }}>
                 Connect with hundreds of verified investors actively searching for off-market opportunities. Your listings reach serious buyers from day one.
               </p>
@@ -727,21 +738,22 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
-                border: '2px solid rgba(48, 99, 255, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(255, 255, 255, 0.15)'
               }}>
-                <Calendar size={32} color="#3063ff" />
+                <Calendar size={32} color="#fff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
                 fontWeight: '700',
                 color: '#fff',
-                marginBottom: '12px'
+                marginBottom: '12px',
+                textAlign: 'center'
               }}>
                 Calendar & Deadlines
               </h3>
@@ -749,7 +761,8 @@ const LandingPage = () => {
                 fontSize: '14px',
                 color: 'rgba(255,255,255,0.65)',
                 lineHeight: '1.6',
-                flex: 1
+                flex: 1,
+                textAlign: 'center'
               }}>
                 Never miss a showing, deadline, or follow up with integrated scheduling tied to every deal and contact.
               </p>
@@ -789,21 +802,22 @@ const LandingPage = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(48, 99, 255, 0.3) 0%, rgba(48, 99, 255, 0.1) 70%)',
-                border: '2px solid rgba(48, 99, 255, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '24px',
-                boxShadow: '0 0 30px rgba(48, 99, 255, 0.4)'
+                margin: '0 auto 24px',
+                boxShadow: '0 0 30px rgba(255, 255, 255, 0.15)'
               }}>
-                <Share2 size={32} color="#3063ff" />
+                <Share2 size={32} color="#fff" />
               </div>
               <h3 style={{
                 fontSize: '20px',
                 fontWeight: '700',
                 color: '#fff',
-                marginBottom: '12px'
+                marginBottom: '12px',
+                textAlign: 'center'
               }}>
                 Easy Deal Sharing
               </h3>
@@ -811,7 +825,8 @@ const LandingPage = () => {
                 fontSize: '14px',
                 color: 'rgba(255,255,255,0.65)',
                 lineHeight: '1.6',
-                flex: 1
+                flex: 1,
+                textAlign: 'center'
               }}>
                 Share curated deals with clients instantly. No forwarding PDFs, no email chains. Just one clean link.
               </p>
@@ -865,7 +880,10 @@ const LandingPage = () => {
           </h2>
           <p style={{
             fontSize: 'clamp(14px, 1.6vw, 16px)',
-            color: 'rgba(48, 99, 255, 0.8)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
             textAlign: 'center',
             marginBottom: '80px',
             fontWeight: '600'
@@ -1033,10 +1051,14 @@ const LandingPage = () => {
         </h2>
         <p style={{
           fontSize: 'clamp(14px, 1.6vw, 16px)',
-          color: 'rgba(255,255,255,0.5)',
+          background: 'linear-gradient(135deg, #ffffff 0%, #b8c5d0 50%, #ffffff 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
           marginBottom: '60px',
           maxWidth: '700px',
-          margin: '0 auto 60px'
+          margin: '0 auto 60px',
+          fontWeight: '500'
         }}>
           Unlike LoopNet or CoStar, we don't hide deals behind expensive paywalls or tiered access.
         </p>
