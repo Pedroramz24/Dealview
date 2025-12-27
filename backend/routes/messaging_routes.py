@@ -191,6 +191,50 @@ async def send_message(
         )
 
 
+
+
+@router.delete("/{message_id}")
+async def delete_message(
+    message_id: str,
+    user = Depends(get_current_user_supabase)
+):
+    """Delete a message. Only the sender can delete their own messages."""
+    supabase = get_supabase()
+    
+    try:
+        # Verify message exists and user is the sender
+        message_result = supabase.table('marketplace_messages').select('*').eq(
+            'id', message_id
+        ).single().execute()
+        
+        if not message_result.data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Message not found"
+            )
+        
+        if message_result.data['sender_id'] != str(user.id):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only delete your own messages"
+            )
+        
+        # Delete the message
+        supabase.table('marketplace_messages').delete().eq('id', message_id).execute()
+        
+        return {
+            "success": True,
+            "message": "Message deleted successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting message: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete message"
+        )
 @router.put("/{message_id}/mark-read")
 async def mark_message_read(
     message_id: str,
