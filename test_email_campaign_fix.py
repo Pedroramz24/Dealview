@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://mockdata-hub.preview.emergentagent.com/api"
+BASE_URL = "https://deployops-1.preview.emergentagent.com/api"
 
 class EmailCampaignTester:
     def __init__(self):
