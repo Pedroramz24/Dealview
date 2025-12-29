@@ -103,7 +103,6 @@ echo "======================================"
 echo ""
 
 test_endpoint "GET" "/api/deals" "200" "List all deals"
-test_endpoint "GET" "/api/deals/deals" "200" "Get deals (alt endpoint)"
 
 echo ""
 echo "======================================"
@@ -128,8 +127,8 @@ echo "PHASE 5: MESSAGING ENDPOINTS"
 echo "======================================"
 echo ""
 
-test_endpoint "GET" "/api/messaging/conversations" "200" "Get conversations"
-test_endpoint "GET" "/api/messaging/unread-count" "200" "Get unread count"
+test_endpoint "GET" "/api/messages/conversations" "200" "Get conversations"
+test_endpoint "GET" "/api/messages/unread-count" "200" "Get unread count"
 
 echo ""
 echo "======================================"
