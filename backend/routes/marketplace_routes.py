@@ -85,21 +85,23 @@ async def browse_marketplace_deals(
         result = query.execute()
         
         # Fetch broker quality scores for all deals and sort by quality
+        # OPTIMIZATION: Batch fetch all broker reputations in one query to avoid N+1
+        owner_ids = list(set(deal.get('owner_id') for deal in result.data if deal.get('owner_id')))
+        
+        # Fetch all broker reputations in a single query
+        reputation_map = {}
+        if owner_ids:
+            try:
+                rep_result = supabase.table('broker_reputation').select('broker_id, quality_score').in_('broker_id', owner_ids).execute()
+                reputation_map = {rep['broker_id']: rep['quality_score'] for rep in rep_result.data}
+            except Exception as e:
+                logger.warning(f"Failed to batch fetch broker reputations: {e}")
+        
+        # Process deals with fetched reputation data
         deals_with_scores = []
         for deal in result.data:
-            broker_quality = 50  # Default for new brokers
-            commitment_priority = 2  # Default priority
-            
-            # Get broker reputation
-            if deal.get('owner_id'):
-                try:
-                    rep_result = supabase.table('broker_reputation').select('quality_score').eq(
-                        'broker_id', deal['owner_id']
-                    ).single().execute()
-                    if rep_result.data:
-                        broker_quality = rep_result.data.get('quality_score', 50)
-                except:
-                    pass
+            # Get broker quality from pre-fetched map
+            broker_quality = reputation_map.get(deal.get('owner_id'), 50)  # Default 50 for new brokers
             
             # Determine commitment priority (higher = better)
             commitment_level = deal.get('seller_commitment_level')
@@ -109,6 +111,8 @@ async def browse_marketplace_deals(
                 commitment_priority = 2
             elif commitment_level == 'verbal_maybe':
                 commitment_priority = 1
+            else:
+                commitment_priority = 2  # Default priority
             
             deals_with_scores.append({
                 **deal,

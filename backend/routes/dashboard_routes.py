@@ -66,7 +66,7 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
         }
 
 
-@router.get("/dashboard/news")
+@router.get("/news")
 async def get_market_news():
     """
     Fetch latest commercial real estate market news from RSS feeds.
