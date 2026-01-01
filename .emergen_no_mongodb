@@ -1,0 +1,5 @@
+# This file indicates that this application does NOT use MongoDB
+# The application uses Supabase (PostgreSQL) as its database
+# MongoDB migration steps should be skipped during deployment
+DATABASE_TYPE=supabase
+SKIP_MONGODB_MIGRATION=true
