@@ -1060,6 +1060,13 @@ agent_communication:
 
   - task: "Create Deal Form Auto-Calculations (PSF, NOI, Cap Rate)"
     implemented: true
+  - agent: "main"
+    timestamp: "2026-01-01T21:45:00Z"
+    message: "Fixed navigation routing between Marketplace and Workspace. Added index routes and unique keys to force proper component mounting. Route structure: /marketplace uses DualModeLayout, /workspace uses MainLayout, /workspace index redirects to /workspace/dashboard. Requesting testing agent to verify navigation works seamlessly in both directions without page refresh."
+  - agent: "testing"
+    timestamp: "2026-01-01T21:50:00Z"
+    message: "NAVIGATION TESTING COMPLETE: Direct URL navigation to /workspace/dashboard works perfectly - page loads in 1 second, capabilities API calls succeed (200 OK for /api/roles/my-roles and /api/roles/my-permissions), dashboard renders correctly with 'AI Operations Dashboard' title, full sidebar with all workspace tabs visible (Command Center, Messages, Calendar, Map, Pipeline, Contacts, Campaigns, Team, Admin), and content displays without manual refresh. The routing fix is CONFIRMED WORKING - when accessing /workspace, it properly redirects to /workspace/dashboard and renders CommandCenter component. LIMITATION: Unable to test click-based navigation from Marketplace sidebar in automated test due to difficulty selecting icon buttons in DualModeLayout. MINOR BACKEND ISSUE: Dashboard API endpoints /api/dashboard/snapshot and /api/dashboard/priorities return 520 errors, but this doesn't block page load - dashboard gracefully shows 'No priorities at the moment'. Main agent should investigate these 520 errors if dashboard metrics are expected to display."
+
     working: "NA"
     file: "/app/frontend/src/components/CreateDealPanel.js"
     stuck_count: 0
