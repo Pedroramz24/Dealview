@@ -156,7 +156,7 @@ function App() {
           {/* Settings - MainLayout */}
           <Route
             path="/settings"
-            element={user ? <MainLayout /> : <Navigate to="/login" />}
+            element={user ? <MainLayout key="settings-layout" /> : <Navigate to="/login" />}
           >
             <Route index element={<Settings />} />
           </Route>
