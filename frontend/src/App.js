@@ -123,7 +123,7 @@ function App() {
           {/* Marketplace Routes - DualModeLayout (minimal sidebar) */}
           <Route
             path="/marketplace"
-            element={user ? <DualModeLayout /> : <Navigate to="/login" />}
+            element={user ? <DualModeLayout key="marketplace-layout" /> : <Navigate to="/login" />}
           >
             <Route index element={<MarketplacePage />} />
             <Route path="deals/:dealId" element={<MarketplaceDealDetail />} />
@@ -133,7 +133,7 @@ function App() {
           {/* Workspace Routes - MainLayout (full CRM sidebar) */}
           <Route
             path="/workspace"
-            element={user ? <MainLayout /> : <Navigate to="/login" />}
+            element={user ? <MainLayout key="workspace-layout" /> : <Navigate to="/login" />}
           >
             <Route index element={<Navigate to="/workspace/dashboard" replace />} />
             <Route path="dashboard" element={<CommandCenter />} />
