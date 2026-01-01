@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Backend Migration Verification - Supabase Only: Verify authentication, dashboard stats empty state, and deals API after MongoDB to Supabase migration"
+user_problem_statement: "Test Marketplace to Workspace Navigation - Verify routing fix allows seamless navigation between Marketplace and Workspace without page refresh"
 
 backend:
   - task: "Supabase Authentication"
