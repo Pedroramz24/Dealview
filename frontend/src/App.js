@@ -135,6 +135,7 @@ function App() {
             path="/workspace"
             element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
+            <Route index element={<Navigate to="/workspace/dashboard" replace />} />
             <Route path="dashboard" element={<CommandCenter />} />
             <Route path="messages" element={<Messages />} />
             <Route path="map" element={<MapView />} />
