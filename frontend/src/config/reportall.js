@@ -4,30 +4,30 @@
  */
 
 export const REPORTALL_CONFIG = {
-  clientKey: 'xLEErUqdc7',
+  clientKey: process.env.REACT_APP_REPORTALL_CLIENT_KEY || 'xLEErUqdc7',
   
   // Vector Tiles endpoint (MapBox Vector Tiles format)
   // Supports zoom levels 14-17
-  vectorTilesUrl: 'https://reportallusa.com/api/rest_services/client=xLEErUqdc7/outFields=parcel_id,owner,address,sale_price,mkt_val_tot,acreage_calc,land_use_class/ParcelsVectorTile/MapBoxVectorTileServer/tile/{z}/{x}/{y}.mvt',
+  vectorTilesUrl: `${process.env.REACT_APP_REPORTALL_BASE_URL || 'https://reportallusa.com'}/api/rest_services/client=${process.env.REACT_APP_REPORTALL_CLIENT_KEY || 'xLEErUqdc7'}/outFields=parcel_id,owner,address,sale_price,mkt_val_tot,acreage_calc,land_use_class/ParcelsVectorTile/MapBoxVectorTileServer/tile/{z}/{x}/{y}.mvt`,
   
   // API endpoints
   endpoints: {
     // Query parcels by point (for click identification)
-    queryByPoint: 'https://reportallusa.com/api/parcels',
+    queryByPoint: `${process.env.REACT_APP_REPORTALL_BASE_URL || 'https://reportallusa.com'}/api/parcels`,
     
     // Query by address
-    queryByAddress: 'https://reportallusa.com/api/parcels',
+    queryByAddress: `${process.env.REACT_APP_REPORTALL_BASE_URL || 'https://reportallusa.com'}/api/parcels`,
     
     // Query by owner
-    queryByOwner: 'https://reportallusa.com/api/parcels',
+    queryByOwner: `${process.env.REACT_APP_REPORTALL_BASE_URL || 'https://reportallusa.com'}/api/parcels`,
     
     // Query by spatial intersection (polygon/bbox)
-    queryBySpatial: 'https://reportallusa.com/api/parcels',
+    queryBySpatial: `${process.env.REACT_APP_REPORTALL_BASE_URL || 'https://reportallusa.com'}/api/parcels`,
   },
   
   // Default query parameters
   defaultParams: {
-    client: 'xLEErUqdc7',
+    client: process.env.REACT_APP_REPORTALL_CLIENT_KEY || 'xLEErUqdc7',
     v: 9, // API version
     rpp: 10, // Results per page
   },
