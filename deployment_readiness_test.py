@@ -549,26 +549,31 @@ class DeploymentReadinessTester:
             response_time = time.time() - start_time
             
             if response.status_code == 200:
-                pipelines = response.json()
+                data = response.json()
                 
-                if isinstance(pipelines, list):
-                    self.log_result(
-                        "Pipelines", 
-                        True, 
-                        f"Successfully retrieved {len(pipelines)} pipelines",
-                        None,
-                        response_time
-                    )
-                    return True
+                # Handle both list and dict responses
+                if isinstance(data, list):
+                    pipelines = data
+                elif isinstance(data, dict) and 'pipelines' in data:
+                    pipelines = data.get('pipelines', [])
                 else:
                     self.log_result(
                         "Pipelines", 
                         False, 
-                        "Response is not a list",
-                        f"Response type: {type(pipelines)}",
+                        "Unexpected response format",
+                        f"Response type: {type(data)}, keys: {list(data.keys()) if isinstance(data, dict) else 'N/A'}",
                         response_time
                     )
                     return False
+                
+                self.log_result(
+                    "Pipelines", 
+                    True, 
+                    f"Successfully retrieved {len(pipelines)} pipelines",
+                    None,
+                    response_time
+                )
+                return True
             else:
                 self.log_result(
                     "Pipelines", 
