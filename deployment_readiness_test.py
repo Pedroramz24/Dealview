@@ -45,34 +45,33 @@ class DeploymentReadinessTester:
             print(f"   Details: {details}")
     
     def authenticate(self):
-        """Test 1: Authentication Flow"""
+        """Test 1: Authentication Flow - Using Supabase Auth"""
         print("\n" + "="*80)
-        print("TEST 1: AUTHENTICATION FLOW")
+        print("TEST 1: AUTHENTICATION FLOW (Supabase)")
         print("="*80)
         
         try:
+            from supabase import create_client
+            import os
+            from dotenv import load_dotenv
+            
+            load_dotenv('/app/backend/.env')
+            
+            supabase_url = os.environ['SUPABASE_URL']
+            supabase_key = os.environ['SUPABASE_ANON_KEY']
+            
             start_time = time.time()
-            response = requests.post(
-                f"{self.base_url}/auth/login",
-                json=TEST_CREDENTIALS,
-                timeout=10
-            )
+            supabase = create_client(supabase_url, supabase_key)
+            
+            # Sign in with Supabase
+            result = supabase.auth.sign_in_with_password({
+                'email': TEST_CREDENTIALS['email'],
+                'password': TEST_CREDENTIALS['password']
+            })
             response_time = time.time() - start_time
             
-            if response.status_code == 200:
-                data = response.json()
-                self.token = data.get("access_token")
-                
-                if not self.token:
-                    self.log_result(
-                        "Authentication", 
-                        False, 
-                        "Login succeeded but no access_token in response",
-                        f"Response keys: {list(data.keys())}",
-                        response_time
-                    )
-                    return False
-                
+            if result.session:
+                self.token = result.session.access_token
                 self.headers = {"Authorization": f"Bearer {self.token}"}
                 
                 # Verify token is valid JWT
@@ -91,7 +90,7 @@ class DeploymentReadinessTester:
                     "Authentication", 
                     True, 
                     f"Successfully authenticated as {TEST_CREDENTIALS['email']}",
-                    f"JWT token received ({len(self.token)} chars)",
+                    f"JWT token received ({len(self.token)} chars), User ID: {result.user.id}",
                     response_time
                 )
                 return True
@@ -99,8 +98,8 @@ class DeploymentReadinessTester:
                 self.log_result(
                     "Authentication", 
                     False, 
-                    f"Login failed with status {response.status_code}",
-                    response.text[:500],
+                    "Login succeeded but no session returned",
+                    None,
                     response_time
                 )
                 return False
