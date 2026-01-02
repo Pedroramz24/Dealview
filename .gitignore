@@ -103,3 +103,7 @@ frontend/public/tiles/bexar_parcels.pmtiles
 # Environment files - DO NOT IGNORE (needed for deployment)
 # *.env
 # *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
