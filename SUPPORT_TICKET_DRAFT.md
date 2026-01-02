@@ -41,7 +41,7 @@ Our production-ready FastAPI + React + Supabase application cannot deploy becaus
 - Backend running without errors
 
 ### Database Configuration
-- **Supabase Project:** https://ygezobmpewthqvsfqrbk.supabase.co
+- **Database Type:** Supabase (PostgreSQL)
 - **Connection:** Verified and working
 - **Tables:** 10+ tables with RLS policies
 - **Auth:** Supabase Auth (no custom auth)
