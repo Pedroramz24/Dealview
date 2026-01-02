@@ -10,7 +10,7 @@ from datetime import datetime
 from supabase import create_client, Client
 
 # Configuration
-BASE_URL = "https://deployops-1.preview.emergentagent.com/api"
+BASE_URL = "https://prod-readiness-16.preview.emergentagent.com/api"
 TEST_EMAIL = "contact@pedroarmando.com"
 TEST_PASSWORD = "Flin141812$"
 
