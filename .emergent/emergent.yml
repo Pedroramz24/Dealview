@@ -2,6 +2,6 @@
   "env_image_name": "fastapi_react_mongo_shadcn_base_image_cloud_arm:release-09102025-1",
   "skip_mongodb_migration": true,
   "use_supabase": true,
-  "job_id": "37553466-4e66-4b2b-8654-ab9f6c301151",
-  "created_at": "2026-01-02T17:48:42.786972+00:00Z"
+  "job_id": "0f9e4eb1-cf0c-4e07-86c9-9f6021b3c781",
+  "created_at": "2026-01-02T18:16:34.145175+00:00Z"
 }
