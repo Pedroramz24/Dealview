@@ -96,6 +96,131 @@
 # END - Testing Protocol - DO NOT EDIT OR REMOVE THIS SECTION
 #====================================================================================================
 
+# =====================================================
+# DEPLOYMENT READINESS VERIFICATION - January 2, 2025
+# =====================================================
+
+user_problem_statement: "Verify application is ready for production deployment after schema alignment fix. Critical: Ensure asking_price column works correctly in all deal operations."
+
+backend:
+  - task: "Schema Alignment - asking_price Column"
+    implemented: true
+    working: "needs_verification"
+    file: "/app/backend/routes/deal_routes.py, /app/backend/routes/dashboard_routes.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "needs_verification"
+        agent: "main"
+        comment: "Database schema verified - asking_price column EXISTS in Supabase deals table. Previous PGRST204 errors about missing asking_price column should be resolved. Code updated to use asking_price in deal_routes.py and dashboard_routes.py. Need to verify deal CRUD operations work without schema errors."
+
+  - task: "Deal CRUD Operations"
+    implemented: true
+    working: "needs_verification"
+    file: "/app/backend/routes/deal_routes.py"
+    stuck_count: 1
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "Previous test showed POST /api/deals failed with asking_price schema errors. Schema has now been verified to have asking_price column. Need to retest all CRUD operations: POST (create), GET (list/single), PUT (update), DELETE."
+
+  - task: "Dashboard Statistics"
+    implemented: true
+    working: "needs_verification"
+    file: "/app/backend/routes/dashboard_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_verification"
+        agent: "main"
+        comment: "Updated dashboard_routes.py line 32 to query asking_price instead of price. Need to verify dashboard stats calculate total_pipeline_value correctly using the asking_price field."
+
+  - task: "Authentication System"
+    implemented: true
+    working: true
+    file: "/app/backend/utils/auth_helpers.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Previous test confirmed authentication working correctly with Supabase JWT tokens."
+
+  - task: "Pipeline Management APIs"
+    implemented: true
+    working: "needs_verification"
+    file: "/app/backend/routes/pipeline_routes.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "partial"
+        agent: "testing"
+        comment: "Previous test showed GET /api/pipelines returned empty or had issues. Need to verify pipeline endpoints work correctly."
+
+  - task: "Messaging System"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/messaging_routes.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Previous test confirmed messaging endpoints working correctly."
+
+  - task: "Team Management"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/team_routes.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Previous test confirmed team endpoints working correctly."
+
+  - task: "Admin Functions"
+    implemented: true
+    working: "needs_verification"
+    file: "/app/backend/routes/admin_routes.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: true
+    status_history:
+      - working: "needs_verification"
+        agent: "main"
+        comment: "Admin endpoints need verification before deployment."
+
+metadata:
+  created_by: "main_agent"
+  version: "3.0"
+  test_sequence: 6
+  last_test_date: "2025-01-02"
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Schema Alignment - asking_price Column"
+    - "Deal CRUD Operations"
+    - "Dashboard Statistics"
+  stuck_tasks:
+    - "Deal CRUD Operations"
+  test_all: false
+  test_priority: "critical_first"
+
+agent_communication:
+  - agent: "main"
+    timestamp: "2025-01-02T01:30:00Z"
+    message: "DEPLOYMENT READINESS TEST REQUEST: Schema alignment has been verified - asking_price column exists in Supabase deals table. Previous PGRST204 errors should be resolved. Updated deal_routes.py and dashboard_routes.py to use asking_price field. Need comprehensive testing of all critical endpoints before deployment attempt. PRIORITY: Test deal CRUD operations first to verify asking_price schema fix works. Test credentials: contact@pedroarmando.com / Flin141812$. API Base: https://prod-readiness-16.preview.emergentagent.com. User wants to deploy ASAP if tests pass."
+
 
 
 #====================================================================================================
