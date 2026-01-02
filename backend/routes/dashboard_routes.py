@@ -29,11 +29,11 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
     
     try:
         # Fetch user's deals from Supabase
-        result = supabase.table('deals').select('price, asset_type, stage, pipeline_stage_id').eq('owner_id', str(current_user.id)).execute()
+        result = supabase.table('deals').select('asking_price, asset_type, stage, pipeline_stage_id').eq('owner_id', str(current_user.id)).execute()
         deals = result.data
         
         # Calculate stats
-        total_pipeline_value = sum(deal.get('price', 0) or 0 for deal in deals)
+        total_pipeline_value = sum(deal.get('asking_price', 0) or 0 for deal in deals)
         total_deals = len(deals)
         avg_deal_size = total_pipeline_value / total_deals if total_deals > 0 else 0
         
