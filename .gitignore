@@ -100,6 +100,6 @@ tiles/sa_zoning_complete.pmtiles
 frontend/public/tiles/sa_zoning.pmtiles
 frontend/public/tiles/bexar_parcels.pmtiles
 -e 
-# Environment files
-*.env
-*.env.*
+# Environment files - DO NOT IGNORE (needed for deployment)
+# *.env
+# *.env.*

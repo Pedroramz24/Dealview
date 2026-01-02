@@ -758,8 +758,8 @@ async def create_invite(team_id: str, invite_data: InviteCreate, credentials: HT
         if not invite:
             raise HTTPException(status_code=500, detail="Failed to create invite")
         
-        # Generate shareable link
-        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+        # Generate shareable link - require FRONTEND_URL to be set (no fallback)
+        frontend_url = os.environ['FRONTEND_URL']
         invite_link = f"{frontend_url}/join-team/{token}"
         
         return {
