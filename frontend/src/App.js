@@ -29,6 +29,7 @@ import MainLayout from './components/MainLayout';
 import DualModeLayout from './components/DualModeLayout';
 import MarketplacePage from './pages/MarketplacePage';
 import MarketplaceDealDetail from './pages/MarketplaceDealDetail';
+import MapCRM from './pages/MapCRM';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
