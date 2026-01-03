@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Map, { Marker, Popup, NavigationControl, ScaleControl } from 'react-map-gl/maplibre';
-import MarkerClusterGroup from 'react-leaflet-cluster';
+import { useNavigate } from 'react-router-dom';
 import { useMapCRM } from '../../contexts/MapCRMContext';
 import { colors, shadows, borderRadius, spacing } from '../../styles/designSystem';
-import { MapPin, DollarSign, Building2, X } from 'lucide-react';
+import { MapPin, DollarSign, Building2, X, ArrowLeft } from 'lucide-react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Asset type colors matching DealLinked
@@ -18,40 +18,104 @@ const ASSET_COLORS = {
 
 const MapView = () => {
   const { properties, selectedProperty, setSelectedProperty } = useMapCRM();
+  const navigate = useNavigate();
   const [viewport, setViewport] = useState({
     latitude: properties.length > 0 ? properties[0].latitude : 29.4241,
     longitude: properties.length > 0 ? properties[0].longitude : -98.4936,
     zoom: properties.length > 0 ? 12 : 11
   });
 
+  // Map style matching DealLinked workspace map (satellite + labels)
+  const mapStyle = {
+    version: 8,
+    sources: {
+      'esri-satellite': {
+        type: 'raster',
+        tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+        tileSize: 256,
+        maxzoom: 18,
+        attribution: '&copy; Esri'
+      },
+      'carto-labels': {
+        type: 'raster',
+        tiles: [
+          'https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}@2x.png',
+          'https://b.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}@2x.png',
+          'https://c.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}@2x.png',
+          'https://d.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}@2x.png'
+        ],
+        tileSize: 512,
+        maxzoom: 18,
+        attribution: '&copy; CARTO'
+      }
+    },
+    layers: [
+      {
+        id: 'satellite',
+        type: 'raster',
+        source: 'esri-satellite',
+        minzoom: 0,
+        maxzoom: 18
+      },
+      {
+        id: 'labels',
+        type: 'raster',
+        source: 'carto-labels',
+        minzoom: 8,
+        maxzoom: 18,
+        paint: {
+          'raster-opacity': 0.9
+        }
+      }
+    ]
+  };
+
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+      {/* Back to DealLinked Button */}
+      <button
+        onClick={() => navigate('/workspace/dashboard')}
+        style={{
+          position: 'absolute',
+          top: spacing.md,
+          left: spacing.md,
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '10px 16px',
+          background: colors.surfaceCard,
+          border: `1px solid ${colors.border}`,
+          borderRadius: borderRadius.md,
+          color: colors.textSecondary,
+          fontSize: '14px',
+          fontWeight: '500',
+          cursor: 'pointer',
+          boxShadow: shadows.md,
+          transition: 'all 0.2s'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = colors.hover;
+          e.currentTarget.style.borderColor = colors.primary;
+          e.currentTarget.style.color = colors.primary;
+          e.currentTarget.style.boxShadow = shadows.glowCyan;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = colors.surfaceCard;
+          e.currentTarget.style.borderColor = colors.border;
+          e.currentTarget.style.color = colors.textSecondary;
+          e.currentTarget.style.boxShadow = shadows.md;
+        }}
+      >
+        <ArrowLeft size={16} />
+        Back to DealLinked
+      </button>
+
       <Map
         {...viewport}
         onMove={evt => setViewport(evt.viewState)}
         style={{ width: '100%', height: '100%' }}
-        mapStyle={{
-          version: 8,
-          sources: {
-            'satellite': {
-              type: 'raster',
-              tiles: [
-                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-              ],
-              tileSize: 256,
-              attribution: '© Esri'
-            }
-          },
-          layers: [
-            {
-              id: 'satellite-layer',
-              type: 'raster',
-              source: 'satellite',
-              minzoom: 0,
-              maxzoom: 22
-            }
-          ]
-        }}
+        mapStyle={mapStyle}
       >
         <NavigationControl position="top-right" style={{
           background: colors.surfaceCard,
