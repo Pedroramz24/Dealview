@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://deallinked.preview.emergentagent.com/api"
+BASE_URL = "https://propertyvis-app.preview.emergentagent.com/api"
 
 class EmailCampaignTester:
     def __init__(self):
