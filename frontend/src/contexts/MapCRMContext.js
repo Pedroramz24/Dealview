@@ -33,21 +33,34 @@ export const MapCRMProvider = ({ children }) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        console.log('[MapCRM] No user found');
         setHasAccess(false);
         setCheckingAccess(false);
         return;
       }
 
-      const { data: profile } = await supabase
-        .table('user_profiles')
+      console.log('[MapCRM] Checking access for user:', user.id);
+
+      const { data: profile, error } = await supabase
+        .from('user_profiles')
         .select('permissions')
         .eq('id', user.id)
         .single();
 
+      if (error) {
+        console.error('[MapCRM] Error fetching profile:', error);
+        setHasAccess(false);
+        setCheckingAccess(false);
+        return;
+      }
+
+      console.log('[MapCRM] Profile permissions:', profile?.permissions);
+
       const access = profile?.permissions?.map_crm_access === true;
+      console.log('[MapCRM] Has access:', access);
       setHasAccess(access);
     } catch (error) {
-      console.error('Failed to check Map CRM access:', error);
+      console.error('[MapCRM] Failed to check Map CRM access:', error);
       setHasAccess(false);
     } finally {
       setCheckingAccess(false);

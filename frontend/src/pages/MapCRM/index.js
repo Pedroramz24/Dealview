@@ -13,13 +13,16 @@ const MapCRMContent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('[MapCRM Content] checkingAccess:', checkingAccess, 'hasAccess:', hasAccess);
     if (!checkingAccess && !hasAccess) {
+      console.log('[MapCRM Content] Redirecting to workspace - no access');
       navigate('/workspace');
     }
   }, [hasAccess, checkingAccess, navigate]);
 
   useEffect(() => {
     if (hasAccess) {
+      console.log('[MapCRM Content] Fetching properties');
       fetchProperties();
     }
   }, [hasAccess]);
