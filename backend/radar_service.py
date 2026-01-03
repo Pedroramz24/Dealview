@@ -130,6 +130,26 @@ class RadarService:
         except Exception as e:
             logger.error(f"[Radar] Unexpected error: {str(e)}")
             return []
+    
+    async def forward_geocode(self, address: str) -> Optional[Dict[str, Any]]:
+        """
+        Geocode a single address to latitude/longitude.
+        Used by Map CRM CSV import.
+        
+        Args:
+            address: Full address string (e.g., "123 Main St, Austin, TX 78701")
+        
+        Returns:
+            Dict with latitude, longitude, formatted_address or None if failed
+        """
+        try:
+            results = await self.search_addresses(query=address, limit=1)
+            if results and len(results) > 0:
+                return results[0]
+            return None
+        except Exception as e:
+            logger.error(f"[Radar] Forward geocode failed for '{address}': {str(e)}")
+            return None
 
 
 # Singleton instance
