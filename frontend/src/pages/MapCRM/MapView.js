@@ -1,119 +1,321 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useState } from 'react';
+import Map, { Marker, Popup, NavigationControl, ScaleControl } from 'react-map-gl/maplibre';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import L from 'leaflet';
 import { useMapCRM } from '../../contexts/MapCRMContext';
-import 'leaflet/dist/leaflet.css';
+import { colors, shadows, borderRadius, spacing } from '../../styles/designSystem';
+import { MapPin, DollarSign, Building2, X } from 'lucide-react';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Fix for default marker icons in React-Leaflet
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
-
-// Custom marker icons by asset type
-const getMarkerIcon = (assetType) => {
-  const colors = {
-    'Gas': '#ef4444',      // Red
-    'Retail': '#3b82f6',   // Blue
-    'Industrial': '#f97316', // Orange
-    'Office': '#22c55e',   // Green
-    'Land': '#92400e',     // Brown
-    'Multifamily': '#a855f7' // Purple
-  };
-
-  const color = colors[assetType] || '#6b7280';
-
-  return L.divIcon({
-    html: `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
-    className: 'custom-marker',
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-  });
+// Asset type colors matching DealLinked
+const ASSET_COLORS = {
+  'Gas': '#ef4444',
+  'Retail': '#3b82f6',
+  'Industrial': '#f97316',
+  'Office': '#22c55e',
+  'Land': '#92400e',
+  'Multifamily': '#a855f7'
 };
 
 const MapView = () => {
   const { properties, selectedProperty, setSelectedProperty } = useMapCRM();
-
-  // Default center (US)
-  const defaultCenter = [37.0902, -95.7129];
-  const defaultZoom = 4;
-
-  // Center map on first property if available
-  const center = properties.length > 0
-    ? [properties[0].latitude, properties[0].longitude]
-    : defaultCenter;
-
-  const zoom = properties.length > 0 ? 10 : defaultZoom;
+  const [viewport, setViewport] = useState({
+    latitude: properties.length > 0 ? properties[0].latitude : 29.4241,
+    longitude: properties.length > 0 ? properties[0].longitude : -98.4936,
+    zoom: properties.length > 0 ? 12 : 11
+  });
 
   if (properties.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full bg-gray-50">
-        <div className="text-center">
-          <p className="text-gray-600 mb-2">No properties to display</p>
-          <p className="text-sm text-gray-500">Import a CSV file to get started</p>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        background: colors.void
+      }}>
+        <div style={{ textAlign: 'center', maxWidth: '400px' }}>
+          <MapPin size={48} style={{ color: colors.textMuted, margin: '0 auto 16px' }} />
+          <h3 style={{ 
+            fontSize: '18px', 
+            fontWeight: '600', 
+            color: colors.textPrimary,
+            marginBottom: '8px'
+          }}>
+            No properties to display
+          </h3>
+          <p style={{ 
+            fontSize: '14px', 
+            color: colors.textTertiary 
+          }}>
+            Import a CSV file to get started with property visualization
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <MapContainer
-      center={center}
-      zoom={zoom}
-      style={{ height: '100%', width: '100%' }}
-      scrollWheelZoom={true}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-
-      <MarkerClusterGroup
-        chunkedLoading
-        maxClusterRadius={50}
-        spiderfyOnMaxZoom={true}
-        showCoverageOnHover={false}
+    <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+      <Map
+        {...viewport}
+        onMove={evt => setViewport(evt.viewState)}
+        style={{ width: '100%', height: '100%' }}
+        mapStyle={{
+          version: 8,
+          sources: {
+            'satellite': {
+              type: 'raster',
+              tiles: [
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+              ],
+              tileSize: 256,
+              attribution: '© Esri'
+            }
+          },
+          layers: [
+            {
+              id: 'satellite-layer',
+              type: 'raster',
+              source: 'satellite',
+              minzoom: 0,
+              maxzoom: 22
+            }
+          ]
+        }}
       >
-        {properties.map((property) => (
-          <Marker
-            key={property.id}
-            position={[property.latitude, property.longitude]}
-            icon={getMarkerIcon(property.asset_type)}
-            eventHandlers={{
-              click: () => setSelectedProperty(property)
-            }}
-          >
-            <Popup>
-              <div className="p-2">
-                <h3 className="font-bold text-sm">{property.title || property.address}</h3>
-                <p className="text-xs text-gray-600">{property.city}, {property.state}</p>
-                <p className="text-xs mt-1">
-                  <span className="font-semibold">Type:</span> {property.asset_type}
-                </p>
-                {property.asking_price && (
-                  <p className="text-xs">
-                    <span className="font-semibold">Price:</span> ${property.asking_price.toLocaleString()}
-                  </p>
-                )}
-                <p className="text-xs mt-1">
-                  <span className={`px-2 py-0.5 rounded text-xs ${
-                    property.status === 'available' ? 'bg-green-100 text-green-800' :
-                    property.status === 'claimed' ? 'bg-blue-100 text-blue-800' :
-                    property.status === 'converted' ? 'bg-purple-100 text-purple-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {property.status}
-                  </span>
-                </p>
+        <NavigationControl position="top-right" style={{
+          background: colors.surfaceCard,
+          borderRadius: borderRadius.sm,
+          border: `1px solid ${colors.border}`,
+          boxShadow: shadows.md
+        }} />
+        <ScaleControl position="bottom-right" style={{
+          background: colors.surfaceCard,
+          color: colors.textPrimary
+        }} />
+
+        {properties.map((property) => {
+          const color = ASSET_COLORS[property.asset_type] || colors.textMuted;
+          const isSelected = selectedProperty?.id === property.id;
+
+          return (
+            <Marker
+              key={property.id}
+              latitude={property.latitude}
+              longitude={property.longitude}
+              anchor="center"
+            >
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedProperty(property);
+                }}
+                style={{
+                  cursor: 'pointer',
+                  transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                  transition: 'all 0.3s',
+                  zIndex: isSelected ? 1000 : 1
+                }}
+              >
+                <div style={{
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: color,
+                  border: '3px solid #fff',
+                  boxShadow: isSelected 
+                    ? `0 0 0 4px ${color}40, 0 4px 12px rgba(0, 0, 0, 0.6)`
+                    : '0 4px 12px rgba(0, 0, 0, 0.4)',
+                  position: 'relative'
+                }} />
               </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MarkerClusterGroup>
-    </MapContainer>
+            </Marker>
+          );
+        })}
+
+        {/* Property Popup */}
+        {selectedProperty && (
+          <Popup
+            latitude={selectedProperty.latitude}
+            longitude={selectedProperty.longitude}
+            anchor="bottom"
+            onClose={() => setSelectedProperty(null)}
+            closeOnClick={false}
+            offset={[0, -10]}
+            style={{ zIndex: 2000 }}
+          >
+            <div style={{
+              background: colors.surfaceCard,
+              borderRadius: borderRadius.md,
+              padding: spacing.md,
+              minWidth: '280px',
+              maxWidth: '320px',
+              border: `1px solid ${colors.border}`,
+              boxShadow: shadows.lg
+            }}>
+              {/* Header */}
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: spacing.sm
+              }}>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: colors.textPrimary,
+                    margin: 0,
+                    marginBottom: '4px'
+                  }}>
+                    {selectedProperty.title || selectedProperty.address}
+                  </h3>
+                  <p style={{
+                    fontSize: '13px',
+                    color: colors.textTertiary,
+                    margin: 0
+                  }}>
+                    {selectedProperty.city}, {selectedProperty.state} {selectedProperty.zip_code}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedProperty(null)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    padding: '4px',
+                    cursor: 'pointer',
+                    color: colors.textTertiary,
+                    transition: 'color 0.2s'
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Details */}
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: spacing.sm,
+                paddingTop: spacing.sm,
+                borderTop: `1px solid ${colors.border}`
+              }}>
+                {/* Asset Type */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Building2 size={14} style={{ color: colors.textTertiary }} />
+                  <span style={{ 
+                    fontSize: '13px',
+                    color: colors.textTertiary,
+                    flex: 1
+                  }}>
+                    Type:
+                  </span>
+                  <span style={{
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: ASSET_COLORS[selectedProperty.asset_type],
+                    padding: '2px 8px',
+                    background: `${ASSET_COLORS[selectedProperty.asset_type]}15`,
+                    borderRadius: borderRadius.sm
+                  }}>
+                    {selectedProperty.asset_type}
+                  </span>
+                </div>
+
+                {/* Price */}
+                {selectedProperty.asking_price && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <DollarSign size={14} style={{ color: colors.textTertiary }} />
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: colors.textTertiary,
+                      flex: 1
+                    }}>
+                      Price:
+                    </span>
+                    <span style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: colors.textPrimary
+                    }}>
+                      ${selectedProperty.asking_price.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
+                {/* Building Size */}
+                {selectedProperty.building_size && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: colors.textTertiary,
+                      flex: 1,
+                      paddingLeft: '22px'
+                    }}>
+                      Building:
+                    </span>
+                    <span style={{
+                      fontSize: '13px',
+                      color: colors.textSecondary
+                    }}>
+                      {selectedProperty.building_size.toLocaleString()} sqft
+                    </span>
+                  </div>
+                )}
+
+                {/* Lot Size */}
+                {selectedProperty.lot_size && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: colors.textTertiary,
+                      flex: 1,
+                      paddingLeft: '22px'
+                    }}>
+                      Lot:
+                    </span>
+                    <span style={{
+                      fontSize: '13px',
+                      color: colors.textSecondary
+                    }}>
+                      {selectedProperty.lot_size} acres
+                    </span>
+                  </div>
+                )}
+
+                {/* Status Badge */}
+                <div style={{ 
+                  marginTop: spacing.sm,
+                  paddingTop: spacing.sm,
+                  borderTop: `1px solid ${colors.border}`
+                }}>
+                  <span style={{
+                    display: 'inline-block',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    padding: '4px 8px',
+                    borderRadius: borderRadius.sm,
+                    background: selectedProperty.status === 'available' ? `${colors.success}20` :
+                                selectedProperty.status === 'claimed' ? `${colors.primary}20` :
+                                selectedProperty.status === 'converted' ? `${colors.warning}20` :
+                                `${colors.textMuted}20`,
+                    color: selectedProperty.status === 'available' ? colors.success :
+                           selectedProperty.status === 'claimed' ? colors.primary :
+                           selectedProperty.status === 'converted' ? colors.warning :
+                           colors.textMuted
+                  }}>
+                    {selectedProperty.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Popup>
+        )}
+      </Map>
+    </div>
   );
 };
 
