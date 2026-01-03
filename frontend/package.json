@@ -67,6 +67,7 @@
     "react-force-graph-2d": "^1.29.0",
     "react-hook-form": "^7.56.2",
     "react-leaflet": "^5.0.0",
+    "react-leaflet-cluster": "^4.0.0",
     "react-map-gl": "^8.1.0",
     "react-markdown": "^10.1.0",
     "react-password-strength-bar": "^0.4.1",
