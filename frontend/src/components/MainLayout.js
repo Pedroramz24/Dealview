@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../App';
 import { useCapabilities } from '../contexts/CapabilitiesContext';
 import { getVisibleNavItems } from '../utils/capabilities';
+import { supabase } from '../supabaseClient';
 import { 
   Store, 
   Briefcase,
@@ -31,24 +32,35 @@ const MainLayout = () => {
   const { capabilities, loading: capabilitiesLoading } = useCapabilities();
   const navigate = useNavigate();
   const location = useLocation();
-  const [hasMapCRMAccess, setHasMapCRMAccess] = React.useState(false);
+  const [hasMapCRMAccess, setHasMapCRMAccess] = useState(false);
 
   // Check Map CRM access
-  React.useEffect(() => {
+  useEffect(() => {
     const checkMapCRMAccess = async () => {
-      if (!user) return;
+      if (!user) {
+        setHasMapCRMAccess(false);
+        return;
+      }
       
       try {
-        const { supabase } = await import('../supabaseClient');
-        const { data: profile } = await supabase.default
-          .table('user_profiles')
+        const { data: profile, error } = await supabase
+          .from('user_profiles')
           .select('permissions')
           .eq('id', user.id)
           .single();
         
-        setHasMapCRMAccess(profile?.permissions?.map_crm_access === true);
+        if (error) {
+          console.error('Error checking Map CRM access:', error);
+          setHasMapCRMAccess(false);
+          return;
+        }
+        
+        const hasAccess = profile?.permissions?.map_crm_access === true;
+        console.log('Map CRM Access Check:', { userId: user.id, hasAccess, permissions: profile?.permissions });
+        setHasMapCRMAccess(hasAccess);
       } catch (error) {
         console.error('Failed to check Map CRM access:', error);
+        setHasMapCRMAccess(false);
       }
     };
 
