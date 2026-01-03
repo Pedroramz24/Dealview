@@ -18,7 +18,8 @@ import {
   TrendingUp,
   Settings as SettingsIcon,
   Shield,
-  Send
+  Send,
+  MapPin
 } from 'lucide-react';
 
 const iconMap = {
@@ -30,6 +31,29 @@ const MainLayout = () => {
   const { capabilities, loading: capabilitiesLoading } = useCapabilities();
   const navigate = useNavigate();
   const location = useLocation();
+  const [hasMapCRMAccess, setHasMapCRMAccess] = React.useState(false);
+
+  // Check Map CRM access
+  React.useEffect(() => {
+    const checkMapCRMAccess = async () => {
+      if (!user) return;
+      
+      try {
+        const { supabase } = await import('../supabaseClient');
+        const { data: profile } = await supabase.default
+          .table('user_profiles')
+          .select('permissions')
+          .eq('id', user.id)
+          .single();
+        
+        setHasMapCRMAccess(profile?.permissions?.map_crm_access === true);
+      } catch (error) {
+        console.error('Failed to check Map CRM access:', error);
+      }
+    };
+
+    checkMapCRMAccess();
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -196,6 +220,89 @@ const MainLayout = () => {
               </React.Fragment>
             );
           })}
+          
+          {/* Map CRM Internal Tool - Conditional */}
+          {hasMapCRMAccess && (
+            <>
+              <div style={{
+                width: '40px',
+                height: '1px',
+                background: 'rgba(255,255,255,0.15)',
+                margin: '8px 0'
+              }} />
+              <NavLink
+                to="/internal/map-crm"
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '12px',
+                  color: location.pathname.startsWith('/internal/map-crm') ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                  background: location.pathname.startsWith('/internal/map-crm') ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
+                  transition: 'all 0.3s ease',
+                  textDecoration: 'none',
+                  border: location.pathname.startsWith('/internal/map-crm') ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+                  boxShadow: location.pathname.startsWith('/internal/map-crm') ? '0 0 20px rgba(0, 184, 212, 0.2)' : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (!location.pathname.startsWith('/internal/map-crm')) {
+                    e.currentTarget.style.color = '#00b8d4';
+                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+                    e.currentTarget.style.boxShadow = '0 0 16px rgba(0, 184, 212, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!location.pathname.startsWith('/internal/map-crm')) {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }
+                }}
+              >
+                {location.pathname.startsWith('/internal/map-crm') && (
+                  <div style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: '3px',
+                    height: '60%',
+                    background: 'linear-gradient(180deg, #00b8d4 0%, #00d4aa 100%)',
+                    borderRadius: '0 4px 4px 0',
+                    boxShadow: '0 0 8px rgba(0, 184, 212, 0.5)'
+                  }} />
+                )}
+                
+                <MapPin size={24} strokeWidth={1.5} />
+                
+                <div style={{
+                  position: 'absolute',
+                  left: '100%',
+                  marginLeft: '12px',
+                  background: 'rgba(15, 23, 42, 0.95)',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  whiteSpace: 'nowrap',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  color: '#FFFFFF',
+                  opacity: 0,
+                  pointerEvents: 'none',
+                  transition: 'opacity 0.2s ease',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                  zIndex: 1000
+                }}
+                className="nav-tooltip"
+                >
+                  🔒 Map Tool
+                </div>
+              </NavLink>
+            </>
+          )}
         </nav>
 
         {/* Bottom Section - Settings, Logout */}
