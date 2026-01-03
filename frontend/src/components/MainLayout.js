@@ -242,8 +242,12 @@ const MainLayout = () => {
                 background: 'rgba(255,255,255,0.15)',
                 margin: '8px 0'
               }} />
-              <NavLink
-                to="/internal/map-crm"
+              <a
+                href="/internal/map-crm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/internal/map-crm');
+                }}
                 style={{
                   position: 'relative',
                   display: 'flex',
@@ -257,7 +261,8 @@ const MainLayout = () => {
                   transition: 'all 0.3s ease',
                   textDecoration: 'none',
                   border: location.pathname.startsWith('/internal/map-crm') ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
-                  boxShadow: location.pathname.startsWith('/internal/map-crm') ? '0 0 20px rgba(0, 184, 212, 0.2)' : 'none'
+                  boxShadow: location.pathname.startsWith('/internal/map-crm') ? '0 0 20px rgba(0, 184, 212, 0.2)' : 'none',
+                  cursor: 'pointer'
                 }}
                 onMouseEnter={(e) => {
                   if (!location.pathname.startsWith('/internal/map-crm')) {
@@ -310,9 +315,9 @@ const MainLayout = () => {
                 }}
                 className="nav-tooltip"
                 >
-                  🔒 Map Tool
+                  Map Tool
                 </div>
-              </NavLink>
+              </a>
             </>
           )}
         </nav>
