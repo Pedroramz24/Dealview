@@ -24,36 +24,6 @@ const MapView = () => {
     zoom: properties.length > 0 ? 12 : 11
   });
 
-  if (properties.length === 0) {
-    return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        background: colors.void
-      }}>
-        <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <MapPin size={48} style={{ color: colors.textMuted, margin: '0 auto 16px' }} />
-          <h3 style={{ 
-            fontSize: '18px', 
-            fontWeight: '600', 
-            color: colors.textPrimary,
-            marginBottom: '8px'
-          }}>
-            No properties to display
-          </h3>
-          <p style={{ 
-            fontSize: '14px', 
-            color: colors.textTertiary 
-          }}>
-            Import a CSV file to get started with property visualization
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       <Map
