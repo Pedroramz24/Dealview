@@ -55,6 +55,7 @@ from llc_service import llc_router
 
 # Import extracted route modules (ready for Marketplace features)
 from routes import auth_router, deal_router, dashboard_router as dashboard_routes_router, marketplace_router, messaging_router, onboarding_router, admin_router, reputation_router, roles_router
+from routes.map_crm import router as map_crm_router
 
 # Initialize database connections
 supabase = get_supabase()
