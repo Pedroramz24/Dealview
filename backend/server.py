@@ -2386,6 +2386,7 @@ api_router.include_router(onboarding_router)
 api_router.include_router(admin_router)
 api_router.include_router(reputation_router)
 api_router.include_router(roles_router)
+api_router.include_router(map_crm_router)  # Internal Map CRM tool
 
 # Register main API router and service routers
 app.include_router(api_router)
