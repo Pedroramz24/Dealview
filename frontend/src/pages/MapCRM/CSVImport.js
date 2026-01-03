@@ -11,6 +11,7 @@ import {
 import { Button } from '../../components/ui/button';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { Upload, FileText, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { colors, shadows, borderRadius, spacing, gradients, transitions } from '../../styles/designSystem';
 
 const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
   const [file, setFile] = useState(null);
@@ -74,17 +75,41 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent 
+        className="sm:max-w-md"
+        style={{
+          background: colors.surfaceCard,
+          border: `1px solid ${colors.border}`,
+          boxShadow: shadows.lg,
+          color: colors.textPrimary
+        }}
+      >
         <DialogHeader>
-          <DialogTitle>Import Properties from CSV</DialogTitle>
-          <DialogDescription>
-            Upload a CSV file with property data. The file must include: address, city, state, zip_code, asset_type.
+          <DialogTitle style={{ color: colors.textPrimary, fontSize: '18px', fontWeight: '600' }}>
+            Import Properties
+          </DialogTitle>
+          <DialogDescription style={{ color: colors.textTertiary }}>
+            Upload a CSV file with property data. Addresses will be automatically geocoded.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
           {/* File Input */}
-          <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+          <div style={{
+            border: `2px dashed ${colors.border}`,
+            borderRadius: borderRadius.md,
+            padding: spacing.xl,
+            textAlign: 'center',
+            transition: transitions.default,
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            if (!uploading) e.currentTarget.style.borderColor = colors.primary;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = colors.border;
+          }}
+          >
             <input
               type="file"
               accept=".csv"
@@ -93,16 +118,17 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
               id="csv-upload"
               disabled={uploading}
             />
-            <label htmlFor="csv-upload" className="cursor-pointer">
+            <label htmlFor="csv-upload" style={{ cursor: 'pointer' }}>
               {file ? (
-                <div className="flex items-center justify-center gap-2">
-                  <FileText className="h-8 w-8 text-blue-600" />
-                  <span className="text-sm font-medium">{file.name}</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm }}>
+                  <FileText size={32} style={{ color: colors.primary }} />
+                  <span style={{ fontSize: '14px', fontWeight: '500', color: colors.textPrimary }}>{file.name}</span>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  <Upload className="h-12 w-12 mx-auto text-gray-400" />
-                  <p className="text-sm text-gray-600">Click to select CSV file</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+                  <Upload size={48} style={{ color: colors.textMuted, margin: '0 auto' }} />
+                  <p style={{ fontSize: '14px', color: colors.textSecondary }}>Click to select CSV file</p>
+                  <p style={{ fontSize: '12px', color: colors.textTertiary }}>or drag and drop here</p>
                 </div>
               )}
             </label>
@@ -110,23 +136,36 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
 
           {/* Error Alert */}
           {error && (
-            <Alert variant="destructive">
-              <XCircle className="h-4 w-4" />
+            <Alert 
+              variant="destructive"
+              style={{
+                background: `${colors.danger}15`,
+                border: `1px solid ${colors.danger}`,
+                color: colors.danger
+              }}
+            >
+              <XCircle size={16} />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           {/* Success Result */}
           {result && (
-            <Alert className="border-green-500 bg-green-50">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
+            <Alert 
+              style={{
+                background: `${colors.success}15`,
+                border: `1px solid ${colors.success}`,
+                color: colors.success
+              }}
+            >
+              <CheckCircle2 size={16} />
               <AlertDescription>
-                <p className="font-semibold text-green-800">Import Complete!</p>
-                <p className="text-sm text-green-700 mt-1">
+                <p style={{ fontWeight: '600', marginBottom: '4px' }}>Import Complete!</p>
+                <p style={{ fontSize: '13px', opacity: 0.9 }}>
                   {result.successful_rows} of {result.total_rows} properties imported successfully.
                 </p>
                 {result.failed_rows > 0 && (
-                  <p className="text-sm text-orange-600 mt-1">
+                  <p style={{ fontSize: '13px', color: colors.warning, marginTop: '4px' }}>
                     {result.failed_rows} properties failed to import.
                   </p>
                 )}
@@ -135,33 +174,58 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
           )}
 
           {/* CSV Format Help */}
-          <div className="bg-gray-50 rounded p-3">
-            <p className="text-xs font-semibold text-gray-700 mb-1">Required Columns:</p>
-            <p className="text-xs text-gray-600 font-mono">
+          <div style={{
+            background: colors.surfaceElevated,
+            borderRadius: borderRadius.sm,
+            padding: spacing.md,
+            border: `1px solid ${colors.border}`
+          }}>
+            <p style={{ fontSize: '12px', fontWeight: '600', color: colors.textSecondary, marginBottom: '6px' }}>
+              Required Columns:
+            </p>
+            <p style={{ fontSize: '12px', color: colors.textTertiary, fontFamily: 'monospace' }}>
               address, city, state, zip_code, asset_type
             </p>
-            <p className="text-xs text-gray-500 mt-2">
+            <p style={{ fontSize: '12px', color: colors.textTertiary, marginTop: spacing.sm }}>
               <strong>Asset types:</strong> Gas, Retail, Industrial, Office, Land, Multifamily
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2">
+          <div style={{ display: 'flex', gap: spacing.sm }}>
             <Button
               onClick={handleUpload}
               disabled={!file || uploading}
-              className="flex-1"
+              style={{
+                flex: 1,
+                background: file && !uploading ? gradients.primaryButton : colors.surfaceElevated,
+                color: file && !uploading ? colors.textPrimary : colors.textMuted,
+                border: 'none',
+                boxShadow: file && !uploading ? shadows.glowCyan : 'none',
+                transition: transitions.default,
+                cursor: file && !uploading ? 'pointer' : 'not-allowed'
+              }}
             >
               {uploading ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 size={16} className="animate-spin mr-2" />
                   Importing...
                 </>
               ) : (
                 'Upload & Import'
               )}
             </Button>
-            <Button variant="outline" onClick={onClose} disabled={uploading}>
+            <Button 
+              variant="outline" 
+              onClick={onClose} 
+              disabled={uploading}
+              style={{
+                background: 'transparent',
+                border: `1px solid ${colors.border}`,
+                color: colors.textSecondary,
+                transition: transitions.default
+              }}
+            >
               Cancel
             </Button>
           </div>
