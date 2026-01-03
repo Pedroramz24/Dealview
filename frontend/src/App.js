@@ -151,6 +151,12 @@ function App() {
             <Route path="marketplace-analytics" element={<BrokerAnalytics />} />
           </Route>
 
+          {/* Map CRM Internal Tool - Standalone Route */}
+          <Route
+            path="/internal/map-crm"
+            element={user ? <MapCRM /> : <Navigate to="/login" />}
+          />
+
           {/* Simple /dashboard redirect */}
           <Route path="/dashboard" element={user ? <Navigate to="/workspace/dashboard" /> : <Navigate to="/login" />} />
 
