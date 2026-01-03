@@ -30,6 +30,7 @@ import DualModeLayout from './components/DualModeLayout';
 import MarketplacePage from './pages/MarketplacePage';
 import MarketplaceDealDetail from './pages/MarketplaceDealDetail';
 import MapCRM from './pages/MapCRM';
+import MapCRMDebug from './pages/MapCRMDebug';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -155,6 +156,12 @@ function App() {
           <Route
             path="/internal/map-crm"
             element={user ? <MapCRM /> : <Navigate to="/login" />}
+          />
+          
+          {/* Map CRM Debug Page */}
+          <Route
+            path="/debug/map-crm"
+            element={user ? <MapCRMDebug /> : <Navigate to="/login" />}
           />
 
           {/* Simple /dashboard redirect */}
