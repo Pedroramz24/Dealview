@@ -308,7 +308,7 @@ const TableView = () => {
           {filteredProperties.map((property, index) => (
             <div
               key={property.id}
-              onClick={() => setSelectedProperty(property)}
+              onClick={() => navigate(`/internal/map-crm/property/${property.id}`)}
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 200px 120px 140px 120px 100px',

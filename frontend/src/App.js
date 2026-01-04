@@ -31,6 +31,7 @@ import MarketplacePage from './pages/MarketplacePage';
 import MarketplaceDealDetail from './pages/MarketplaceDealDetail';
 import MapCRM from './pages/MapCRM';
 import MapCRMDebug from './pages/MapCRMDebug';
+import PropertyDetails from './pages/MapCRM/PropertyDetails';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -156,6 +157,12 @@ function App() {
           <Route
             path="/internal/map-crm"
             element={user ? <MapCRM /> : <Navigate to="/login" />}
+          />
+          
+          {/* Property Detail Page */}
+          <Route
+            path="/internal/map-crm/property/:propertyId"
+            element={user ? <PropertyDetails /> : <Navigate to="/login" />}
           />
           
           {/* Map CRM Debug Page */}
