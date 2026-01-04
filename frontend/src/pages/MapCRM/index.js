@@ -4,15 +4,28 @@ import { MapCRMProvider, useMapCRM } from '../../contexts/MapCRMContext';
 import MapView from './MapView';
 import TableView from './TableView';
 import CSVImport from './CSVImport';
+import AdvancedFilters from './AdvancedFilters';
 import { Button } from '../../components/ui/button';
-import { Upload, MapIcon, Grid3x3, Loader2 } from 'lucide-react';
+import { Upload, MapIcon, Grid3x3, Loader2, SlidersHorizontal } from 'lucide-react';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { colors, shadows, gradients, borderRadius, transitions, spacing } from '../../styles/designSystem';
 
 const DealVisorContent = () => {
   const { hasAccess, checkingAccess, fetchProperties, loading, properties } = useMapCRM();
   const [showImport, setShowImport] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [showMap, setShowMap] = useState(true);
+  const [filters, setFilters] = useState({
+    equityMin: 0,
+    equityMax: 100,
+    taxDelinquentMin: 0,
+    highEquity: false,
+    foreclosure: false,
+    underwater: false,
+    bankruptcy: false,
+    ownerOccupied: null,
+    cashBuyer: false
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -167,6 +180,20 @@ const DealVisorContent = () => {
             <Upload size={16} />
             Import CSV
           </Button>
+
+          <Button
+            onClick={() => setShowFilters(true)}
+            style={{
+              background: colors.surfaceElevated,
+              border: `1px solid ${colors.border}`,
+              color: colors.textSecondary,
+              transition: transitions.default
+            }}
+            className="flex items-center gap-2"
+          >
+            <SlidersHorizontal size={16} />
+            Filters
+          </Button>
         </div>
       </div>
 
@@ -201,6 +228,19 @@ const DealVisorContent = () => {
           onImportComplete={() => {
             setShowImport(false);
             fetchProperties();
+          }}
+        />
+      )}
+
+      {/* Advanced Filters Panel */}
+      {showFilters && (
+        <AdvancedFilters
+          filters={filters}
+          setFilters={setFilters}
+          onClose={() => setShowFilters(false)}
+          onApply={() => {
+            // Filters will be passed to TableView and MapView
+            console.log('Filters applied:', filters);
           }}
         />
       )}
