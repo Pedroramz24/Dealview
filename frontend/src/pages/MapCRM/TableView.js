@@ -39,6 +39,21 @@ const TableView = () => {
   const [sortDirection, setSortDirection] = useState('desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [assetTypeFilter, setAssetTypeFilter] = useState('all');
+  const [showColumnSelector, setShowColumnSelector] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState(['address', 'city', 'asset_type', 'asking_price', 'building_size', 'status']);
+  
+  // Advanced filters state (passed from parent)
+  const [advancedFilters, setAdvancedFilters] = useState({
+    equityMin: 0,
+    equityMax: 100,
+    taxDelinquentMin: 0,
+    highEquity: false,
+    foreclosure: false,
+    underwater: false,
+    bankruptcy: false,
+    ownerOccupied: null,
+    cashBuyer: false
+  });
 
   // Get unique asset types
   const assetTypes = useMemo(() => {
@@ -67,6 +82,44 @@ const TableView = () => {
       filtered = filtered.filter(p => p.asset_type === assetTypeFilter);
     }
 
+    // Advanced Filters
+    
+    // Equity % range
+    filtered = filtered.filter(p => {
+      if (p.est_equity_percent === null || p.est_equity_percent === undefined) return true;
+      return p.est_equity_percent >= advancedFilters.equityMin && 
+             p.est_equity_percent <= advancedFilters.equityMax;
+    });
+
+    // Tax Delinquent minimum
+    if (advancedFilters.taxDelinquentMin > 0) {
+      filtered = filtered.filter(p => 
+        p.tax_delinquent_dollars && p.tax_delinquent_dollars >= advancedFilters.taxDelinquentMin
+      );
+    }
+
+    // Boolean flags
+    if (advancedFilters.highEquity) {
+      filtered = filtered.filter(p => p.high_equity === true);
+    }
+    if (advancedFilters.foreclosure) {
+      filtered = filtered.filter(p => p.foreclosure === true);
+    }
+    if (advancedFilters.underwater) {
+      filtered = filtered.filter(p => p.underwater === true);
+    }
+    if (advancedFilters.bankruptcy) {
+      filtered = filtered.filter(p => p.bankruptcy === true);
+    }
+    if (advancedFilters.cashBuyer) {
+      filtered = filtered.filter(p => p.cash_buyer === true);
+    }
+
+    // Owner Occupancy filter
+    if (advancedFilters.ownerOccupied !== null) {
+      filtered = filtered.filter(p => p.owner_occupied === advancedFilters.ownerOccupied);
+    }
+
     // Sort
     filtered.sort((a, b) => {
       let aVal = a[sortField];
@@ -88,7 +141,7 @@ const TableView = () => {
     });
 
     return filtered;
-  }, [properties, searchQuery, assetTypeFilter, sortField, sortDirection]);
+  }, [properties, searchQuery, assetTypeFilter, advancedFilters, sortField, sortDirection]);
 
   const handleSort = (field) => {
     if (sortField === field) {
