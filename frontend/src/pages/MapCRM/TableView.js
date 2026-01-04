@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useMapCRM } from '../../contexts/MapCRMContext';
 import { colors, shadows, borderRadius, transitions, spacing } from '../../styles/designSystem';
 import { 
