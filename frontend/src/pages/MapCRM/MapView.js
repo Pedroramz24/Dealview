@@ -114,6 +114,7 @@ const MapView = () => {
       <Map
         {...viewport}
         onMove={evt => setViewport(evt.viewState)}
+        onMoveEnd={handleMoveEnd}
         style={{ width: '100%', height: '100%' }}
         mapStyle={mapStyle}
       >
@@ -128,7 +129,31 @@ const MapView = () => {
           color: colors.textPrimary
         }} />
 
-        {properties.map((property) => {
+        {/* Loading Indicator */}
+        {loading && (
+          <div style={{
+            position: 'absolute',
+            top: spacing.md,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: colors.surfaceCard,
+            border: `1px solid ${colors.border}`,
+            borderRadius: borderRadius.md,
+            padding: `${spacing.sm} ${spacing.md}`,
+            boxShadow: shadows.md,
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.sm,
+            zIndex: 999
+          }}>
+            <Loader2 size={14} className="animate-spin" style={{ color: colors.primary }} />
+            <span style={{ fontSize: '13px', color: colors.textSecondary }}>
+              Loading properties...
+            </span>
+          </div>
+        )}
+
+        {viewportProperties.map((property) => {
           const color = ASSET_COLORS[property.asset_type] || colors.textMuted;
           const isSelected = selectedProperty?.id === property.id;
 
