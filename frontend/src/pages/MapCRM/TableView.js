@@ -6,6 +6,31 @@ import {
   ChevronUp, ChevronDown, Search, Filter 
 } from 'lucide-react';
 
+// Utility functions for formatting
+const formatCurrency = (value) => {
+  if (!value && value !== 0) return '—';
+  return `$${value.toLocaleString('en-US')}`;
+};
+
+const formatNumber = (value, suffix = '') => {
+  if (!value && value !== 0) return '—';
+  return `${value.toLocaleString('en-US')}${suffix ? ' ' + suffix : ''}`;
+};
+
+const formatPercent = (value) => {
+  if (!value && value !== 0) return '—';
+  return `${value.toFixed(1)}%`;
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return '—';
+  try {
+    return new Date(dateString).toLocaleDateString('en-US');
+  } catch {
+    return dateString;
+  }
+};
+
 const TableView = () => {
   const { properties, setSelectedProperty } = useMapCRM();
   const [sortField, setSortField] = useState('created_at');
@@ -351,7 +376,7 @@ const TableView = () => {
                 display: 'flex',
                 alignItems: 'center'
               }}>
-                {property.asking_price ? `$${property.asking_price.toLocaleString()}` : '—'}
+                {formatCurrency(property.asking_price)}
               </div>
 
               {/* Size */}
@@ -361,7 +386,7 @@ const TableView = () => {
                 display: 'flex',
                 alignItems: 'center'
               }}>
-                {property.building_size ? `${property.building_size.toLocaleString()} sqft` : '—'}
+                {formatNumber(property.building_size, 'sqft')}
               </div>
 
               {/* Status */}
