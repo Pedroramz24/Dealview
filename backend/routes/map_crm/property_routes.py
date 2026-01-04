@@ -241,8 +241,14 @@ async def import_csv(
                 latitude = geocode_result['latitude']
                 longitude = geocode_result['longitude']
                 
-                # Intelligent asset type classification
-                asset_type = classify_asset_type(row)
+                # Determine asset type (priority order):
+                # 1. Manual override (user selected in wizard)
+                # 2. CSV column value
+                # 3. Auto-classification
+                if asset_type_override:
+                    asset_type = asset_type_override
+                else:
+                    asset_type = classify_asset_type(row)
                 
                 # Check for existing property (duplicate detection)
                 existing_property = await find_existing_property(
