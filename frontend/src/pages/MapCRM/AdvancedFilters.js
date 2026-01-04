@@ -93,7 +93,8 @@ const AdvancedFilters = ({ filters, setFilters, onClose, onApply }) => {
             background: colors.surfaceElevated,
             borderRadius: borderRadius.md,
             padding: spacing.md,
-            border: `1px solid ${colors.border}`
+            border: `1px solid ${colors.border}`,
+            marginBottom: spacing.sm
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: spacing.md }}>
               <span style={{ fontSize: '14px', fontWeight: '600', color: colors.primary }}>
@@ -103,25 +104,60 @@ const AdvancedFilters = ({ filters, setFilters, onClose, onApply }) => {
                 {localFilters.equityMax}%
               </span>
             </div>
-            <div style={{ display: 'flex', gap: spacing.md, alignItems: 'center' }}>
+            <div style={{ position: 'relative', height: '40px', marginBottom: spacing.sm }}>
+              {/* Min Range */}
               <input
                 type="range"
                 min="0"
                 max="100"
                 value={localFilters.equityMin}
-                onChange={(e) => setLocalFilters({ ...localFilters, equityMin: parseInt(e.target.value) })}
-                style={{ flex: 1 }}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (val <= localFilters.equityMax) {
+                    setLocalFilters({ ...localFilters, equityMin: val });
+                  }
+                }}
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '6px',
+                  WebkitAppearance: 'none',
+                  appearance: 'none',
+                  background: 'transparent',
+                  outline: 'none',
+                  zIndex: 2,
+                  pointerEvents: 'auto'
+                }}
               />
-              <span style={{ fontSize: '12px', color: colors.textTertiary }}>to</span>
+              {/* Max Range */}
               <input
                 type="range"
                 min="0"
                 max="100"
                 value={localFilters.equityMax}
-                onChange={(e) => setLocalFilters({ ...localFilters, equityMax: parseInt(e.target.value) })}
-                style={{ flex: 1 }}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (val >= localFilters.equityMin) {
+                    setLocalFilters({ ...localFilters, equityMax: val });
+                  }
+                }}
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '6px',
+                  WebkitAppearance: 'none',
+                  appearance: 'none',
+                  background: `linear-gradient(to right, ${colors.border} 0%, ${colors.border} ${localFilters.equityMin}%, ${colors.primary} ${localFilters.equityMin}%, ${colors.primary} ${localFilters.equityMax}%, ${colors.border} ${localFilters.equityMax}%, ${colors.border} 100%)`,
+                  outline: 'none',
+                  borderRadius: '3px',
+                  zIndex: 1,
+                  pointerEvents: 'auto'
+                }}
               />
             </div>
+            <p style={{ fontSize: '11px', color: colors.textTertiary, textAlign: 'center' }}>
+              Show properties with {localFilters.equityMin}% to {localFilters.equityMax}% equity
+            </p>
           </div>
         </div>
 
