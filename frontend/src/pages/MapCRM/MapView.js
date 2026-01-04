@@ -5,7 +5,7 @@ import { supabase } from '../../supabaseClient';
 import { API } from '../../App';
 import { useMapCRM } from '../../contexts/MapCRMContext';
 import { colors, shadows, borderRadius, spacing } from '../../styles/designSystem';
-import { MapPin, DollarSign, Building2, X, ArrowLeft, Loader2 } from 'lucide-react';
+import { DollarSign, Building2, X, ArrowLeft, Loader2 } from 'lucide-react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Asset type colors matching DealLinked
