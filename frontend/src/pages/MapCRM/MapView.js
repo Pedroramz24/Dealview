@@ -5,7 +5,7 @@ import Supercluster from 'supercluster';
 import { supabase } from '../../supabaseClient';
 import { API } from '../../App';
 import { useMapCRM } from '../../contexts/MapCRMContext';
-import { colors, shadows, borderRadius, spacing } from '../../styles/designSystem';
+import { colors, shadows, borderRadius, spacing, gradients } from '../../styles/designSystem';
 import { DollarSign, Building2, X, ArrowLeft, Loader2, TrendingUp, AlertTriangle } from 'lucide-react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
