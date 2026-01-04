@@ -142,20 +142,48 @@ const CSVImportWizard = ({ isOpen, onClose, onImportComplete }) => {
 
     // Auto-detect common patterns
     const patterns = {
-      address: ['address', 'street', 'street_address', 'street address', 'property_address'],
+      address: ['address', 'street', 'street_address', 'street address', 'property_address', 'property address'],
       city: ['city', 'town', 'municipality'],
       state: ['state', 'province', 'st'],
       zip_code: ['zip', 'zipcode', 'zip_code', 'postal', 'postal_code', 'zip code'],
       title: ['title', 'name', 'property_name', 'property name'],
       asking_price: ['price', 'asking_price', 'asking price', 'list_price', 'list price', 'value'],
-      building_size: ['building_size', 'building size', 'sqft', 'square_feet', 'building_sqft', 'size'],
+      building_size: ['building_size', 'building size', 'sqft', 'sq ft', 'square_feet', 'building_sqft', 'size'],
       lot_size: ['lot_size', 'lot size', 'acres', 'lot_acres', 'land_size'],
       owner_name: ['owner', 'owner_name', 'owner name', 'contact', 'contact_name'],
       owner_phone: ['phone', 'owner_phone', 'owner phone', 'contact_phone', 'telephone'],
       owner_email: ['email', 'owner_email', 'owner email', 'contact_email'],
-      year_built: ['year_built', 'year built', 'built', 'year'],
+      year_built: ['year_built', 'year built', 'built', 'year', 'yr built'],
       zoning: ['zoning', 'zone', 'zoning_code'],
-      description: ['description', 'desc', 'notes', 'comments']
+      description: ['description', 'desc', 'notes', 'comments'],
+      // PropertyRadar fields
+      beds: ['beds', 'bedrooms', 'bed'],
+      baths: ['baths', 'bathrooms', 'bath'],
+      est_value: ['est value', 'est_value', 'estimated value', 'estimated_value'],
+      assessed_value: ['assd val', 'assessed value', 'assessed_value'],
+      est_equity_percent: ['est equity %', 'equity %', 'equity percent'],
+      est_equity_dollars: ['est equity $', 'equity $', 'equity dollars'],
+      tax_delinquent_dollars: ['tax delinquent $', 'tax delinquent'],
+      high_equity: ['high equity?', 'high equity'],
+      underwater: ['underwater?', 'underwater'],
+      foreclosure: ['foreclosure?', 'foreclosure'],
+      bankruptcy: ['bankruptcy?', 'bankruptcy'],
+      owner_occupied: ['owner occ?', 'owner occupied', 'owner_occupied'],
+      cash_buyer: ['cash buyer?', 'cash buyer'],
+      listed_for_sale: ['listed for sale?', 'listed'],
+      listing_status: ['listing status', 'listing_status', 'status'],
+      purchase_date: ['purchase date', 'purchase_date'],
+      purchase_amount: ['purchase amt', 'purchase amount', 'purchase_amount'],
+      owner_type: ['owner type', 'owner_type'],
+      photo_url: ['photo url', 'photo_url', 'photo'],
+      county: ['county'],
+      apn: ['apn', 'parcel'],
+      land_value: ['land value', 'land_value'],
+      improvements_value: ['improvements', 'improvements value'],
+      mail_address: ['mail address', 'mail_address', 'mailing address'],
+      mail_city: ['mail city', 'mail_city'],
+      mail_state: ['mail state', 'mail_state'],
+      mail_zip: ['mail zip', 'mail_zip']
     };
 
     Object.keys(patterns).forEach(field => {
@@ -170,8 +198,62 @@ const CSVImportWizard = ({ isOpen, onClose, onImportComplete }) => {
     return mapping;
   };
 
+  const quickMapPropertyRadar = () => {
+    // PropertyRadar standard export mapping
+    const propertyRadarMap = {
+      'Type': 'asset_type',
+      'Address': 'address',
+      'City': 'city',
+      'State': 'state',
+      'ZIP': 'zip_code',
+      'Sq Ft': 'building_size',
+      'Beds': 'beds',
+      'Baths': 'baths',
+      'Est Value': 'est_value',
+      'Assd Val': 'assessed_value',
+      'Land Value': 'land_value',
+      'Improvements': 'improvements_value',
+      'Est Equity $': 'est_equity_dollars',
+      'Est Equity %': 'est_equity_percent',
+      'Tax Delinquent $': 'tax_delinquent_dollars',
+      'High Equity?': 'high_equity',
+      'Underwater?': 'underwater',
+      'Bankruptcy?': 'bankruptcy',
+      'Foreclosure?': 'foreclosure',
+      'Owner': 'owner_name',
+      'Owner Occ?': 'owner_occupied',
+      'Owner Type': 'owner_type',
+      'Listed for Sale?': 'listed_for_sale',
+      'Listing Status': 'listing_status',
+      'Purchase Date': 'purchase_date',
+      'Purchase Amt': 'purchase_amount',
+      'Cash Buyer?': 'cash_buyer',
+      'Yr Built': 'year_built',
+      'Zoning': 'zoning',
+      'County': 'county',
+      'APN': 'apn',
+      'Photo URL': 'photo_url',
+      'Mail Address': 'mail_address',
+      'Mail City': 'mail_city',
+      'Mail State': 'mail_state',
+      'Mail ZIP': 'mail_zip',
+      'Longitude': 'longitude',
+      'Latitude': 'latitude'
+    };
+
+    const newMapping = {};
+    csvHeaders.forEach(header => {
+      const dealvisorField = propertyRadarMap[header];
+      if (dealvisorField) {
+        newMapping[dealvisorField] = header;
+      }
+    });
+
+    setFieldMapping(newMapping);
+  };
+
   const validateMapping = () => {
-    const required = ['address', 'city', 'state', 'zip_code'];
+    const required = ['address', 'city', 'state'];
     const missing = required.filter(field => !fieldMapping[field]);
     
     if (missing.length > 0) {
