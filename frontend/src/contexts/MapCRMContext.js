@@ -79,6 +79,7 @@ export const MapCRMProvider = ({ children }) => {
       if (filters.asset_type) params.append('asset_type', filters.asset_type);
       if (filters.city) params.append('city', filters.city);
       if (filters.status) params.append('status', filters.status);
+      params.append('limit', '10000'); // Increase limit for Supabase Pro
 
       const response = await fetch(`${API}/map-crm/properties?${params.toString()}`, {
         headers: {
@@ -88,6 +89,7 @@ export const MapCRMProvider = ({ children }) => {
 
       if (!response.ok) throw new Error('Failed to fetch properties');
       const data = await response.json();
+      console.log('[MapCRM] Fetched properties:', data.length);
       setProperties(data);
     } catch (error) {
       console.error('Failed to fetch properties:', error);
