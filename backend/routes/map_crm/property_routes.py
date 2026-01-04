@@ -376,6 +376,7 @@ async def import_csv(
             'failed_rows': failed_rows,
             'new_properties': len(properties_to_insert),
             'updated_properties': updated_rows,
+            'classification_method': 'manual_override' if asset_type_override else 'auto_classified',
             'message': f"Successfully processed {successful_rows} of {total_rows} properties ({len(properties_to_insert)} new, {updated_rows} updated)"
         }
         
