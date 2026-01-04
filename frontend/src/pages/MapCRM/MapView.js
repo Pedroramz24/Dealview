@@ -124,14 +124,24 @@ const MapView = () => {
     const map = mapRef.current.getMap();
     if (!map) return [];
 
+    // Safety check: ensure we have viewport properties before clustering
+    if (viewportProperties.length === 0) return [];
+
     const bounds = map.getBounds();
+    if (!bounds) return [];
+    
     const zoom = Math.round(viewport.zoom);
 
-    return supercluster.getClusters(
-      [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
-      zoom
-    );
-  }, [supercluster, viewport]);
+    try {
+      return supercluster.getClusters(
+        [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
+        zoom
+      );
+    } catch (error) {
+      console.error('Error getting clusters:', error);
+      return [];
+    }
+  }, [supercluster, viewport, viewportProperties]);
 
   // Fetch properties in current viewport
   const fetchViewportProperties = useCallback(async (bounds, zoom) => {
