@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMapCRM } from '../../contexts/MapCRMContext';
 import ColumnSelector from './ColumnSelector';
+import { COLUMN_CONFIG } from './columnConfig';
 import { colors, shadows, borderRadius, transitions, spacing } from '../../styles/designSystem';
 import { 
   MapPin, DollarSign, Building2, Calendar, User, 
@@ -333,45 +334,43 @@ const TableView = ({ filters: parentFilters }) => {
         {/* Table Header */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 200px 120px 140px 120px 100px',
+          gridTemplateColumns: visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' '),
           padding: `${spacing.md} ${spacing.lg}`,
           background: colors.surfaceElevated,
           borderBottom: `1px solid ${colors.border}`,
           gap: spacing.md
         }}>
-          {[
-            { field: 'address', label: 'Address' },
-            { field: 'city', label: 'City' },
-            { field: 'asset_type', label: 'Asset Type' },
-            { field: 'asking_price', label: 'Asking Price' },
-            { field: 'building_size', label: 'Size' },
-            { field: 'status', label: 'Status' }
-          ].map(col => (
-            <button
-              key={col.field}
-              onClick={() => handleSort(col.field)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                color: colors.textTertiary,
-                fontSize: '12px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                cursor: 'pointer',
-                transition: transitions.fast
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.textTertiary}
-            >
-              {col.label}
-              <SortIcon field={col.field} />
-            </button>
-          ))}
+          {visibleColumns.map(colKey => {
+            const col = COLUMN_CONFIG[colKey];
+            if (!col) return null;
+            
+            return (
+              <button
+                key={colKey}
+                onClick={() => handleSort(colKey)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  color: colors.textTertiary,
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  cursor: 'pointer',
+                  transition: transitions.fast
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                onMouseLeave={(e) => e.currentTarget.style.color = colors.textTertiary}
+              >
+                {col.label}
+                <SortIcon field={colKey} />
+              </button>
+            );
+          })}
         </div>
 
         {/* Table Body */}
@@ -385,7 +384,7 @@ const TableView = ({ filters: parentFilters }) => {
               onClick={() => navigate(`/internal/map-crm/property/${property.id}`)}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 200px 120px 140px 120px 100px',
+                gridTemplateColumns: visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' '),
                 padding: `${spacing.md} ${spacing.lg}`,
                 borderBottom: index < filteredProperties.length - 1 ? `1px solid ${colors.border}` : 'none',
                 gap: spacing.md,
@@ -400,90 +399,25 @@ const TableView = ({ filters: parentFilters }) => {
                 e.currentTarget.style.background = colors.surfaceCard;
               }}
             >
-              {/* Address */}
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: colors.textPrimary,
-                  marginBottom: '2px'
-                }}>
-                  {property.title || property.address}
-                </span>
-                <span style={{
-                  fontSize: '12px',
-                  color: colors.textTertiary
-                }}>
-                  {property.address}
-                </span>
-              </div>
+              {visibleColumns.map(colKey => {
+                const col = COLUMN_CONFIG[colKey];
+                if (!col) return <div key={colKey}>—</div>;
+                
+                const value = typeof col.render === 'function' 
+                  ? col.render(property, ASSET_COLORS, borderRadius, formatCurrency, formatNumber, formatPercent, colors)
+                  : property[colKey] || '—';
 
-              {/* City */}
-              <div style={{
-                fontSize: '14px',
-                color: colors.textSecondary,
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                {property.city}, {property.state}
-              </div>
-
-              {/* Asset Type */}
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: ASSET_COLORS[property.asset_type],
-                  padding: '4px 8px',
-                  background: `${ASSET_COLORS[property.asset_type]}15`,
-                  borderRadius: borderRadius.sm
-                }}>
-                  {property.asset_type}
-                </span>
-              </div>
-
-              {/* Price */}
-              <div style={{
-                fontSize: '14px',
-                fontWeight: '600',
-                color: colors.textPrimary,
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                {formatCurrency(property.asking_price)}
-              </div>
-
-              {/* Size */}
-              <div style={{
-                fontSize: '13px',
-                color: colors.textSecondary,
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                {formatNumber(property.building_size, 'sqft')}
-              </div>
-
-              {/* Status */}
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  padding: '3px 8px',
-                  borderRadius: borderRadius.sm,
-                  background: property.status === 'available' ? `${colors.success}20` :
-                              property.status === 'claimed' ? `${colors.primary}20` :
-                              property.status === 'converted' ? `${colors.warning}20` :
-                              `${colors.textMuted}20`,
-                  color: property.status === 'available' ? colors.success :
-                         property.status === 'claimed' ? colors.primary :
-                         property.status === 'converted' ? colors.warning :
-                         colors.textMuted
-                }}>
-                  {property.status}
-                </span>
-              </div>
+                return (
+                  <div key={colKey} style={{ 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    color: colors.textSecondary,
+                    fontSize: '14px'
+                  }}>
+                    {value}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
