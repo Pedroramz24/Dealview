@@ -215,7 +215,7 @@ const DealVisorContent = () => {
           </div>
         ) : (
           <>
-            {showMap ? <MapView /> : <TableView />}
+            {showMap ? <MapView /> : <TableView filters={filters} />}
           </>
         )}
       </div>

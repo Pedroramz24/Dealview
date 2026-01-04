@@ -488,6 +488,15 @@ const TableView = ({ filters: parentFilters }) => {
           ))}
         </div>
       </div>
+
+      {/* Column Selector Panel */}
+      {showColumnSelector && (
+        <ColumnSelector
+          visibleColumns={visibleColumns}
+          setVisibleColumns={setVisibleColumns}
+          onClose={() => setShowColumnSelector(false)}
+        />
+      )}
     </div>
   );
 };
