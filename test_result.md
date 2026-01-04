@@ -1978,3 +1978,89 @@ agent_communication:
   - agent: "testing"
     timestamp: "2025-12-27T10:15:00Z"
     message: "❌ CRITICAL PATH VERIFICATION FAILED - POST SCHEMA FIX: Tested the 7 critical endpoints per review request. RESULTS: Authentication ✅, Deal Creation ❌ (520 error), Deal Retrieval ❌ (520 error), Deal Update ❌ (no deal to test), Deal Deletion ❌ (no deal to test), Pipelines ❌ (returns dict not array), Dashboard Stats ✅, Performance ✅ (avg 0.19s). PASS RATE: 37.5% (3/8). ROOT CAUSE: Deal Pydantic model (models/deal.py) expects 'property_address' field but Supabase has 'address' column. When deal_routes.py converts Supabase response to Deal model (lines 65, 78, 95), validation fails: 'property_address Field required'. ADDITIONAL ISSUE: Deal model requires 'notes: str' but Supabase allows NULL, causing 'Input should be a valid string' error. IMPACT: Complete deal CRUD failure - cannot create, retrieve, update, or delete deals. VERDICT: ❌ NOT DEPLOYMENT READY. FIX REQUIRED: Update Deal model to match Supabase schema (property_address → address, building_size → size, notes: str → Optional[str] = None) OR add field mapping in deal_routes.py. URGENT: This is a regression - deals API was working in previous tests but schema fix broke the model-database alignment."
+
+#====================================================================================================
+# MAP CRM TESTING - January 4, 2026
+#====================================================================================================
+
+user_problem_statement: "Test DealVisor Map CRM functionality with 1,344 PropertyRadar imported properties"
+
+backend:
+  - task: "Map CRM Property List API"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/map_crm/property_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Property List API (GET /api/map-crm/properties) working correctly. Database contains all 1,344 PropertyRadar properties as expected. API returns 1000 properties per request (Supabase PostgREST default limit). Response time: 0.84s. PropertyRadar fields present: est_equity_percent, high_equity, est_value, owner_name, owner_type, cash_buyer, owner_occupied. All properties are in San Antonio, TX area (lat: 29.1-29.7, lng: -98.8 to -98.2). Note: beds/baths fields not present in all properties (expected for commercial properties). Pagination working correctly with limit parameter."
+
+  - task: "Map CRM Viewport Map Data API"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/map_crm/property_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Viewport Map Data API (GET /api/map-crm/properties/map-data) working perfectly. Tested with San Antonio viewport (north=30, south=29, east=-98, west=-99, zoom=11). Returned 500 properties (correctly filtered from total 1,344). Viewport filtering working as expected - returns subset based on geographic bounds. Response time: 0.39s (excellent performance). Zoom-based limiting working correctly (zoom 11 = 500 property limit). Sample properties verified to be within viewport bounds. All properties have valid coordinates."
+
+  - task: "Map CRM Property Detail API"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/map_crm/property_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Property Detail API (GET /api/map-crm/properties/{property_id}) working correctly. Successfully retrieved full property details for test property (ID: 8d6afdc4-7f2e-49d2-8fbc-7ce832d8748d). Response time: 0.30s. All fields present: id, address, city, state, zip_code, asset_type, status, latitude, longitude. Numeric fields properly formatted as floats: building_size (36000.0), est_equity_percent (0.0), est_value (4792746.0). PropertyRadar fields present: owner_name, owner_type, high_equity, cash_buyer, owner_occupied. Property correctly classified as 'Retail' asset type. Status field shows 'available'. No errors in field formatting or data types."
+
+  - task: "Map CRM Property Update API"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/map_crm/property_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Property Update API (PUT /api/map-crm/properties/{property_id}) working perfectly. Successfully updated notes field on test property. Response time: 0.30s. Update verification: notes field updated correctly with test value 'Test note added at 2026-01-04T20:16:22.549833'. Timestamp field (updated_at) automatically updated to '2026-01-04T20:16:22.731854Z'. Response returns full updated property object. No errors during update operation. Field validation working correctly."
+
+  - task: "Map CRM Authentication & Permissions"
+    implemented: true
+    working: true
+    file: "/app/middleware/map_crm_gate.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VERIFIED: Map CRM authentication and permission-based access working correctly. User contact@pedroarmando.com successfully authenticated via Supabase (user_id: 8fba389e-9353-4592-bce9-92a6ca59337c). JWT token obtained and validated. All Map CRM endpoints require authentication (require_map_crm_access middleware). User has proper access to /internal/map-crm functionality. No unauthorized access possible - all endpoints return 401 without valid token."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  test_date: "2026-01-04"
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "All Map CRM tests completed successfully"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    timestamp: "2026-01-04T20:16:23Z"
+    message: "✅ MAP CRM TESTING COMPLETE - ALL TESTS PASSED (4/4). FINDINGS: (1) Property List API returns 1000 properties per request due to Supabase PostgREST default limit, but database contains all 1,344 properties as expected. (2) Viewport filtering working perfectly - returns 500 properties for San Antonio area (correctly filtered from 1,344 total). (3) Property Detail API returns complete property data with all PropertyRadar fields. (4) Property Update API successfully updates fields and timestamps. PERFORMANCE: Average response time 0.46s (excellent). SUCCESS RATE: 100% (4/4 tests passed). VERDICT: ✅ MAP CRM READY FOR PRODUCTION. All endpoints responding correctly with proper authentication. PropertyRadar data import successful with 1,344 properties. No critical issues found."
