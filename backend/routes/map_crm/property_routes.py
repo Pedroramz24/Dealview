@@ -8,6 +8,7 @@ import csv
 import io
 import httpx
 import os
+import re
 
 from models.map_crm_models import (
     MapProperty, MapPropertyCreate, MapPropertyUpdate,
@@ -24,6 +25,126 @@ from radar_service import radar_service
 
 router = APIRouter(prefix="/map-crm", tags=["Map CRM"])
 logger = logging.getLogger(__name__)
+
+
+def normalize_address(address: str, city: str, state: str) -> str:
+    """Normalize address for duplicate detection."""
+    # Remove extra whitespace, convert to lowercase
+    normalized = f"{address} {city} {state}".lower().strip()
+    # Remove punctuation except spaces
+    normalized = re.sub(r'[^\w\s]', '', normalized)
+    # Collapse multiple spaces
+    normalized = re.sub(r'\s+', ' ', normalized)
+    return normalized
+
+
+def classify_asset_type(row: dict) -> str:
+    """
+    Intelligently classify asset type based on property attributes.
+    
+    Priority:
+    1. Explicit asset_type column
+    2. Keyword analysis (address, title, description)
+    3. Size heuristics
+    4. Default to 'Unknown'
+    """
+    # Check if asset_type is explicitly provided
+    if 'asset_type' in row and row['asset_type'].strip():
+        asset_type = row['asset_type'].strip()
+        if asset_type in [e.value for e in AssetType]:
+            return asset_type
+    
+    # Combine searchable text
+    searchable = ' '.join([
+        row.get('address', ''),
+        row.get('title', ''),
+        row.get('description', ''),
+        row.get('notes', '')
+    ]).lower()
+    
+    # Get building size for heuristics
+    building_size = 0
+    lot_size = 0
+    try:
+        if 'building_size' in row and row['building_size']:
+            building_size = float(row['building_size'])
+        if 'lot_size' in row and row['lot_size']:
+            lot_size = float(row['lot_size'])
+    except ValueError:
+        pass
+    
+    # Gas Station - Small footprint with keywords
+    gas_keywords = ['gas', 'fuel', 'station', 'convenience', 'c-store', 'petrol']
+    if any(kw in searchable for kw in gas_keywords) and building_size < 5000:
+        return 'Gas'
+    
+    # Multifamily - Residential keywords
+    multifamily_keywords = ['apartment', 'multifamily', 'multi-family', 'units', 'complex', 'residential']
+    if any(kw in searchable for kw in multifamily_keywords):
+        return 'Multifamily'
+    
+    # Industrial - Large buildings with keywords
+    industrial_keywords = ['warehouse', 'distribution', 'manufacturing', 'industrial', 'logistics', 'flex']
+    if any(kw in searchable for kw in industrial_keywords) or building_size > 20000:
+        return 'Industrial'
+    
+    # Retail - Shopping keywords
+    retail_keywords = ['retail', 'shopping', 'store', 'mall', 'plaza', 'center', 'shop']
+    if any(kw in searchable for kw in retail_keywords):
+        return 'Retail'
+    
+    # Office - Professional keywords
+    office_keywords = ['office', 'corporate', 'medical', 'professional', 'business', 'tower']
+    if any(kw in searchable for kw in office_keywords):
+        return 'Office'
+    
+    # Land - Lot size > 0 and no building
+    if lot_size > 0 and building_size == 0:
+        return 'Land'
+    
+    # Default to Office as most common commercial type
+    return 'Office'
+
+
+async def find_existing_property(supabase, address: str, city: str, state: str, latitude: float, longitude: float):
+    """
+    Find existing property by normalized address or lat/lng proximity.
+    
+    Returns existing property dict or None.
+    """
+    # Try exact normalized address match first
+    normalized = normalize_address(address, city, state)
+    
+    try:
+        # Get all properties to check (we'll do matching in Python for flexibility)
+        result = supabase.table('map_properties').select('*').execute()
+        
+        for prop in result.data:
+            # Check normalized address match
+            prop_normalized = normalize_address(
+                prop.get('address', ''),
+                prop.get('city', ''),
+                prop.get('state', '')
+            )
+            
+            if prop_normalized == normalized:
+                logger.info(f"Found existing property by address: {prop['id']}")
+                return prop
+            
+            # Check lat/lng proximity (within ~50 meters)
+            # 0.0005 degrees ≈ 50 meters
+            lat_diff = abs(prop.get('latitude', 0) - latitude)
+            lng_diff = abs(prop.get('longitude', 0) - longitude)
+            
+            if lat_diff < 0.0005 and lng_diff < 0.0005:
+                logger.info(f"Found existing property by location: {prop['id']}")
+                return prop
+        
+        return None
+        
+    except Exception as e:
+        logger.error(f"Error finding existing property: {str(e)}")
+        return None
 
 
 @router.post("/properties/import")
