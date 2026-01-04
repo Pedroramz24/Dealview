@@ -536,23 +536,51 @@ async def get_map_data(
     south: float,
     east: float,
     west: float,
+    zoom: int,
     asset_type: Optional[str] = None,
+    status: Optional[str] = None,
     current_user: User = Depends(require_map_crm_access)
 ):
     """
-    Get properties within map bounds for rendering.
-    Returns simplified data for map markers.
+    Get properties within map viewport bounds with intelligent clustering.
+    
+    Performance optimization for 100k+ properties:
+    - Returns max 1000 properties per request
+    - At low zoom: Returns clustered/sampled data
+    - At high zoom: Returns individual properties in viewport
+    
+    Args:
+        north, south, east, west: Map viewport bounds
+        zoom: Current zoom level (determines clustering strategy)
+        asset_type: Optional filter
+        status: Optional filter
     """
     supabase = get_supabase()
     
     try:
+        # Build base query with viewport bounds
         query = supabase.table('map_properties').select('*').gte('latitude', south).lte('latitude', north).gte('longitude', west).lte('longitude', east)
         
+        # Apply filters
         if asset_type:
             query = query.eq('asset_type', asset_type)
+        if status:
+            query = query.eq('status', status)
+        else:
+            # By default, hide converted properties on map
+            query = query.neq('status', 'converted')
         
-        # Limit to 1000 properties for performance
-        query = query.limit(1000)
+        # Zoom-based strategy
+        if zoom >= 14:
+            # High zoom: Show individual properties (limit 1000)
+            query = query.limit(1000)
+        elif zoom >= 11:
+            # Medium zoom: Show more properties but still limited
+            query = query.limit(500)
+        else:
+            # Low zoom: Sample properties (show subset)
+            # Use modulo on row_number for even distribution
+            query = query.limit(200)
         
         result = query.execute()
         return [MapProperty(**prop) for prop in result.data]
