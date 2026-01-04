@@ -22,20 +22,59 @@ const DEALVISOR_FIELDS = {
   required: [
     { key: 'address', label: 'Street Address', example: '123 Main St' },
     { key: 'city', label: 'City', example: 'Austin' },
-    { key: 'state', label: 'State', example: 'TX' },
-    { key: 'zip_code', label: 'ZIP Code', example: '78701' }
+    { key: 'state', label: 'State', example: 'TX' }
   ],
-  optional: [
+  recommended: [
+    { key: 'zip_code', label: 'ZIP Code', example: '78701', hint: 'Will attempt to extract from address if missing' }
+  ],
+  propertyDetails: [
+    { key: 'building_size', label: 'Building Size (sqft)', propertyRadarField: 'Sq Ft' },
+    { key: 'beds', label: 'Bedrooms', propertyRadarField: 'Beds' },
+    { key: 'baths', label: 'Bathrooms', propertyRadarField: 'Baths' },
+    { key: 'year_built', label: 'Year Built', propertyRadarField: 'Yr Built' },
+    { key: 'lot_size', label: 'Lot Size (acres)', propertyRadarField: 'Lot Size' },
+    { key: 'zoning', label: 'Zoning', propertyRadarField: 'Zoning' },
+    { key: 'county', label: 'County', propertyRadarField: 'County' },
+    { key: 'apn', label: 'APN', propertyRadarField: 'APN' },
+    { key: 'photo_url', label: 'Photo URL', propertyRadarField: 'Photo URL' }
+  ],
+  financialIntelligence: [
+    { key: 'est_value', label: 'Estimated Value', propertyRadarField: 'Est Value' },
+    { key: 'assessed_value', label: 'Assessed Value', propertyRadarField: 'Assd Val' },
+    { key: 'asking_price', label: 'Asking Price', propertyRadarField: 'Asking Price' },
+    { key: 'est_equity_percent', label: 'Equity %', propertyRadarField: 'Est Equity %' },
+    { key: 'est_equity_dollars', label: 'Equity $', propertyRadarField: 'Est Equity $' },
+    { key: 'tax_delinquent_dollars', label: 'Tax Delinquent $', propertyRadarField: 'Tax Delinquent $' },
+    { key: 'purchase_amount', label: 'Purchase Amount', propertyRadarField: 'Purchase Amt' },
+    { key: 'purchase_date', label: 'Purchase Date', propertyRadarField: 'Purchase Date' },
+    { key: 'land_value', label: 'Land Value', propertyRadarField: 'Land Value' },
+    { key: 'improvements_value', label: 'Improvements Value', propertyRadarField: 'Improvements' }
+  ],
+  ownerInformation: [
+    { key: 'owner_name', label: 'Owner Name', propertyRadarField: 'Owner' },
+    { key: 'owner_type', label: 'Owner Type', propertyRadarField: 'Owner Type' },
+    { key: 'owner_phone', label: 'Owner Phone', propertyRadarField: 'Owner Phone' },
+    { key: 'owner_email', label: 'Owner Email', propertyRadarField: 'Owner Email' },
+    { key: 'mail_address', label: 'Mail Address', propertyRadarField: 'Mail Address' },
+    { key: 'mail_city', label: 'Mail City', propertyRadarField: 'Mail City' },
+    { key: 'mail_state', label: 'Mail State', propertyRadarField: 'Mail State' },
+    { key: 'mail_zip', label: 'Mail ZIP', propertyRadarField: 'Mail ZIP' }
+  ],
+  targetingFlags: [
+    { key: 'high_equity', label: 'High Equity?', propertyRadarField: 'High Equity?', type: 'boolean' },
+    { key: 'underwater', label: 'Underwater?', propertyRadarField: 'Underwater?', type: 'boolean' },
+    { key: 'foreclosure', label: 'Foreclosure?', propertyRadarField: 'Foreclosure?', type: 'boolean' },
+    { key: 'bankruptcy', label: 'Bankruptcy?', propertyRadarField: 'Bankruptcy?', type: 'boolean' },
+    { key: 'owner_occupied', label: 'Owner Occupied?', propertyRadarField: 'Owner Occ?', type: 'boolean' },
+    { key: 'cash_buyer', label: 'Cash Buyer?', propertyRadarField: 'Cash Buyer?', type: 'boolean' },
+    { key: 'listed_for_sale', label: 'Listed for Sale?', propertyRadarField: 'Listed for Sale?', type: 'boolean' },
+    { key: 'tax_delinquent', label: 'Tax Delinquent?', propertyRadarField: 'Tax Delinquent?', type: 'boolean' },
+    { key: 'listing_status', label: 'Listing Status', propertyRadarField: 'Listing Status' }
+  ],
+  additionalDetails: [
     { key: 'title', label: 'Property Title', example: 'Downtown Office Tower' },
-    { key: 'asking_price', label: 'Asking Price', example: '2500000' },
-    { key: 'building_size', label: 'Building Size (sqft)', example: '15000' },
-    { key: 'lot_size', label: 'Lot Size (acres)', example: '0.5' },
-    { key: 'owner_name', label: 'Owner Name', example: 'John Smith' },
-    { key: 'owner_phone', label: 'Owner Phone', example: '512-555-0100' },
-    { key: 'owner_email', label: 'Owner Email', example: 'owner@example.com' },
-    { key: 'year_built', label: 'Year Built', example: '2010' },
-    { key: 'zoning', label: 'Zoning', example: 'Commercial' },
-    { key: 'description', label: 'Description', example: 'Prime location...' }
+    { key: 'description', label: 'Description', example: 'Prime location...' },
+    { key: 'notes', label: 'Notes', example: 'Follow up next week' }
   ]
 };
 
