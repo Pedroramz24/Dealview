@@ -6,9 +6,11 @@ import requests
 import json
 import time
 from datetime import datetime
+import os
 
 # Configuration
 BASE_URL = "https://propertyvis-app.preview.emergentagent.com/api"
+SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
 EMAIL = "contact@pedroarmando.com"
 PASSWORD = "Flin141812$"
 
