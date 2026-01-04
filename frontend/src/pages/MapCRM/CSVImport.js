@@ -10,14 +10,17 @@ import {
 } from '../../components/ui/dialog';
 import { Button } from '../../components/ui/button';
 import { Alert, AlertDescription } from '../../components/ui/alert';
-import { Upload, FileText, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { Upload, FileText, Loader2, CheckCircle2, XCircle, Zap } from 'lucide-react';
 import { colors, shadows, borderRadius, spacing, gradients, transitions } from '../../styles/designSystem';
+
+const ASSET_TYPES = ['Gas', 'Retail', 'Industrial', 'Office', 'Land', 'Multifamily'];
 
 const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [assetTypeOverride, setAssetTypeOverride] = useState('auto');
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -43,8 +46,13 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
 
       const formData = new FormData();
       formData.append('file', file);
+      
+      // Add asset type override if user selected one
+      if (assetTypeOverride !== 'auto') {
+        formData.append('asset_type_override', assetTypeOverride);
+      }
 
-      const response = await fetch(`${API}/map-crm/properties/import`, {
+      const response = await fetch(`${API}/map-crm/properties/import?${assetTypeOverride !== 'auto' ? `asset_type_override=${assetTypeOverride}` : ''}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`
@@ -63,7 +71,7 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
       // Auto-close after success
       setTimeout(() => {
         onImportComplete();
-      }, 2000);
+      }, 2500);
 
     } catch (err) {
       console.error('Import error:', err);
@@ -94,6 +102,67 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
         </DialogHeader>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+          {/* Asset Type Classification */}
+          <div style={{
+            background: colors.surfaceElevated,
+            borderRadius: borderRadius.md,
+            padding: spacing.md,
+            border: `1px solid ${colors.border}`
+          }}>
+            <label style={{
+              display: 'block',
+              fontSize: '12px',
+              fontWeight: '600',
+              color: colors.textSecondary,
+              marginBottom: spacing.sm,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Asset Type Classification
+            </label>
+            <select
+              value={assetTypeOverride}
+              onChange={(e) => setAssetTypeOverride(e.target.value)}
+              disabled={uploading}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                background: colors.surfaceCard,
+                border: `1px solid ${colors.border}`,
+                borderRadius: borderRadius.sm,
+                color: colors.textPrimary,
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: transitions.fast,
+                outline: 'none'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.primary;
+                e.target.style.boxShadow = shadows.glowCyan;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.border;
+                e.target.style.boxShadow = 'none';
+              }}
+            >
+              <option value="auto">🧠 Auto-Classify (scan keywords)</option>
+              {ASSET_TYPES.map(type => (
+                <option key={type} value={type}>Classify all as {type}</option>
+              ))}
+            </select>
+            <p style={{
+              fontSize: '11px',
+              color: colors.textMuted,
+              marginTop: spacing.sm,
+              fontStyle: 'italic'
+            }}>
+              {assetTypeOverride === 'auto' 
+                ? 'DealVisor will intelligently classify each property based on keywords and size'
+                : `All properties will be classified as ${assetTypeOverride}`
+              }
+            </p>
+          </div>
+
           {/* File Input */}
           <div style={{
             border: `2px dashed ${colors.border}`,
