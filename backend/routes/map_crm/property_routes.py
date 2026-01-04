@@ -153,12 +153,14 @@ async def import_csv(
     current_user: User = Depends(require_map_crm_access)
 ):
     """
-    Import properties from CSV file with automatic geocoding.
+    Smart CSV import with:
+    - Intelligent asset type classification (when column missing/empty)
+    - Duplicate detection and update logic (by address + lat/lng)
+    - Geocoding via Radar.io
     
-    CSV must contain: address, city, state, zip_code, asset_type
-    Optional fields: All other property fields
-    
-    Processes in batches with Radar.io geocoding.
+    Required columns: address, city, state, zip_code
+    Optional: asset_type (will be auto-classified if missing)
+    Optional: All other property fields
     """
     supabase = get_supabase()
     
@@ -172,8 +174,8 @@ async def import_csv(
         csv_data = content.decode('utf-8')
         reader = csv.DictReader(io.StringIO(csv_data))
         
-        # Validate required columns
-        required_columns = {'address', 'city', 'state', 'zip_code', 'asset_type'}
+        # Validate minimum required columns (asset_type is now optional)
+        required_columns = {'address', 'city', 'state', 'zip_code'}
         if not required_columns.issubset(set(reader.fieldnames)):
             raise HTTPException(
                 status_code=400,
@@ -199,16 +201,13 @@ async def import_csv(
         # Process properties
         successful_rows = 0
         failed_rows = 0
+        updated_rows = 0
         error_log = []
         properties_to_insert = []
+        properties_to_update = []
         
         for idx, row in enumerate(rows, start=1):
             try:
-                # Validate asset type
-                asset_type = row.get('asset_type', '').strip()
-                if asset_type not in [e.value for e in AssetType]:
-                    raise ValueError(f"Invalid asset_type: {asset_type}. Must be one of: Gas, Retail, Industrial, Office, Land, Multifamily")
-                
                 # Build address for geocoding
                 address = row.get('address', '').strip()
                 city = row.get('city', '').strip()
@@ -226,50 +225,106 @@ async def import_csv(
                 if not geocode_result or 'latitude' not in geocode_result:
                     raise ValueError(f"Failed to geocode address: {full_address}")
                 
-                # Prepare property data
-                property_data = {
-                    'id': str(uuid.uuid4()),
-                    'owner_id': str(current_user.id),
-                    'address': address,
-                    'city': city,
-                    'state': state,
-                    'zip_code': zip_code,
-                    'latitude': geocode_result['latitude'],
-                    'longitude': geocode_result['longitude'],
-                    'asset_type': asset_type,
-                    'status': PropertyStatus.AVAILABLE.value,
-                    'created_at': datetime.now(timezone.utc).isoformat(),
-                    'updated_at': datetime.now(timezone.utc).isoformat()
-                }
+                latitude = geocode_result['latitude']
+                longitude = geocode_result['longitude']
                 
-                # Add optional fields
-                optional_fields = [
-                    'title', 'asking_price', 'lot_size', 'building_size',
-                    'assessed_value', 'cap_rate', 'noi', 'income', 'expenses',
-                    'year_built', 'parking_spaces', 'occupancy', 'zoning',
-                    'lease_type', 'description', 'notes',
-                    'owner_name', 'owner_phone', 'owner_email'
-                ]
+                # Intelligent asset type classification
+                asset_type = classify_asset_type(row)
                 
-                for field in optional_fields:
-                    if field in row and row[field].strip():
-                        value = row[field].strip()
-                        # Convert numeric fields
-                        if field in ['asking_price', 'lot_size', 'building_size', 'assessed_value', 'cap_rate', 'noi', 'income', 'expenses', 'occupancy']:
-                            try:
-                                property_data[field] = float(value)
-                            except ValueError:
-                                pass
-                        elif field in ['year_built', 'parking_spaces']:
-                            try:
-                                property_data[field] = int(value)
-                            except ValueError:
-                                pass
-                        else:
-                            property_data[field] = value
+                # Check for existing property (duplicate detection)
+                existing_property = await find_existing_property(
+                    supabase, address, city, state, latitude, longitude
+                )
                 
-                properties_to_insert.append(property_data)
-                successful_rows += 1
+                if existing_property:
+                    # UPDATE existing property
+                    update_data = {
+                        'address': address,
+                        'city': city,
+                        'state': state,
+                        'zip_code': zip_code,
+                        'latitude': latitude,
+                        'longitude': longitude,
+                        'asset_type': asset_type,
+                        'updated_at': datetime.now(timezone.utc).isoformat(),
+                        'last_edited_by': str(current_user.id)
+                    }
+                    
+                    # Add optional fields
+                    optional_fields = [
+                        'title', 'asking_price', 'lot_size', 'building_size',
+                        'assessed_value', 'cap_rate', 'noi', 'income', 'expenses',
+                        'year_built', 'parking_spaces', 'occupancy', 'zoning',
+                        'lease_type', 'description', 'notes',
+                        'owner_name', 'owner_phone', 'owner_email'
+                    ]
+                    
+                    for field in optional_fields:
+                        if field in row and row[field].strip():
+                            value = row[field].strip()
+                            if field in ['asking_price', 'lot_size', 'building_size', 'assessed_value', 'cap_rate', 'noi', 'income', 'expenses', 'occupancy']:
+                                try:
+                                    update_data[field] = float(value)
+                                except ValueError:
+                                    pass
+                            elif field in ['year_built', 'parking_spaces']:
+                                try:
+                                    update_data[field] = int(value)
+                                except ValueError:
+                                    pass
+                            else:
+                                update_data[field] = value
+                    
+                    # Update in database
+                    supabase.table('map_properties').update(update_data).eq('id', existing_property['id']).execute()
+                    updated_rows += 1
+                    successful_rows += 1
+                    logger.info(f"Updated existing property: {existing_property['id']}")
+                    
+                else:
+                    # INSERT new property
+                    property_data = {
+                        'id': str(uuid.uuid4()),
+                        'owner_id': str(current_user.id),
+                        'address': address,
+                        'city': city,
+                        'state': state,
+                        'zip_code': zip_code,
+                        'latitude': latitude,
+                        'longitude': longitude,
+                        'asset_type': asset_type,
+                        'status': PropertyStatus.AVAILABLE.value,
+                        'created_at': datetime.now(timezone.utc).isoformat(),
+                        'updated_at': datetime.now(timezone.utc).isoformat()
+                    }
+                    
+                    # Add optional fields
+                    optional_fields = [
+                        'title', 'asking_price', 'lot_size', 'building_size',
+                        'assessed_value', 'cap_rate', 'noi', 'income', 'expenses',
+                        'year_built', 'parking_spaces', 'occupancy', 'zoning',
+                        'lease_type', 'description', 'notes',
+                        'owner_name', 'owner_phone', 'owner_email'
+                    ]
+                    
+                    for field in optional_fields:
+                        if field in row and row[field].strip():
+                            value = row[field].strip()
+                            if field in ['asking_price', 'lot_size', 'building_size', 'assessed_value', 'cap_rate', 'noi', 'income', 'expenses', 'occupancy']:
+                                try:
+                                    property_data[field] = float(value)
+                                except ValueError:
+                                    pass
+                            elif field in ['year_built', 'parking_spaces']:
+                                try:
+                                    property_data[field] = int(value)
+                                except ValueError:
+                                    pass
+                            else:
+                                property_data[field] = value
+                    
+                    properties_to_insert.append(property_data)
+                    successful_rows += 1
                 
             except Exception as e:
                 failed_rows += 1
@@ -280,9 +335,10 @@ async def import_csv(
                 })
                 logger.error(f"Failed to process row {idx}: {str(e)}")
         
-        # Bulk insert properties
+        # Bulk insert new properties
         if properties_to_insert:
             supabase.table('map_properties').insert(properties_to_insert).execute()
+            logger.info(f"Inserted {len(properties_to_insert)} new properties")
         
         # Update import record
         supabase.table('map_csv_imports').update({
@@ -299,7 +355,9 @@ async def import_csv(
             'total_rows': total_rows,
             'successful_rows': successful_rows,
             'failed_rows': failed_rows,
-            'message': f"Successfully imported {successful_rows} of {total_rows} properties"
+            'new_properties': len(properties_to_insert),
+            'updated_properties': updated_rows,
+            'message': f"Successfully processed {successful_rows} of {total_rows} properties ({len(properties_to_insert)} new, {updated_rows} updated)"
         }
         
     except HTTPException:
