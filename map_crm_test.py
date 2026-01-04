@@ -32,22 +32,32 @@ class MapCRMTester:
         print(f"{color}{message}{RESET}")
         
     def authenticate(self):
-        """Authenticate and get JWT token"""
+        """Authenticate with Supabase and get JWT token"""
         self.log("\n" + "="*80, BLUE)
         self.log("AUTHENTICATION", BLUE)
         self.log("="*80, BLUE)
         
         try:
+            # Authenticate with Supabase
             response = requests.post(
-                f"{BASE_URL}/auth/login",
-                json={"email": EMAIL, "password": PASSWORD},
+                f"{SUPABASE_URL}/auth/v1/token?grant_type=password",
+                json={
+                    "email": EMAIL,
+                    "password": PASSWORD
+                },
+                headers={
+                    "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0",
+                    "Content-Type": "application/json"
+                },
                 timeout=10
             )
             
             if response.status_code == 200:
                 data = response.json()
                 self.token = data.get('access_token')
+                user_id = data.get('user', {}).get('id')
                 self.log(f"✅ Authentication successful", GREEN)
+                self.log(f"   User ID: {user_id}", RESET)
                 self.log(f"   Token: {self.token[:50]}...", RESET)
                 return True
             else:
