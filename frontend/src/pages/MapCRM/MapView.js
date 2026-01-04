@@ -173,6 +173,28 @@ const MapView = () => {
     fetchViewportProperties(bounds, zoom);
   }, [fetchViewportProperties]);
 
+  // Initial fetch when map loads
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current.getMap();
+      if (map) {
+        // Wait for map to be fully loaded
+        const checkMapLoaded = () => {
+          if (map.loaded()) {
+            const bounds = map.getBounds();
+            fetchViewportProperties(bounds, viewport.zoom);
+          } else {
+            map.once('load', () => {
+              const bounds = map.getBounds();
+              fetchViewportProperties(bounds, viewport.zoom);
+            });
+          }
+        };
+        checkMapLoaded();
+      }
+    }
+  }, []);
+
   // Refresh when properties count changes (after import)
   useEffect(() => {
     if (properties.length > 0 && mapRef.current) {
