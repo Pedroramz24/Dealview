@@ -259,16 +259,28 @@ async def import_csv(
                         zip_code = extracted_zip
                         logger.info(f"Extracted ZIP {zip_code} from address")
                 
-                full_address = f"{address}, {city}, {state} {zip_code}".strip()
+                # Check if PropertyRadar already provided lat/lng (SKIP GEOCODING if so)
+                latitude = None
+                longitude = None
                 
-                # Geocode with Radar.io
-                geocode_result = await radar_service.forward_geocode(full_address)
+                if 'latitude' in row and row['latitude'] and 'longitude' in row and row['longitude']:
+                    try:
+                        latitude = float(row['latitude'])
+                        longitude = float(row['longitude'])
+                        logger.info(f"Using provided coordinates: ({latitude}, {longitude})")
+                    except ValueError:
+                        pass
                 
-                if not geocode_result or 'latitude' not in geocode_result:
-                    raise ValueError(f"Failed to geocode address: {full_address}")
-                
-                latitude = geocode_result['latitude']
-                longitude = geocode_result['longitude']
+                # Only geocode if coordinates not provided
+                if not latitude or not longitude:
+                    full_address = f"{address}, {city}, {state} {zip_code}".strip()
+                    geocode_result = await radar_service.forward_geocode(full_address)
+                    
+                    if not geocode_result or 'latitude' not in geocode_result:
+                        raise ValueError(f"Failed to geocode address: {full_address}")
+                    
+                    latitude = geocode_result['latitude']
+                    longitude = geocode_result['longitude']
                 
                 # Determine asset type (priority order):
                 # 1. Manual override (user selected in wizard)
