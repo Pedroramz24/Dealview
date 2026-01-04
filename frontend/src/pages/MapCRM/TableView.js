@@ -34,6 +34,7 @@ const formatDate = (dateString) => {
 
 const TableView = () => {
   const { properties, setSelectedProperty } = useMapCRM();
+  const navigate = useNavigate();
   const [sortField, setSortField] = useState('created_at');
   const [sortDirection, setSortDirection] = useState('desc');
   const [searchQuery, setSearchQuery] = useState('');
