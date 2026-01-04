@@ -38,6 +38,29 @@ def normalize_address(address: str, city: str, state: str) -> str:
     return normalized
 
 
+def extract_zip_from_address(address: str) -> tuple:
+    """
+    Extract ZIP code from address string if present.
+    
+    Returns: (cleaned_address, zip_code or None)
+    
+    Examples:
+        "123 Main St, Austin TX 78701" → ("123 Main St, Austin TX", "78701")
+        "456 Oak Ave" → ("456 Oak Ave", None)
+    """
+    # Look for 5-digit ZIP code
+    zip_match = re.search(r'\b(\d{5})(?:-\d{4})?\b', address)
+    
+    if zip_match:
+        zip_code = zip_match.group(1)  # Get just the 5 digits
+        cleaned_address = address.replace(zip_match.group(0), '').strip()
+        # Clean up trailing commas/spaces
+        cleaned_address = re.sub(r'[,\s]+$', '', cleaned_address)
+        return cleaned_address, zip_code
+    
+    return address, None
+
+
 def classify_asset_type(row: dict) -> str:
     """
     Intelligently classify asset type based on property attributes.
@@ -224,12 +247,19 @@ async def import_csv(
                 address = row.get('address', '').strip()
                 city = row.get('city', '').strip()
                 state = row.get('state', '').strip()
-                zip_code = row.get('zip_code', '').strip()
+                zip_code = row.get('zip_code', '').strip() if 'zip_code' in row else ''
                 
                 if not all([address, city, state]):
                     raise ValueError("Missing required address fields")
                 
-                full_address = f"{address}, {city}, {state} {zip_code}"
+                # Smart ZIP extraction if not provided
+                if not zip_code:
+                    address, extracted_zip = extract_zip_from_address(address)
+                    if extracted_zip:
+                        zip_code = extracted_zip
+                        logger.info(f"Extracted ZIP {zip_code} from address")
+                
+                full_address = f"{address}, {city}, {state} {zip_code}".strip()
                 
                 # Geocode with Radar.io
                 geocode_result = await radar_service.forward_geocode(full_address)
@@ -269,29 +299,59 @@ async def import_csv(
                     }
                     
                     # Add optional fields
-                    optional_fields = [
+                    indexed_fields = [
                         'title', 'asking_price', 'lot_size', 'building_size',
                         'assessed_value', 'cap_rate', 'noi', 'income', 'expenses',
                         'year_built', 'parking_spaces', 'occupancy', 'zoning',
                         'lease_type', 'description', 'notes',
-                        'owner_name', 'owner_phone', 'owner_email'
+                        'owner_name', 'owner_phone', 'owner_email',
+                        # PropertyRadar specific
+                        'beds', 'baths', 'est_value', 'land_value', 'improvements_value',
+                        'est_equity_dollars', 'est_equity_percent', 'tax_delinquent_dollars',
+                        'purchase_date', 'purchase_amount', 'county', 'apn', 'photo_url',
+                        'listing_status', 'owner_type',
+                        # Boolean flags
+                        'high_equity', 'underwater', 'bankruptcy', 'foreclosure',
+                        'owner_occupied', 'cash_buyer', 'listed_for_sale', 'tax_delinquent'
                     ]
                     
-                    for field in optional_fields:
-                        if field in row and row[field].strip():
-                            value = row[field].strip()
-                            if field in ['asking_price', 'lot_size', 'building_size', 'assessed_value', 'cap_rate', 'noi', 'income', 'expenses', 'occupancy']:
+                    jsonb_fields = [
+                        'mail_address', 'mail_city', 'mail_state', 'mail_zip',
+                        'first_lien_record_date', 'first_lien_term', 'first_lien_ltv_percent',
+                        'first_cash_out'
+                    ]
+                    
+                    custom_data = {}
+                    
+                    for field in indexed_fields:
+                        if field in row and row[field] and str(row[field]).strip():
+                            value = str(row[field]).strip()
+                            if field in ['asking_price', 'lot_size', 'building_size', 'assessed_value', 
+                                        'cap_rate', 'noi', 'income', 'expenses', 'occupancy',
+                                        'baths', 'est_value', 'land_value', 'improvements_value',
+                                        'est_equity_dollars', 'est_equity_percent', 'tax_delinquent_dollars',
+                                        'purchase_amount']:
                                 try:
                                     update_data[field] = float(value)
                                 except ValueError:
                                     pass
-                            elif field in ['year_built', 'parking_spaces']:
+                            elif field in ['year_built', 'parking_spaces', 'beds']:
                                 try:
                                     update_data[field] = int(value)
                                 except ValueError:
                                     pass
+                            elif field in ['high_equity', 'underwater', 'bankruptcy', 'foreclosure',
+                                          'owner_occupied', 'cash_buyer', 'listed_for_sale', 'tax_delinquent']:
+                                update_data[field] = value.lower() in ['true', 'yes', '1', 'y']
                             else:
                                 update_data[field] = value
+                    
+                    for field in jsonb_fields:
+                        if field in row and row[field] and str(row[field]).strip():
+                            custom_data[field] = str(row[field]).strip()
+                    
+                    if custom_data:
+                        update_data['custom_data'] = custom_data
                     
                     # Update in database
                     supabase.table('map_properties').update(update_data).eq('id', existing_property['id']).execute()
@@ -316,30 +376,67 @@ async def import_csv(
                         'updated_at': datetime.now(timezone.utc).isoformat()
                     }
                     
-                    # Add optional fields
-                    optional_fields = [
+                    # PropertyRadar indexed fields
+                    indexed_fields = [
                         'title', 'asking_price', 'lot_size', 'building_size',
                         'assessed_value', 'cap_rate', 'noi', 'income', 'expenses',
                         'year_built', 'parking_spaces', 'occupancy', 'zoning',
                         'lease_type', 'description', 'notes',
-                        'owner_name', 'owner_phone', 'owner_email'
+                        'owner_name', 'owner_phone', 'owner_email',
+                        # PropertyRadar specific
+                        'beds', 'baths', 'est_value', 'land_value', 'improvements_value',
+                        'est_equity_dollars', 'est_equity_percent', 'tax_delinquent_dollars',
+                        'purchase_date', 'purchase_amount', 'county', 'apn', 'photo_url',
+                        'listing_status', 'owner_type',
+                        # Boolean flags
+                        'high_equity', 'underwater', 'bankruptcy', 'foreclosure',
+                        'owner_occupied', 'cash_buyer', 'listed_for_sale', 'tax_delinquent'
                     ]
                     
-                    for field in optional_fields:
-                        if field in row and row[field].strip():
-                            value = row[field].strip()
-                            if field in ['asking_price', 'lot_size', 'building_size', 'assessed_value', 'cap_rate', 'noi', 'income', 'expenses', 'occupancy']:
+                    # JSONB fields (mail address, lien details)
+                    jsonb_fields = [
+                        'mail_address', 'mail_city', 'mail_state', 'mail_zip',
+                        'first_lien_record_date', 'first_lien_term', 'first_lien_ltv_percent',
+                        'first_cash_out'
+                    ]
+                    
+                    custom_data = {}
+                    
+                    # Map indexed fields
+                    for field in indexed_fields:
+                        if field in row and row[field] and str(row[field]).strip():
+                            value = str(row[field]).strip()
+                            
+                            # Type conversion for numeric fields
+                            if field in ['asking_price', 'lot_size', 'building_size', 'assessed_value', 
+                                        'cap_rate', 'noi', 'income', 'expenses', 'occupancy',
+                                        'baths', 'est_value', 'land_value', 'improvements_value',
+                                        'est_equity_dollars', 'est_equity_percent', 'tax_delinquent_dollars',
+                                        'purchase_amount']:
                                 try:
                                     property_data[field] = float(value)
                                 except ValueError:
                                     pass
-                            elif field in ['year_built', 'parking_spaces']:
+                            elif field in ['year_built', 'parking_spaces', 'beds']:
                                 try:
                                     property_data[field] = int(value)
                                 except ValueError:
                                     pass
+                            elif field in ['high_equity', 'underwater', 'bankruptcy', 'foreclosure',
+                                          'owner_occupied', 'cash_buyer', 'listed_for_sale', 'tax_delinquent']:
+                                # Convert to boolean
+                                property_data[field] = value.lower() in ['true', 'yes', '1', 'y']
                             else:
                                 property_data[field] = value
+                    
+                    # Map JSONB fields
+                    for field in jsonb_fields:
+                        if field in row and row[field] and str(row[field]).strip():
+                            custom_data[field] = str(row[field]).strip()
+                    
+                    # Only add custom_data if it has content
+                    if custom_data:
+                        property_data['custom_data'] = custom_data
                     
                     properties_to_insert.append(property_data)
                     successful_rows += 1

@@ -48,6 +48,8 @@ class MapPropertyBase(BaseModel):
     title: Optional[str] = None
     asset_type: AssetType
     status: PropertyStatus = PropertyStatus.AVAILABLE
+    
+    # Financial data
     asking_price: Optional[float] = None
     lot_size: Optional[float] = None
     building_size: Optional[float] = None
@@ -56,6 +58,35 @@ class MapPropertyBase(BaseModel):
     noi: Optional[float] = None
     income: Optional[float] = None
     expenses: Optional[float] = None
+    
+    # PropertyRadar core fields (indexed)
+    beds: Optional[int] = None
+    baths: Optional[float] = None
+    est_value: Optional[float] = None
+    land_value: Optional[float] = None
+    improvements_value: Optional[float] = None
+    est_equity_dollars: Optional[float] = None
+    est_equity_percent: Optional[float] = None
+    tax_delinquent_dollars: Optional[float] = None
+    purchase_date: Optional[str] = None
+    purchase_amount: Optional[float] = None
+    county: Optional[str] = None
+    apn: Optional[str] = None
+    photo_url: Optional[str] = None
+    listing_status: Optional[str] = None
+    owner_type: Optional[str] = None
+    
+    # PropertyRadar boolean flags
+    high_equity: Optional[bool] = None
+    underwater: Optional[bool] = None
+    bankruptcy: Optional[bool] = None
+    foreclosure: Optional[bool] = None
+    owner_occupied: Optional[bool] = None
+    cash_buyer: Optional[bool] = None
+    listed_for_sale: Optional[bool] = None
+    tax_delinquent: Optional[bool] = None
+    
+    # Additional details
     year_built: Optional[int] = None
     parking_spaces: Optional[int] = None
     occupancy: Optional[float] = None
@@ -66,6 +97,9 @@ class MapPropertyBase(BaseModel):
     owner_name: Optional[str] = None
     owner_phone: Optional[str] = None
     owner_email: Optional[str] = None
+    
+    # JSONB custom data for flexible PropertyRadar fields
+    custom_data: Optional[Dict[str, Any]] = None
 
 
 class MapPropertyCreate(MapPropertyBase):
