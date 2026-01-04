@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Map, { Marker, Popup, NavigationControl, ScaleControl } from 'react-map-gl/maplibre';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import Map, { Marker, Popup, NavigationControl, ScaleControl, Source, Layer } from 'react-map-gl/maplibre';
 import { useNavigate } from 'react-router-dom';
+import Supercluster from 'supercluster';
 import { supabase } from '../../supabaseClient';
 import { API } from '../../App';
 import { useMapCRM } from '../../contexts/MapCRMContext';
@@ -44,6 +45,7 @@ const MapView = () => {
   });
   const [viewportProperties, setViewportProperties] = useState([]);
   const [loading, setLoading] = useState(false);
+  const mapRef = useRef();
 
   // Map style matching DealLinked workspace map (satellite + labels)
   const mapStyle = {
@@ -90,6 +92,47 @@ const MapView = () => {
     ]
   };
 
+  // Create supercluster index
+  const supercluster = useMemo(() => {
+    const index = new Supercluster({
+      radius: 60,
+      maxZoom: 16,
+      minZoom: 0,
+      minPoints: 2
+    });
+
+    if (viewportProperties.length > 0) {
+      const points = viewportProperties.map(prop => ({
+        type: 'Feature',
+        properties: { ...prop },
+        geometry: {
+          type: 'Point',
+          coordinates: [prop.longitude, prop.latitude]
+        }
+      }));
+
+      index.load(points);
+    }
+
+    return index;
+  }, [viewportProperties]);
+
+  // Get clusters for current viewport
+  const clusters = useMemo(() => {
+    if (!mapRef.current) return [];
+    
+    const map = mapRef.current.getMap();
+    if (!map) return [];
+
+    const bounds = map.getBounds();
+    const zoom = Math.round(viewport.zoom);
+
+    return supercluster.getClusters(
+      [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
+      zoom
+    );
+  }, [supercluster, viewport]);
+
   // Fetch properties in current viewport
   const fetchViewportProperties = useCallback(async (bounds, zoom) => {
     try {
@@ -130,18 +173,16 @@ const MapView = () => {
     fetchViewportProperties(bounds, zoom);
   }, [fetchViewportProperties]);
 
-  // Initial load - Don't fetch on mount, wait for actual map load
-  useEffect(() => {
-    // Remove initial fetch - let onMoveEnd handle it after map renders
-  }, []);
-
   // Refresh when properties count changes (after import)
   useEffect(() => {
-    if (properties.length > 0) {
-      // Don't auto-fetch, let user pan/zoom to trigger viewport load
-      console.log(`[MapView] ${properties.length} total properties available`);
+    if (properties.length > 0 && mapRef.current) {
+      const map = mapRef.current.getMap();
+      if (map) {
+        const bounds = map.getBounds();
+        fetchViewportProperties(bounds, viewport.zoom);
+      }
     }
-  }, [properties.length]);
+  }, [properties.length, fetchViewportProperties]);
 
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
@@ -185,6 +226,7 @@ const MapView = () => {
       </button>
 
       <Map
+        ref={mapRef}
         {...viewport}
         onMove={evt => setViewport(evt.viewState)}
         onMoveEnd={handleMoveEnd}
@@ -226,15 +268,70 @@ const MapView = () => {
           </div>
         )}
 
-        {viewportProperties.map((property) => {
+        {/* Render Clusters and Individual Markers */}
+        {clusters.map((cluster) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const { cluster: isCluster, point_count: pointCount } = cluster.properties;
+
+          if (isCluster) {
+            // Render cluster marker
+            const clusterSize = Math.min(60, 30 + (pointCount / viewportProperties.length) * 40);
+
+            return (
+              <Marker
+                key={`cluster-${cluster.id}`}
+                latitude={latitude}
+                longitude={longitude}
+                anchor="center"
+              >
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Zoom into cluster
+                    const expansionZoom = Math.min(
+                      supercluster.getClusterExpansionZoom(cluster.id),
+                      20
+                    );
+                    setViewport({
+                      ...viewport,
+                      latitude,
+                      longitude,
+                      zoom: expansionZoom
+                    });
+                  }}
+                  style={{
+                    width: `${clusterSize}px`,
+                    height: `${clusterSize}px`,
+                    borderRadius: '50%',
+                    background: colors.primary,
+                    border: '3px solid #fff',
+                    boxShadow: `0 0 0 4px ${colors.primary}40, 0 4px 12px rgba(0, 0, 0, 0.6)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    fontSize: clusterSize > 40 ? '14px' : '12px',
+                    fontWeight: '700',
+                    color: '#fff'
+                  }}
+                >
+                  {pointCount}
+                </div>
+              </Marker>
+            );
+          }
+
+          // Render individual property marker
+          const property = cluster.properties;
           const color = ASSET_COLORS[property.asset_type] || colors.textMuted;
           const isSelected = selectedProperty?.id === property.id;
 
           return (
             <Marker
               key={property.id}
-              latitude={property.latitude}
-              longitude={property.longitude}
+              latitude={latitude}
+              longitude={longitude}
               anchor="center"
             >
               <div
@@ -398,7 +495,7 @@ const MapView = () => {
                 )}
 
                 {/* Equity % (PropertyRadar) */}
-                {selectedProperty.est_equity_percent && (
+                {selectedProperty.est_equity_percent !== null && selectedProperty.est_equity_percent !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ 
                       fontSize: '13px',
@@ -499,8 +596,28 @@ const MapView = () => {
                   </div>
                 )}
 
+                {/* View Details Button */}
+                <button
+                  onClick={() => navigate(`/internal/map-crm/property/${selectedProperty.id}`)}
+                  style={{
+                    marginTop: spacing.sm,
+                    padding: '8px 12px',
+                    background: gradients.primaryButton,
+                    border: 'none',
+                    borderRadius: borderRadius.sm,
+                    color: colors.textPrimary,
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    boxShadow: shadows.glowCyan,
+                    width: '100%'
+                  }}
+                >
+                  View Full Details
+                </button>
+
                 {/* PropertyRadar Flags */}
-                {(selectedProperty.high_equity || selectedProperty.foreclosure || selectedProperty.underwater) && (
+                {(selectedProperty.high_equity || selectedProperty.foreclosure || selectedProperty.underwater || (selectedProperty.owner_occupied === false)) && (
                   <div style={{ 
                     marginTop: spacing.sm,
                     paddingTop: spacing.sm,
@@ -606,7 +723,7 @@ const MapView = () => {
         color: colors.textSecondary,
         zIndex: 10
       }}>
-        Showing {viewportProperties.length} properties in viewport
+        {viewportProperties.length} properties • {clusters.filter(c => !c.properties.cluster).length} visible
       </div>
     </div>
   );
