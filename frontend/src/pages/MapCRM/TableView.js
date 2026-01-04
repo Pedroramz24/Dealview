@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMapCRM } from '../../contexts/MapCRMContext';
+import ColumnSelector from './ColumnSelector';
 import { colors, shadows, borderRadius, transitions, spacing } from '../../styles/designSystem';
 import { 
   MapPin, DollarSign, Building2, Calendar, User, 
-  ChevronUp, ChevronDown, Search, Filter 
+  ChevronUp, ChevronDown, Search, Filter, Columns
 } from 'lucide-react';
+import { Button } from '../../components/ui/button';
 
 // Utility functions for formatting
 const formatCurrency = (value) => {
@@ -32,7 +34,7 @@ const formatDate = (dateString) => {
   }
 };
 
-const TableView = () => {
+const TableView = ({ filters: parentFilters }) => {
   const { properties, setSelectedProperty } = useMapCRM();
   const navigate = useNavigate();
   const [sortField, setSortField] = useState('created_at');
@@ -42,8 +44,8 @@ const TableView = () => {
   const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(['address', 'city', 'asset_type', 'asking_price', 'building_size', 'status']);
   
-  // Advanced filters state (passed from parent)
-  const [advancedFilters, setAdvancedFilters] = useState({
+  // Use parent filters if provided, otherwise use defaults
+  const advancedFilters = parentFilters || {
     equityMin: 0,
     equityMax: 100,
     taxDelinquentMin: 0,
@@ -53,7 +55,7 @@ const TableView = () => {
     bankruptcy: false,
     ownerOccupied: null,
     cashBuyer: false
-  });
+  };
 
   // Get unique asset types
   const assetTypes = useMemo(() => {
@@ -283,6 +285,23 @@ const TableView = () => {
             ))}
           </select>
         </div>
+
+        {/* Columns Button */}
+        <Button
+          onClick={() => setShowColumnSelector(true)}
+          style={{
+            background: colors.surfaceCard,
+            border: `1px solid ${colors.border}`,
+            color: colors.textSecondary,
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.sm,
+            transition: transitions.fast
+          }}
+        >
+          <Columns size={16} />
+          Columns
+        </Button>
 
         {/* Results Count */}
         <div style={{
