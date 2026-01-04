@@ -130,29 +130,18 @@ const MapView = () => {
     fetchViewportProperties(bounds, zoom);
   }, [fetchViewportProperties]);
 
-  // Initial load
+  // Initial load - Don't fetch on mount, wait for actual map load
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const mockBounds = {
-        _ne: { lat: viewport.latitude + 2, lng: viewport.longitude + 2 },
-        _sw: { lat: viewport.latitude - 2, lng: viewport.longitude - 2 }
-      };
-      fetchViewportProperties(mockBounds, viewport.zoom);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [fetchViewportProperties, viewport.latitude, viewport.longitude, viewport.zoom]);
+    // Remove initial fetch - let onMoveEnd handle it after map renders
+  }, []);
 
   // Refresh when properties count changes (after import)
   useEffect(() => {
     if (properties.length > 0) {
-      const mockBounds = {
-        _ne: { lat: viewport.latitude + 2, lng: viewport.longitude + 2 },
-        _sw: { lat: viewport.latitude - 2, lng: viewport.longitude - 2 }
-      };
-      fetchViewportProperties(mockBounds, viewport.zoom);
+      // Don't auto-fetch, let user pan/zoom to trigger viewport load
+      console.log(`[MapView] ${properties.length} total properties available`);
     }
-  }, [properties.length, fetchViewportProperties, viewport.latitude, viewport.longitude, viewport.zoom]);
+  }, [properties.length]);
 
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
