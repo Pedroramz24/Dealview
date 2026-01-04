@@ -1,0 +1,6 @@
+address,city,state,zip_code,asset_type,asking_price,building_size,beds,baths,est_value,est_equity_percent,tax_delinquent_dollars,high_equity,foreclosure,owner_occupied,owner_name,lot_size
+123 Main St,Austin,TX,78701,Office,2500000,15000,0,0,2800000,45.5,0,Yes,No,No,John Smith,0.5
+456 Retail Plaza,Dallas,TX,75201,Retail,1850000,12500,0,0,2100000,62.3,15000,Yes,No,No,ABC Corp,1.2
+789 Apartment Complex,Houston,TX,77001,Multifamily,8900000,65000,120,84,9500000,78.2,0,Yes,No,No,Multifamily Holdings,4.5
+321 Gas Station,San Antonio,TX,78201,Gas,950000,2400,0,0,1100000,35.8,8500,No,Yes,No,Shell Properties,0.3
+654 Industrial Park,Austin,TX,78704,Industrial,5200000,85000,0,0,5800000,55.1,0,Yes,No,No,Industrial Group,8.7
