@@ -150,17 +150,23 @@ async def find_existing_property(supabase, address: str, city: str, state: str, 
 @router.post("/properties/import")
 async def import_csv(
     file: UploadFile = File(...),
+    asset_type_override: Optional[str] = None,
     current_user: User = Depends(require_map_crm_access)
 ):
     """
     Smart CSV import with:
-    - Intelligent asset type classification (when column missing/empty)
+    - Manual asset type classification (for single-type CSVs)
+    - Intelligent auto-classification (when override not provided)
     - Duplicate detection and update logic (by address + lat/lng)
     - Geocoding via Radar.io
     
     Required columns: address, city, state, zip_code
-    Optional: asset_type (will be auto-classified if missing)
+    Optional: asset_type (will use override or auto-classify)
     Optional: All other property fields
+    
+    Args:
+        file: CSV file
+        asset_type_override: If provided, apply this asset type to ALL properties in CSV
     """
     supabase = get_supabase()
     
