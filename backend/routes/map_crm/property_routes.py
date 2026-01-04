@@ -488,11 +488,11 @@ async def get_properties(
     asset_type: Optional[str] = None,
     city: Optional[str] = None,
     status: Optional[str] = None,
-    limit: int = 100,
+    limit: int = 10000,
     offset: int = 0,
     current_user: User = Depends(require_map_crm_access)
 ):
-    """Get properties with optional filters."""
+    """Get properties with optional filters. Default limit increased to 10000 for better table view."""
     supabase = get_supabase()
     
     try:
