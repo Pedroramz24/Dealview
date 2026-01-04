@@ -217,7 +217,6 @@ async def import_csv(
         updated_rows = 0
         error_log = []
         properties_to_insert = []
-        properties_to_update = []
         
         for idx, row in enumerate(rows, start=1):
             try:
