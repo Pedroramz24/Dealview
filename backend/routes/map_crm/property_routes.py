@@ -527,6 +527,56 @@ async def get_properties(
         raise HTTPException(status_code=500, detail="Failed to fetch properties")
 
 
+@router.get("/properties/map-data", response_model=List[MapProperty])
+async def get_map_data(
+    north: float,
+    south: float,
+    east: float,
+    west: float,
+    zoom: int,
+    asset_type: Optional[str] = None,
+    status: Optional[str] = None,
+    current_user: User = Depends(require_map_crm_access)
+):
+    """
+    Get properties within map viewport bounds with intelligent clustering.
+    MUST be before /properties/{property_id} route to avoid path conflicts.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Build base query with viewport bounds
+        query = supabase.table('map_properties').select('*').gte('latitude', south).lte('latitude', north).gte('longitude', west).lte('longitude', east)
+        
+        # Apply filters
+        if asset_type:
+            query = query.eq('asset_type', asset_type)
+        if status:
+            query = query.eq('status', status)
+        else:
+            # By default, hide converted properties on map
+            query = query.neq('status', 'converted')
+        
+        # Zoom-based strategy
+        if zoom >= 14:
+            # High zoom: Show individual properties (limit 1000)
+            query = query.limit(1000)
+        elif zoom >= 11:
+            # Medium zoom: Show more properties but still limited
+            query = query.limit(500)
+        else:
+            # Low zoom: Sample properties (show subset)
+            query = query.limit(200)
+        
+        result = query.execute()
+        logger.info(f"Fetched {len(result.data)} properties for viewport (zoom {zoom})")
+        return [MapProperty(**prop) for prop in result.data]
+        
+    except Exception as e:
+        logger.error(f"Failed to fetch map data: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch map data")
+
+
 @router.get("/properties/{property_id}", response_model=MapProperty)
 async def get_property(
     property_id: str,
