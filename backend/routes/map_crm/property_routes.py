@@ -174,6 +174,13 @@ async def import_csv(
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="File must be a CSV")
     
+    # Validate asset_type_override if provided
+    if asset_type_override and asset_type_override not in [e.value for e in AssetType]:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid asset_type_override. Must be one of: {', '.join([e.value for e in AssetType])}"
+        )
+    
     try:
         # Read CSV content
         content = await file.read()
