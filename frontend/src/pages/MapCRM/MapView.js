@@ -5,7 +5,7 @@ import { supabase } from '../../supabaseClient';
 import { API } from '../../App';
 import { useMapCRM } from '../../contexts/MapCRMContext';
 import { colors, shadows, borderRadius, spacing } from '../../styles/designSystem';
-import { DollarSign, Building2, X, ArrowLeft, Loader2 } from 'lucide-react';
+import { DollarSign, Building2, X, ArrowLeft, Loader2, TrendingUp, AlertTriangle } from 'lucide-react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Asset type colors matching DealLinked
@@ -16,6 +16,22 @@ const ASSET_COLORS = {
   'Office': '#22c55e',
   'Land': '#92400e',
   'Multifamily': '#a855f7'
+};
+
+// Utility formatting functions
+const formatCurrency = (value) => {
+  if (!value && value !== 0) return null;
+  return `$${value.toLocaleString('en-US')}`;
+};
+
+const formatNumber = (value, suffix = '') => {
+  if (!value && value !== 0) return null;
+  return `${value.toLocaleString('en-US')}${suffix ? ' ' + suffix : ''}`;
+};
+
+const formatPercent = (value) => {
+  if (!value && value !== 0) return null;
+  return `${value.toFixed(1)}%`;
 };
 
 const MapView = () => {
@@ -366,7 +382,70 @@ const MapView = () => {
                       fontWeight: '600',
                       color: colors.textPrimary
                     }}>
-                      ${selectedProperty.asking_price.toLocaleString()}
+                      {formatCurrency(selectedProperty.asking_price)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Est Value (PropertyRadar) */}
+                {selectedProperty.est_value && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <TrendingUp size={14} style={{ color: colors.textTertiary }} />
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: colors.textTertiary,
+                      flex: 1
+                    }}>
+                      Est Value:
+                    </span>
+                    <span style={{
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      color: colors.textSecondary
+                    }}>
+                      {formatCurrency(selectedProperty.est_value)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Equity % (PropertyRadar) */}
+                {selectedProperty.est_equity_percent && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: colors.textTertiary,
+                      flex: 1,
+                      paddingLeft: '22px'
+                    }}>
+                      Equity:
+                    </span>
+                    <span style={{
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      color: selectedProperty.est_equity_percent > 50 ? colors.success : colors.textSecondary
+                    }}>
+                      {formatPercent(selectedProperty.est_equity_percent)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Tax Delinquent (PropertyRadar) */}
+                {selectedProperty.tax_delinquent_dollars && selectedProperty.tax_delinquent_dollars > 0 && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <AlertTriangle size={14} style={{ color: colors.warning }} />
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: colors.textTertiary,
+                      flex: 1
+                    }}>
+                      Tax Delinquent:
+                    </span>
+                    <span style={{
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      color: colors.warning
+                    }}>
+                      {formatCurrency(selectedProperty.tax_delinquent_dollars)}
                     </span>
                   </div>
                 )}
@@ -386,7 +465,27 @@ const MapView = () => {
                       fontSize: '13px',
                       color: colors.textSecondary
                     }}>
-                      {selectedProperty.building_size.toLocaleString()} sqft
+                      {formatNumber(selectedProperty.building_size, 'sqft')}
+                    </span>
+                  </div>
+                )}
+
+                {/* Beds/Baths (PropertyRadar) */}
+                {(selectedProperty.beds || selectedProperty.baths) && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Building2 size={14} style={{ color: colors.textTertiary }} />
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: colors.textTertiary,
+                      flex: 1
+                    }}>
+                      Beds/Baths:
+                    </span>
+                    <span style={{
+                      fontSize: '13px',
+                      color: colors.textSecondary
+                    }}>
+                      {selectedProperty.beds || '—'} / {selectedProperty.baths || '—'}
                     </span>
                   </div>
                 )}
@@ -408,6 +507,67 @@ const MapView = () => {
                     }}>
                       {selectedProperty.lot_size} acres
                     </span>
+                  </div>
+                )}
+
+                {/* PropertyRadar Flags */}
+                {(selectedProperty.high_equity || selectedProperty.foreclosure || selectedProperty.underwater) && (
+                  <div style={{ 
+                    marginTop: spacing.sm,
+                    paddingTop: spacing.sm,
+                    borderTop: `1px solid ${colors.border}`,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '4px'
+                  }}>
+                    {selectedProperty.high_equity && (
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        padding: '2px 6px',
+                        borderRadius: borderRadius.sm,
+                        background: `${colors.success}20`,
+                        color: colors.success
+                      }}>
+                        HIGH EQUITY
+                      </span>
+                    )}
+                    {selectedProperty.foreclosure && (
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        padding: '2px 6px',
+                        borderRadius: borderRadius.sm,
+                        background: `${colors.danger}20`,
+                        color: colors.danger
+                      }}>
+                        FORECLOSURE
+                      </span>
+                    )}
+                    {selectedProperty.underwater && (
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        padding: '2px 6px',
+                        borderRadius: borderRadius.sm,
+                        background: `${colors.warning}20`,
+                        color: colors.warning
+                      }}>
+                        UNDERWATER
+                      </span>
+                    )}
+                    {selectedProperty.owner_occupied === false && (
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        padding: '2px 6px',
+                        borderRadius: borderRadius.sm,
+                        background: `${colors.primary}20`,
+                        color: colors.primary
+                      }}>
+                        ABSENTEE
+                      </span>
+                    )}
                   </div>
                 )}
 
