@@ -162,8 +162,14 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
               <AlertDescription>
                 <p style={{ fontWeight: '600', marginBottom: '4px' }}>Import Complete!</p>
                 <p style={{ fontSize: '13px', opacity: 0.9 }}>
-                  {result.successful_rows} of {result.total_rows} properties imported successfully.
+                  {result.successful_rows} of {result.total_rows} properties processed successfully.
                 </p>
+                {result.new_properties !== undefined && (
+                  <p style={{ fontSize: '12px', marginTop: '4px' }}>
+                    • {result.new_properties} new properties added<br />
+                    • {result.updated_properties} properties updated
+                  </p>
+                )}
                 {result.failed_rows > 0 && (
                   <p style={{ fontSize: '13px', color: colors.warning, marginTop: '4px' }}>
                     {result.failed_rows} properties failed to import.
@@ -183,11 +189,20 @@ const CSVImport = ({ isOpen, onClose, onImportComplete }) => {
             <p style={{ fontSize: '12px', fontWeight: '600', color: colors.textSecondary, marginBottom: '6px' }}>
               Required Columns:
             </p>
-            <p style={{ fontSize: '12px', color: colors.textTertiary, fontFamily: 'monospace' }}>
-              address, city, state, zip_code, asset_type
+            <p style={{ fontSize: '12px', color: colors.textTertiary, fontFamily: 'monospace', marginBottom: spacing.sm }}>
+              address, city, state, zip_code
+            </p>
+            <p style={{ fontSize: '12px', fontWeight: '600', color: colors.textSecondary, marginTop: spacing.sm, marginBottom: '6px' }}>
+              Optional but Recommended:
+            </p>
+            <p style={{ fontSize: '12px', color: colors.textTertiary, marginBottom: '4px' }}>
+              <strong>asset_type</strong> - Gas, Retail, Industrial, Office, Land, Multifamily
+            </p>
+            <p style={{ fontSize: '11px', color: colors.textMuted, fontStyle: 'italic' }}>
+              (If missing, DealVisor will auto-classify based on keywords and property size)
             </p>
             <p style={{ fontSize: '12px', color: colors.textTertiary, marginTop: spacing.sm }}>
-              <strong>Asset types:</strong> Gas, Retail, Industrial, Office, Land, Multifamily
+              <strong>Duplicate Handling:</strong> Existing properties will be updated automatically.
             </p>
           </div>
 
