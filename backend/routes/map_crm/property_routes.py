@@ -683,6 +683,9 @@ async def claim_property(
             'updated_at': datetime.now(timezone.utc).isoformat()
         }).eq('id', property_id).execute()
         
+        # Log activity
+        await log_activity(supabase, property_id, str(current_user.id), 'claimed', 'Property claimed')
+        
         logger.info(f"User {current_user.id} claimed property {property_id}")
         
         return {"message": "Property claimed successfully", "property_id": property_id}
@@ -711,6 +714,9 @@ async def unclaim_property(
             'status': PropertyStatus.AVAILABLE.value,
             'updated_at': datetime.now(timezone.utc).isoformat()
         }).eq('id', property_id).execute()
+        
+        # Log activity
+        await log_activity(supabase, property_id, str(current_user.id), 'unclaimed', 'Property unclaimed')
         
         logger.info(f"User {current_user.id} unclaimed property {property_id}")
         
@@ -807,6 +813,155 @@ async def get_map_data(
         raise HTTPException(status_code=500, detail="Failed to fetch map data")
 
 
+@router.get("/properties/{property_id}/activity")
+async def get_property_activity(
+    property_id: str,
+    limit: int = 50,
+    current_user: User = Depends(require_map_crm_access)
+):
+    """Get activity timeline for a property."""
+    supabase = get_supabase()
+    
+    try:
+        # Get activity with user details
+        activity_result = supabase.table('map_property_activity').select('*').eq('property_id', property_id).order('created_at', desc=True).limit(limit).execute()
+        
+        # Get user names for activities
+        activities = []
+        for activity in activity_result.data:
+            # Get user profile
+            user_result = supabase.table('user_profiles').select('full_name').eq('id', activity['user_id']).single().execute()
+            
+            activity_data = {
+                **activity,
+                'user_name': user_result.data.get('full_name') if user_result.data else 'Unknown User'
+            }
+            activities.append(activity_data)
+        
+        return activities
+        
+    except Exception as e:
+        logger.error(f"Failed to fetch property activity: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch activity")
+
+
+async def log_activity(supabase, property_id: str, user_id: str, activity_type: str, description: str, metadata: dict = None):
+    """Helper function to log property activity."""
+    try:
+        activity_data = {
+            'property_id': property_id,
+            'user_id': user_id,
+            'activity_type': activity_type,
+            'description': description,
+            'metadata': metadata or {},
+            'created_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        supabase.table('map_property_activity').insert(activity_data).execute()
+        logger.info(f"Logged activity: {activity_type} for property {property_id}")
+    except Exception as e:
+        logger.error(f"Failed to log activity: {str(e)}")
+
+
+@router.post("/properties/bulk-claim")
+async def bulk_claim_properties(
+    property_ids: List[str],
+    current_user: User = Depends(require_map_crm_access)
+):
+    """Claim multiple properties at once."""
+    supabase = get_supabase()
+    
+    try:
+        claimed_count = 0
+        failed = []
+        
+        for property_id in property_ids:
+            try:
+                # Create assignment
+                assignment_data = {
+                    'property_id': property_id,
+                    'user_id': str(current_user.id),
+                    'status': 'claimed',
+                    'claimed_at': datetime.now(timezone.utc).isoformat()
+                }
+                
+                supabase.table('map_property_assignments').upsert(assignment_data).execute()
+                
+                # Update property status
+                supabase.table('map_properties').update({
+                    'status': PropertyStatus.CLAIMED.value,
+                    'updated_at': datetime.now(timezone.utc).isoformat()
+                }).eq('id', property_id).execute()
+                
+                # Log activity
+                await log_activity(supabase, property_id, str(current_user.id), 'claimed', f'Property claimed in bulk action')
+                
+                claimed_count += 1
+                
+            except Exception as e:
+                logger.error(f"Failed to claim property {property_id}: {str(e)}")
+                failed.append(property_id)
+        
+        return {
+            'success': True,
+            'claimed_count': claimed_count,
+            'failed_count': len(failed),
+            'failed_ids': failed,
+            'message': f'Successfully claimed {claimed_count} of {len(property_ids)} properties'
+        }
+        
+    except Exception as e:
+        logger.error(f"Bulk claim failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Bulk claim failed")
+
+
+@router.post("/properties/bulk-status-change")
+async def bulk_status_change(
+    property_ids: List[str],
+    new_status: str,
+    current_user: User = Depends(require_map_crm_access)
+):
+    """Change status for multiple properties."""
+    supabase = get_supabase()
+    
+    # Validate status
+    if new_status not in [e.value for e in PropertyStatus]:
+        raise HTTPException(status_code=400, detail=f"Invalid status. Must be one of: {', '.join([e.value for e in PropertyStatus])}")
+    
+    try:
+        updated_count = 0
+        failed = []
+        
+        for property_id in property_ids:
+            try:
+                supabase.table('map_properties').update({
+                    'status': new_status,
+                    'updated_at': datetime.now(timezone.utc).isoformat()
+                }).eq('id', property_id).execute()
+                
+                # Log activity
+                await log_activity(supabase, property_id, str(current_user.id), 'status_changed', f'Status changed to {new_status} in bulk action')
+                
+                updated_count += 1
+                
+            except Exception as e:
+                logger.error(f"Failed to update property {property_id}: {str(e)}")
+                failed.append(property_id)
+        
+        return {
+            'success': True,
+            'updated_count': updated_count,
+            'failed_count': len(failed),
+            'message': f'Successfully updated {updated_count} of {len(property_ids)} properties to {new_status}'
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Bulk status change failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Bulk status change failed")
+
+
 @router.get("/imports", response_model=List[CSVImport])
 async def get_imports(
     current_user: User = Depends(require_map_crm_access)
@@ -893,6 +1048,9 @@ async def convert_property_to_deal(
             'status': 'converted',
             'updated_at': datetime.now(timezone.utc).isoformat()
         }).eq('id', property_id).execute()
+        
+        # Log activity
+        await log_activity(supabase, property_id, str(current_user.id), 'converted', f'Property converted to deal {deal_id}', {'deal_id': deal_id})
         
         logger.info(f"Converted property {property_id} to deal {deal_id}")
         

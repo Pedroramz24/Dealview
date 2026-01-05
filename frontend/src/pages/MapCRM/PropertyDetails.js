@@ -6,9 +6,10 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
-import { ArrowLeft, Edit, Save, X, Building2, DollarSign, MapPin, TrendingUp, AlertTriangle, User, FileText, Zap, UserPlus, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Edit, Save, X, Building2, DollarSign, MapPin, TrendingUp, AlertTriangle, User, FileText, Zap, UserPlus, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { colors, shadows, borderRadius, spacing, gradients, transitions } from '../../styles/designSystem';
+import ActivityTimeline from './ActivityTimeline';
 
 // Utility formatting functions
 const formatCurrency = (value) => {
@@ -598,6 +599,11 @@ const PropertyDetails = () => {
                 onChange={(value) => setEditedProperty({...editedProperty, owner_email: value})}
               />
             </div>
+          </Section>
+
+          {/* Activity Timeline */}
+          <Section title="Activity Timeline" icon={Clock}>
+            <ActivityTimeline propertyId={propertyId} />
           </Section>
         </div>
 
