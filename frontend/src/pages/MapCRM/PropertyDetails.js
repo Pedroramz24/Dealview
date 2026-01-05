@@ -6,7 +6,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
-import { ArrowLeft, Edit, Save, X, Building2, DollarSign, MapPin, TrendingUp, AlertTriangle, User, FileText } from 'lucide-react';
+import { ArrowLeft, Edit, Save, X, Building2, DollarSign, MapPin, TrendingUp, AlertTriangle, User, FileText, Zap, UserPlus, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { colors, shadows, borderRadius, spacing, gradients, transitions } from '../../styles/designSystem';
 
@@ -109,6 +109,88 @@ const PropertyDetails = () => {
     setIsEditMode(false);
   };
 
+  const handleClaim = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const response = await fetch(`${API}/map-crm/properties/${propertyId}/claim`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ notes: null })
+      });
+
+      if (!response.ok) throw new Error('Failed to claim property');
+      
+      toast.success('Property claimed successfully');
+      fetchProperty(); // Refresh to show updated status
+    } catch (error) {
+      console.error('Failed to claim property:', error);
+      toast.error('Failed to claim property');
+    }
+  };
+
+  const handleUnclaim = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const response = await fetch(`${API}/map-crm/properties/${propertyId}/unclaim`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to unclaim property');
+      
+      toast.success('Property unclaimed');
+      fetchProperty(); // Refresh
+    } catch (error) {
+      console.error('Failed to unclaim property:', error);
+      toast.error('Failed to unclaim property');
+    }
+  };
+
+  const handleConvertToDeal = async () => {
+    if (!confirm('Convert this property to a DealLinked deal? This will move it to your Workspace.')) {
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const response = await fetch(`${API}/map-crm/properties/${propertyId}/convert-to-deal`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Conversion failed');
+      }
+      
+      const data = await response.json();
+      toast.success('Property converted to deal!');
+      
+      // Redirect to the new deal in DealLinked
+      setTimeout(() => {
+        navigate(`/workspace/deals/${data.deal_id}`);
+      }, 1500);
+    } catch (error) {
+      console.error('Failed to convert to deal:', error);
+      toast.error(error.message);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ 
@@ -166,13 +248,58 @@ const PropertyDetails = () => {
           </Button>
 
           <div style={{ display: 'flex', gap: spacing.sm }}>
-            {!isEditMode ? (
+            {property.status !== 'converted' && (
               <Button
-                onClick={() => setIsEditMode(true)}
+                onClick={handleConvertToDeal}
                 style={{
                   background: gradients.primaryButton,
                   border: 'none',
                   boxShadow: shadows.glowCyan
+                }}
+              >
+                <Zap size={16} className="mr-2" />
+                Convert to Deal
+              </Button>
+            )}
+            
+            {property.status === 'available' && (
+              <Button
+                onClick={handleClaim}
+                variant="outline"
+                style={{
+                  background: 'transparent',
+                  border: `1px solid ${colors.primary}`,
+                  color: colors.primary
+                }}
+              >
+                <UserPlus size={16} className="mr-2" />
+                Claim Property
+              </Button>
+            )}
+            
+            {property.status === 'claimed' && (
+              <Button
+                onClick={handleUnclaim}
+                variant="outline"
+                style={{
+                  background: 'transparent',
+                  border: `1px solid ${colors.border}`,
+                  color: colors.textSecondary
+                }}
+              >
+                <X size={16} className="mr-2" />
+                Unclaim
+              </Button>
+            )}
+            
+            {!isEditMode ? (
+              <Button
+                onClick={() => setIsEditMode(true)}
+                variant="outline"
+                style={{
+                  background: 'transparent',
+                  border: `1px solid ${colors.border}`,
+                  color: colors.textSecondary
                 }}
               >
                 <Edit size={16} className="mr-2" />
