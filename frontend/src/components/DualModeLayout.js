@@ -69,36 +69,49 @@ const DualModeLayout = () => {
       background: 'transparent',  // Let body gradient show through
       position: 'relative'
     }}>
-      {/* Toggle Button for Marketplace Mode - Only on feed page */}
-      {showToggle && !sidebarCollapsed && (
+      {/* Toggle Button for Marketplace Mode - Always visible */}
+      {showToggle && (
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           style={{
             position: 'fixed',
             top: '20px',
-            left: '100px',
+            left: sidebarCollapsed ? '20px' : '100px',
             zIndex: 200,
-            background: 'rgba(0, 184, 212, 0.9)',
-            border: 'none',
-            borderRadius: '8px',
-            width: '40px',
-            height: '40px',
+            background: 'rgba(12, 12, 12, 0.95)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(0, 184, 212, 0.3)',
+            borderRadius: '12px',
+            padding: '12px',
+            color: '#00b8d4',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4), 0 0 20px rgba(0, 184, 212, 0.2)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-            transition: 'all 0.3s ease'
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.5), 0 0 32px rgba(0, 184, 212, 0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(12, 12, 12, 0.95)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4), 0 0 20px rgba(0, 184, 212, 0.2)';
           }}
         >
           <ChevronRight 
             size={20} 
-            color="#000"
             style={{ 
+              transition: 'transform 0.3s',
               transform: sidebarCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
-              transition: 'transform 0.3s ease'
-            }} 
+            }}
           />
+          {sidebarCollapsed && (
+            <span style={{ fontSize: '13px', fontWeight: '600' }}>
+              Menu
+            </span>
+          )}
         </button>
       )}
 

@@ -136,7 +136,7 @@ function App() {
           {/* Workspace Routes - MainLayout (full CRM sidebar) */}
           <Route
             path="/workspace"
-            element={user ? <MainLayout key="workspace-layout" /> : <Navigate to="/login" />}
+            element={user ? <MainLayout key={`workspace-${location.pathname}`} /> : <Navigate to="/login" />}
           >
             <Route index element={<Navigate to="/workspace/dashboard" replace />} />
             <Route path="dashboard" element={<CommandCenter />} />
