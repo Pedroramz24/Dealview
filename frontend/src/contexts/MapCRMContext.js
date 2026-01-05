@@ -75,22 +75,44 @@ export const MapCRMProvider = ({ children }) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('Not authenticated');
 
-      const params = new URLSearchParams();
-      if (filters.asset_type) params.append('asset_type', filters.asset_type);
-      if (filters.city) params.append('city', filters.city);
-      if (filters.status) params.append('status', filters.status);
-      params.append('limit', '10000'); // Increase limit for Supabase Pro
+      // Fetch properties in batches to bypass Supabase 1000-row limit
+      let allProperties = [];
+      let offset = 0;
+      const batchSize = 1000;
+      let hasMore = true;
 
-      const response = await fetch(`${API}/map-crm/properties?${params.toString()}`, {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
+      while (hasMore && offset < 25000) { // Max 25k properties
+        const params = new URLSearchParams();
+        if (filters.asset_type) params.append('asset_type', filters.asset_type);
+        if (filters.city) params.append('city', filters.city);
+        if (filters.status) params.append('status', filters.status);
+        params.append('limit', batchSize.toString());
+        params.append('offset', offset.toString());
+
+        const response = await fetch(`${API}/map-crm/properties?${params.toString()}`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch properties');
+        const data = await response.json();
+        
+        if (data.length === 0) {
+          hasMore = false;
+        } else {
+          allProperties = [...allProperties, ...data];
+          offset += batchSize;
+          
+          // If we got less than batch size, we're done
+          if (data.length < batchSize) {
+            hasMore = false;
+          }
         }
-      });
+      }
 
-      if (!response.ok) throw new Error('Failed to fetch properties');
-      const data = await response.json();
-      console.log('[MapCRM] Fetched properties:', data.length);
-      setProperties(data);
+      console.log('[MapCRM] Fetched properties:', allProperties.length);
+      setProperties(allProperties);
     } catch (error) {
       console.error('Failed to fetch properties:', error);
     } finally {
