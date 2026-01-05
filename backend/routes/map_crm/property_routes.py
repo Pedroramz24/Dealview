@@ -652,7 +652,10 @@ async def claim_property(
     claim_request: ClaimPropertyRequest,
     current_user: User = Depends(require_map_crm_access)
 ):
-    """Claim a property (assign to current user)."""
+    """
+    Claim a property (assign to current user).
+    Creates/updates assignment record and updates property status.
+    """
     supabase = get_supabase()
     
     try:
@@ -674,19 +677,74 @@ async def claim_property(
         # Upsert (insert or update if exists)
         supabase.table('map_property_assignments').upsert(assignment_data).execute()
         
-        # Update property status
+        # Update property status to claimed
         supabase.table('map_properties').update({
             'status': PropertyStatus.CLAIMED.value,
             'updated_at': datetime.now(timezone.utc).isoformat()
         }).eq('id', property_id).execute()
         
-        return {"message": "Property claimed successfully"}
+        logger.info(f"User {current_user.id} claimed property {property_id}")
+        
+        return {"message": "Property claimed successfully", "property_id": property_id}
         
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Failed to claim property: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to claim property")
+
+
+@router.post("/properties/{property_id}/unclaim")
+async def unclaim_property(
+    property_id: str,
+    current_user: User = Depends(require_map_crm_access)
+):
+    """Unclaim a property (remove assignment)."""
+    supabase = get_supabase()
+    
+    try:
+        # Delete assignment
+        supabase.table('map_property_assignments').delete().eq('property_id', property_id).eq('user_id', str(current_user.id)).execute()
+        
+        # Update property status back to available
+        supabase.table('map_properties').update({
+            'status': PropertyStatus.AVAILABLE.value,
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }).eq('id', property_id).execute()
+        
+        logger.info(f"User {current_user.id} unclaimed property {property_id}")
+        
+        return {"message": "Property unclaimed successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to unclaim property: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to unclaim property")
+
+
+@router.get("/assignments/me")
+async def get_my_assignments(
+    current_user: User = Depends(require_map_crm_access)
+):
+    """Get all properties claimed by current user."""
+    supabase = get_supabase()
+    
+    try:
+        # Get assignments
+        assignments = supabase.table('map_property_assignments').select('property_id').eq('user_id', str(current_user.id)).execute()
+        
+        if not assignments.data:
+            return []
+        
+        property_ids = [a['property_id'] for a in assignments.data]
+        
+        # Get properties
+        properties = supabase.table('map_properties').select('*').in_('id', property_ids).execute()
+        
+        return [MapProperty(**prop) for prop in properties.data]
+        
+    except Exception as e:
+        logger.error(f"Failed to fetch user assignments: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch assignments")
 
 
 @router.get("/properties/map-data", response_model=List[MapProperty])
@@ -764,3 +822,88 @@ async def get_imports(
     except Exception as e:
         logger.error(f"Failed to fetch imports: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch imports")
+
+
+@router.post("/properties/{property_id}/convert-to-deal")
+async def convert_property_to_deal(
+    property_id: str,
+    pipeline_id: Optional[str] = None,
+    current_user: User = Depends(require_map_crm_access)
+):
+    """
+    Convert a DealVisor property to a DealLinked deal.
+    
+    Transfers all property data to deals table and marks property as converted.
+    This is the 'effortless transfer' feature - one-click property → deal conversion.
+    """
+    supabase = get_supabase()
+    
+    try:
+        # Get property
+        prop_result = supabase.table('map_properties').select('*').eq('id', property_id).single().execute()
+        
+        if not prop_result.data:
+            raise HTTPException(status_code=404, detail="Property not found")
+        
+        property_data = prop_result.data
+        
+        # Check if already converted
+        if property_data.get('deal_id'):
+            raise HTTPException(status_code=400, detail="Property already converted to deal")
+        
+        # Create deal from property data
+        deal_id = str(uuid.uuid4())
+        
+        deal_data = {
+            'id': deal_id,
+            'owner_id': str(current_user.id),
+            'title': property_data.get('title') or property_data.get('address'),
+            'address': property_data.get('address'),
+            'city': property_data.get('city'),
+            'state': property_data.get('state'),
+            'zip_code': property_data.get('zip_code'),
+            'asset_type': property_data.get('asset_type'),
+            'status': 'active',
+            'stage': 'prospect',
+            'priority': 'high' if property_data.get('high_equity') or property_data.get('foreclosure') else 'medium',
+            'latitude': property_data.get('latitude'),
+            'longitude': property_data.get('longitude'),
+            'asking_price': property_data.get('asking_price') or property_data.get('est_value'),
+            'size': property_data.get('building_size'),
+            'lot_size': property_data.get('lot_size'),
+            'year_built': property_data.get('year_built'),
+            'zoning': property_data.get('zoning'),
+            'occupancy': property_data.get('occupancy'),
+            'description': property_data.get('description'),
+            'notes': property_data.get('notes'),
+            'pipeline_id': pipeline_id,
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        # Remove None values
+        deal_data = {k: v for k, v in deal_data.items() if v is not None}
+        
+        # Insert deal
+        supabase.table('deals').insert(deal_data).execute()
+        
+        # Update property to mark as converted
+        supabase.table('map_properties').update({
+            'deal_id': deal_id,
+            'status': 'converted',
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }).eq('id', property_id).execute()
+        
+        logger.info(f"Converted property {property_id} to deal {deal_id}")
+        
+        return {
+            'success': True,
+            'deal_id': deal_id,
+            'message': f'Property successfully converted to deal. Access it in DealLinked Workspace.'
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to convert property to deal: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Conversion failed: {str(e)}")
