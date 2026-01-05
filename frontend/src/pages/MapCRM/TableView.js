@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMapCRM } from '../../contexts/MapCRMContext';
 import ColumnSelector from './ColumnSelector';
+import BulkActionsBar from './BulkActionsBar';
 import { COLUMN_CONFIG } from './columnConfig';
 import { colors, shadows, borderRadius, transitions, spacing } from '../../styles/designSystem';
 import { 
@@ -9,6 +10,7 @@ import {
   ChevronUp, ChevronDown, Search, Filter, Columns
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import { Checkbox } from '../../components/ui/checkbox';
 
 // Utility functions for formatting
 const formatCurrency = (value) => {
@@ -36,7 +38,7 @@ const formatDate = (dateString) => {
 };
 
 const TableView = ({ filters: parentFilters }) => {
-  const { properties, setSelectedProperty } = useMapCRM();
+  const { properties, setSelectedProperty, fetchProperties } = useMapCRM();
   const navigate = useNavigate();
   const [sortField, setSortField] = useState('created_at');
   const [sortDirection, setSortDirection] = useState('desc');
@@ -44,6 +46,8 @@ const TableView = ({ filters: parentFilters }) => {
   const [assetTypeFilter, setAssetTypeFilter] = useState('all');
   const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(['address', 'city', 'asset_type', 'asking_price', 'building_size', 'status']);
+  const [selectedProperties, setSelectedProperties] = useState([]);
+  const [bulkSelectMode, setBulkSelectMode] = useState(false);
   
   // Use parent filters if provided, otherwise use defaults
   const advancedFilters = parentFilters || {
@@ -153,6 +157,28 @@ const TableView = ({ filters: parentFilters }) => {
       setSortField(field);
       setSortDirection('asc');
     }
+  };
+
+  const togglePropertySelection = (propertyId) => {
+    if (selectedProperties.includes(propertyId)) {
+      setSelectedProperties(selectedProperties.filter(id => id !== propertyId));
+    } else {
+      setSelectedProperties([...selectedProperties, propertyId]);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedProperties.length === filteredProperties.length) {
+      setSelectedProperties([]);
+    } else {
+      setSelectedProperties(filteredProperties.map(p => p.id));
+    }
+  };
+
+  const handleBulkComplete = () => {
+    setSelectedProperties([]);
+    setBulkSelectMode(false);
+    fetchProperties(); // Refresh
   };
 
   const SortIcon = ({ field }) => {
@@ -304,6 +330,26 @@ const TableView = ({ filters: parentFilters }) => {
           Columns
         </Button>
 
+        {/* Bulk Select Toggle */}
+        <Button
+          onClick={() => {
+            setBulkSelectMode(!bulkSelectMode);
+            setSelectedProperties([]);
+          }}
+          style={{
+            background: bulkSelectMode ? `${colors.primary}20` : colors.surfaceCard,
+            border: bulkSelectMode ? `1px solid ${colors.primary}` : `1px solid ${colors.border}`,
+            color: bulkSelectMode ? colors.primary : colors.textSecondary,
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.sm,
+            transition: transitions.fast
+          }}
+        >
+          <CheckSquare size={16} />
+          {bulkSelectMode ? 'Cancel Select' : 'Bulk Select'}
+        </Button>
+
         {/* Results Count */}
         <div style={{
           padding: '10px 16px',
@@ -334,12 +380,24 @@ const TableView = ({ filters: parentFilters }) => {
         {/* Table Header */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' '),
+          gridTemplateColumns: bulkSelectMode 
+            ? `40px ${visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' ')}`
+            : visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' '),
           padding: `${spacing.md} ${spacing.lg}`,
           background: colors.surfaceElevated,
           borderBottom: `1px solid ${colors.border}`,
           gap: spacing.md
         }}>
+          {/* Select All Checkbox */}
+          {bulkSelectMode && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Checkbox
+                checked={selectedProperties.length === filteredProperties.length && filteredProperties.length > 0}
+                onCheckedChange={toggleSelectAll}
+              />
+            </div>
+          )}
+          
           {visibleColumns.map(colKey => {
             const col = COLUMN_CONFIG[colKey];
             if (!col) return null;
@@ -381,24 +439,49 @@ const TableView = ({ filters: parentFilters }) => {
           {filteredProperties.map((property, index) => (
             <div
               key={property.id}
-              onClick={() => navigate(`/internal/map-crm/property/${property.id}`)}
+              onClick={(e) => {
+                if (bulkSelectMode) {
+                  e.stopPropagation();
+                  togglePropertySelection(property.id);
+                } else {
+                  navigate(`/internal/map-crm/property/${property.id}`);
+                }
+              }}
               style={{
                 display: 'grid',
-                gridTemplateColumns: visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' '),
+                gridTemplateColumns: bulkSelectMode 
+                  ? `40px ${visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' ')}`
+                  : visibleColumns.map(col => COLUMN_CONFIG[col]?.width || '1fr').join(' '),
                 padding: `${spacing.md} ${spacing.lg}`,
                 borderBottom: index < filteredProperties.length - 1 ? `1px solid ${colors.border}` : 'none',
                 gap: spacing.md,
                 cursor: 'pointer',
                 transition: transitions.fast,
-                background: colors.surfaceCard
+                background: selectedProperties.includes(property.id) ? `${colors.primary}10` : colors.surfaceCard,
+                border: selectedProperties.includes(property.id) ? `1px solid ${colors.primary}40` : 'none'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = colors.hover;
+                if (!selectedProperties.includes(property.id)) {
+                  e.currentTarget.style.background = colors.hover;
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = colors.surfaceCard;
+                if (!selectedProperties.includes(property.id)) {
+                  e.currentTarget.style.background = colors.surfaceCard;
+                }
               }}
             >
+              {/* Checkbox for bulk select */}
+              {bulkSelectMode && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Checkbox
+                    checked={selectedProperties.includes(property.id)}
+                    onCheckedChange={() => togglePropertySelection(property.id)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              )}
+              
               {visibleColumns.map(colKey => {
                 const col = COLUMN_CONFIG[colKey];
                 if (!col) return <div key={colKey}>—</div>;
@@ -429,6 +512,19 @@ const TableView = ({ filters: parentFilters }) => {
           visibleColumns={visibleColumns}
           setVisibleColumns={setVisibleColumns}
           onClose={() => setShowColumnSelector(false)}
+        />
+      )}
+
+      {/* Bulk Actions Bar */}
+      {bulkSelectMode && selectedProperties.length > 0 && (
+        <BulkActionsBar
+          selectedCount={selectedProperties.length}
+          selectedIds={selectedProperties}
+          onComplete={handleBulkComplete}
+          onCancel={() => {
+            setSelectedProperties([]);
+            setBulkSelectMode(false);
+          }}
         />
       )}
     </div>
