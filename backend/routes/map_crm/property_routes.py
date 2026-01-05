@@ -1009,9 +1009,20 @@ async def convert_property_to_deal(
         # Create deal from property data
         deal_id = str(uuid.uuid4())
         
+        # Get user's default pipeline
+        pipeline_result = supabase.table('pipelines').select('id').eq('owner_id', str(current_user.id)).limit(1).execute()
+        default_pipeline_id = pipeline_result.data[0]['id'] if pipeline_result.data else pipeline_id
+        
+        # Get first stage of pipeline if pipeline exists
+        pipeline_stage_id = None
+        if default_pipeline_id:
+            stage_result = supabase.table('pipeline_stages').select('id').eq('pipeline_id', default_pipeline_id).order('position').limit(1).execute()
+            if stage_result.data:
+                pipeline_stage_id = stage_result.data[0]['id']
+        
         deal_data = {
             'id': deal_id,
-            'owner_id': str(current_user.id),
+            'owner_id': str(current_user.id),  # CRITICAL: Must be current user
             'title': property_data.get('title') or property_data.get('address'),
             'address': property_data.get('address'),
             'city': property_data.get('city'),
@@ -1031,7 +1042,8 @@ async def convert_property_to_deal(
             'occupancy': property_data.get('occupancy'),
             'description': property_data.get('description'),
             'notes': property_data.get('notes'),
-            'pipeline_id': pipeline_id,
+            'pipeline_id': default_pipeline_id,
+            'pipeline_stage_id': pipeline_stage_id,
             'created_at': datetime.now(timezone.utc).isoformat(),
             'updated_at': datetime.now(timezone.utc).isoformat()
         }
