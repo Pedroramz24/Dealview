@@ -1,135 +1,138 @@
-# Production Deployment - Supabase Configuration
+# Supabase Password Reset - Production Configuration
 
-## 🎯 Production Domain
+## 🎯 EXACT URLs to Add to Supabase
 
-**Your Production URL:** https://deallinked.com
+### Your Supabase Project
+https://ygezobmpewthqvsfqrbk.supabase.co
 
 ---
 
-## ✅ Supabase Authentication Settings
+## Step-by-Step Instructions
 
-### 1. Site URL
+### 1. Go to Supabase Dashboard
+- Click this link: https://ygezobmpewthqvsfqrbk.supabase.co
+- Log in with your Supabase account
 
-Go to: https://ygezobmpewthqvsfqrbk.supabase.co → Settings → Authentication → URL Configuration
+### 2. Navigate to URL Configuration
+- Left sidebar → Click **Settings** (⚙️ gear icon)
+- Click **Authentication**
+- Scroll to **URL Configuration** section
 
-**Set Site URL to:**
+### 3. Update Site URL
+
+**Find the field labeled "Site URL"**
+
+**DELETE the old URL and enter EXACTLY this:**
 ```
 https://deallinked.com
 ```
 
-### 2. Redirect URLs
+**Do NOT include trailing slash, wildcards, or /reset-password**
+- ✅ Correct: `https://deallinked.com`
+- ❌ Wrong: `https://deallinked.com/`
+- ❌ Wrong: `https://deallinked.com/**`
 
-**Add these to the Redirect URLs whitelist:**
+### 4. Add Redirect URLs
 
+**Find the field labeled "Redirect URLs"**
+
+**Add these URLs (one per line):**
 ```
 https://deallinked.com/**
 https://deallinked.com/reset-password
-https://deallinked.com/login
+https://deallinked.com/login  
 https://deallinked.com/workspace
-https://deallinked.com/workspace/dashboard
 https://deallinked.com/marketplace
 https://deallinked.com/internal/map-crm
-https://deallinked.com/share/*
 ```
 
-**Why the wildcard (/**):**
-- Catches all routes in your application
-- Allows Supabase to redirect to any page after auth
+**Format:** Each URL on its own line
+
+### 5. Click SAVE
+
+**CRITICAL:** Click the **Save** button at the bottom of the page
+
+Wait 5 minutes for changes to propagate.
 
 ---
 
-## 🔧 Environment Variables Updated
+## 🧪 Testing
 
-**Frontend (.env):**
-```
-REACT_APP_BACKEND_URL=https://deallinked.com
-```
+### After saving Supabase settings:
 
-**Backend (.env):**
-```
-FRONTEND_URL=https://deallinked.com
-```
-
-**Services restarted to apply changes.**
-
----
-
-## 🧪 Testing Production Password Reset
-
-### Step 1: Update Supabase (You Do This)
-1. Go to Supabase Dashboard
-2. Settings → Authentication → URL Configuration
-3. Update Site URL to: `https://deallinked.com`
-4. Add redirect URLs (listed above)
-5. Save
-
-### Step 2: Test Flow
-1. Go to: https://deallinked.com/login
-2. Click "Forgot Password"
-3. Enter email
-4. Check inbox
-5. Click reset link
-6. **Should redirect to:** `https://deallinked.com/reset-password`
-7. Enter new password
-8. Login successfully
+1. **Clear browser cache** (important!)
+2. Go to: https://deallinked.com/login
+3. Click "Forgot password?"
+4. Enter email: `contact@pedroarmando.com`
+5. Check email inbox
+6. **Click the reset link in email**
+7. **Expected:** Redirects to `https://deallinked.com/reset-password?token=...`
+8. **If still wrong:** Check Supabase Site URL was saved correctly
 
 ---
 
-## 🎯 What Happens After You Update Supabase
+## ⚠️ Common Mistakes
 
-**Password Reset Emails Will Contain:**
-```
-Click here to reset your password:
-https://deallinked.com/reset-password?token=...
-```
+1. **Trailing slash:** `https://deallinked.com/` ❌
+   - Use: `https://deallinked.com` ✅
 
-**Instead of old:**
+2. **Forgot to click Save** ❌
+   - Must click Save button after changes ✅
+
+3. **Using old browser cache** ❌
+   - Clear cache or use incognito ✅
+
+4. **Wrong field:** Editing "API URL" instead of "Site URL" ❌
+   - Update "Site URL" field specifically ✅
+
+---
+
+## 📸 Visual Guide
+
+**What you should see in Supabase:**
+
 ```
-https://propertyvis-app-old.preview.emergentagent.com/reset-password?token=...
+URL Configuration
+─────────────────
+
+Site URL
+┌─────────────────────────────────────┐
+│ https://deallinked.com              │
+└─────────────────────────────────────┘
+
+Redirect URLs
+┌─────────────────────────────────────┐
+│ https://deallinked.com/**           │
+│ https://deallinked.com/reset-password│
+│ https://deallinked.com/login        │
+│ https://deallinked.com/workspace    │
+│ https://deallinked.com/marketplace  │
+│ https://deallinked.com/internal/map-crm│
+└─────────────────────────────────────┘
+
+[Save] button ← CLICK THIS
 ```
 
 ---
 
-## ⚠️ Important Notes
+## ✅ Environment Variables (Already Updated)
 
-**1. DNS Propagation:**
-- Changes may take 5-10 minutes to propagate
-- Test with a fresh incognito window
-
-**2. Email Template:**
-- Supabase automatically uses `{{ .SiteURL }}` in email templates
-- No need to edit email templates manually
-
-**3. OAuth (If Using):**
-- If you add Google/GitHub login later, add OAuth callback URLs too:
-  - `https://deallinked.com/auth/callback`
+**Frontend:** REACT_APP_BACKEND_URL = `https://deallinked.com` ✅
+**Backend:** FRONTEND_URL = `https://deallinked.com` ✅
+**Services:** Restarted ✅
 
 ---
 
-## ✅ Checklist
+## 🎯 Why This Happens
 
-After updating Supabase Site URL:
+Supabase uses **Site URL** to build password reset links in emails:
+```
+https://[SITE_URL]/reset-password?token=xyz
+```
 
-- [ ] Site URL = `https://deallinked.com`
-- [ ] Redirect URLs include all routes above
-- [ ] Click **Save** in Supabase dashboard
-- [ ] Wait 5 minutes for propagation
-- [ ] Test password reset flow
-- [ ] Verify email redirects to `https://deallinked.com/reset-password`
-- [ ] Confirm new password works
+If Site URL = old preview URL → Email links go to old site
+If Site URL = deallinked.com → Email links go to production ✅
 
 ---
 
-## 🚀 Production URLs Summary
-
-| Service | URL |
-|---------|-----|
-| Production App | https://deallinked.com |
-| Login | https://deallinked.com/login |
-| Reset Password | https://deallinked.com/reset-password |
-| Workspace | https://deallinked.com/workspace |
-| Marketplace | https://deallinked.com/marketplace |
-| DealVisor | https://deallinked.com/internal/map-crm |
-| Supabase | https://ygezobmpewthqvsfqrbk.supabase.co |
-
-**Environment variables updated and services restarted!** ✅
+**After you update Supabase, test immediately and let me know if it works!**
