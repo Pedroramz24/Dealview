@@ -1034,12 +1034,14 @@ async def convert_property_to_deal(
             'priority': 'high' if property_data.get('high_equity') or property_data.get('foreclosure') else 'medium',
             'latitude': property_data.get('latitude'),
             'longitude': property_data.get('longitude'),
-            'asking_price': property_data.get('asking_price') or property_data.get('est_value'),
-            'size': property_data.get('building_size'),
+            'asking_price': property_data.get('asking_price') or property_data.get('est_value'),  # CORRECT: asking_price
+            'size': property_data.get('building_size'),  # CORRECT: size (not building_size)
             'lot_size': property_data.get('lot_size'),
             'year_built': property_data.get('year_built'),
             'zoning': property_data.get('zoning'),
             'occupancy': property_data.get('occupancy'),
+            'noi': property_data.get('noi'),
+            'cap_rate': property_data.get('cap_rate'),
             'description': property_data.get('description'),
             'notes': property_data.get('notes'),
             'pipeline_id': default_pipeline_id,
