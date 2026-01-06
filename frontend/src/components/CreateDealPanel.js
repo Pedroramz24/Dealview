@@ -108,7 +108,7 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
         title: titleRef.current?.value || 'New Property',
         address: addressRef.current?.value || parcelData?.address || 'Address TBD',
         asset_type: assetTypeRef.current?.value || 'Office',
-        price: priceRef.current?.value ? parseFloat(priceRef.current.value.replace(/,/g, '')) : null,
+        asking_price: priceRef.current?.value ? parseFloat(priceRef.current.value.replace(/,/g, '')) : null,
         stage: stageRef.current?.value || 'need_to_contact',
         status: stageRef.current?.value || 'need_to_contact',
         size: sizeRef.current?.value ? parseFloat(sizeRef.current.value.replace(/,/g, '')) : null,
