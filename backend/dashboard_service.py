@@ -215,7 +215,7 @@ async def generate_priorities_from_data(
     
     # 3. High-Value Deals in Late Stages (HIGH)
     for deal in deals:
-        deal_value = float(deal.get('price', 0) or 0)
+        deal_value = float(deal.get('asking_price', 0) or 0)
         stage_weight = float(deal.get('stage_weight', 50))
         
         # Focus on deals > $500K in stages with weight > 60
@@ -311,13 +311,13 @@ async def get_dashboard_snapshot(
         
         # Calculate metrics
         active_deals = len([d for d in deals if d.get('status') != 'closed'])
-        total_pipeline_value = sum(float(d.get('price', 0) or 0) for d in deals if d.get('status') != 'closed')
+        total_pipeline_value = sum(float(d.get('asking_price', 0) or 0) for d in deals if d.get('status') != 'closed')
         
         # Weighted pipeline (deal_value * stage_weight / 100)
         weighted_value = 0
         for deal in deals:
             if deal.get('status') != 'closed':
-                deal_value = float(deal.get('price', 0) or 0)
+                deal_value = float(deal.get('asking_price', 0) or 0)
                 stage_weight = deal.get('pipeline_stages', {}).get('stage_weight', 50) if deal.get('pipeline_stages') else 50
                 weighted_value += (deal_value * stage_weight / 100)
         
@@ -383,7 +383,7 @@ async def get_priorities(
         
         # Fetch existing priority items
         priority_response = supabase.table('ai_priority_queue').select(
-            '*, deals(id, title, price), contacts(id, name)'
+            '*'*, deals(id, title, asking_price), contacts(id, name)'
         ).eq('owner_id', user.id).eq('completed', False).eq(
             'dismissed', False
         ).order('priority_score', desc=True).limit(20).execute()
