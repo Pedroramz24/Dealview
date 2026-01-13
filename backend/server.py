@@ -93,7 +93,7 @@ async def get_public_deal(deal_id: str):
             "zip_code": deal.get('zip_code'),
             "asset_type": deal.get('asset_type'),
             "description": deal.get('description'),
-            "price": deal.get('price'),
+            "asking_price": deal.get('asking_price'),
             "size": deal.get('size'),
             "lot_size": deal.get('lot_size'),
             "year_built": deal.get('year_built'),
