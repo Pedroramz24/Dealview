@@ -962,7 +962,7 @@ async def get_team_stats(team_id: str, credentials: HTTPAuthorizationCredentials
         
         # Calculate stats
         total_active = len([d for d in deals if d.get('stage') not in ['closed', 'dead']])
-        total_pipeline = sum(float(d.get('price', 0) or 0) for d in deals if d.get('stage') not in ['closed', 'dead'])
+        total_pipeline = sum(float(d.get('asking_price', 0) or 0) for d in deals if d.get('stage') not in ['closed', 'dead'])
         
         # Closed this month
         from datetime import datetime
@@ -993,7 +993,7 @@ async def get_team_stats(team_id: str, credentials: HTTPAuthorizationCredentials
             agent_stats.append({
                 'user_id': member_id,
                 'active_deals': len(active_deals),
-                'pipeline_value': sum(float(d.get('price', 0) or 0) for d in active_deals),
+                'pipeline_value': sum(float(d.get('asking_price', 0) or 0) for d in active_deals),
                 'closed_this_quarter': len(closed_deals),
                 'primary_asset_focus': primary_asset
             })
