@@ -317,7 +317,7 @@ const DealDetails = () => {
         status: editedDeal.status,
         
         // Financial
-        price: editedDeal.price ? parseFormattedNumber(editedDeal.price) : null,
+        asking_price: editedDeal.asking_price ? parseFormattedNumber(editedDeal.asking_price) : (editedDeal.price ? parseFormattedNumber(editedDeal.price) : null),
         size: editedDeal.size ? parseFormattedNumber(editedDeal.size) : null,
         cap_rate: editedDeal.cap_rate ? parseFloat(editedDeal.cap_rate) : null,
         noi: editedDeal.noi ? parseFormattedNumber(editedDeal.noi) : null,
@@ -454,7 +454,7 @@ const DealDetails = () => {
           {new Date(currentValue).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
         </p>;
       }
-      if (type === 'number' || field === 'price' || field === 'size' || field === 'noi') {
+      if (type === 'number' || field === 'asking_price' || field === 'size' || field === 'noi') {
         return <p style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: '500' }}>
           {currentValue ? (field === 'price' || field === 'noi' ? formatPrice(currentValue) : parseFloat(currentValue).toLocaleString()) : 'N/A'}
         </p>;
