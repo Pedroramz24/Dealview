@@ -141,8 +141,10 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
       if (error) throw error;
 
       toast.success('Deal created successfully!');
-      onDealCreated(data);
-      onClose();
+      
+      // Navigate to the new deal details page instead of closing panel
+      window.location.href = `/workspace/deals/${data.id}`;
+      
     } catch (error) {
       console.error('Error creating deal:', error);
       toast.error('Failed to create deal: ' + error.message);
