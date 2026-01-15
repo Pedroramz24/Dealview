@@ -157,6 +157,11 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
   const [ownerLookupExpanded, setOwnerLookupExpanded] = useState(false);
   const [ownerLookupData, setOwnerLookupData] = useState(null);
   const [ownerLookupLoading, setOwnerLookupLoading] = useState(false);
+  
+  // Pipeline & Stage management
+  const [pipelines, setPipelines] = useState([]);
+  const [pipelineStages, setPipelineStages] = useState([]);
+  const [loadingPipelines, setLoadingPipelines] = useState(false);
 
   const isDeal = type === 'deal';
 
