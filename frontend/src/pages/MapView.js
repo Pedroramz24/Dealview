@@ -29,6 +29,18 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 const pmtilesProtocol = new Protocol();
 maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
 
+// Pipeline stage colors - matching Pipeline.js
+const stageColors = {
+  'need_to_contact': '#94a3b8',
+  'contacted': '#60a5fa',
+  'prospect': '#a78bfa',
+  'negotiations': '#ec4899',
+  'offer_sent': '#f59e0b',
+  'under_contract': '#10b981',
+  'closed_won': '#00d4aa',
+  'overpriced': '#ef4444'
+};
+
 const MapView = () => {
   const { capabilities } = useCapabilities();
   const [deals, setDeals] = useState([]);
