@@ -121,8 +121,8 @@ def test_get_pipelines():
             if not test_pipeline_id:
                 test_pipeline_id = pipeline['id']
                 if stages and len(stages) > 0:
-                    # Sort stages by position
-                    sorted_stages = sorted(stages, key=lambda x: x.get('position', 0))
+                    # Sort stages by display_order
+                    sorted_stages = sorted(stages, key=lambda x: x.get('display_order', 0))
                     test_stage_id = sorted_stages[0]['id']
                     print_info(f"  First stage: {sorted_stages[0]['name']} (color: {sorted_stages[0].get('color', 'N/A')})")
         
