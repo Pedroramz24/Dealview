@@ -1016,7 +1016,7 @@ async def convert_property_to_deal(
         # Get first stage of pipeline if pipeline exists
         pipeline_stage_id = None
         if default_pipeline_id:
-            stage_result = supabase.table('pipeline_stages').select('id').eq('pipeline_id', default_pipeline_id).order('position').limit(1).execute()
+            stage_result = supabase.table('pipeline_stages').select('id').eq('pipeline_id', default_pipeline_id).order('display_order').limit(1).execute()
             if stage_result.data:
                 pipeline_stage_id = stage_result.data[0]['id']
         
