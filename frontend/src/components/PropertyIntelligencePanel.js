@@ -925,20 +925,20 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
                   {data.asset_type}
                 </span>
               )}
-              {isDeal && data.stage && (
+              {isDeal && data.pipeline_stage_id && pipelineStages.length > 0 && (
                 <span
                   style={{
                     padding: '6px 12px',
-                    background: stageColors[data.stage] || '#94a3b8',
+                    background: pipelineStages.find(s => s.id === data.pipeline_stage_id)?.color || stageColors[data.stage] || '#94a3b8',
                     color: '#FFFFFF',
-                    border: `1px solid ${stageColors[data.stage] || '#94a3b8'}`,
+                    border: `1px solid ${pipelineStages.find(s => s.id === data.pipeline_stage_id)?.color || stageColors[data.stage] || '#94a3b8'}`,
                     borderRadius: '6px',
                     fontSize: '12px',
                     fontWeight: '600',
-                    boxShadow: `0 0 12px ${stageColors[data.stage] || '#94a3b8'}40`
+                    boxShadow: `0 0 12px ${pipelineStages.find(s => s.id === data.pipeline_stage_id)?.color || stageColors[data.stage] || '#94a3b8'}40`
                   }}
                 >
-                  {data.stage.replace(/_/g, ' ')}
+                  {pipelineStages.find(s => s.id === data.pipeline_stage_id)?.name || data.stage?.replace(/_/g, ' ') || 'No Stage'}
               </span>
             )}
             {!isDeal && data.parcel_id && (
