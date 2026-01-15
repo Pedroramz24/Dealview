@@ -57,7 +57,26 @@ const MapView = () => {
   });
   const [viewportProperties, setViewportProperties] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pipelineStages, setPipelineStages] = useState([]); // Store all pipeline stages with colors
   const mapRef = useRef();
+
+  // Fetch pipeline stages for color mapping
+  useEffect(() => {
+    const fetchPipelineStages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('pipeline_stages')
+          .select('id, name, color');
+        
+        if (error) throw error;
+        setPipelineStages(data || []);
+      } catch (error) {
+        console.error('Failed to fetch pipeline stages:', error);
+      }
+    };
+    
+    fetchPipelineStages();
+  }, []);
 
   // Map style matching DealLinked workspace map (satellite + labels)
   const mapStyle = {
