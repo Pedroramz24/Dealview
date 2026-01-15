@@ -29,7 +29,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 const pmtilesProtocol = new Protocol();
 maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
 
-// Pipeline stage colors - matching Pipeline.js
+// Pipeline stage colors for map pins
 const stageColors = {
   'need_to_contact': '#94a3b8',
   'contacted': '#60a5fa',
