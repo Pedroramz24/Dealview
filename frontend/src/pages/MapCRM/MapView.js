@@ -78,6 +78,30 @@ const MapView = () => {
     fetchPipelineStages();
   }, []);
 
+  // Get pin color based on pipeline stage (primary) or asset type (fallback)
+  const getPinColor = useCallback((property) => {
+    // Priority 1: Use pipeline stage color if property has pipeline_stage_id
+    if (property.pipeline_stage_id && pipelineStages.length > 0) {
+      const stage = pipelineStages.find(s => s.id === property.pipeline_stage_id);
+      if (stage && stage.color) {
+        return stage.color;
+      }
+    }
+    
+    // Priority 2: Use legacy stage color if property has stage field
+    if (property.stage && DEFAULT_STAGE_COLORS[property.stage]) {
+      return DEFAULT_STAGE_COLORS[property.stage];
+    }
+    
+    // Priority 3: Fallback to asset type color
+    if (property.asset_type && ASSET_COLORS[property.asset_type]) {
+      return ASSET_COLORS[property.asset_type];
+    }
+    
+    // Default color
+    return colors.textMuted;
+  }, [pipelineStages]);
+
   // Map style matching DealLinked workspace map (satellite + labels)
   const mapStyle = {
     version: 8,
