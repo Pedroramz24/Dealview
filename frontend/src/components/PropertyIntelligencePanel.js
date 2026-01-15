@@ -207,10 +207,10 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
       
       if (error) throw error;
       
-      // Sort stages by position for each pipeline
+      // Sort stages by display_order for each pipeline
       const sortedPipelines = pipelinesData.map(pipeline => ({
         ...pipeline,
-        pipeline_stages: (pipeline.pipeline_stages || []).sort((a, b) => a.position - b.position)
+        pipeline_stages: (pipeline.pipeline_stages || []).sort((a, b) => a.display_order - b.display_order)
       }));
       
       setPipelines(sortedPipelines);
