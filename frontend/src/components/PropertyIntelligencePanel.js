@@ -171,6 +171,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
       if (isDeal && data.id) {
         fetchLinkedContacts();
         fetchDocuments();
+        fetchPipelines();
       }
       
       // Debug parcel data
@@ -193,6 +194,44 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
       }
     }
   }, [data, isEditing, isDeal]);
+
+  // Fetch user pipelines and stages
+  const fetchPipelines = async () => {
+    setLoadingPipelines(true);
+    try {
+      const { data: pipelinesData, error } = await supabase
+        .from('pipelines')
+        .select('id, name, pipeline_stages(id, name, color, position)')
+        .eq('is_active', true)
+        .order('created_at');
+      
+      if (error) throw error;
+      
+      // Sort stages by position for each pipeline
+      const sortedPipelines = pipelinesData.map(pipeline => ({
+        ...pipeline,
+        pipeline_stages: (pipeline.pipeline_stages || []).sort((a, b) => a.position - b.position)
+      }));
+      
+      setPipelines(sortedPipelines);
+      
+      // Load stages for current pipeline
+      if (data.pipeline_id) {
+        const currentPipeline = sortedPipelines.find(p => p.id === data.pipeline_id);
+        if (currentPipeline) {
+          setPipelineStages(currentPipeline.pipeline_stages || []);
+        }
+      } else if (sortedPipelines.length > 0) {
+        // Default to first pipeline if none selected
+        setPipelineStages(sortedPipelines[0].pipeline_stages || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch pipelines:', error);
+      toast.error('Failed to load pipelines');
+    } finally {
+      setLoadingPipelines(false);
+    }
+  };
 
   const fetchLinkedContacts = async () => {
     try {
