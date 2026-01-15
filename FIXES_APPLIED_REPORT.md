@@ -76,7 +76,7 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 **Test Result**: 
 ```bash
-$ curl -H "Authorization: Bearer $TOKEN" https://propertyvis-app.preview.emergentagent.com/api/dashboard/news
+$ curl -H "Authorization: Bearer $TOKEN" https://mapwise-crm.preview.emergentagent.com/api/dashboard/news
 HTTP 200 ✅ (was 404 ❌)
 ```
 
@@ -102,10 +102,10 @@ HTTP 200 ✅ (was 404 ❌)
 
 **Test Results**:
 ```bash
-$ curl -H "Authorization: Bearer $TOKEN" https://propertyvis-app.preview.emergentagent.com/api/messages/conversations
+$ curl -H "Authorization: Bearer $TOKEN" https://mapwise-crm.preview.emergentagent.com/api/messages/conversations
 HTTP 200 ✅
 
-$ curl -H "Authorization: Bearer $TOKEN" https://propertyvis-app.preview.emergentagent.com/api/messages/unread-count
+$ curl -H "Authorization: Bearer $TOKEN" https://mapwise-crm.preview.emergentagent.com/api/messages/unread-count
 HTTP 200 ✅
 ```
 

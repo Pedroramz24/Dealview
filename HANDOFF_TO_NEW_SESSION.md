@@ -143,7 +143,7 @@ DealLinked is a **commercial real estate CRM and marketplace platform** designed
 
 **Environment Variables (frontend/.env):**
 ```
-REACT_APP_BACKEND_URL=https://propertyvis-app.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://mapwise-crm.preview.emergentagent.com
 REACT_APP_SUPABASE_URL=https://ygezobmpewthqvsfqrbk.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=eyJ...
 ```
@@ -178,7 +178,7 @@ JWT_SECRET=pedro-crm-secret-key-2025-production-ready
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=43200
 CORS_ORIGINS=*
-FRONTEND_URL=https://propertyvis-app.preview.emergentagent.com
+FRONTEND_URL=https://mapwise-crm.preview.emergentagent.com
 REPORTALL_CLIENT_KEY=xLEErUqdc7
 REGRID_API_TOKEN=eyJ...
 PERPLEXITY_API_KEY=pplx-...
@@ -199,7 +199,7 @@ DB_NAME=deallinked_placeholder
 **API Prefix:** ALL backend routes are prefixed with `/api` (e.g., `/api/deals`, `/api/auth/login`)
 
 **Routing Example:**
-- Frontend makes request to: `https://propertyvis-app.preview.emergentagent.com/api/deals`
+- Frontend makes request to: `https://mapwise-crm.preview.emergentagent.com/api/deals`
 - Kubernetes ingress routes `/api/*` → Backend port 8001
 - Kubernetes ingress routes `/*` (no /api) → Frontend port 3000
 

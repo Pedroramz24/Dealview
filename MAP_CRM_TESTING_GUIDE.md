@@ -27,7 +27,7 @@
 ## 🧪 Testing Steps
 
 ### 1. Login
-- Go to: https://propertyvis-app.preview.emergentagent.com
+- Go to: https://mapwise-crm.preview.emergentagent.com
 - Login with: `contact@pedroarmando.com` / `Flin141812$`
 
 ### 2. Check Navigation
@@ -63,11 +63,11 @@
 
 # List properties
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://propertyvis-app.preview.emergentagent.com/api/map-crm/properties
+  https://mapwise-crm.preview.emergentagent.com/api/map-crm/properties
 
 # Get map data
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "https://propertyvis-app.preview.emergentagent.com/api/map-crm/properties/map-data?north=31&south=29&east=-97&west=-99"
+  "https://mapwise-crm.preview.emergentagent.com/api/map-crm/properties/map-data?north=31&south=29&east=-97&west=-99"
 ```
 
 ## 🔒 Security Testing
@@ -82,11 +82,11 @@ curl -H "Authorization: Bearer YOUR_TOKEN" \
 ### Test 2: Direct API Access
 ```bash
 # Try without token (should fail with 401)
-curl https://propertyvis-app.preview.emergentagent.com/api/map-crm/properties
+curl https://mapwise-crm.preview.emergentagent.com/api/map-crm/properties
 
 # Try with unauthorized user token (should fail with 403)
 curl -H "Authorization: Bearer UNAUTHORIZED_USER_TOKEN" \
-  https://propertyvis-app.preview.emergentagent.com/api/map-crm/properties
+  https://mapwise-crm.preview.emergentagent.com/api/map-crm/properties
 ```
 
 ## 📊 Expected Results

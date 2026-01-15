@@ -9,7 +9,7 @@ from datetime import datetime
 from supabase import create_client, Client
 
 # Configuration
-BASE_URL = "https://propertyvis-app.preview.emergentagent.com/api"
+BASE_URL = "https://mapwise-crm.preview.emergentagent.com/api"
 LOGIN_EMAIL = "contact@pedroarmando.com"
 LOGIN_PASSWORD = "Flin141812$"
 
