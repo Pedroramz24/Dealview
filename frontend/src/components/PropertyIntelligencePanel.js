@@ -974,76 +974,171 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
             )}
           </div>
 
-          {/* Pipeline Stage Selector - Inline Editable */}
+          {/* Pipeline & Stage Selectors - Inline Editable */}
           {isDeal && (
-            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-              <div style={{ 
-                color: '#00b8d4', 
-                fontSize: '11px', 
-                marginBottom: '8px', 
-                textTransform: 'uppercase',
-                fontWeight: '600',
-                letterSpacing: '0.5px'
-              }}>
-                PIPELINE STAGE
-              </div>
-              <select
-                value={editedData.stage || data.stage}
-                onChange={async (e) => {
-                  const newStage = e.target.value;
-                  setEditedData({...editedData, stage: newStage});
-                  
-                  // Auto-save stage change immediately
-                  try {
-                    const { error } = await supabase
-                      .from('deals')
-                      .update({ 
-                        stage: newStage,
-                        status: newStage,
-                        updated_at: new Date().toISOString()
-                      })
-                      .eq('id', data.id);
+            <div style={{ marginTop: '20px', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {/* Pipeline Selector */}
+              <div>
+                <div style={{ 
+                  color: '#00b8d4', 
+                  fontSize: '11px', 
+                  marginBottom: '8px', 
+                  textTransform: 'uppercase',
+                  fontWeight: '600',
+                  letterSpacing: '0.5px'
+                }}>
+                  PIPELINE
+                </div>
+                <select
+                  value={editedData.pipeline_id || data.pipeline_id || ''}
+                  onChange={async (e) => {
+                    const newPipelineId = e.target.value;
                     
-                    if (error) throw error;
-                    toast.success('Pipeline stage updated');
-                    if (onUpdate) onUpdate();
-                  } catch (error) {
-                    console.error('Failed to update stage:', error);
-                    toast.error('Failed to update stage');
-                    setEditedData({...editedData, stage: data.stage}); // Revert on error
-                  }
-                }}
-                style={{
-                  width: '100%',
-                  padding: '12px 14px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '8px',
-                  color: '#FFFFFF',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  outline: 'none',
-                  transition: 'all 0.2s'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#00b8d4';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(0, 184, 212, 0.15)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              >
-                <option value="need_to_contact">Need to Contact</option>
-                <option value="contacted">Contacted</option>
-                <option value="prospect">Prospect</option>
-                <option value="negotiations">Negotiations</option>
-                <option value="offer_sent">Offer Sent</option>
-                <option value="under_contract">Under Contract</option>
-                <option value="closed_won">Closed Won</option>
-                <option value="overpriced">Overpriced</option>
-              </select>
+                    // Update local state
+                    setEditedData({...editedData, pipeline_id: newPipelineId, pipeline_stage_id: null});
+                    
+                    // Load stages for new pipeline
+                    const selectedPipeline = pipelines.find(p => p.id === newPipelineId);
+                    if (selectedPipeline) {
+                      setPipelineStages(selectedPipeline.pipeline_stages || []);
+                    }
+                    
+                    // Auto-save pipeline change
+                    try {
+                      const { error } = await supabase
+                        .from('deals')
+                        .update({ 
+                          pipeline_id: newPipelineId,
+                          pipeline_stage_id: null, // Reset stage when pipeline changes
+                          updated_at: new Date().toISOString()
+                        })
+                        .eq('id', data.id);
+                      
+                      if (error) throw error;
+                      toast.success('Pipeline updated');
+                      if (onUpdate) onUpdate();
+                    } catch (error) {
+                      console.error('Failed to update pipeline:', error);
+                      toast.error('Failed to update pipeline');
+                      setEditedData({...editedData, pipeline_id: data.pipeline_id}); // Revert on error
+                    }
+                  }}
+                  disabled={loadingPipelines || pipelines.length === 0}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '8px',
+                    color: '#FFFFFF',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    transition: 'all 0.2s',
+                    opacity: loadingPipelines ? 0.5 : 1
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#00b8d4';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(0, 184, 212, 0.15)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  {loadingPipelines ? (
+                    <option>Loading pipelines...</option>
+                  ) : pipelines.length === 0 ? (
+                    <option>No pipelines available</option>
+                  ) : (
+                    <>
+                      <option value="">Select Pipeline</option>
+                      {pipelines.map(pipeline => (
+                        <option key={pipeline.id} value={pipeline.id}>
+                          {pipeline.name}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                </select>
+              </div>
+
+              {/* Stage Selector */}
+              <div>
+                <div style={{ 
+                  color: '#00b8d4', 
+                  fontSize: '11px', 
+                  marginBottom: '8px', 
+                  textTransform: 'uppercase',
+                  fontWeight: '600',
+                  letterSpacing: '0.5px'
+                }}>
+                  STAGE
+                </div>
+                <select
+                  value={editedData.pipeline_stage_id || data.pipeline_stage_id || ''}
+                  onChange={async (e) => {
+                    const newStageId = e.target.value;
+                    setEditedData({...editedData, pipeline_stage_id: newStageId});
+                    
+                    // Auto-save stage change immediately
+                    try {
+                      const { error } = await supabase
+                        .from('deals')
+                        .update({ 
+                          pipeline_stage_id: newStageId,
+                          updated_at: new Date().toISOString()
+                        })
+                        .eq('id', data.id);
+                      
+                      if (error) throw error;
+                      toast.success('Stage updated');
+                      if (onUpdate) onUpdate();
+                    } catch (error) {
+                      console.error('Failed to update stage:', error);
+                      toast.error('Failed to update stage');
+                      setEditedData({...editedData, pipeline_stage_id: data.pipeline_stage_id}); // Revert on error
+                    }
+                  }}
+                  disabled={!editedData.pipeline_id && !data.pipeline_id}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '8px',
+                    color: '#FFFFFF',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    transition: 'all 0.2s',
+                    opacity: (!editedData.pipeline_id && !data.pipeline_id) ? 0.5 : 1
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#00b8d4';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(0, 184, 212, 0.15)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  {pipelineStages.length === 0 ? (
+                    <option>Select a pipeline first</option>
+                  ) : (
+                    <>
+                      <option value="">Select Stage</option>
+                      {pipelineStages.map(stage => (
+                        <option key={stage.id} value={stage.id}>
+                          {stage.name}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                </select>
+              </div>
             </div>
           )}
 
