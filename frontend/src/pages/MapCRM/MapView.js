@@ -9,7 +9,7 @@ import { colors, shadows, borderRadius, spacing, gradients } from '../../styles/
 import { DollarSign, Building2, X, ArrowLeft, Loader2, TrendingUp, AlertTriangle } from 'lucide-react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Asset type colors matching DealLinked
+// Asset type colors matching DealLinked (fallback)
 const ASSET_COLORS = {
   'Gas': '#ef4444',
   'Retail': '#3b82f6',
@@ -17,6 +17,18 @@ const ASSET_COLORS = {
   'Office': '#22c55e',
   'Land': '#92400e',
   'Multifamily': '#a855f7'
+};
+
+// Default stage colors (fallback) - matching Pipeline.js
+const DEFAULT_STAGE_COLORS = {
+  'need_to_contact': '#94a3b8',
+  'contacted': '#60a5fa',
+  'prospect': '#a78bfa',
+  'negotiations': '#ec4899',
+  'offer_sent': '#f59e0b',
+  'under_contract': '#10b981',
+  'closed_won': '#00d4aa',
+  'overpriced': '#ef4444'
 };
 
 // Utility formatting functions
