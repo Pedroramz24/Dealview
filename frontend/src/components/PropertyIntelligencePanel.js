@@ -201,7 +201,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
     try {
       const { data: pipelinesData, error } = await supabase
         .from('pipelines')
-        .select('id, name, pipeline_stages(id, name, color, position)')
+        .select('id, name, pipeline_stages(id, name, color, display_order)')
         .eq('is_active', true)
         .order('created_at');
       
