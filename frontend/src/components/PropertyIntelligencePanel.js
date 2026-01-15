@@ -2150,7 +2150,7 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
         }}
       >
         <button
-          onClick={() => navigate(`/deals/${data.id}`)}
+          onClick={() => navigate(`/workspace/deals/${data.id}`)}
           style={{
             flex: 1,
             padding: '12px',
