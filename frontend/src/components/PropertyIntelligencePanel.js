@@ -895,114 +895,114 @@ const PropertyIntelligencePanel = ({ isOpen, onClose, data, type, onCreateDeal, 
                   }}
                 >
                   {data.stage.replace(/_/g, ' ')}
-                </span>
-              )}
-              {!isDeal && data.parcel_id && (
-
-            {/* Pipeline Stage Selector - Inline Editable */}
-            {isDeal && (
-              <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <div style={{ 
-                  color: '#00b8d4', 
-                  fontSize: '11px', 
-                  marginBottom: '8px', 
-                  textTransform: 'uppercase',
-                  fontWeight: '600',
-                  letterSpacing: '0.5px'
-                }}>
-                  PIPELINE STAGE
-                </div>
-                <select
-                  value={editedData.stage || data.stage}
-                  onChange={async (e) => {
-                    const newStage = e.target.value;
-                    setEditedData({...editedData, stage: newStage});
-                    
-                    // Auto-save stage change immediately
-                    try {
-                      const { error } = await supabase
-                        .from('deals')
-                        .update({ 
-                          stage: newStage,
-                          status: newStage,
-                          updated_at: new Date().toISOString()
-                        })
-                        .eq('id', data.id);
-                      
-                      if (error) throw error;
-                      toast.success('Pipeline stage updated');
-                      if (onUpdate) onUpdate();
-                    } catch (error) {
-                      console.error('Failed to update stage:', error);
-                      toast.error('Failed to update stage');
-                      setEditedData({...editedData, stage: data.stage}); // Revert on error
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '12px 14px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    borderRadius: '8px',
-                    color: '#FFFFFF',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    outline: 'none',
-                    transition: 'all 0.2s'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#00b8d4';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(0, 184, 212, 0.15)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                >
-                  <option value="need_to_contact">Need to Contact</option>
-                  <option value="contacted">Contacted</option>
-                  <option value="prospect">Prospect</option>
-                  <option value="negotiations">Negotiations</option>
-                  <option value="offer_sent">Offer Sent</option>
-                  <option value="under_contract">Under Contract</option>
-                  <option value="closed_won">Closed Won</option>
-                  <option value="overpriced">Overpriced</option>
-                </select>
-              </div>
+              </span>
             )}
+            {!isDeal && data.parcel_id && (
+              <span
+                style={{
+                  padding: '6px 12px',
+                  background: 'rgba(0, 184, 212, 0.1)',
+                  color: '#00b8d4',
+                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  fontFamily: 'monospace'
+                }}
+              >
+                ID: {data.parcel_id}
+              </span>
+            )}
+            {!isDeal && data.land_use_class && (
+              <span
+                style={{
+                  padding: '6px 12px',
+                  background: 'rgba(0, 212, 170, 0.1)',
+                  color: '#00d4aa',
+                  border: '1px solid rgba(0, 212, 170, 0.3)',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                }}
+              >
+                {data.land_use_class}
+              </span>
+            )}
+          </div>
 
-                <span
-                  style={{
-                    padding: '6px 12px',
-                    background: 'rgba(0, 184, 212, 0.1)',
-                    color: '#00b8d4',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
-                    borderRadius: '6px',
-                    fontSize: '11px',
-                    fontWeight: '600',
-                    fontFamily: 'monospace'
-                  }}
-                >
-                  ID: {data.parcel_id}
-                </span>
-              )}
-              {!isDeal && data.land_use_class && (
-                <span
-                  style={{
-                    padding: '6px 12px',
-                    background: 'rgba(0, 212, 170, 0.1)',
-                    color: '#00d4aa',
-                    border: '1px solid rgba(0, 212, 170, 0.3)',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                  }}
-                >
-                  {data.land_use_class}
-                </span>
-              )}
+          {/* Pipeline Stage Selector - Inline Editable */}
+          {isDeal && (
+            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+              <div style={{ 
+                color: '#00b8d4', 
+                fontSize: '11px', 
+                marginBottom: '8px', 
+                textTransform: 'uppercase',
+                fontWeight: '600',
+                letterSpacing: '0.5px'
+              }}>
+                PIPELINE STAGE
+              </div>
+              <select
+                value={editedData.stage || data.stage}
+                onChange={async (e) => {
+                  const newStage = e.target.value;
+                  setEditedData({...editedData, stage: newStage});
+                  
+                  // Auto-save stage change immediately
+                  try {
+                    const { error } = await supabase
+                      .from('deals')
+                      .update({ 
+                        stage: newStage,
+                        status: newStage,
+                        updated_at: new Date().toISOString()
+                      })
+                      .eq('id', data.id);
+                    
+                    if (error) throw error;
+                    toast.success('Pipeline stage updated');
+                    if (onUpdate) onUpdate();
+                  } catch (error) {
+                    console.error('Failed to update stage:', error);
+                    toast.error('Failed to update stage');
+                    setEditedData({...editedData, stage: data.stage}); // Revert on error
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  color: '#FFFFFF',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  transition: 'all 0.2s'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#00b8d4';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(0, 184, 212, 0.15)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                  e.target.style.boxShadow = 'none';
+                }}
+              >
+                <option value="need_to_contact">Need to Contact</option>
+                <option value="contacted">Contacted</option>
+                <option value="prospect">Prospect</option>
+                <option value="negotiations">Negotiations</option>
+                <option value="offer_sent">Offer Sent</option>
+                <option value="under_contract">Under Contract</option>
+                <option value="closed_won">Closed Won</option>
+                <option value="overpriced">Overpriced</option>
+              </select>
             </div>
+          )}
+
           </div>
 
           {/* Parcel Owner Information - Only for parcels */}
