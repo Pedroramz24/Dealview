@@ -41,9 +41,10 @@ export const removeCommas = (value) => {
  * @returns {number} - Parsed number
  */
 export const parseFormattedNumber = (value) => {
-  if (!value) return 0;
+  if (!value || value === '' || value === '0') return null;
   const cleaned = removeCommas(value);
-  return parseFloat(cleaned) || 0;
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? null : parsed;
 };
 
 /**
