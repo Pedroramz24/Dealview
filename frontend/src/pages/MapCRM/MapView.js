@@ -411,7 +411,7 @@ const MapView = () => {
 
           // Render individual property marker
           const property = cluster.properties;
-          const color = ASSET_COLORS[property.asset_type] || colors.textMuted;
+          const color = getPinColor(property);
           const isSelected = selectedProperty?.id === property.id;
 
           return (
@@ -448,7 +448,6 @@ const MapView = () => {
             </Marker>
           );
         })}
-
         {/* Property Popup */}
         {selectedProperty && (
           <Popup
