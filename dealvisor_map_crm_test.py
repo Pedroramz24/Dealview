@@ -103,7 +103,7 @@ def test_get_pipelines():
         supabase.postgrest.auth(auth_token)
         
         # Fetch pipelines with stages
-        response = supabase.table('pipelines').select('id, name, pipeline_stages(id, name, color, position)').eq('is_active', True).order('created_at').execute()
+        response = supabase.table('pipelines').select('id, name, pipeline_stages(id, name, color, display_order)').eq('is_active', True).order('created_at').execute()
         
         pipelines = response.data
         
