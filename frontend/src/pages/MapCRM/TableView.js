@@ -520,6 +520,7 @@ const TableView = ({ filters: parentFilters }) => {
         <BulkActionsBar
           selectedCount={selectedProperties.length}
           selectedIds={selectedProperties}
+          selectedPropertiesData={filteredProperties.filter(p => selectedProperties.includes(p.id))}
           onComplete={handleBulkComplete}
           onCancel={() => {
             setSelectedProperties([]);
