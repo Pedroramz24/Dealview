@@ -145,7 +145,7 @@ class ComprehensiveReviewTester:
         """DATA VERIFICATION #7: Check map_properties table for converted properties"""
         try:
             # Query Supabase directly for map_properties
-            result = self.supabase.table('map_properties').select('id, address, status, deal_id, converted').execute()
+            result = self.supabase.table('map_properties').select('id, address, status, deal_id').execute()
             
             if result.data:
                 total_properties = len(result.data)
