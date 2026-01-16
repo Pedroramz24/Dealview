@@ -1149,6 +1149,32 @@ const MapView = () => {
             );
           }}
           onDealDeleted={handleDealDeleted}
+          onUpdate={async () => {
+            // Refetch deal data when updated to ensure UI shows latest values
+            if (propertyPanelData && !propertyPanelData.isParcel) {
+              try {
+                const { data: updatedDeal, error } = await supabase
+                  .from('deals')
+                  .select('*')
+                  .eq('id', propertyPanelData.id)
+                  .single();
+                
+                if (error) throw error;
+                
+                // Update the panel data with fresh data
+                setPropertyPanelData(updatedDeal);
+                
+                // Also update the deal in the deals list
+                setDeals(prevDeals => 
+                  prevDeals.map(deal => 
+                    deal.id === updatedDeal.id ? updatedDeal : deal
+                  )
+                );
+              } catch (error) {
+                console.error('[MapView] Failed to refetch deal after update:', error);
+              }
+            }
+          }}
         />
         
         {/* Create Deal Panel (LEFT - same slot as Property Panel) */}
