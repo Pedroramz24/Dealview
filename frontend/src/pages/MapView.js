@@ -1663,7 +1663,7 @@ const MapView = () => {
                   width: `${pinSizes.inner}px`,
                   height: `${pinSizes.inner}px`,
                   borderRadius: '50%',
-                  background: '#00b8d4',
+                  background: getPinColor(deal),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
