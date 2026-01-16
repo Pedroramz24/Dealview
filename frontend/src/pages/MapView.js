@@ -48,6 +48,7 @@ const MapView = () => {
   const [teamDeals, setTeamDeals] = useState([]);
   const [showTeamDeals, setShowTeamDeals] = useState(false);
   const [showSavedDeals, setShowSavedDeals] = useState(true); // Auto-show for buyers
+  const [pipelineStages, setPipelineStages] = useState([]); // Store pipeline stages with colors
   const [teamDealsAssetTypeFilter, setTeamDealsAssetTypeFilter] = useState([]); // Empty array = show all
   const [loading, setLoading] = useState(true);
   const [selectedDeal, setSelectedDeal] = useState(null);
