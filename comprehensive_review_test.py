@@ -149,7 +149,7 @@ class ComprehensiveReviewTester:
             
             if result.data:
                 total_properties = len(result.data)
-                converted_properties = [p for p in result.data if p.get('status') == 'converted' or p.get('converted') == True]
+                converted_properties = [p for p in result.data if p.get('status') == 'converted']
                 properties_with_deal_id = [p for p in result.data if p.get('deal_id')]
                 
                 # Check specific property mentioned in review request
