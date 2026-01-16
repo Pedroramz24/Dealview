@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { colors, shadows, borderRadius, spacing, gradients } from '../../styles/designSystem';
 import { CheckSquare, UserPlus, Trash2, FileDown, X } from 'lucide-react';
 
-const BulkActionsBar = ({ selectedCount, selectedIds, onComplete, onCancel }) => {
+const BulkActionsBar = ({ selectedCount, selectedIds, selectedPropertiesData = [], onComplete, onCancel }) => {
   const [loading, setLoading] = useState(false);
 
   const handleBulkClaim = async () => {
@@ -74,23 +74,44 @@ const BulkActionsBar = ({ selectedCount, selectedIds, onComplete, onCancel }) =>
 
   const handleExport = () => {
     try {
-      // Get full property data from context/parent
-      // For now, we'll export selected property IDs
-      // In production, you'd fetch full property data
-      
-      // Create CSV header
+      if (!selectedPropertiesData || selectedPropertiesData.length === 0) {
+        toast.error('No property data available for export');
+        return;
+      }
+
+      // Create CSV header - include all important PropertyRadar fields
       const headers = [
         'ID', 'Address', 'City', 'State', 'ZIP', 'Asset Type',
-        'Asking Price', 'Building Size', 'Lot Size', 'Status',
-        'Equity %', 'Tax Delinquent', 'Created At'
+        'Asking Price', 'Est Value', 'Building Size', 'Lot Size', 
+        'Year Built', 'Status', 'Equity %', 'Tax Delinquent $',
+        'Owner', 'Owner Occupied', 'High Equity', 'Foreclosure',
+        'Bankruptcy', 'Last Sale Date', 'Last Sale Price', 'Created At'
       ];
       
-      // Create CSV rows - note: we only have IDs, so create a minimal export
-      // In a full implementation, pass full property objects
-      const rows = selectedIds.map(id => [
-        id,
-        '', '', '', '', '', // Empty fields - would need full data
-        '', '', '', '', '', '', ''
+      // Create CSV rows with actual property data
+      const rows = selectedPropertiesData.map(prop => [
+        prop.id || '',
+        `"${(prop.address || '').replace(/"/g, '""')}"`, // Escape quotes
+        `"${(prop.city || '').replace(/"/g, '""')}"`,
+        prop.state || '',
+        prop.zip_code || '',
+        prop.asset_type || '',
+        prop.asking_price || '',
+        prop.est_value || '',
+        prop.building_size || '',
+        prop.lot_size || '',
+        prop.year_built || '',
+        prop.status || '',
+        prop.est_equity_percent || '',
+        prop.tax_delinquent_dollars || '',
+        `"${(prop.owner_name || '').replace(/"/g, '""')}"`,
+        prop.owner_occupied || '',
+        prop.high_equity || false,
+        prop.foreclosure || false,
+        prop.bankruptcy || false,
+        prop.last_sale_date || '',
+        prop.last_sale_price || '',
+        prop.created_at || ''
       ]);
       
       // Convert to CSV string
@@ -111,6 +132,8 @@ const BulkActionsBar = ({ selectedCount, selectedIds, onComplete, onCancel }) =>
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      
+      URL.revokeObjectURL(url); // Clean up
       
       toast.success(`Exported ${selectedCount} properties to CSV`);
     } catch (error) {
