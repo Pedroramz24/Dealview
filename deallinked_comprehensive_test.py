@@ -148,17 +148,25 @@ class DealLinkedTester:
             )
             
             if response.status_code == 200:
-                data = response.json()
-                properties = data.get("properties", [])
+                properties = response.json()
                 
-                self.log_result(
-                    "Map CRM Properties List",
-                    True,
-                    f"Successfully retrieved {len(properties)} properties",
-                    f"Total count: {data.get('total', 0)}"
-                )
-                
-                return properties
+                # Response is a list directly, not a dict
+                if isinstance(properties, list):
+                    self.log_result(
+                        "Map CRM Properties List",
+                        True,
+                        f"Successfully retrieved {len(properties)} properties",
+                        f"First property: {properties[0].get('address') if properties else 'N/A'}"
+                    )
+                    return properties
+                else:
+                    self.log_result(
+                        "Map CRM Properties List",
+                        False,
+                        f"Unexpected response format: {type(properties)}",
+                        f"Response: {str(properties)[:200]}"
+                    )
+                    return []
             else:
                 self.log_result(
                     "Map CRM Properties List",
