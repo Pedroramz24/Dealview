@@ -175,6 +175,43 @@ const MapView = () => {
     }
   }, [currentZoom]);
   
+  // Fetch pipeline stages for color mapping
+  useEffect(() => {
+    const fetchPipelineStages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('pipeline_stages')
+          .select('id, name, color');
+        
+        if (error) throw error;
+        setPipelineStages(data || []);
+      } catch (error) {
+        console.error('[MapView] Failed to fetch pipeline stages:', error);
+      }
+    };
+    
+    fetchPipelineStages();
+  }, []);
+
+  // Get pin color based on pipeline stage (priority 1) or fallback to default
+  const getPinColor = useCallback((deal) => {
+    // Priority 1: Use pipeline stage color if deal has pipeline_stage_id
+    if (deal.pipeline_stage_id && pipelineStages.length > 0) {
+      const stage = pipelineStages.find(s => s.id === deal.pipeline_stage_id);
+      if (stage && stage.color) {
+        return stage.color;
+      }
+    }
+    
+    // Priority 2: Use legacy stage color if deal has stage field
+    if (deal.stage && stageColors[deal.stage]) {
+      return stageColors[deal.stage];
+    }
+    
+    // Default color
+    return '#00b8d4'; // Cyan
+  }, [pipelineStages]);
+
   // Load panel state from session storage
   useEffect(() => {
     const savedPanelState = sessionStorage.getItem('mapActivePanels');
