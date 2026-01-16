@@ -72,47 +72,30 @@ const Dashboard = () => {
       console.log('Fetching dashboard data for user:', fetchedUser.id);
       setCurrentUser(fetchedUser);
 
-      // Fetch deals
-      console.log('Fetching deals...');
-      const { data: deals, error: dealsError } = await supabase
-        .from('deals')
-        .select('*')
-        .eq('owner_id', fetchedUser.id);
+      // Fetch critical data in parallel (deals and contacts)
+      console.log('Fetching critical data in parallel...');
+      const [
+        { data: deals, error: dealsError },
+        { data: contactsData, error: contactsError }
+      ] = await Promise.all([
+        supabase.from('deals').select('*').eq('owner_id', fetchedUser.id),
+        supabase.from('contacts').select('*').eq('owner_id', fetchedUser.id)
+      ]);
 
       if (dealsError) {
         console.error('Deals error:', dealsError);
         throw dealsError;
       }
-      console.log('Deals fetched:', deals?.length || 0);
-
-      // Ensure deals is an array
-      const dealsArray = deals || [];
-
-      // Fetch contacts
-      console.log('Fetching contacts...');
-      const { data: contactsData, error: contactsError } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('owner_id', fetchedUser.id);
-
       if (contactsError) {
         console.error('Contacts error:', contactsError);
         throw contactsError;
       }
-      console.log('Contacts fetched:', contactsData?.length || 0);
+
+      console.log('Critical data fetched:', { deals: deals?.length || 0, contacts: contactsData?.length || 0 });
+
+      // Ensure deals is an array
+      const dealsArray = deals || [];
       setContacts(contactsData || []);
-
-      // Fetch calendar events
-      console.log('Fetching calendar events...');
-      const { data: calendarEvents } = await supabase
-        .from('calendar_events')
-        .select('*')
-        .eq('owner_id', fetchedUser.id)
-        .gte('start_date', new Date().toISOString())
-        .order('start_date', { ascending: true })
-        .limit(5);
-
-      console.log('Calendar events fetched:', calendarEvents?.length || 0);
 
       console.log('Calculating statistics...');
       // Calculate statistics
