@@ -1609,7 +1609,8 @@ const MapView = () => {
               return hasCoords;
             })
             .map((deal) => {
-              console.log('[MapView] Rendering deal marker:', { id: deal.id, title: deal.title, lng: deal.longitude, lat: deal.latitude });
+              const pinColor = getPinColor(deal);
+              console.log('[MapView] Rendering deal marker:', { id: deal.id, title: deal.title, lng: deal.longitude, lat: deal.latitude, color: pinColor });
               return (
             <Marker
               key={deal.id}
@@ -1641,7 +1642,7 @@ const MapView = () => {
                 cursor: 'pointer',
                 transition: 'transform 0.3s ease, width 0.3s ease, height 0.3s ease',
                 filter: selectedDeal?.id === deal.id 
-                  ? 'drop-shadow(0 4px 12px rgba(0, 184, 212, 0.6))' 
+                  ? `drop-shadow(0 4px 12px ${pinColor}99)` 
                   : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))'
               }}>
                 {/* Pulsing outer ring - brighter when selected */}
@@ -1652,7 +1653,7 @@ const MapView = () => {
                   width: `${pinSizes.outer}px`,
                   height: `${pinSizes.outer}px`,
                   borderRadius: '50%',
-                  background: selectedDeal?.id === deal.id ? 'rgba(0, 184, 212, 0.5)' : 'rgba(0, 184, 212, 0.3)',
+                  background: selectedDeal?.id === deal.id ? `${pinColor}80` : `${pinColor}4D`,
                   animation: 'pulse 2s ease-out infinite'
                 }}></div>
                 {/* Main marker circle with border for selected state */}
