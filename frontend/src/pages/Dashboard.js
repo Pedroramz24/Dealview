@@ -122,32 +122,15 @@ const Dashboard = () => {
         deals: dealsArray
       });
 
-      // Process upcoming events
-      console.log('Processing events...');
-      const eventsWithDeals = await Promise.all((calendarEvents || []).map(async (event) => {
-        if (event.related_deal_id) {
-          const { data: dealData } = await supabase
-            .from('deals')
-            .select('address, price')
-            .eq('id', event.related_deal_id)
-            .single();
-          return { ...event, dealData };
-        }
-        return event;
-      }));
-
-      setUpcomingEvents(eventsWithDeals);
-      console.log('Events processed:', eventsWithDeals.length);
-
-      // Generate AI insights
+      // Generate AI insights immediately (synchronous operation)
       console.log('Generating AI insights...');
-      generateAIInsights(dealsArray, contactsData || [], calendarEvents || []);
+      generateAIInsights(dealsArray, contactsData || [], []);
 
-      // Fetch market news
-      console.log('Fetching market news...');
-      fetchMarketNews();
+      // Fetch non-critical data in background (don't await)
+      console.log('Loading secondary data in background...');
+      fetchSecondaryData(fetchedUser.id);
 
-      console.log('Dashboard data loaded successfully!');
+      console.log('Dashboard critical data loaded successfully!');
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -166,6 +149,45 @@ const Dashboard = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch non-critical data in background after dashboard loads
+  const fetchSecondaryData = async (userId) => {
+    try {
+      // Fetch calendar events with deal data in a single query using joins
+      const { data: calendarEvents } = await supabase
+        .from('calendar_events')
+        .select(`
+          *,
+          deals!calendar_events_related_deal_id_fkey (
+            address,
+            price
+          )
+        `)
+        .eq('owner_id', userId)
+        .gte('start_date', new Date().toISOString())
+        .order('start_date', { ascending: true })
+        .limit(5);
+
+      if (calendarEvents) {
+        // Format the data for display
+        const formattedEvents = calendarEvents.map(event => ({
+          ...event,
+          dealData: event.deals ? {
+            address: event.deals.address,
+            price: event.deals.price
+          } : null
+        }));
+        setUpcomingEvents(formattedEvents);
+        console.log('Events loaded in background:', formattedEvents.length);
+      }
+
+      // Fetch market news in background
+      fetchMarketNews();
+    } catch (error) {
+      console.error('Error loading secondary data:', error);
+      // Don't show error to user - this is non-critical
     }
   };
 
