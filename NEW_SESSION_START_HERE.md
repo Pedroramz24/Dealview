@@ -110,27 +110,44 @@ SUPABASE_SERVICE_KEY=[branch-service-key]
    - Remove from navigation
    - Test: Dashboard loads
 
-### Phase 2: Database Rebuild (1-2 hours)
+### Phase 2: Database Cleanup - Selective Approach (30 min - 1 hour)
 
-1. **Delete Old Tables** (in Supabase branch)
+**IMPORTANT:** Keep core tables! Only delete feature-specific tables.
+
+1. **Delete Feature-Specific Tables** (in Supabase branch)
    ```sql
+   -- Email System
    DROP TABLE IF EXISTS email_campaigns CASCADE;
    DROP TABLE IF EXISTS email_templates CASCADE;
+   DROP TABLE IF EXISTS email_schedules CASCADE;
+   DROP TABLE IF EXISTS email_tracking CASCADE;
+   
+   -- AI Operations
    DROP TABLE IF EXISTS ai_operations CASCADE;
-   -- etc. (see SUPABASE_MIGRATION.md)
+   DROP TABLE IF EXISTS ai_insights CASCADE;
+   DROP TABLE IF EXISTS ai_reports CASCADE;
+   
+   -- Problematic Tables
+   DROP TABLE IF EXISTS map_property_activity_log CASCADE;
    ```
 
-2. **Create New Migrations**
-   - Create `/app/supabase_migrations/` folder
-   - Write migration files 001-007
-   - Execute in order
-   - Enable RLS
-   - Create indexes
+2. **Verify Core Tables Still Exist**
+   - user_profiles ✅
+   - deals ✅
+   - contacts ✅
+   - pipelines ✅
+   - calendar_events ✅
+   - map_properties ✅
 
-3. **Test Database**
+3. **Create Migrations ONLY if Needed**
+   - Check if core tables exist first
+   - Only create migrations for missing tables
+   - Don't recreate existing tables
+
+4. **Test Database**
    - Connect from backend
    - Test basic CRUD
-   - Verify tables exist
+   - Verify core tables have data
    - Check RLS works
 
 ### Phase 3: Testing (1 hour)
