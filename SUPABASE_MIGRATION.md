@@ -116,7 +116,7 @@ DROP TABLE IF EXISTS map_property_activity_log CASCADE;
 -- Any other feature-specific tables
 ```
 
-Then rebuild from scratch using new migrations.
+**Note:** Core tables (user_profiles, deals, contacts, pipelines, calendar_events, map_properties) should be KEPT. Only delete feature-specific tables listed above.
 
 ---
 
