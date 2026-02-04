@@ -45,19 +45,20 @@ SUPABASE_SERVICE_KEY=[paste your branch service key here]
 **APPROACH:**
 - Work systematically - one feature at a time
 - Test after each major change
-- Rebuild database with minimal schema
+- Selective database cleanup (keep core tables, delete only feature-specific tables)
 - Use Supabase branching for safe testing
+- 90% code cleanup, 10% database cleanup
 
 **TIMELINE:**
 - No rush - do this properly
-- Estimated: 4-6 hours total
+- Estimated: 3-4 hours total (reduced from 4-6 due to selective DB approach)
 - Test thoroughly
 
 **START WITH:**
 1. Verify Supabase branch connection
 2. Remove email campaign system first
 3. Then work through map layers
-4. Finally rebuild database
+4. Finally, selective database cleanup (delete ONLY email/AI tables, keep core tables)
 
 Please confirm you understand the task and are ready to begin.
 
