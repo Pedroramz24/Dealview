@@ -4,6 +4,15 @@
 
 This document will guide you through the **DealLinked CRM Refactor V2** project.
 
+## ⚠️ CRITICAL DATABASE STRATEGY
+
+**DO NOT DELETE ALL TABLES!**
+
+This refactor uses **selective cleanup**:
+- ✅ **KEEP** core tables (user_profiles, deals, contacts, pipelines, etc.)
+- 🗑️ **DELETE ONLY** feature-specific tables (email, AI operations)
+- 📦 **90% code cleanup, 10% database cleanup**
+
 ---
 
 ## 📚 **STEP 1: Read These Documents (In Order)**
