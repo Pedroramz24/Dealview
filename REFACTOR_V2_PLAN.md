@@ -377,11 +377,15 @@ git push origin refactor-v2
    - Delete removed feature route files
    - Clean up intelligence.py (remove layer endpoints)
 
-### Step 4: Database Rebuild
-1. In Supabase branch, delete all existing tables
-2. Run new minimal migrations (create from scratch)
-3. Set up RLS policies
-4. Create indexes
+### Step 4: Database Cleanup (Selective Approach)
+1. In Supabase branch, delete ONLY feature-specific tables:
+   - Email campaign tables (email_campaigns, email_templates, etc.)
+   - AI operations tables (ai_operations, ai_insights, etc.)
+   - Problematic tables (map_property_activity_log)
+2. Keep core tables (user_profiles, deals, contacts, pipelines, etc.)
+3. Run migrations only for missing/new tables if needed
+4. Verify RLS policies are in place
+5. Check indexes exist
 
 ### Step 5: Testing Checklist
 - [ ] Login/Authentication works
