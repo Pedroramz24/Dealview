@@ -1,10 +1,22 @@
 # Supabase Migration Guide - Refactor V2
 
+## ⚠️ CRITICAL: Selective Cleanup Approach
+
+**DO NOT DELETE ALL TABLES!**
+
+This refactor uses a **selective cleanup approach**:
+- ✅ **KEEP** all core tables (user_profiles, deals, contacts, pipelines, calendar_events, map_properties)
+- 🗑️ **DELETE ONLY** feature-specific tables (email campaigns, AI operations)
+- 🔧 **REMOVE** problematic tables (map_property_activity_log)
+- 📦 **90% code cleanup, 10% database cleanup**
+
+---
+
 ## Current Supabase Project Info
 
 **Project:** Existing (Pre-Refactor)
 **Plan:** Pro (Branching Available)
-**Strategy:** Use Supabase Branching Feature
+**Strategy:** Use Supabase Branching Feature + Selective Table Deletion
 
 ---
 
