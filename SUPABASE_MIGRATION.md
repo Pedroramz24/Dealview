@@ -59,39 +59,37 @@ REACT_APP_SUPABASE_ANON_KEY=[branch-anon-key]
 
 ---
 
-## Database Schema - From Scratch
+## Database Schema - Selective Cleanup Approach
 
-### Current Schema (To Be Deleted)
+### Current Schema (Selective Deletion)
 
 Tables in existing database:
-- user_profiles
-- deals
-- contacts
-- contact_deal_links
-- pipelines
-- pipeline_stages
-- calendar_events
+- user_profiles ✅ KEEP
+- deals ✅ KEEP
+- contacts ✅ KEEP
+- contact_deal_links ✅ KEEP
+- pipelines ✅ KEEP
+- pipeline_stages ✅ KEEP
+- calendar_events ✅ KEEP
 - email_campaigns ❌ REMOVE
 - email_templates ❌ REMOVE
 - email_schedules ❌ REMOVE
 - ai_operations ❌ REMOVE
-- map_properties
-- map_property_assignments
-- map_property_activity_log ⚠️ (causes errors - remove)
+- map_properties ✅ KEEP
+- map_property_assignments ✅ KEEP
+- map_property_activity_log ⚠️ REMOVE (causes errors)
 - (and others...)
 
-### New Minimal Schema (To Create)
+### Migration Strategy
 
-See `/app/supabase_migrations/` for new migration files.
+**90% Code Cleanup, 10% Database Cleanup**
 
-Key migrations to create:
-1. `001_core_auth.sql` - User profiles, teams
-2. `002_crm_tables.sql` - Deals, contacts, links
-3. `003_pipelines.sql` - Pipelines and stages
-4. `004_calendar.sql` - Calendar events
-5. `005_map_crm.sql` - DealVisor tables
-6. `006_rls_policies.sql` - Row Level Security
-7. `007_indexes.sql` - Performance indexes
+Instead of rebuilding from scratch:
+1. Keep all core tables (user_profiles, deals, contacts, pipelines, etc.)
+2. Delete ONLY feature-specific tables (email, AI operations)
+3. Delete problematic tables (map_property_activity_log)
+4. Create new migrations ONLY if tables are missing
+5. Verify existing RLS policies and indexes
 
 ---
 
