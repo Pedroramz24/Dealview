@@ -1,11 +1,18 @@
 # DealLinked CRM - Refactor V2 Plan
 
 ## Overview
-Complete application rebuild to strip bloat, remove unused features, and start with clean database.
+Complete application rebuild to strip bloat, remove unused features, and perform selective database cleanup.
 
 **Status:** Planning Phase
 **Start Date:** 2025-01-16
 **Approach:** New Emergent Session + Supabase Branch + GitHub Branch
+
+**⚠️ IMPORTANT - Database Strategy:**
+- ✅ Keep existing Supabase project and core tables
+- 🗑️ Delete ONLY feature-specific tables (email, AI operations, etc.)
+- 🔧 Clean up problematic tables (map_property_activity_log)
+- 📦 90% code cleanup, 10% database cleanup
+- 🚫 DO NOT delete core tables (user_profiles, deals, contacts, pipelines, etc.)
 
 ---
 
