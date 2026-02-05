@@ -1,37 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
-import { CapabilitiesProvider } from './contexts/CapabilitiesContext';
 import '@/App.css';
+
+// Core Pages
 import Login from './pages/Login';
 import LandingPage from './pages/LandingPage';
-import AIDashboard from './pages/AIDashboard';
-import CommandCenter from './pages/CommandCenter';
-import AdminDashboard from './pages/AdminDashboard';
-import Messages from './pages/Messages';
+import Dashboard from './pages/Dashboard';
 import MapView from './pages/MapView';
-import DealsList from './pages/DealsList';
 import DealDetails from './pages/DealDetails';
 import Contacts from './pages/Contacts';
 import Pipeline from './pages/Pipeline';
 import Team from './pages/Team';
 import CalendarView from './pages/Calendar';
-import Campaigns from './pages/Campaigns';
 import Settings from './pages/Settings';
-import JoinTeam from './pages/JoinTeam';
+
+// Layouts
+import MainLayout from './components/MainLayout';
+
+// Public Pages
 import PublicShare from './pages/PublicShare';
 import ResetPassword from './pages/ResetPassword';
-import OnboardingWizard from './pages/OnboardingWizard';
-import AdminApprovalQueue from './pages/AdminApprovalQueue';
-import SavedDealsPage from './pages/SavedDealsPage';
-import BrokerAnalytics from './pages/BrokerAnalytics';
-import MainLayout from './components/MainLayout';
-import DualModeLayout from './components/DualModeLayout';
-import MarketplacePage from './pages/MarketplacePage';
-import MarketplaceDealDetail from './pages/MarketplaceDealDetail';
-import MapCRM from './pages/MapCRM';
-import MapCRMDebug from './pages/MapCRMDebug';
-import PropertyDetails from './pages/MapCRM/PropertyDetails';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -65,17 +54,12 @@ function App() {
       password,
     });
     
-    // Handle corrupted localStorage (known Supabase issue)
     if (error && error.status === 401) {
-      console.log('[Auth] 401 error detected, clearing corrupted localStorage and retrying...');
-      await supabase.auth.signOut(); // Clear corrupted storage
-      
-      // Retry login
+      await supabase.auth.signOut();
       const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
       if (retryError) throw retryError;
       setUser(retryData.user);
       return retryData;
@@ -105,89 +89,49 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-gray-600">Loading...</div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        background: '#000'
+      }}>
+        <div style={{ color: '#00b8d4' }}>Loading...</div>
       </div>
     );
   }
 
   return (
     <AuthContext.Provider value={{ user, login, signup, logout }}>
-      <CapabilitiesProvider>
-        <BrowserRouter>
-          <Routes>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={!user ? <Login /> : <Navigate to="/marketplace" />} />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+          <Route path="/signup" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/share/:dealId" element={<PublicShare />} />
-          <Route path="/join-team/:token" element={<JoinTeam />} />
-          <Route path="/onboarding" element={user ? <OnboardingWizard /> : <Navigate to="/login" />} />
-          
-          {/* Marketplace Routes - DualModeLayout (minimal sidebar) */}
-          <Route
-            path="/marketplace"
-            element={user ? <DualModeLayout key="marketplace-layout" /> : <Navigate to="/login" />}
-          >
-            <Route index element={<MarketplacePage />} />
-            <Route path="deals/:dealId" element={<MarketplaceDealDetail />} />
-            <Route path="saved" element={<SavedDealsPage />} />
-          </Route>
 
-          {/* Workspace Routes - MainLayout (full CRM sidebar) */}
+          {/* Protected Routes - Main CRM */}
           <Route
-            path="/workspace"
-            element={user ? <MainLayout key={`workspace-${location.pathname}`} /> : <Navigate to="/login" />}
+            path="/"
+            element={user ? <MainLayout /> : <Navigate to="/login" />}
           >
-            <Route index element={<Navigate to="/workspace/dashboard" replace />} />
-            <Route path="dashboard" element={<CommandCenter />} />
-            <Route path="messages" element={<Messages />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="map" element={<MapView />} />
-            <Route path="deals" element={<Pipeline />} />
+            <Route path="pipeline" element={<Pipeline />} />
             <Route path="deals/:dealId" element={<DealDetails />} />
             <Route path="contacts" element={<Contacts />} />
-            <Route path="campaigns" element={<Campaigns />} />
-            <Route path="calendar" element={<CalendarView />} />
             <Route path="team" element={<Team />} />
-            <Route path="admin/approvals" element={<AdminApprovalQueue />} />
-            <Route path="admin/dashboard" element={<AdminDashboard />} />
-            <Route path="marketplace-analytics" element={<BrokerAnalytics />} />
-          </Route>
-
-          {/* Map CRM Internal Tool - Standalone Route */}
-          <Route
-            path="/internal/map-crm"
-            element={user ? <MapCRM /> : <Navigate to="/login" />}
-          />
-          
-          {/* Property Detail Page */}
-          <Route
-            path="/internal/map-crm/property/:propertyId"
-            element={user ? <PropertyDetails /> : <Navigate to="/login" />}
-          />
-          
-          {/* Map CRM Debug Page */}
-          <Route
-            path="/debug/map-crm"
-            element={user ? <MapCRMDebug /> : <Navigate to="/login" />}
-          />
-
-          {/* Simple /dashboard redirect */}
-          <Route path="/dashboard" element={user ? <Navigate to="/workspace/dashboard" /> : <Navigate to="/login" />} />
-
-          {/* Settings - MainLayout */}
-          <Route
-            path="/settings"
-            element={user ? <MainLayout key="settings-layout" /> : <Navigate to="/login" />}
-          >
-            <Route index element={<Settings />} />
+            <Route path="calendar" element={<CalendarView />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
 
           {/* Default redirect */}
-          <Route path="/" element={user ? <Navigate to="/marketplace" replace /> : <Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
         </Routes>
       </BrowserRouter>
-    </CapabilitiesProvider>
-  </AuthContext.Provider>
+    </AuthContext.Provider>
   );
 }
 
