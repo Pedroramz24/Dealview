@@ -68,12 +68,15 @@ const Team = () => {
         
         if (response.ok) {
           const data = await response.json();
-          setTeams(data.teams || []);
-          
-          if (data.teams && data.teams.length > 0) {
-            const firstTeam = data.teams[0];
-            setCurrentTeam(firstTeam);
-            await loadTeamData(firstTeam.id, token);
+          // API returns { team: {...} } not { teams: [...] }
+          if (data.success && data.team) {
+            setTeams([data.team]);
+            setCurrentTeam(data.team);
+            // Members are already included in team response
+            setMembers(data.team.members || []);
+          } else {
+            setTeams([]);
+            setCurrentTeam(null);
           }
         }
       }
