@@ -761,166 +761,179 @@ const Contacts = () => {
         )}
       </div>
 
-      {/* Tag Manager Dialog */}
-      <Dialog open={showTagManager} onOpenChange={setShowTagManager}>
-        <DialogContent style={{ 
-          background: colors.surfaceCard, 
-          border: `1px solid ${colors.border}`,
-          maxWidth: '500px'
-        }}>
-          <DialogHeader>
-            <DialogTitle style={{ color: colors.textPrimary }}>
-              {editingTag ? 'Edit Smart Tag' : 'Manage Smart Tags'}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div style={{ marginTop: '16px' }}>
-            {/* Existing Tags List - Only show when not editing */}
-            {!editingTag && tags.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <Label style={{ color: colors.textSecondary, marginBottom: '12px', display: 'block' }}>
-                  Your Tags ({tags.length})
-                </Label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {tags.map(tag => (
-                    <div
-                      key={tag.id}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '10px 12px',
-                        borderRadius: borderRadius.sm,
-                        background: colors.surfaceElevated,
-                        border: `1px solid ${colors.border}`
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div 
-                          style={{ 
-                            width: '16px', 
-                            height: '16px', 
-                            borderRadius: '4px',
-                            background: tag.color 
-                          }} 
-                        />
-                        <span style={{ color: colors.textPrimary }}>{tag.name}</span>
-                      </div>
-                      <button
-                        onClick={() => handleOpenTagEdit(tag)}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          padding: '6px',
-                          cursor: 'pointer',
-                          color: colors.textTertiary,
-                          borderRadius: '4px'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
-                        onMouseLeave={(e) => e.currentTarget.style.color = colors.textTertiary}
-                      >
-                        <Edit size={14} />
-                      </button>
-                    </div>
-                  ))}
+      {/* Tag Manager Side Panel */}
+      {showTagManager && (
+        <div 
+          className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm"
+          onClick={() => { setShowTagManager(false); setEditingTag(null); }}
+          data-testid="tag-manager-panel"
+        >
+          <div
+            className="w-full md:w-[450px] h-full bg-gray-900 border-l border-gray-700 overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="px-6 py-5 flex items-center justify-between border-b border-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center border border-cyan-500/30">
+                  <Settings className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-white">Smart Tags</h2>
+                  <p className="text-xs text-gray-500">Manage and customize your tags</p>
                 </div>
               </div>
-            )}
+              <button
+                onClick={() => { setShowTagManager(false); setEditingTag(null); }}
+                className="p-2 rounded-lg hover:bg-gray-800 text-gray-400 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-            {/* Create/Edit Form */}
-            <div style={{ 
-              padding: '16px', 
-              borderRadius: borderRadius.md, 
-              background: editingTag ? colors.surfaceElevated : 'rgba(0, 184, 212, 0.05)',
-              border: `1px solid ${editingTag ? colors.border : 'rgba(0, 184, 212, 0.2)'}`
-            }}>
-              <Label style={{ color: colors.textSecondary, marginBottom: '8px', display: 'block' }}>
-                {editingTag ? 'Edit Tag' : 'Create New Tag'}
-              </Label>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <Input
-                  value={tagForm.name}
-                  onChange={(e) => setTagForm(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Tag name (e.g., Hot Lead, VIP Client)"
-                  style={{ background: colors.surfaceCard }}
-                />
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Create New Tag Section */}
+              <div className="p-6 border-b border-gray-800">
+                <h3 className="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-4">
+                  {editingTag ? 'Edit Tag' : 'Create New Tag'}
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm text-gray-400 mb-2 block">Tag Name</Label>
+                    <Input
+                      value={tagForm.name}
+                      onChange={(e) => setTagForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="e.g., Hot Lead, VIP Client"
+                      className="bg-gray-800 border-gray-700 text-white"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm text-gray-400 mb-3 block">Tag Color</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {tagColorOptions.map(color => (
+                        <button
+                          key={color}
+                          onClick={() => setTagForm(prev => ({ ...prev, color }))}
+                          className="w-9 h-9 rounded-lg transition-all duration-200 hover:scale-110"
+                          style={{
+                            background: color,
+                            border: tagForm.color === color ? '3px solid white' : '2px solid transparent',
+                            boxShadow: tagForm.color === color ? `0 0 12px ${color}60` : 'none'
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
 
-                <div>
-                  <Label style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '8px', display: 'block' }}>
-                    Tag Color
-                  </Label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {tagColorOptions.map(color => (
-                      <button
-                        key={color}
-                        onClick={() => setTagForm(prev => ({ ...prev, color }))}
+                  {/* Preview */}
+                  {tagForm.name && (
+                    <div>
+                      <Label className="text-sm text-gray-500 mb-2 block">Preview</Label>
+                      <span
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
                         style={{
-                          width: '28px',
-                          height: '28px',
-                          borderRadius: '6px',
-                          background: color,
-                          border: tagForm.color === color ? '3px solid white' : '2px solid transparent',
-                          cursor: 'pointer',
-                          boxShadow: tagForm.color === color ? `0 0 0 2px ${color}` : 'none'
+                          backgroundColor: `${tagForm.color}20`,
+                          color: tagForm.color,
+                          border: `1px solid ${tagForm.color}40`
                         }}
-                      />
-                    ))}
+                      >
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: tagForm.color }} />
+                        {tagForm.name}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-2">
+                    {editingTag && (
+                      <>
+                        <Button
+                          onClick={handleDeleteTag}
+                          variant="outline"
+                          className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setEditingTag(null);
+                            setTagForm({ name: '', color: '#00b8d4' });
+                          }}
+                          variant="outline"
+                          className="flex-1 border-gray-700 text-gray-400"
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      onClick={handleSaveTag}
+                      disabled={savingTag || !tagForm.name}
+                      className="flex-1 bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50"
+                    >
+                      {savingTag ? 'Saving...' : editingTag ? 'Update Tag' : 'Create Tag'}
+                    </Button>
                   </div>
                 </div>
+              </div>
 
-                <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-                  {editingTag && (
-                    <Button
-                      onClick={handleDeleteTag}
-                      variant="outline"
-                      style={{ borderColor: '#ef4444', color: '#ef4444' }}
-                    >
-                      <Trash2 size={16} />
-                    </Button>
-                  )}
-                  {editingTag && (
-                    <Button
-                      onClick={() => {
-                        setEditingTag(null);
-                        setTagForm({ name: '', color: '#00b8d4' });
-                      }}
-                      variant="outline"
-                      style={{ flex: 1, borderColor: colors.border, color: colors.textSecondary }}
-                    >
-                      Cancel
-                    </Button>
-                  )}
-                  <Button
-                    onClick={handleSaveTag}
-                    disabled={savingTag || !tagForm.name}
-                    style={{ 
-                      flex: 1, 
-                      background: gradients.primaryButton, 
-                      border: 'none',
-                      opacity: (savingTag || !tagForm.name) ? 0.5 : 1
-                    }}
-                  >
-                    {savingTag ? 'Saving...' : editingTag ? 'Update Tag' : 'Create Tag'}
-                  </Button>
-                </div>
+              {/* Existing Tags List */}
+              <div className="p-6">
+                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
+                  Your Tags ({tags.length})
+                </h3>
+                
+                {tags.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Tag className="w-12 h-12 mx-auto mb-3 text-gray-600" />
+                    <p className="text-gray-500 text-sm">No tags created yet</p>
+                    <p className="text-gray-600 text-xs mt-1">Create your first tag above</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {tags.map(tag => (
+                      <div
+                        key={tag.id}
+                        className={`group flex items-center justify-between p-4 rounded-xl transition-all cursor-pointer ${
+                          editingTag?.id === tag.id 
+                            ? 'bg-cyan-500/10 border border-cyan-500/30' 
+                            : 'bg-gray-800/50 border border-gray-700/50 hover:border-gray-600'
+                        }`}
+                        onClick={() => handleOpenTagEdit(tag)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div 
+                            className="w-5 h-5 rounded-md"
+                            style={{ backgroundColor: tag.color }}
+                          />
+                          <span className="text-white font-medium">{tag.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                            Click to edit
+                          </span>
+                          <Edit className="w-4 h-4 text-gray-500 group-hover:text-cyan-400 transition-colors" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            {!editingTag && (
-              <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
-                <Button
-                  onClick={() => setShowTagManager(false)}
-                  variant="outline"
-                  style={{ borderColor: colors.border, color: colors.textSecondary }}
-                >
-                  Done
-                </Button>
-              </div>
-            )}
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-700 bg-gray-900/50">
+              <Button
+                onClick={() => { setShowTagManager(false); setEditingTag(null); }}
+                className="w-full bg-gray-800 hover:bg-gray-700 text-white"
+              >
+                Done
+              </Button>
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
       {/* Add/Edit Contact Side Panel */}
       {showAddPanel && (
