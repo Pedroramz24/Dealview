@@ -5,11 +5,13 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { 
   Plus, Mail, Phone, Building2, Search, X, Save, Edit, 
-  User, Grid, List, Trash2, Tag, Filter, ChevronDown
+  User, Grid, List, Trash2, Tag, Filter, Settings, Palette
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { colors, gradients, borderRadius } from '../styles/designSystem';
 
 // Contact type options
 const contactTypeOptions = [
@@ -26,6 +28,13 @@ const statusOptions = [
   { value: 'Active', label: 'Active', color: '#10b981' },
   { value: 'Inactive', label: 'Inactive', color: '#6b7280' },
   { value: 'Lead', label: 'Lead', color: '#f59e0b' }
+];
+
+// Tag color options
+const tagColorOptions = [
+  '#00b8d4', '#10b981', '#f59e0b', '#ef4444', 
+  '#8b5cf6', '#ec4899', '#3b82f6', '#6b7280',
+  '#06b6d4', '#84cc16', '#f97316', '#a78bfa'
 ];
 
 const Contacts = () => {
@@ -45,10 +54,11 @@ const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [editingContact, setEditingContact] = useState(null);
   
-  // Tag management
+  // Tag management modal
   const [showTagManager, setShowTagManager] = useState(false);
-  const [newTagName, setNewTagName] = useState('');
-  const [newTagColor, setNewTagColor] = useState('#00b8d4');
+  const [editingTag, setEditingTag] = useState(null);
+  const [tagForm, setTagForm] = useState({ name: '', color: '#00b8d4' });
+  const [savingTag, setSavingTag] = useState(false);
   
   // Form state
   const [contactForm, setContactForm] = useState({
@@ -240,48 +250,85 @@ const Contacts = () => {
     }
   };
 
-  const handleCreateTag = async () => {
-    if (!newTagName.trim()) {
+  // Tag management functions
+  const handleOpenTagCreate = () => {
+    setEditingTag(null);
+    setTagForm({ name: '', color: '#00b8d4' });
+    setShowTagManager(true);
+  };
+
+  const handleOpenTagEdit = (tag) => {
+    setEditingTag(tag);
+    setTagForm({ name: tag.name, color: tag.color || '#00b8d4' });
+    setShowTagManager(true);
+  };
+
+  const handleSaveTag = async () => {
+    if (!tagForm.name.trim()) {
       toast.error('Tag name is required');
       return;
     }
 
+    setSavingTag(true);
     try {
       const token = await getToken();
       if (!token) return;
 
-      const response = await fetch(`${API}/contacts/tags`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name: newTagName, color: newTagColor })
-      });
+      if (editingTag) {
+        // Update existing tag
+        const response = await fetch(`${API}/contacts/tags/${editingTag.id}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(tagForm)
+        });
 
-      if (response.ok) {
-        toast.success('Tag created');
-        setNewTagName('');
-        setNewTagColor('#00b8d4');
-        fetchTags();
+        if (response.ok) {
+          toast.success('Tag updated');
+          fetchTags();
+          setShowTagManager(false);
+        } else {
+          toast.error('Failed to update tag');
+        }
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.detail || 'Failed to create tag');
+        // Create new tag
+        const response = await fetch(`${API}/contacts/tags`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(tagForm)
+        });
+
+        if (response.ok) {
+          toast.success('Tag created');
+          fetchTags();
+          setShowTagManager(false);
+        } else {
+          const errorData = await response.json();
+          toast.error(errorData.detail || 'Failed to create tag');
+        }
       }
     } catch (error) {
-      console.error('Error creating tag:', error);
-      toast.error('Failed to create tag');
+      console.error('Error saving tag:', error);
+      toast.error('Failed to save tag');
+    } finally {
+      setSavingTag(false);
     }
   };
 
-  const handleDeleteTag = async (tagId) => {
-    if (!window.confirm('Delete this tag?')) return;
+  const handleDeleteTag = async () => {
+    if (!editingTag) return;
+    if (!window.confirm(`Delete tag "${editingTag.name}"?`)) return;
 
     try {
       const token = await getToken();
       if (!token) return;
 
-      const response = await fetch(`${API}/contacts/tags/${tagId}`, {
+      const response = await fetch(`${API}/contacts/tags/${editingTag.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -289,7 +336,8 @@ const Contacts = () => {
       if (response.ok) {
         toast.success('Tag deleted');
         fetchTags();
-        if (filterTag === tagId) setFilterTag('');
+        setShowTagManager(false);
+        if (filterTag === editingTag.id) setFilterTag('');
       } else {
         toast.error('Failed to delete tag');
       }
@@ -365,15 +413,15 @@ const Contacts = () => {
             </button>
           </div>
           
-          {/* Tag Manager Toggle */}
+          {/* Manage Tags Button */}
           <Button
-            onClick={() => setShowTagManager(!showTagManager)}
+            onClick={handleOpenTagCreate}
             variant="outline"
             className="border-gray-700 text-gray-300 hover:text-white"
-            data-testid="toggle-tag-manager"
+            data-testid="manage-tags-button"
           >
             <Tag className="w-4 h-4 mr-2" />
-            Tags
+            Manage Tags
           </Button>
 
           <Button
@@ -387,57 +435,45 @@ const Contacts = () => {
         </div>
       </div>
 
-      {/* Tag Manager Panel */}
-      {showTagManager && (
-        <div className="mb-6 p-4 rounded-xl bg-gray-800/50 border border-gray-700" data-testid="tag-manager">
-          <h3 className="text-sm font-semibold text-white mb-3">Smart Tags</h3>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {tags.map(tag => (
-              <div
-                key={tag.id}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm"
-                style={{ 
-                  backgroundColor: `${tag.color}20`,
-                  border: `1px solid ${tag.color}40`,
-                  color: tag.color 
-                }}
-              >
-                <span>{tag.name}</span>
-                <button
-                  onClick={() => handleDeleteTag(tag.id)}
-                  className="hover:opacity-70"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-            {tags.length === 0 && (
-              <span className="text-gray-500 text-sm">No tags yet. Create one below.</span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <Input
-              value={newTagName}
-              onChange={(e) => setNewTagName(e.target.value)}
-              placeholder="New tag name..."
-              className="bg-gray-900/50 border-gray-700 text-white max-w-[200px]"
-              data-testid="new-tag-name-input"
-            />
-            <input
-              type="color"
-              value={newTagColor}
-              onChange={(e) => setNewTagColor(e.target.value)}
-              className="w-10 h-10 rounded cursor-pointer"
-            />
-            <Button
-              onClick={handleCreateTag}
-              size="sm"
-              className="bg-cyan-600 hover:bg-cyan-700"
-              data-testid="create-tag-button"
+      {/* Smart Tags Quick Filter */}
+      {tags.length > 0 && (
+        <div className="mb-4 flex items-center gap-3 flex-wrap">
+          <span className="text-xs text-gray-500 uppercase tracking-wider">Quick Filter:</span>
+          <button
+            onClick={() => setFilterTag('')}
+            className={`px-3 py-1 rounded-full text-sm transition-all ${
+              !filterTag 
+                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500' 
+                : 'bg-gray-800/50 text-gray-400 border border-gray-700 hover:border-gray-600'
+            }`}
+          >
+            All
+          </button>
+          {tags.map(tag => (
+            <button
+              key={tag.id}
+              onClick={() => setFilterTag(filterTag === tag.id ? '' : tag.id)}
+              className="px-3 py-1 rounded-full text-sm transition-all flex items-center gap-2"
+              style={{
+                backgroundColor: filterTag === tag.id ? `${tag.color}30` : 'transparent',
+                border: filterTag === tag.id ? `1px solid ${tag.color}` : '1px solid #374151',
+                color: filterTag === tag.id ? tag.color : '#9ca3af'
+              }}
             >
-              Add Tag
-            </Button>
-          </div>
+              <span 
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: tag.color }}
+              />
+              {tag.name}
+            </button>
+          ))}
+          <button
+            onClick={handleOpenTagCreate}
+            className="px-3 py-1 rounded-full text-sm text-gray-500 border border-dashed border-gray-700 hover:border-cyan-500 hover:text-cyan-500 transition-all flex items-center gap-1"
+          >
+            <Plus className="w-3 h-3" />
+            New Tag
+          </button>
         </div>
       )}
 
@@ -478,19 +514,6 @@ const Contacts = () => {
           <option value="">All Statuses</option>
           {statusOptions.map(status => (
             <option key={status.value} value={status.value}>{status.label}</option>
-          ))}
-        </select>
-
-        {/* Tag Filter */}
-        <select
-          value={filterTag}
-          onChange={(e) => setFilterTag(e.target.value)}
-          className="px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 text-gray-300 cursor-pointer"
-          data-testid="filter-tag"
-        >
-          <option value="">All Tags</option>
-          {tags.map(tag => (
-            <option key={tag.id} value={tag.id}>{tag.name}</option>
           ))}
         </select>
 
@@ -737,6 +760,167 @@ const Contacts = () => {
           </div>
         )}
       </div>
+
+      {/* Tag Manager Dialog */}
+      <Dialog open={showTagManager} onOpenChange={setShowTagManager}>
+        <DialogContent style={{ 
+          background: colors.surfaceCard, 
+          border: `1px solid ${colors.border}`,
+          maxWidth: '500px'
+        }}>
+          <DialogHeader>
+            <DialogTitle style={{ color: colors.textPrimary }}>
+              {editingTag ? 'Edit Smart Tag' : 'Manage Smart Tags'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div style={{ marginTop: '16px' }}>
+            {/* Existing Tags List - Only show when not editing */}
+            {!editingTag && tags.length > 0 && (
+              <div style={{ marginBottom: '20px' }}>
+                <Label style={{ color: colors.textSecondary, marginBottom: '12px', display: 'block' }}>
+                  Your Tags ({tags.length})
+                </Label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {tags.map(tag => (
+                    <div
+                      key={tag.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 12px',
+                        borderRadius: borderRadius.sm,
+                        background: colors.surfaceElevated,
+                        border: `1px solid ${colors.border}`
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div 
+                          style={{ 
+                            width: '16px', 
+                            height: '16px', 
+                            borderRadius: '4px',
+                            background: tag.color 
+                          }} 
+                        />
+                        <span style={{ color: colors.textPrimary }}>{tag.name}</span>
+                      </div>
+                      <button
+                        onClick={() => handleOpenTagEdit(tag)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          padding: '6px',
+                          cursor: 'pointer',
+                          color: colors.textTertiary,
+                          borderRadius: '4px'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                        onMouseLeave={(e) => e.currentTarget.style.color = colors.textTertiary}
+                      >
+                        <Edit size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Create/Edit Form */}
+            <div style={{ 
+              padding: '16px', 
+              borderRadius: borderRadius.md, 
+              background: editingTag ? colors.surfaceElevated : 'rgba(0, 184, 212, 0.05)',
+              border: `1px solid ${editingTag ? colors.border : 'rgba(0, 184, 212, 0.2)'}`
+            }}>
+              <Label style={{ color: colors.textSecondary, marginBottom: '8px', display: 'block' }}>
+                {editingTag ? 'Edit Tag' : 'Create New Tag'}
+              </Label>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <Input
+                  value={tagForm.name}
+                  onChange={(e) => setTagForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Tag name (e.g., Hot Lead, VIP Client)"
+                  style={{ background: colors.surfaceCard }}
+                />
+
+                <div>
+                  <Label style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '8px', display: 'block' }}>
+                    Tag Color
+                  </Label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {tagColorOptions.map(color => (
+                      <button
+                        key={color}
+                        onClick={() => setTagForm(prev => ({ ...prev, color }))}
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          borderRadius: '6px',
+                          background: color,
+                          border: tagForm.color === color ? '3px solid white' : '2px solid transparent',
+                          cursor: 'pointer',
+                          boxShadow: tagForm.color === color ? `0 0 0 2px ${color}` : 'none'
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                  {editingTag && (
+                    <Button
+                      onClick={handleDeleteTag}
+                      variant="outline"
+                      style={{ borderColor: '#ef4444', color: '#ef4444' }}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  )}
+                  {editingTag && (
+                    <Button
+                      onClick={() => {
+                        setEditingTag(null);
+                        setTagForm({ name: '', color: '#00b8d4' });
+                      }}
+                      variant="outline"
+                      style={{ flex: 1, borderColor: colors.border, color: colors.textSecondary }}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handleSaveTag}
+                    disabled={savingTag || !tagForm.name}
+                    style={{ 
+                      flex: 1, 
+                      background: gradients.primaryButton, 
+                      border: 'none',
+                      opacity: (savingTag || !tagForm.name) ? 0.5 : 1
+                    }}
+                  >
+                    {savingTag ? 'Saving...' : editingTag ? 'Update Tag' : 'Create Tag'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {!editingTag && (
+              <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  onClick={() => setShowTagManager(false)}
+                  variant="outline"
+                  style={{ borderColor: colors.border, color: colors.textSecondary }}
+                >
+                  Done
+                </Button>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Add/Edit Contact Side Panel */}
       {showAddPanel && (
