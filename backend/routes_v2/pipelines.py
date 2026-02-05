@@ -82,11 +82,19 @@ async def list_pipelines(
         
         pipelines = response.data or []
         
+        # If no pipelines exist, create default pipeline with stages
+        if not pipelines:
+            logger.info(f"No pipelines found for user {user_id}, creating default pipeline")
+            default_pipeline = await create_default_pipeline_for_user(supabase, user_id)
+            if default_pipeline:
+                pipelines = [default_pipeline]
+        
         # Sort stages by display_order within each pipeline
         for pipeline in pipelines:
             stages = pipeline.get('pipeline_stages', [])
             pipeline['stages'] = sorted(stages, key=lambda s: s.get('display_order', 0))
-            del pipeline['pipeline_stages']
+            if 'pipeline_stages' in pipeline:
+                del pipeline['pipeline_stages']
         
         return {
             "success": True,
@@ -98,6 +106,66 @@ async def list_pipelines(
     except Exception as e:
         logger.error(f"List pipelines error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch pipelines")
+
+
+async def create_default_pipeline_for_user(supabase, user_id: str):
+    """Create default pipeline with stages for a user (fallback if trigger failed)"""
+    try:
+        pipeline_id = str(uuid.uuid4())
+        
+        # Create default pipeline
+        pipeline_data = {
+            "id": pipeline_id,
+            "owner_id": user_id,
+            "name": "My Pipeline",
+            "description": "Default deal pipeline",
+            "is_default": True
+        }
+        
+        pipeline_response = supabase.table('pipelines').insert(pipeline_data).execute()
+        
+        if not pipeline_response.data:
+            logger.error("Failed to create default pipeline")
+            return None
+        
+        # Create default stages
+        default_stages = [
+            {"name": "Need to Contact", "color": "#94a3b8", "display_order": 1},
+            {"name": "Contacted", "color": "#60a5fa", "display_order": 2},
+            {"name": "Prospect", "color": "#a78bfa", "display_order": 3},
+            {"name": "Negotiations", "color": "#ec4899", "display_order": 4},
+            {"name": "Offer Sent", "color": "#f59e0b", "display_order": 5},
+            {"name": "Under Contract", "color": "#10b981", "display_order": 6},
+            {"name": "Closed Won", "color": "#00d4aa", "display_order": 7},
+            {"name": "Closed Lost", "color": "#ef4444", "display_order": 8}
+        ]
+        
+        stages_data = []
+        for stage in default_stages:
+            stages_data.append({
+                "id": str(uuid.uuid4()),
+                "pipeline_id": pipeline_id,
+                "name": stage["name"],
+                "color": stage["color"],
+                "display_order": stage["display_order"]
+            })
+        
+        stages_response = supabase.table('pipeline_stages').insert(stages_data).execute()
+        
+        if not stages_response.data:
+            logger.error("Failed to create default stages")
+        
+        # Fetch the complete pipeline with stages
+        result = supabase.table('pipelines').select(
+            '*, pipeline_stages(*)'
+        ).eq('id', pipeline_id).single().execute()
+        
+        logger.info(f"Successfully created default pipeline for user {user_id}")
+        return result.data if result.data else None
+        
+    except Exception as e:
+        logger.error(f"Error creating default pipeline: {str(e)}")
+        return None
 
 
 @router.get("/{pipeline_id}")
