@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from '../App';
+import { supabase } from '../supabaseClient';
 import { X, Save, Calendar, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -14,7 +15,7 @@ const EVENT_TYPE_OPTIONS = [
 ];
 
 const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
-  const { session } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isSaving, setIsSaving] = useState(false);
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -36,16 +37,17 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
     description: ''
   });
 
-  const getAuthHeaders = () => {
+  const getAuthHeaders = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
     if (!session?.access_token) return null;
     return {
       'Authorization': `Bearer ${session.access_token}`,
       'Content-Type': 'application/json'
     };
-  };
+  }, []);
 
   useEffect(() => {
-    if (isOpen && session) {
+    if (isOpen && user) {
       fetchDealsAndContacts();
       // Set default start time
       const now = new Date();
@@ -55,7 +57,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
         start_time: now.toISOString().slice(0, 16)
       }));
     }
-  }, [isOpen, session]);
+  }, [isOpen, user]);
 
   const fetchDealsAndContacts = async () => {
     const headers = getAuthHeaders();
