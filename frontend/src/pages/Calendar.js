@@ -30,7 +30,7 @@ const EVENT_TYPE_OPTIONS = [
 ];
 
 const CalendarView = () => {
-  const { session } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -51,13 +51,14 @@ const CalendarView = () => {
     color: '#00b8d4'
   });
 
-  const getAuthHeaders = useCallback(() => {
+  const getAuthHeaders = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
     if (!session?.access_token) return null;
     return {
       'Authorization': `Bearer ${session.access_token}`,
       'Content-Type': 'application/json'
     };
-  }, [session]);
+  }, []);
 
   // Fetch events from V2 API
   const fetchEvents = useCallback(async () => {
