@@ -92,7 +92,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
       return;
     }
 
-    const headers = getAuthHeaders();
+    const headers = await getAuthHeaders();
     if (!headers) {
       toast.error('Authentication required');
       return;
