@@ -14,6 +14,24 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { colors, gradients, borderRadius, spacing } from '../styles/designSystem';
 
+// Format number with commas
+const formatNumberInput = (value) => {
+  if (!value) return '';
+  // Remove non-digit characters except decimal point
+  const cleanValue = value.toString().replace(/[^\d.]/g, '');
+  // Split by decimal
+  const parts = cleanValue.split('.');
+  // Add commas to the integer part
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.join('.');
+};
+
+// Parse formatted number back to raw number
+const parseFormattedNumber = (value) => {
+  if (!value) return '';
+  return value.replace(/,/g, '');
+};
+
 // Asset type colors
 const assetTypeColors = {
   'Office': '#3b82f6',
