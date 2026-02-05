@@ -1235,6 +1235,10 @@ const MapView = () => {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
         }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(0, 184, 212, 0.6), 0 2px 8px rgba(0,0,0,0.4); }
+          50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(0, 184, 212, 0.8), 0 2px 12px rgba(0,0,0,0.5); }
+        }
       `}</style>
     </div>
   );
