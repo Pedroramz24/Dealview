@@ -115,7 +115,7 @@ const CalendarView = () => {
       return;
     }
 
-    const headers = getAuthHeaders();
+    const headers = await getAuthHeaders();
     if (!headers) return;
 
     try {
