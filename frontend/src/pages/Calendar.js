@@ -152,7 +152,7 @@ const CalendarView = () => {
   const handleUpdateEvent = async () => {
     if (!selectedEvent) return;
 
-    const headers = getAuthHeaders();
+    const headers = await getAuthHeaders();
     if (!headers) return;
 
     try {
