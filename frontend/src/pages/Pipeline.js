@@ -362,28 +362,78 @@ const Pipeline = () => {
   const fetchPipelines = async () => {
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
-      console.log('fetchPipelines - token:', token ? 'exists' : 'null');
-      
       const response = await fetch(`${API}/pipelines`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      console.log('fetchPipelines - response status:', response.status);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('fetchPipelines - data:', data);
-        const pipelineData = data.pipelines || [];
+        let pipelineData = data.pipelines || [];
+        
+        // If no pipelines exist, create a default one
+        if (pipelineData.length === 0) {
+          console.log('No pipelines found, creating default pipeline...');
+          const createResponse = await fetch(`${API}/pipelines`, {
+            method: 'POST',
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: 'My Pipeline',
+              description: 'Default deal pipeline',
+              is_default: true
+            })
+          });
+          
+          if (createResponse.ok) {
+            const createData = await createResponse.json();
+            const newPipeline = createData.pipeline;
+            
+            // Create default stages
+            const defaultStages = [
+              { name: 'Need to Contact', color: '#94a3b8' },
+              { name: 'Contacted', color: '#60a5fa' },
+              { name: 'Prospect', color: '#a78bfa' },
+              { name: 'Negotiations', color: '#ec4899' },
+              { name: 'Offer Sent', color: '#f59e0b' },
+              { name: 'Under Contract', color: '#10b981' },
+              { name: 'Closed Won', color: '#00d4aa' },
+              { name: 'Closed Lost', color: '#ef4444' }
+            ];
+            
+            const createdStages = [];
+            for (let i = 0; i < defaultStages.length; i++) {
+              const stageResponse = await fetch(`${API}/pipelines/${newPipeline.id}/stages`, {
+                method: 'POST',
+                headers: { 
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  ...defaultStages[i],
+                  display_order: i + 1
+                })
+              });
+              
+              if (stageResponse.ok) {
+                const stageData = await stageResponse.json();
+                createdStages.push(stageData.stage);
+              }
+            }
+            
+            newPipeline.stages = createdStages;
+            pipelineData = [newPipeline];
+          }
+        }
+        
         setPipelines(pipelineData);
         
         // Select default or first pipeline
         const defaultPipeline = pipelineData.find(p => p.is_default) || pipelineData[0];
-        console.log('fetchPipelines - defaultPipeline:', defaultPipeline);
         if (defaultPipeline) {
           setSelectedPipeline(defaultPipeline);
-          const stagesData = defaultPipeline.stages || [];
-          console.log('fetchPipelines - stages:', stagesData);
-          setStages(stagesData);
+          setStages(defaultPipeline.stages || []);
         }
       }
     } catch (error) {
