@@ -68,8 +68,7 @@ const Settings = () => {
           title: profile.title || '',
           phone: profile.phone || '',
           timezone: profile.timezone || 'America/Chicago',
-          avatar_url: profile.avatar_url || '',
-          company_logo_url: profile.company_logo_url || ''
+          avatar_url: profile.avatar_url || ''
         };
         setProfileData(data);
         setOriginalData(data);
