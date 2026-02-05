@@ -568,7 +568,7 @@ const Pipeline = () => {
       
       if (editingStage) {
         // Update existing stage
-        const response = await fetch(`${API}/pipelines/${selectedPipeline.id}/stages/${editingStage.id}`, {
+        const response = await fetch(`${API}/pipelines/stages/${editingStage.id}`, {
           method: 'PUT',
           headers: { 
             Authorization: `Bearer ${token}`,
