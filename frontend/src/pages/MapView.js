@@ -886,20 +886,137 @@ const MapView = () => {
                 </select>
               </div>
 
-              <div>
-                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Asking Price</Label>
-                <Input
-                  type="number"
-                  value={newDeal.asking_price}
-                  onChange={(e) => setNewDeal(prev => ({ ...prev, asking_price: e.target.value }))}
-                  placeholder="e.g., 2500000"
-                  style={{
-                    marginTop: '6px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: `1px solid ${colors.border}`,
-                    color: colors.textPrimary
-                  }}
-                />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Asking Price ($)</Label>
+                  <Input
+                    type="number"
+                    value={newDeal.asking_price}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, asking_price: e.target.value }))}
+                    placeholder="2,500,000"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Size (SF)</Label>
+                  <Input
+                    type="number"
+                    value={newDeal.size_sqft}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, size_sqft: e.target.value }))}
+                    placeholder="50,000"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Lot Size (SF)</Label>
+                  <Input
+                    type="number"
+                    value={newDeal.lot_size}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, lot_size: e.target.value }))}
+                    placeholder="100,000"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Year Built</Label>
+                  <Input
+                    type="number"
+                    value={newDeal.year_built}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, year_built: e.target.value }))}
+                    placeholder="2005"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>NOI ($)</Label>
+                  <Input
+                    type="number"
+                    value={newDeal.noi}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, noi: e.target.value }))}
+                    placeholder="150,000"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Cap Rate (%)</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    value={newDeal.cap_rate}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, cap_rate: e.target.value }))}
+                    placeholder="6.5"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Occupancy (%)</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    value={newDeal.occupancy}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, occupancy: e.target.value }))}
+                    placeholder="95"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Zoning</Label>
+                  <Input
+                    value={newDeal.zoning}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, zoning: e.target.value }))}
+                    placeholder="C-2, Commercial"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
