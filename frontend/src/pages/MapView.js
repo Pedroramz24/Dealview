@@ -840,7 +840,7 @@ const MapView = () => {
                 marginBottom: '16px'
               }}>
                 <div style={{ color: colors.primary, fontSize: '13px', fontWeight: '500' }}>
-                  📍 Location Set
+                  Location Set
                 </div>
                 <div style={{ color: colors.textSecondary, fontSize: '12px', marginTop: '4px' }}>
                   {newDeal.address ? `${newDeal.address}, ${newDeal.city}, ${newDeal.state} ${newDeal.zip_code}` : `${newDeal.latitude.toFixed(5)}, ${newDeal.longitude.toFixed(5)}`}
