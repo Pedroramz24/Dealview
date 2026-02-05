@@ -752,29 +752,64 @@ const DealDetails = () => {
               <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600' }}>
                 Documents
               </h3>
-              {isOwner && (
-                <label style={{ cursor: 'pointer' }}>
-                  <input
-                    type="file"
-                    onChange={handleFileUpload}
-                    style={{ display: 'none' }}
-                    disabled={uploading}
-                  />
-                  <Button
-                    as="span"
-                    size="sm"
-                    style={{ background: colors.primary, border: 'none' }}
-                    disabled={uploading}
-                  >
-                    <Upload size={14} />
-                  </Button>
-                </label>
-              )}
             </div>
 
+            {/* Drag and Drop Zone */}
+            {isOwner && (
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.style.borderColor = colors.primary;
+                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)';
+                }}
+                onDragLeave={(e) => {
+                  e.currentTarget.style.borderColor = colors.border;
+                  e.currentTarget.style.background = 'transparent';
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.style.borderColor = colors.border;
+                  e.currentTarget.style.background = 'transparent';
+                  const files = e.dataTransfer.files;
+                  if (files.length > 0) {
+                    handleFileUpload({ target: { files: [files[0]] } });
+                  }
+                }}
+                style={{
+                  border: `2px dashed ${colors.border}`,
+                  borderRadius: borderRadius.md,
+                  padding: '24px',
+                  marginBottom: '16px',
+                  textAlign: 'center',
+                  transition: 'all 0.2s ease',
+                  cursor: 'pointer'
+                }}
+                onClick={() => document.getElementById('file-upload-input').click()}
+              >
+                <input
+                  id="file-upload-input"
+                  type="file"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                  disabled={uploading}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
+                />
+                <Upload size={32} style={{ color: colors.textTertiary, margin: '0 auto 12px' }} />
+                <p style={{ color: colors.textSecondary, fontSize: '14px', marginBottom: '4px' }}>
+                  {uploading ? 'Uploading...' : 'Drag and drop files here'}
+                </p>
+                <p style={{ color: colors.textTertiary, fontSize: '12px' }}>
+                  or click to browse
+                </p>
+                <p style={{ color: colors.textTertiary, fontSize: '11px', marginTop: '8px' }}>
+                  PDF, DOC, XLS, PPT, Images (max 10MB)
+                </p>
+              </div>
+            )}
+
             {documents.length === 0 ? (
-              <p style={{ color: colors.textTertiary, fontSize: '14px' }}>
-                No documents uploaded
+              <p style={{ color: colors.textTertiary, fontSize: '14px', textAlign: 'center', padding: '16px 0' }}>
+                No documents uploaded yet
               </p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -792,8 +827,11 @@ const DealDetails = () => {
                       alignItems: 'center',
                       gap: '12px',
                       textDecoration: 'none',
-                      color: colors.textPrimary
+                      color: colors.textPrimary,
+                      transition: 'all 0.2s ease'
                     }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = colors.surfaceElevated}
                   >
                     <FileText size={20} style={{ color: colors.primary }} />
                     <div style={{ flex: 1, overflow: 'hidden' }}>
