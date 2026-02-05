@@ -37,9 +37,10 @@ class TestCalendarAPI:
         
         if signup_response.status_code in [200, 201]:
             data = signup_response.json()
-            if data.get("success") and data.get("session", {}).get("access_token"):
+            # Token is at root level, not in session object
+            if data.get("success") and data.get("access_token"):
                 print(f"Created test user: {TEST_EMAIL}")
-                return data["session"]["access_token"]
+                return data["access_token"]
         
         # If signup fails, try login
         login_response = api_client.post(f"{BASE_URL}/api/auth/login", json={
@@ -49,8 +50,9 @@ class TestCalendarAPI:
         
         if login_response.status_code == 200:
             data = login_response.json()
-            if data.get("success") and data.get("session", {}).get("access_token"):
-                return data["session"]["access_token"]
+            # Token is at root level, not in session object
+            if data.get("success") and data.get("access_token"):
+                return data["access_token"]
         
         pytest.skip(f"Authentication failed - signup: {signup_response.status_code}, login: {login_response.status_code if 'login_response' in dir() else 'N/A'}")
     
