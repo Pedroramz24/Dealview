@@ -2,8 +2,13 @@
 
 ## Current Status
 - ✅ Backend API rebuilt and running (V2)
-- ⏳ Database migration needs to be run manually
-- ⏳ Frontend rebuild in progress
+- ✅ Frontend core rebuilt (App.js, Login.js, Dashboard.js, MainLayout.js)
+- ⏳ **DATABASE MIGRATION NEEDS TO BE RUN MANUALLY**
+- ⏳ Additional frontend pages to simplify (MapView, Team, etc.)
+
+## 🔴 CRITICAL NEXT STEP
+
+**You need to run the database migration in Supabase before testing!**
 
 ---
 
