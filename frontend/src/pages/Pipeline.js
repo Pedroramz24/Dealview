@@ -367,65 +367,7 @@ const Pipeline = () => {
 
       if (response.ok) {
         const data = await response.json();
-        let pipelineData = data.pipelines || [];
-        
-        // If no pipelines exist, create a default one
-        if (pipelineData.length === 0) {
-          console.log('No pipelines found, creating default pipeline...');
-          const createResponse = await fetch(`${API}/pipelines`, {
-            method: 'POST',
-            headers: { 
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              name: 'My Pipeline',
-              description: 'Default deal pipeline',
-              is_default: true
-            })
-          });
-          
-          if (createResponse.ok) {
-            const createData = await createResponse.json();
-            const newPipeline = createData.pipeline;
-            
-            // Create default stages
-            const defaultStages = [
-              { name: 'Need to Contact', color: '#94a3b8' },
-              { name: 'Contacted', color: '#60a5fa' },
-              { name: 'Prospect', color: '#a78bfa' },
-              { name: 'Negotiations', color: '#ec4899' },
-              { name: 'Offer Sent', color: '#f59e0b' },
-              { name: 'Under Contract', color: '#10b981' },
-              { name: 'Closed Won', color: '#00d4aa' },
-              { name: 'Closed Lost', color: '#ef4444' }
-            ];
-            
-            const createdStages = [];
-            for (let i = 0; i < defaultStages.length; i++) {
-              const stageResponse = await fetch(`${API}/pipelines/${newPipeline.id}/stages`, {
-                method: 'POST',
-                headers: { 
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  ...defaultStages[i],
-                  display_order: i + 1
-                })
-              });
-              
-              if (stageResponse.ok) {
-                const stageData = await stageResponse.json();
-                createdStages.push(stageData.stage);
-              }
-            }
-            
-            newPipeline.stages = createdStages;
-            pipelineData = [newPipeline];
-          }
-        }
-        
+        const pipelineData = data.pipelines || [];
         setPipelines(pipelineData);
         
         // Select default or first pipeline
