@@ -214,11 +214,11 @@ async def update_event(
     try:
         user_id = await get_user_id(credentials)
         
-        # Verify ownership
-        existing = supabase.table('calendar_events').select('owner_id').eq('id', event_id).single().execute()
-        if not existing.data:
+        # Verify ownership - use .execute() instead of .single()
+        existing = supabase.table('calendar_events').select('owner_id').eq('id', event_id).execute()
+        if not existing.data or len(existing.data) == 0:
             raise HTTPException(status_code=404, detail="Event not found")
-        if existing.data['owner_id'] != user_id:
+        if existing.data[0]['owner_id'] != user_id:
             raise HTTPException(status_code=403, detail="Access denied")
         
         update_data = event.model_dump(exclude_unset=True)
@@ -259,11 +259,11 @@ async def delete_event(
     try:
         user_id = await get_user_id(credentials)
         
-        # Verify ownership
-        existing = supabase.table('calendar_events').select('owner_id').eq('id', event_id).single().execute()
-        if not existing.data:
+        # Verify ownership - use .execute() instead of .single()
+        existing = supabase.table('calendar_events').select('owner_id').eq('id', event_id).execute()
+        if not existing.data or len(existing.data) == 0:
             raise HTTPException(status_code=404, detail="Event not found")
-        if existing.data['owner_id'] != user_id:
+        if existing.data[0]['owner_id'] != user_id:
             raise HTTPException(status_code=403, detail="Access denied")
         
         supabase.table('calendar_events').delete().eq('id', event_id).execute()
