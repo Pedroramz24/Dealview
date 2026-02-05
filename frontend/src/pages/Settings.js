@@ -23,8 +23,7 @@ const Settings = () => {
     title: '',
     phone: '',
     timezone: 'America/Chicago',
-    avatar_url: '',
-    company_logo_url: ''
+    avatar_url: ''
   });
 
   const [originalData, setOriginalData] = useState({});
