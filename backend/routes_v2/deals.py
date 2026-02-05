@@ -3,6 +3,7 @@ DealLinked CRM V2 - Deals Routes
 CRUD operations for deals with all financial fields
 """
 from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import UploadFile, File
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
 from typing import Optional, List
