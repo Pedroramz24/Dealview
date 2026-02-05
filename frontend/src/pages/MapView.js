@@ -170,6 +170,8 @@ const MapView = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [clickMode, setClickMode] = useState(false); // For click-to-add
   const [showCreateDeal, setShowCreateDeal] = useState(false);
+  const [pipelines, setPipelines] = useState([]);
+  const [pipelineStages, setPipelineStages] = useState([]);
   const [newDeal, setNewDeal] = useState({
     title: '',
     address: '',
@@ -180,11 +182,14 @@ const MapView = () => {
     asking_price: '',
     size_sqft: '',
     lot_size: '',
+    ac_size: '',
     year_built: '',
     noi: '',
     cap_rate: '',
     occupancy: '',
     zoning: '',
+    pipeline_id: '',
+    pipeline_stage_id: '',
     latitude: null,
     longitude: null
   });
@@ -201,7 +206,52 @@ const MapView = () => {
   useEffect(() => {
     fetchDeals();
     fetchTeamData();
+    fetchPipelines();
   }, []);
+
+  // Fetch pipelines
+  const fetchPipelines = useCallback(async () => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/pipelines`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const pipelinesData = data.pipelines || [];
+        setPipelines(pipelinesData);
+        
+        // Set default pipeline and stage
+        if (pipelinesData.length > 0) {
+          const defaultPipeline = pipelinesData.find(p => p.is_default) || pipelinesData[0];
+          setNewDeal(prev => ({
+            ...prev,
+            pipeline_id: defaultPipeline.id,
+            pipeline_stage_id: defaultPipeline.stages?.[0]?.id || ''
+          }));
+          setPipelineStages(defaultPipeline.stages || []);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching pipelines:', error);
+    }
+  }, []);
+
+  // Handle pipeline change
+  const handlePipelineChange = (pipelineId) => {
+    const pipeline = pipelines.find(p => p.id === pipelineId);
+    const stages = pipeline?.stages || [];
+    setPipelineStages(stages);
+    setNewDeal(prev => ({
+      ...prev,
+      pipeline_id: pipelineId,
+      pipeline_stage_id: stages[0]?.id || ''
+    }));
+  };
 
   const fetchDeals = useCallback(async () => {
     try {
