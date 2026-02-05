@@ -554,13 +554,13 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
           {/* Title */}
           <div>
             <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
-              Title
+              Company
             </label>
             <input
               type="text"
-              value={profileData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="e.g., Senior Broker"
+              value={profileData.company}
+              onChange={(e) => handleInputChange('company', e.target.value)}
+              placeholder="e.g., Acme Realty"
               style={{
                 width: '100%',
                 padding: '11px 14px',
@@ -599,37 +599,6 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
               onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
               onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
-          </div>
-
-          {/* Timezone */}
-          <div>
-            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 500 }}>
-              <Globe size={13} style={{ display: 'inline', marginRight: '5px', verticalAlign: 'middle' }} />
-              Time Zone
-            </label>
-            <select
-              value={profileData.timezone}
-              onChange={(e) => handleInputChange('timezone', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '11px 14px',
-                background: 'rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '7px',
-                color: '#fff',
-                fontSize: '14px',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
-            >
-              {timezones.map(tz => (
-                <option key={tz.value} value={tz.value} style={{ background: '#0a0a0a' }}>
-                  {tz.label}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
       </div>
