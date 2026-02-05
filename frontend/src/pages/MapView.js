@@ -160,6 +160,13 @@ const MapView = () => {
     zip_code: '',
     asset_type: 'Office',
     asking_price: '',
+    size_sqft: '',
+    lot_size: '',
+    year_built: '',
+    noi: '',
+    cap_rate: '',
+    occupancy: '',
+    zoning: '',
     latitude: null,
     longitude: null
   });
