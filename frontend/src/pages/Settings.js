@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { 
   User, Mail, Lock, Shield, Bell, Database, Building2, Plug, 
-  Upload, X, Eye, EyeOff, LogOut, Clock, Globe, Loader2, 
+  Upload, X, Eye, EyeOff, LogOut, Clock, Loader2, 
   Save, RotateCcw, Trash2, Download, Check, AlertCircle, 
   Monitor, Chrome, Smartphone, Moon, Sun, Layout, FileText
 } from 'lucide-react';
