@@ -147,7 +147,7 @@ SELECT USING (same check)
 
 ### Your Configuration:
 ```
-Site URL: https://crm-simplify-1.preview.emergentagent.com
+Site URL: https://property-pipeline-8.preview.emergentagent.com
 Email confirmation: OFF (for development)
 JWT expiry: 3600 seconds (1 hour)
 Auto-refresh: YES

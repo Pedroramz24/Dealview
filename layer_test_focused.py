@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://crm-simplify-1.preview.emergentagent.com/api"
+BASE_URL = "https://property-pipeline-8.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {
     "email": "pedro@test.com",
     "password": "password123"

@@ -9,7 +9,7 @@ from datetime import datetime
 from supabase import create_client, Client
 
 # Configuration
-BASE_URL = "https://crm-simplify-1.preview.emergentagent.com/api"
+BASE_URL = "https://property-pipeline-8.preview.emergentagent.com/api"
 LOGIN_EMAIL = "contact@pedroarmando.com"
 LOGIN_PASSWORD = "Flin141812$"
 
