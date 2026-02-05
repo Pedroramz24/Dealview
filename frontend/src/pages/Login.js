@@ -5,9 +5,8 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import ForgotPasswordModal from '../components/ForgotPasswordModal';
-import RoleSelectionStep from '../components/onboarding/RoleSelectionStep';
-import UnifiedOnboardingWizard from '../components/onboarding/UnifiedOnboardingWizard';
+import { supabase } from '../supabaseClient';
+import { colors, gradients } from '../styles/designSystem';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,23 +16,23 @@ const Login = () => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
   const { login, signup } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Redirect to onboarding flow for signups
-    if (!isLogin) {
-      setShowOnboarding(true);
-      return;
-    }
-    
-    // Handle login
     setLoading(true);
+    
     try {
-      await login(email, password);
+      if (isLogin) {
+        await login(email, password);
+        toast.success('Welcome back!');
+      } else {
+        // Signup
+        await signup(email, password, { full_name: fullName });
+        toast.success('Account created! Please check your email to verify.');
+      }
     } catch (error) {
       toast.error(error.message || 'Authentication failed');
     } finally {
@@ -41,212 +40,282 @@ const Login = () => {
     }
   };
 
-  const handleRoleSelect = (role) => {
-    setSelectedRole(role);
+  const handleForgotPassword = async () => {
+    if (!resetEmail) {
+      toast.error('Please enter your email');
+      return;
+    }
+    
+    setResetLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+      
+      if (error) throw error;
+      toast.success('Password reset email sent!');
+      setShowForgotPassword(false);
+    } catch (error) {
+      toast.error(error.message || 'Failed to send reset email');
+    } finally {
+      setResetLoading(false);
+    }
   };
-
-  const handleOnboardingComplete = () => {
-    navigate('/marketplace');
-  };
-
-  const handleBackToLogin = () => {
-    setShowOnboarding(false);
-    setSelectedRole(null);
-  };
-
-  // Show onboarding flow if user clicked signup
-  if (showOnboarding && !selectedRole) {
-    return <RoleSelectionStep onSelect={handleRoleSelect} />;
-  }
-
-  if (showOnboarding && selectedRole) {
-    return (
-      <UnifiedOnboardingWizard
-        selectedRole={selectedRole}
-        onComplete={handleOnboardingComplete}
-        onBack={() => setSelectedRole(null)}
-      />
-    );
-  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-base)' }}>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '16px',
+      background: gradients.atmosphericGlow,
+      backgroundColor: colors.void
+    }}>
       {/* Ambient gradient */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '800px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }} />
-      </div>
+      <div style={{
+        position: 'absolute',
+        top: '20%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '800px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+        pointerEvents: 'none'
+      }} />
 
-      <div className="w-full max-w-md relative z-10">
-        <div className="glass-surface p-8">
-          <div className="text-center mb-8 flex flex-col items-center">
+      <div style={{
+        width: '100%',
+        maxWidth: '400px',
+        position: 'relative',
+        zIndex: 10
+      }}>
+        <div style={{
+          background: 'rgba(12, 12, 12, 0.8)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderRadius: '16px',
+          padding: '32px',
+          border: `1px solid ${colors.border}`
+        }}>
+          {/* Logo */}
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <img 
               src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png" 
               alt="DealLinked" 
-              className="mb-6"
               style={{ 
-                height: '120px',
+                height: '100px',
                 width: 'auto',
-                objectFit: 'contain'
+                objectFit: 'contain',
+                margin: '0 auto 16px'
               }}
             />
-            <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Commercial Real Estate CRM</p>
+            <p style={{ color: colors.textTertiary, fontSize: '14px' }}>
+              Commercial Real Estate CRM
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {!isLogin && (
-              <div>
-                <Label htmlFor="fullName" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>Full Name</Label>
+          {/* Forgot Password Modal */}
+          {showForgotPassword ? (
+            <div>
+              <h2 style={{ 
+                color: colors.textPrimary, 
+                fontSize: '20px', 
+                fontWeight: '600',
+                marginBottom: '16px',
+                textAlign: 'center'
+              }}>
+                Reset Password
+              </h2>
+              <p style={{ 
+                color: colors.textTertiary, 
+                fontSize: '14px', 
+                marginBottom: '24px',
+                textAlign: 'center'
+              }}>
+                Enter your email to receive a reset link
+              </p>
+              <div style={{ marginBottom: '16px' }}>
+                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Email</Label>
                 <Input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required={!isLogin}
-                  className="mt-2"
-                  data-testid="register-fullname-input"
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  placeholder="your@email.com"
                   style={{
-                    background: 'var(--glass-bg)',
-                    border: '1px solid var(--glass-border)',
-                    color: 'var(--text-primary)',
-                    backdropFilter: 'blur(16px)'
+                    marginTop: '8px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: `1px solid ${colors.border}`,
+                    color: colors.textPrimary
                   }}
                 />
               </div>
-            )}
-
-            <div>
-              <Label htmlFor="email" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="mt-2"
-                data-testid="login-email-input"
+              <Button
+                onClick={handleForgotPassword}
+                disabled={resetLoading}
                 style={{
-                  background: 'var(--glass-bg)',
-                  border: '1px solid var(--glass-border)',
-                  color: 'var(--text-primary)',
-                  backdropFilter: 'blur(16px)'
+                  width: '100%',
+                  background: gradients.primaryButton,
+                  border: 'none',
+                  marginBottom: '12px'
                 }}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="mt-2"
-                data-testid="login-password-input"
+              >
+                {resetLoading ? 'Sending...' : 'Send Reset Link'}
+              </Button>
+              <button
+                onClick={() => setShowForgotPassword(false)}
                 style={{
-                  background: 'var(--glass-bg)',
-                  border: '1px solid var(--glass-border)',
-                  color: 'var(--text-primary)',
-                  backdropFilter: 'blur(16px)'
+                  width: '100%',
+                  background: 'transparent',
+                  border: 'none',
+                  color: colors.textTertiary,
+                  cursor: 'pointer',
+                  fontSize: '14px'
                 }}
-              />
+              >
+                Back to Login
+              </button>
             </div>
-
-            {/* Forgot Password Link - Only show in login mode */}
-            {isLogin && (
-              <div style={{ textAlign: 'right', marginTop: '16px' }}>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              {/* Toggle */}
+              <div style={{
+                display: 'flex',
+                marginBottom: '24px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                borderRadius: '8px',
+                padding: '4px'
+              }}>
                 <button
                   type="button"
-                  onClick={() => setShowForgotPassword(true)}
+                  onClick={() => setIsLogin(true)}
                   style={{
-                    background: 'none',
+                    flex: 1,
+                    padding: '10px',
+                    borderRadius: '6px',
                     border: 'none',
-                    color: '#00b8d4',
-                    cursor: 'pointer',
-                    fontSize: '13px',
+                    background: isLogin ? colors.primary : 'transparent',
+                    color: isLogin ? '#fff' : colors.textTertiary,
                     fontWeight: '500',
-                    padding: '4px 0',
-                    transition: 'all 0.2s',
-                    textDecoration: 'none'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#00d4ed';
-                    e.currentTarget.style.textDecoration = 'underline';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#00b8d4';
-                    e.currentTarget.style.textDecoration = 'none';
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
                   }}
                 >
-                  Forgot password?
+                  Login
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(false)}
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: !isLogin ? colors.primary : 'transparent',
+                    color: !isLogin ? '#fff' : colors.textTertiary,
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  Sign Up
                 </button>
               </div>
-            )}
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-              data-testid="login-submit-button"
-              style={{
-                background: 'var(--accent)',
-                color: 'white',
-                padding: '12px',
-                borderRadius: '8px',
-                fontWeight: 500,
-                transition: 'all 150ms',
-                border: 'none',
-                marginTop: '24px'
-              }}
-            >
-              {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
-            </Button>
-          </form>
+              {/* Full Name (Signup only) */}
+              {!isLogin && (
+                <div style={{ marginBottom: '16px' }}>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Full Name</Label>
+                  <Input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required={!isLogin}
+                    placeholder="John Doe"
+                    style={{
+                      marginTop: '8px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+              )}
 
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => {
-                if (!isLogin) {
-                  // Switching from signup back to login
-                  setIsLogin(true);
-                  setShowOnboarding(false);
-                  setSelectedRole(null);
-                } else {
-                  // Switching from login to signup - trigger onboarding immediately
-                  setIsLogin(false);
-                  setShowOnboarding(true);
-                }
-              }}
-              data-testid="toggle-auth-mode"
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--accent)',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 500
-              }}
-            >
-              {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
-            </button>
-          </div>
+              {/* Email */}
+              <div style={{ marginBottom: '16px' }}>
+                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Email</Label>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="your@email.com"
+                  style={{
+                    marginTop: '8px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: `1px solid ${colors.border}`,
+                    color: colors.textPrimary
+                  }}
+                />
+              </div>
+
+              {/* Password */}
+              <div style={{ marginBottom: '24px' }}>
+                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Password</Label>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                  style={{
+                    marginTop: '8px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: `1px solid ${colors.border}`,
+                    color: colors.textPrimary
+                  }}
+                />
+              </div>
+
+              {/* Forgot Password Link */}
+              {isLogin && (
+                <div style={{ textAlign: 'right', marginBottom: '16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotPassword(true)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: colors.primary,
+                      cursor: 'pointer',
+                      fontSize: '13px'
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  background: gradients.primaryButton,
+                  border: 'none',
+                  height: '44px',
+                  fontSize: '15px',
+                  fontWeight: '600'
+                }}
+              >
+                {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Create Account')}
+              </Button>
+            </form>
+          )}
         </div>
       </div>
-
-      {/* Forgot Password Modal */}
-      <ForgotPasswordModal 
-        isOpen={showForgotPassword}
-        onClose={() => setShowForgotPassword(false)}
-      />
     </div>
   );
 };
