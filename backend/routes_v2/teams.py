@@ -61,7 +61,8 @@ async def get_user_with_team(credentials: HTTPAuthorizationCredentials) -> dict:
         raise HTTPException(status_code=401, detail="Invalid token")
     
     user_id = user_response.user.id
-    profile = supabase.table('user_profiles').select('*, teams(*)').eq('id', user_id).single().execute()
+    # Use explicit foreign key reference to avoid ambiguity
+    profile = supabase.table('user_profiles').select('*').eq('id', user_id).single().execute()
     
     return {
         "id": user_id,
