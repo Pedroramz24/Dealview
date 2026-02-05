@@ -476,12 +476,22 @@ const MapView = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          ...newDeal,
-          asking_price: newDeal.asking_price ? parseFloat(newDeal.asking_price) : null,
-          size_sqft: newDeal.size_sqft ? parseFloat(newDeal.size_sqft) : null,
-          lot_size: newDeal.lot_size ? parseFloat(newDeal.lot_size) : null,
+          title: newDeal.title,
+          address: newDeal.address,
+          city: newDeal.city,
+          state: newDeal.state,
+          zip_code: newDeal.zip_code,
+          asset_type: newDeal.asset_type,
+          latitude: newDeal.latitude,
+          longitude: newDeal.longitude,
+          zoning: newDeal.zoning,
+          pipeline_id: newDeal.pipeline_id || null,
+          pipeline_stage_id: newDeal.pipeline_stage_id || null,
+          asking_price: newDeal.asking_price ? parseFloat(parseFormattedNumber(newDeal.asking_price)) : null,
+          size_sqft: newDeal.size_sqft ? parseFloat(parseFormattedNumber(newDeal.size_sqft)) : null,
+          lot_size: newDeal.lot_size ? parseFloat(parseFormattedNumber(newDeal.lot_size)) : null,
           year_built: newDeal.year_built ? parseInt(newDeal.year_built) : null,
-          noi: newDeal.noi ? parseFloat(newDeal.noi) : null,
+          noi: newDeal.noi ? parseFloat(parseFormattedNumber(newDeal.noi)) : null,
           cap_rate: newDeal.cap_rate ? parseFloat(newDeal.cap_rate) : null,
           occupancy: newDeal.occupancy ? parseFloat(newDeal.occupancy) : null
         })
@@ -490,6 +500,8 @@ const MapView = () => {
       if (response.ok) {
         toast.success('Deal created successfully');
         setShowCreateDeal(false);
+        // Reset form but keep default pipeline
+        const defaultPipeline = pipelines.find(p => p.is_default) || pipelines[0];
         setNewDeal({
           title: '',
           address: '',
@@ -500,18 +512,22 @@ const MapView = () => {
           asking_price: '',
           size_sqft: '',
           lot_size: '',
+          ac_size: '',
           year_built: '',
           noi: '',
           cap_rate: '',
           occupancy: '',
           zoning: '',
+          pipeline_id: defaultPipeline?.id || '',
+          pipeline_stage_id: defaultPipeline?.stages?.[0]?.id || '',
           latitude: null,
           longitude: null
         });
         setSearchQuery('');
         fetchDeals();
       } else {
-        toast.error('Failed to create deal');
+        const errorData = await response.json().catch(() => ({}));
+        toast.error(errorData.detail || 'Failed to create deal');
       }
     } catch (error) {
       console.error('Error creating deal:', error);
