@@ -142,19 +142,21 @@ async def get_event(
     try:
         user_id = await get_user_id(credentials)
         
+        # Use .execute() instead of .single() to avoid exception on no rows
         response = supabase.table('calendar_events').select(
             '*, deals(id, title, address, asset_type), contacts(id, name, email, phone, company)'
-        ).eq('id', event_id).single().execute()
+        ).eq('id', event_id).execute()
         
-        if not response.data:
+        if not response.data or len(response.data) == 0:
             raise HTTPException(status_code=404, detail="Event not found")
         
-        if response.data['owner_id'] != user_id:
+        event = response.data[0]
+        if event['owner_id'] != user_id:
             raise HTTPException(status_code=403, detail="Access denied")
         
         return {
             "success": True,
-            "event": response.data
+            "event": event
         }
     except HTTPException:
         raise
