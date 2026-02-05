@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useContext, useCallback, useMemo } from 'react';
-import Map, { Marker, NavigationControl, ScaleControl, Source, Layer } from 'react-map-gl/maplibre';
+import Map, { Marker, NavigationControl, ScaleControl } from 'react-map-gl/maplibre';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthContext, API } from '../App';
 import { toast } from 'sonner';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
-  MapPin, Building2, X, ChevronRight, Users, 
-  Eye, EyeOff, Filter, Layers, Plus, Search, MapIcon
+  Building2, X, ChevronRight, Users, 
+  Eye, EyeOff, Filter, Layers, Plus, Search, MousePointer
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -30,9 +30,8 @@ const getDealColor = (deal) => {
   return assetTypeColors[deal?.asset_type] || assetTypeColors['Other'];
 };
 
-// Optimized map styles using free, fast tile providers
+// Optimized map styles
 const mapStyles = {
-  // Esri World Imagery - Free, fast, high quality satellite
   satellite: {
     version: 8,
     sources: {
@@ -56,7 +55,6 @@ const mapStyles = {
       }
     ]
   },
-  // CartoDB Dark Matter - Fast dark street map
   street: {
     version: 8,
     sources: {
@@ -84,12 +82,11 @@ const mapStyles = {
   }
 };
 
-// Memoized marker component for performance
+// Memoized marker component
 const DealMarker = React.memo(({ deal, onClick, isTeamDeal }) => {
   const color = getDealColor(deal);
   
   if (isTeamDeal) {
-    // Triangle for team deals
     return (
       <div
         onClick={onClick}
@@ -109,7 +106,6 @@ const DealMarker = React.memo(({ deal, onClick, isTeamDeal }) => {
     );
   }
   
-  // Circle for user's deals
   return (
     <div
       onClick={onClick}
@@ -140,6 +136,7 @@ const MapView = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const mapRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
   
   // State
   const [deals, setDeals] = useState([]);
@@ -151,6 +148,9 @@ const MapView = () => {
   const [loading, setLoading] = useState(true);
   const [mapStyle, setMapStyle] = useState('satellite');
   const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [clickMode, setClickMode] = useState(false); // For click-to-add
   const [showCreateDeal, setShowCreateDeal] = useState(false);
   const [newDeal, setNewDeal] = useState({
     title: '',
@@ -196,7 +196,6 @@ const MapView = () => {
         const dealsData = data.deals || [];
         setDeals(dealsData);
         
-        // Center map on first deal with location
         if (dealsData.length > 0 && dealsData[0].latitude && dealsData[0].longitude) {
           setViewState(prev => ({
             ...prev,
@@ -219,7 +218,6 @@ const MapView = () => {
       const token = session.data.session?.access_token;
       if (!token) return;
 
-      // Fetch team members
       const membersRes = await fetch(`${API}/teams/members`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -229,7 +227,6 @@ const MapView = () => {
         setTeamMembers(data.members || []);
       }
 
-      // Fetch team deals
       const dealsRes = await fetch(`${API}/deals/team`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -243,7 +240,123 @@ const MapView = () => {
     }
   }, []);
 
-  // Filter team deals by member - memoized
+  // Autocomplete search
+  const handleSearchChange = useCallback(async (value) => {
+    setSearchQuery(value);
+    
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    if (value.length < 3) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+        
+        const response = await fetch(`${API}/geocode/autocomplete?query=${encodeURIComponent(value)}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setSuggestions(data.suggestions || []);
+          setShowSuggestions(true);
+        }
+      } catch (error) {
+        console.error('Autocomplete error:', error);
+      }
+    }, 300);
+  }, []);
+
+  // Select suggestion
+  const handleSelectSuggestion = useCallback((suggestion) => {
+    setSearchQuery(suggestion.formatted_address);
+    setSuggestions([]);
+    setShowSuggestions(false);
+    
+    setViewState({
+      longitude: suggestion.longitude,
+      latitude: suggestion.latitude,
+      zoom: 16
+    });
+    
+    setNewDeal(prev => ({
+      ...prev,
+      address: suggestion.address || suggestion.formatted_address.split(',')[0],
+      city: suggestion.city || '',
+      state: suggestion.state || '',
+      zip_code: suggestion.zip || '',
+      latitude: suggestion.latitude,
+      longitude: suggestion.longitude
+    }));
+  }, []);
+
+  // Handle map click for adding deal
+  const handleMapClick = useCallback(async (event) => {
+    if (!clickMode) return;
+    
+    const { lngLat } = event;
+    
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      // Reverse geocode
+      const response = await fetch(
+        `${API}/geocode/reverse?lat=${lngLat.lat}&lng=${lngLat.lng}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.success) {
+          setNewDeal(prev => ({
+            ...prev,
+            address: data.result.address || '',
+            city: data.result.city || '',
+            state: data.result.state || '',
+            zip_code: data.result.zip || '',
+            latitude: lngLat.lat,
+            longitude: lngLat.lng
+          }));
+          setSearchQuery(data.result.formatted_address || '');
+        } else {
+          setNewDeal(prev => ({
+            ...prev,
+            address: '',
+            city: '',
+            state: '',
+            zip_code: '',
+            latitude: lngLat.lat,
+            longitude: lngLat.lng
+          }));
+        }
+        
+        setShowCreateDeal(true);
+        setClickMode(false);
+        toast.success('Location selected');
+      }
+    } catch (error) {
+      console.error('Reverse geocode error:', error);
+      // Still allow creating deal even if reverse geocode fails
+      setNewDeal(prev => ({
+        ...prev,
+        latitude: lngLat.lat,
+        longitude: lngLat.lng
+      }));
+      setShowCreateDeal(true);
+      setClickMode(false);
+    }
+  }, [clickMode]);
+
+  // Filter team deals by member
   const filteredTeamDeals = useMemo(() => {
     if (selectedMemberFilter === 'all') return teamDeals;
     return teamDeals.filter(d => d.owner_id === selectedMemberFilter);
@@ -251,13 +364,9 @@ const MapView = () => {
 
   // Handle marker click
   const handleMarkerClick = useCallback((deal, isTeamDeal = false) => {
+    if (clickMode) return; // Don't show panel in click mode
     setSelectedDeal({ ...deal, isTeamDeal });
-  }, []);
-
-  // Close side panel
-  const closeSidePanel = useCallback(() => {
-    setSelectedDeal(null);
-  }, []);
+  }, [clickMode]);
 
   // Format currency
   const formatCurrency = useCallback((value) => {
@@ -269,54 +378,14 @@ const MapView = () => {
     }).format(value);
   }, []);
 
-  // Search handler with geocoding
-  const handleSearch = useCallback(async () => {
-    if (!searchQuery.trim()) return;
-    
-    try {
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      
-      const response = await fetch(`${API}/geocode?address=${encodeURIComponent(searchQuery)}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.result) {
-          setViewState({
-            longitude: data.result.longitude,
-            latitude: data.result.latitude,
-            zoom: 16
-          });
-          // Set the coordinates for new deal
-          setNewDeal(prev => ({
-            ...prev,
-            address: searchQuery,
-            city: data.result.city || '',
-            state: data.result.state || '',
-            zip_code: data.result.zip || '',
-            latitude: data.result.latitude,
-            longitude: data.result.longitude
-          }));
-          toast.success('Location found');
-        } else {
-          toast.error('Address not found');
-        }
-      }
-    } catch (error) {
-      toast.error('Failed to search address');
-    }
-  }, [searchQuery]);
-
-  // Create deal handler
+  // Create deal
   const handleCreateDeal = useCallback(async () => {
     if (!newDeal.title.trim()) {
       toast.error('Please enter a deal title');
       return;
     }
     if (!newDeal.latitude || !newDeal.longitude) {
-      toast.error('Please search for an address first');
+      toast.error('Please select a location');
       return;
     }
 
@@ -338,7 +407,6 @@ const MapView = () => {
       });
       
       if (response.ok) {
-        const data = await response.json();
         toast.success('Deal created successfully');
         setShowCreateDeal(false);
         setNewDeal({
@@ -352,7 +420,7 @@ const MapView = () => {
           latitude: null,
           longitude: null
         });
-        // Refresh deals
+        setSearchQuery('');
         fetchDeals();
       } else {
         toast.error('Failed to create deal');
@@ -365,12 +433,15 @@ const MapView = () => {
     }
   }, [newDeal, fetchDeals]);
 
-  // Toggle map style
-  const toggleMapStyle = useCallback(() => {
-    setMapStyle(prev => prev === 'satellite' ? 'street' : 'satellite');
-  }, []);
+  // Toggle click mode
+  const toggleClickMode = useCallback(() => {
+    setClickMode(prev => !prev);
+    if (!clickMode) {
+      toast.info('Click anywhere on the map to add a deal');
+    }
+  }, [clickMode]);
 
-  // Memoized markers for user's deals
+  // Memoized markers
   const userMarkers = useMemo(() => {
     return deals.map(deal => (
       <Marker
@@ -388,7 +459,6 @@ const MapView = () => {
     ));
   }, [deals, handleMarkerClick]);
 
-  // Memoized markers for team deals
   const teamMarkers = useMemo(() => {
     if (!showTeamDeals) return null;
     return filteredTeamDeals.map(deal => (
@@ -414,7 +484,12 @@ const MapView = () => {
         ref={mapRef}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
-        style={{ width: '100%', height: '100%' }}
+        onClick={handleMapClick}
+        style={{ 
+          width: '100%', 
+          height: '100%',
+          cursor: clickMode ? 'crosshair' : 'grab'
+        }}
         mapStyle={mapStyles[mapStyle]}
         attributionControl={false}
         maxZoom={19}
@@ -424,58 +499,130 @@ const MapView = () => {
       >
         <NavigationControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
-
-        {/* User's Deals */}
         {userMarkers}
-
-        {/* Team Deals */}
         {teamMarkers}
       </Map>
+
+      {/* Click Mode Indicator */}
+      {clickMode && (
+        <div style={{
+          position: 'absolute',
+          top: '70px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: colors.primary,
+          color: '#fff',
+          padding: '10px 20px',
+          borderRadius: borderRadius.md,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          zIndex: 15,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+        }}>
+          <MousePointer size={18} />
+          Click on the map to place a deal
+          <button
+            onClick={() => setClickMode(false)}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px',
+              marginLeft: '8px',
+              cursor: 'pointer',
+              display: 'flex'
+            }}
+          >
+            <X size={16} color="#fff" />
+          </button>
+        </div>
+      )}
 
       {/* Top Controls */}
       <div style={{
         position: 'absolute',
         top: '16px',
         left: '16px',
-        right: selectedDeal ? '420px' : '16px',
+        right: selectedDeal || showCreateDeal ? '420px' : '16px',
         display: 'flex',
         gap: '12px',
         zIndex: 10,
         transition: 'right 0.3s ease'
       }}>
-        {/* Search Bar */}
+        {/* Search Bar with Autocomplete */}
         <div style={{
           flex: 1,
           maxWidth: '400px',
-          display: 'flex',
-          gap: '8px'
+          position: 'relative'
         }}>
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Search address..."
-            style={{
-              background: 'rgba(0,0,0,0.8)',
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Input
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+              placeholder="Search address..."
+              style={{
+                background: 'rgba(0,0,0,0.8)',
+                backdropFilter: 'blur(10px)',
+                border: `1px solid ${colors.border}`,
+                color: colors.textPrimary
+              }}
+            />
+            <Button
+              onClick={() => handleSearchChange(searchQuery)}
+              style={{
+                background: colors.primary,
+                border: 'none'
+              }}
+            >
+              <Search size={18} />
+            </Button>
+          </div>
+          
+          {/* Suggestions Dropdown */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              marginTop: '4px',
+              background: 'rgba(12, 12, 12, 0.95)',
               backdropFilter: 'blur(10px)',
               border: `1px solid ${colors.border}`,
-              color: colors.textPrimary
-            }}
-          />
-          <Button
-            onClick={handleSearch}
-            style={{
-              background: colors.primary,
-              border: 'none'
-            }}
-          >
-            <Search size={18} />
-          </Button>
+              borderRadius: borderRadius.md,
+              overflow: 'hidden',
+              zIndex: 20
+            }}>
+              {suggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSelectSuggestion(suggestion)}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: 'transparent',
+                    border: 'none',
+                    borderBottom: idx < suggestions.length - 1 ? `1px solid ${colors.border}` : 'none',
+                    color: colors.textPrimary,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  {suggestion.formatted_address}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Map Style Toggle */}
         <Button
-          onClick={toggleMapStyle}
+          onClick={() => setMapStyle(mapStyle === 'satellite' ? 'street' : 'satellite')}
           style={{
             background: 'rgba(0,0,0,0.8)',
             backdropFilter: 'blur(10px)',
@@ -485,6 +632,20 @@ const MapView = () => {
         >
           <Layers size={18} style={{ marginRight: '8px' }} />
           {mapStyle === 'satellite' ? 'Street' : 'Satellite'}
+        </Button>
+
+        {/* Click to Add Button */}
+        <Button
+          onClick={toggleClickMode}
+          style={{
+            background: clickMode ? colors.primary : 'rgba(0,0,0,0.8)',
+            backdropFilter: 'blur(10px)',
+            border: `1px solid ${clickMode ? colors.primary : colors.border}`,
+            color: clickMode ? '#fff' : colors.textPrimary
+          }}
+        >
+          <MousePointer size={18} style={{ marginRight: '8px' }} />
+          Click to Add
         </Button>
 
         {/* Add Deal Button */}
@@ -510,7 +671,6 @@ const MapView = () => {
         gap: '8px',
         zIndex: 10
       }}>
-        {/* Team Deals Toggle */}
         <Button
           onClick={() => setShowTeamDeals(!showTeamDeals)}
           style={{
@@ -524,7 +684,6 @@ const MapView = () => {
           <span style={{ marginLeft: '8px' }}>Team Deals</span>
         </Button>
 
-        {/* Team Member Filter */}
         {showTeamDeals && teamMembers.length > 0 && (
           <div style={{
             background: 'rgba(0,0,0,0.8)',
@@ -569,11 +728,11 @@ const MapView = () => {
         )}
       </div>
 
-      {/* Legend - Bottom Right */}
+      {/* Legend */}
       <div style={{
         position: 'absolute',
         bottom: '40px',
-        right: selectedDeal ? '420px' : '60px',
+        right: selectedDeal || showCreateDeal ? '420px' : '60px',
         background: 'rgba(0,0,0,0.8)',
         backdropFilter: 'blur(10px)',
         border: `1px solid ${colors.border}`,
@@ -588,26 +747,16 @@ const MapView = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {Object.entries(assetTypeColors).map(([type, color]) => (
             <div key={type} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                background: color
-              }} />
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: color }} />
               <span style={{ color: colors.textSecondary, fontSize: '12px' }}>{type}</span>
             </div>
           ))}
         </div>
         {showTeamDeals && (
-          <div style={{ 
-            borderTop: `1px solid ${colors.border}`, 
-            margin: '8px 0', 
-            paddingTop: '8px' 
-          }}>
+          <div style={{ borderTop: `1px solid ${colors.border}`, margin: '8px 0', paddingTop: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{
-                width: 0,
-                height: 0,
+                width: 0, height: 0,
                 borderLeft: '6px solid transparent',
                 borderRight: '6px solid transparent',
                 borderBottom: '12px solid #6b7280'
@@ -634,7 +783,6 @@ const MapView = () => {
           flexDirection: 'column',
           animation: 'slideIn 0.3s ease'
         }}>
-          {/* Panel Header */}
           <div style={{
             padding: '16px',
             borderBottom: `1px solid ${colors.border}`,
@@ -646,7 +794,7 @@ const MapView = () => {
               Create New Deal
             </h3>
             <button
-              onClick={() => setShowCreateDeal(false)}
+              onClick={() => { setShowCreateDeal(false); setClickMode(false); }}
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -659,13 +807,11 @@ const MapView = () => {
             </button>
           </div>
 
-          {/* Panel Content */}
           <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
             <p style={{ color: colors.textTertiary, fontSize: '13px', marginBottom: '16px' }}>
-              Search for an address above to set the location, then fill in the details below.
+              Search for an address above or click on the map to set location.
             </p>
 
-            {/* Location Preview */}
             {newDeal.latitude && newDeal.longitude && (
               <div style={{
                 background: 'rgba(0, 184, 212, 0.1)',
@@ -677,12 +823,11 @@ const MapView = () => {
                   📍 Location Set
                 </div>
                 <div style={{ color: colors.textSecondary, fontSize: '12px', marginTop: '4px' }}>
-                  {newDeal.address}, {newDeal.city}, {newDeal.state} {newDeal.zip_code}
+                  {newDeal.address ? `${newDeal.address}, ${newDeal.city}, ${newDeal.state} ${newDeal.zip_code}` : `${newDeal.latitude.toFixed(5)}, ${newDeal.longitude.toFixed(5)}`}
                 </div>
               </div>
             )}
 
-            {/* Form Fields */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Deal Title *</Label>
@@ -739,7 +884,6 @@ const MapView = () => {
             </div>
           </div>
 
-          {/* Panel Footer */}
           <div style={{
             padding: '16px',
             borderTop: `1px solid ${colors.border}`,
@@ -747,13 +891,9 @@ const MapView = () => {
             gap: '12px'
           }}>
             <Button
-              onClick={() => setShowCreateDeal(false)}
+              onClick={() => { setShowCreateDeal(false); setClickMode(false); }}
               variant="outline"
-              style={{
-                flex: 1,
-                borderColor: colors.border,
-                color: colors.textSecondary
-              }}
+              style={{ flex: 1, borderColor: colors.border, color: colors.textSecondary }}
             >
               Cancel
             </Button>
@@ -789,7 +929,6 @@ const MapView = () => {
           flexDirection: 'column',
           animation: 'slideIn 0.3s ease'
         }}>
-          {/* Panel Header */}
           <div style={{
             padding: '16px',
             borderBottom: `1px solid ${colors.border}`,
@@ -804,17 +943,13 @@ const MapView = () => {
                 borderRadius: '50%',
                 background: getDealColor(selectedDeal)
               }} />
-              <span style={{ 
-                color: colors.textTertiary, 
-                fontSize: '12px',
-                textTransform: 'uppercase'
-              }}>
+              <span style={{ color: colors.textTertiary, fontSize: '12px', textTransform: 'uppercase' }}>
                 {selectedDeal.asset_type || 'Property'}
                 {selectedDeal.isTeamDeal && ' • Team Deal'}
               </span>
             </div>
             <button
-              onClick={closeSidePanel}
+              onClick={() => setSelectedDeal(null)}
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -827,122 +962,68 @@ const MapView = () => {
             </button>
           </div>
 
-          {/* Panel Content */}
           <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
-            {/* Title */}
-            <h2 style={{
-              color: colors.textPrimary,
-              fontSize: '20px',
-              fontWeight: '600',
-              marginBottom: '4px'
-            }}>
+            <h2 style={{ color: colors.textPrimary, fontSize: '20px', fontWeight: '600', marginBottom: '4px' }}>
               {selectedDeal.title}
             </h2>
             
-            {/* Address */}
             <p style={{ color: colors.textTertiary, fontSize: '14px', marginBottom: '20px' }}>
               {selectedDeal.address && `${selectedDeal.address}, `}
               {selectedDeal.city && `${selectedDeal.city}, `}
               {selectedDeal.state} {selectedDeal.zip_code}
             </p>
 
-            {/* Price */}
             <div style={{
               background: 'rgba(0, 184, 212, 0.1)',
               borderRadius: borderRadius.md,
               padding: '16px',
               marginBottom: '20px'
             }}>
-              <div style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '4px' }}>
-                Asking Price
-              </div>
+              <div style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '4px' }}>Asking Price</div>
               <div style={{ color: colors.primary, fontSize: '28px', fontWeight: '700' }}>
                 {formatCurrency(selectedDeal.asking_price)}
               </div>
             </div>
 
-            {/* Details Grid */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '12px',
-              marginBottom: '20px'
-            }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
               {selectedDeal.size_sqft && (
                 <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
                   <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Size</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {selectedDeal.size_sqft.toLocaleString()} SF
-                  </div>
-                </div>
-              )}
-              {selectedDeal.lot_size && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Lot Size</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {selectedDeal.lot_size} acres
-                  </div>
-                </div>
-              )}
-              {selectedDeal.year_built && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Year Built</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {selectedDeal.year_built}
-                  </div>
-                </div>
-              )}
-              {selectedDeal.occupancy && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Occupancy</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {selectedDeal.occupancy}%
-                  </div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.size_sqft.toLocaleString()} SF</div>
                 </div>
               )}
               {selectedDeal.cap_rate && (
                 <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
                   <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Cap Rate</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {selectedDeal.cap_rate}%
-                  </div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.cap_rate}%</div>
                 </div>
               )}
               {selectedDeal.noi && (
                 <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
                   <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>NOI</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {formatCurrency(selectedDeal.noi)}
-                  </div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{formatCurrency(selectedDeal.noi)}</div>
                 </div>
               )}
-              {selectedDeal.zoning && (
+              {selectedDeal.year_built && (
                 <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Zoning</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {selectedDeal.zoning}
-                  </div>
+                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Year Built</div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.year_built}</div>
                 </div>
               )}
             </div>
 
-            {/* Notes */}
             {selectedDeal.notes && (
               <div style={{ marginBottom: '20px' }}>
                 <div style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '8px' }}>Notes</div>
-                <p style={{ color: colors.textSecondary, fontSize: '14px', lineHeight: '1.5' }}>
-                  {selectedDeal.notes}
-                </p>
+                <p style={{ color: colors.textSecondary, fontSize: '14px', lineHeight: '1.5' }}>{selectedDeal.notes}</p>
               </div>
             )}
 
-            {/* Team Owner Info */}
             {selectedDeal.isTeamDeal && selectedDeal.user_profiles && (
               <div style={{
                 background: colors.surfaceElevated,
                 borderRadius: borderRadius.md,
                 padding: '12px',
-                marginBottom: '20px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px'
@@ -958,19 +1039,10 @@ const MapView = () => {
             )}
           </div>
 
-          {/* Panel Footer */}
-          <div style={{
-            padding: '16px',
-            borderTop: `1px solid ${colors.border}`
-          }}>
+          <div style={{ padding: '16px', borderTop: `1px solid ${colors.border}` }}>
             <Button
               onClick={() => navigate(`/deals/${selectedDeal.id}`)}
-              style={{
-                width: '100%',
-                background: gradients.primaryButton,
-                border: 'none',
-                height: '44px'
-              }}
+              style={{ width: '100%', background: gradients.primaryButton, border: 'none', height: '44px' }}
             >
               View Full Details
               <ChevronRight size={18} style={{ marginLeft: '8px' }} />
@@ -979,14 +1051,11 @@ const MapView = () => {
         </div>
       )}
 
-      {/* Loading Overlay */}
+      {/* Loading */}
       {loading && (
         <div style={{
           position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          top: 0, left: 0, right: 0, bottom: 0,
           background: 'rgba(0,0,0,0.5)',
           display: 'flex',
           alignItems: 'center',
