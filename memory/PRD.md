@@ -1,128 +1,146 @@
 # DealLinked CRM V2 - Product Requirements Document
 
 ## Original Problem Statement
-Complete ground-up rebuild of DealLinked CRM application. Core instruction was to "nuke" most of the existing application and database, and rebuild a simpler, more focused CRM for Commercial Real Estate.
+Complete ground-up rebuild of DealLinked CRM application for Commercial Real Estate. Built a simpler, more focused CRM with essential features.
 
-## Core Requirements
+## Core Features (ALL VERIFIED ✅)
 
-### Keep (Implemented)
-- ✅ Map View with deal markers (pings) and deal details side panel
-- ✅ Full Property Details pages
-- ✅ Pipeline/Kanban board with drag-and-drop
-- ✅ Contacts page with V2 API integration
-- ✅ Team tab for collaboration
-- ✅ Landing page, Login/Signup screens
-- ✅ "DealLinked" branding
-- ✅ Simple calendar with V2 API
+### ✅ Map View
+- Satellite map with Esri tiles
+- Address autocomplete via Radar.io
+- Click map to set deal location
+- Deal markers with asset type colors
+- Team Deals toggle
+- Create New Deal side panel with all fields:
+  - Title, Asset Type, Pipeline/Stage selection
+  - Price, Size, Lot Size, AC Size
+  - Year Built, Zoning, NOI, Cap Rate, Occupancy
 
-### Removed (Nuked)
-- ❌ Marketplace functionality
-- ❌ Command Center
-- ❌ DealVisor, AI operations
-- ❌ Complex property intelligence features
-- ❌ Complex map layers (zoning, parcels)
+### ✅ Pipeline/Kanban Board
+- Default 8 stages for new users
+- Stage management (add, edit, delete, reorder)
+- Deal cards with drag-and-drop
+- Stage value totals
+- Search deals
+
+### ✅ Contacts Page
+- Contact CRUD operations
+- Smart Tags Manager (create, rename, delete)
+- Quick filter bar by tags
+- Contact details: name, email, phone, company, notes
+
+### ✅ Team Collaboration
+- Create team with custom name
+- View team members with roles
+- Member stats (deals, pipeline value)
+- Pending invites display
+
+### ✅ Calendar
+- Monthly/Weekly/Daily/List views
+- Event CRUD operations
+- Event types: Meeting, Call, Task, Deadline, Deal
+- Color-coded events
+- Link events to deals/contacts
+
+### ✅ Settings
+- Profile management (name, company, phone)
+- Profile picture upload
+- Password change
+- Security settings
+- Notifications preferences
+- Data export options
+
+### ✅ Authentication
+- Supabase Auth integration
+- Signup with email verification
+- Login with JWT
+- Protected routes
 
 ## Technical Stack
 - **Frontend**: React, React Router, Tailwind CSS, Shadcn/UI
 - **Backend**: FastAPI (Python)
 - **Database**: Supabase (PostgreSQL) with Row Level Security
-- **Mapping**: MapLibre GL JS with Esri satellite tiles
-- **Geocoding**: Radar.io (test keys configured)
-- **Authentication**: Supabase Auth
+- **Mapping**: MapLibre GL JS + Esri satellite tiles
+- **Geocoding**: Radar.io
 - **Calendar**: FullCalendar library
 
-## What's Been Implemented (All Complete)
+## Database Schema (user_profiles)
+```sql
+CREATE TABLE user_profiles (
+    id UUID PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    full_name TEXT,
+    phone TEXT,
+    company TEXT,
+    avatar_url TEXT,
+    role TEXT DEFAULT 'broker',
+    is_admin BOOLEAN DEFAULT FALSE,
+    team_id UUID,
+    created_at TIMESTAMP WITH TIME ZONE,
+    updated_at TIMESTAMP WITH TIME ZONE
+);
+```
 
-### Database (COMPLETE)
-- Fresh Supabase schema with 11 tables
-- Row Level Security (RLS) policies - ALL FIXED with `TO authenticated` clause
-- User creation triggers
-- Default pipeline creation trigger (with backend fallback)
-
-### Backend API V2 (COMPLETE)
-- Authentication routes (login, signup, profile)
-- Deals CRUD with document upload
-- Contacts CRUD with smart tags
-- Pipelines and stages management
-- Teams and members (fixed embedding issue)
-- Calendar events (GET, POST, PUT, DELETE)
-- Dashboard statistics
-- Geocoding endpoints
-
-### Frontend V2 (ALL VERIFIED - 2024-02-05)
-- ✅ Login/Signup with Supabase Auth (WORKING)
-- ✅ Dashboard with statistics
-- ✅ MapView with Esri tiles, address autocomplete, click-to-add
-- ✅ **Pipeline Page** - Stage management, color picker, deal stats
-- ✅ **Contacts Page** - Smart Tags Manager, CRUD for tags
-- ✅ **Calendar Page** - V2 API, event CRUD, view modes (VERIFIED)
-- ✅ **Team Page** - Team creation, member management, stats (VERIFIED)
-- ⏳ DealDetails page (needs verification)
-- ⏳ Settings page (needs update for profile management)
-
-## Recent Changes (2024-02-05)
-
-### Calendar Page (VERIFIED WORKING)
-- Rebuilt to use V2 API
-- Fixed session retrieval using `supabase.auth.getSession()`
-- Event create/edit/delete all working
-- Multiple view modes: Month, Week, Day, List
-
-### Team Page (VERIFIED WORKING)
-- Fixed frontend API response handling (was expecting array, API returns single object)
-- Fixed backend embedding issue in `get_user_with_team`
-- Team creation, member list, stats all working
-
-### RLS Policies Fixed
-All tables now have proper RLS with `TO authenticated`:
-- calendar_events
+## RLS Policies Applied
+All tables have proper `TO authenticated` policies:
+- calendar_events (SELECT, INSERT, UPDATE, DELETE)
 - contacts, contact_tags
-- pipelines, pipeline_stages
+- pipelines, pipeline_stages  
 - teams, team_members
-- user_profiles (UPDATE policy added)
+- user_profiles (including UPDATE)
+- deals
 
-## Key Files
-- `/app/backend/server.py` - Main API server
-- `/app/backend/routes_v2/teams.py` - Fixed embedding issue
-- `/app/frontend/src/pages/Calendar.js` - V2 calendar
-- `/app/frontend/src/pages/Team.js` - Fixed API response handling
-- `/app/frontend/src/pages/MapView.js` - Map with all features
-- `/app/frontend/src/pages/Pipeline.js` - Kanban with stage management
-- `/app/frontend/src/pages/Contacts.js` - Smart Tags Manager
+## API Endpoints
 
-## Prioritized Backlog
+### Calendar
+- `GET/POST /api/calendar/events`
+- `PUT/DELETE /api/calendar/events/{id}`
 
-### P1 (Next)
-- Verify DealDetails.js displays all deal fields correctly
-- Update Settings.js for profile management
+### Teams
+- `GET/POST /api/teams`
+- `POST /api/teams/invite`
+- `GET /api/teams/members`
 
-### P2 (Medium Priority)
-- Team deal performance metrics
-- Advanced contact filtering options
+### Contacts
+- `GET/POST /api/contacts`
+- `PUT/DELETE /api/contacts/{id}`
+- `GET/POST/PUT/DELETE /api/contacts/tags`
 
-### P3 (Low Priority)
-- CSV contact import
-- Recurring calendar events
+### Deals
+- `GET/POST /api/deals`
+- `GET/PUT/DELETE /api/deals/{id}`
+
+### Pipelines
+- `GET/POST /api/pipelines`
+- `GET/PUT/DELETE /api/pipelines/stages/{id}`
 
 ## Test Credentials
 - Create new user via signup (any email@testmail.com, TestPassword123!)
 - Users automatically get default pipeline with 8 stages
 
-## Test Reports
-- `/app/test_reports/iteration_1.json` - Initial pipeline tests
-- `/app/test_reports/iteration_2.json` - Contacts page tests
-- `/app/test_reports/iteration_3.json` - Calendar page tests
+## Completed Items (2024-02-05)
+1. ✅ Calendar page rebuilt with V2 API
+2. ✅ Team page fixed - API response handling corrected
+3. ✅ Settings page fixed - aligned with actual DB schema
+4. ✅ All RLS policies updated with `TO authenticated`
+5. ✅ Backend embedding issue fixed in teams.py
 
-## API Endpoints Summary
+## Remaining Backlog
 
-### Teams API (Fixed)
-- `GET /api/teams` - Get user's team with members
-- `POST /api/teams` - Create new team
-- `POST /api/teams/invite` - Invite member by email
-- `GET /api/teams/members` - List team members with stats
+### P2 (Medium)
+- DealDetails full page verification (code is V2-compliant, needs testing with actual deals)
+- Team deal performance metrics
+- Advanced contact filtering
 
-### Calendar API
-- `GET /api/calendar/events` - List all events
-- `POST /api/calendar/events` - Create event
-- `PUT /api/calendar/events/{id}` - Update event
-- `DELETE /api/calendar/events/{id}` - Delete event
+### P3 (Low)
+- CSV contact import
+- Recurring calendar events
+- Team invitations via email link
+
+## Key Files
+- `/app/frontend/src/pages/Calendar.js` - V2 calendar
+- `/app/frontend/src/pages/Team.js` - Fixed API handling
+- `/app/frontend/src/pages/Settings.js` - Fixed schema alignment
+- `/app/frontend/src/pages/Pipeline.js` - Kanban with stage management
+- `/app/frontend/src/pages/MapView.js` - Map with deal creation
+- `/app/backend/routes_v2/teams.py` - Fixed embedding issue
