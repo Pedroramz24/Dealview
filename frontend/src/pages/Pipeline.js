@@ -343,7 +343,6 @@ const Pipeline = () => {
 
   // Fetch pipelines on mount
   useEffect(() => {
-    console.log('Pipeline useEffect - user:', user);
     if (user) {
       fetchPipelines();
     } else {
