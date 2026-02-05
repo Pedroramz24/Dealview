@@ -20,9 +20,8 @@ const Settings = () => {
   // Profile state
   const [profileData, setProfileData] = useState({
     full_name: '',
-    title: '',
     phone: '',
-    timezone: 'America/Chicago',
+    company: '',
     avatar_url: ''
   });
 
