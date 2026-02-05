@@ -252,9 +252,9 @@ async def create_deal(
         stage_id = deal.pipeline_stage_id
         
         if not pipeline_id:
-            pipeline_response = supabase.table('pipelines').select('id').eq('owner_id', user_id).eq('is_default', True).single().execute()
-            if pipeline_response.data:
-                pipeline_id = pipeline_response.data['id']
+            pipeline_response = supabase.table('pipelines').select('id').eq('owner_id', user_id).eq('is_default', True).execute()
+            if pipeline_response.data and len(pipeline_response.data) > 0:
+                pipeline_id = pipeline_response.data[0]['id']
                 # Get first stage
                 stage_response = supabase.table('pipeline_stages').select('id').eq('pipeline_id', pipeline_id).order('display_order').limit(1).execute()
                 if stage_response.data:
