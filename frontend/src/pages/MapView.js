@@ -521,6 +521,33 @@ const MapView = () => {
         <ScaleControl position="bottom-left" />
         {userMarkers}
         {teamMarkers}
+        
+        {/* Temporary marker for new deal placement */}
+        {showCreateDeal && newDeal.latitude && newDeal.longitude && (
+          <Marker
+            longitude={newDeal.longitude}
+            latitude={newDeal.latitude}
+            anchor="center"
+          >
+            <div
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                background: getDealColor(newDeal),
+                border: '3px solid #00b8d4',
+                boxShadow: '0 0 12px rgba(0, 184, 212, 0.6), 0 2px 8px rgba(0,0,0,0.4)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                animation: 'pulse 1.5s ease-in-out infinite'
+              }}
+            >
+              <Building2 size={12} color="white" />
+            </div>
+          </Marker>
+        )}
       </Map>
 
       {/* Click Mode Indicator */}
