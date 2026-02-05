@@ -93,8 +93,7 @@ const Settings = () => {
           title: profileData.title,
           phone: profileData.phone,
           timezone: profileData.timezone,
-          avatar_url: profileData.avatar_url,
-          company_logo_url: profileData.company_logo_url
+          avatar_url: profileData.avatar_url
         })
         .eq('id', user.id)
         .select();
