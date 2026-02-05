@@ -599,7 +599,10 @@ const MapView = () => {
         maxZoom={19}
         minZoom={2}
         renderWorldCopies={false}
-        fadeDuration={0}
+        fadeDuration={300}
+        scrollZoom={{ speed: 1.5, smooth: true }}
+        touchZoomRotate={{ around: 'center' }}
+        dragRotate={false}
       >
         <NavigationControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
