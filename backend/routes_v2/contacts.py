@@ -257,10 +257,10 @@ async def get_contact(
     try:
         user_id = await get_user_id(credentials)
         
-        # Get contact with linked deals
+        # Get contact with linked deals - use maybe_single to avoid exception on no rows
         response = supabase.table('contacts').select(
             '*, contact_deal_links(*, deals(id, title, address, asset_type, asking_price, status))'
-        ).eq('id', contact_id).single().execute()
+        ).eq('id', contact_id).maybe_single().execute()
         
         if not response.data:
             raise HTTPException(status_code=404, detail="Contact not found")
