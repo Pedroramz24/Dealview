@@ -1,0 +1,823 @@
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
+import { AuthContext, API } from '../App';
+import { toast } from 'sonner';
+import { 
+  ArrowLeft, MapPin, Building2, DollarSign, Calendar, 
+  Edit2, Trash2, Save, X, Users, FileText, Upload,
+  Phone, Mail, Link2, Plus
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import { colors, shadows, gradients, borderRadius, spacing } from '../styles/designSystem';
+
+const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Other'];
+
+const DealDetails = () => {
+  const { dealId } = useParams();
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  
+  const [deal, setDeal] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [editedDeal, setEditedDeal] = useState({});
+  const [documents, setDocuments] = useState([]);
+  const [linkedContacts, setLinkedContacts] = useState([]);
+  const [allContacts, setAllContacts] = useState([]);
+  const [showLinkContact, setShowLinkContact] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    fetchDeal();
+    fetchContacts();
+  }, [dealId]);
+
+  const fetchDeal = async () => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/deals/${dealId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setDeal(data.deal);
+        setEditedDeal(data.deal);
+        setDocuments(data.deal.documents || []);
+        
+        // Extract linked contacts
+        const contacts = (data.deal.contact_deal_links || []).map(link => ({
+          ...link.contacts,
+          role: link.role
+        }));
+        setLinkedContacts(contacts);
+      } else {
+        toast.error('Failed to load deal');
+        navigate('/pipeline');
+      }
+    } catch (error) {
+      console.error('Error fetching deal:', error);
+      toast.error('Failed to load deal');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchContacts = async () => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/contacts`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAllContacts(data.contacts || []);
+      }
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/deals/${dealId}`, {
+        method: 'PUT',
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editedDeal)
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setDeal({ ...deal, ...editedDeal });
+        setEditing(false);
+        toast.success('Deal updated successfully');
+      } else {
+        toast.error('Failed to update deal');
+      }
+    } catch (error) {
+      console.error('Error updating deal:', error);
+      toast.error('Failed to update deal');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this deal?')) return;
+    
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/deals/${dealId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success('Deal deleted');
+        navigate('/pipeline');
+      } else {
+        toast.error('Failed to delete deal');
+      }
+    } catch (error) {
+      console.error('Error deleting deal:', error);
+      toast.error('Failed to delete deal');
+    }
+  };
+
+  const handleLinkContact = async (contactId, role) => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/deals/${dealId}/contacts/${contactId}?role=${encodeURIComponent(role || '')}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success('Contact linked');
+        fetchDeal();
+        setShowLinkContact(false);
+      } else {
+        toast.error('Failed to link contact');
+      }
+    } catch (error) {
+      console.error('Error linking contact:', error);
+      toast.error('Failed to link contact');
+    }
+  };
+
+  const handleUnlinkContact = async (contactId) => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/deals/${dealId}/contacts/${contactId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success('Contact unlinked');
+        fetchDeal();
+      } else {
+        toast.error('Failed to unlink contact');
+      }
+    } catch (error) {
+      console.error('Error unlinking contact:', error);
+      toast.error('Failed to unlink contact');
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    setUploading(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`${API}/deals/${dealId}/documents`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+      
+      if (response.ok) {
+        toast.success('Document uploaded');
+        fetchDeal();
+      } else {
+        toast.error('Failed to upload document');
+      }
+    } catch (error) {
+      console.error('Error uploading document:', error);
+      toast.error('Failed to upload document');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const formatCurrency = (value) => {
+    if (!value) return 'N/A';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0
+    }).format(value);
+  };
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        color: colors.textSecondary
+      }}>
+        Loading deal...
+      </div>
+    );
+  }
+
+  if (!deal) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        color: colors.textSecondary
+      }}>
+        Deal not found
+      </div>
+    );
+  }
+
+  const isOwner = deal.owner_id === user?.id;
+
+  return (
+    <div style={{ padding: spacing.xl, maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: spacing.xl
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: colors.textTertiary,
+              cursor: 'pointer',
+              padding: '8px'
+            }}
+          >
+            <ArrowLeft size={24} />
+          </button>
+          <div>
+            {editing ? (
+              <Input
+                value={editedDeal.title || ''}
+                onChange={(e) => setEditedDeal({ ...editedDeal, title: e.target.value })}
+                style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  background: colors.surfaceElevated,
+                  border: `1px solid ${colors.border}`
+                }}
+              />
+            ) : (
+              <h1 style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: colors.textPrimary,
+                marginBottom: '4px'
+              }}>
+                {deal.title}
+              </h1>
+            )}
+            <p style={{ color: colors.textTertiary, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <MapPin size={14} />
+              {deal.address && `${deal.address}, `}
+              {deal.city && `${deal.city}, `}
+              {deal.state} {deal.zip_code}
+            </p>
+          </div>
+        </div>
+        
+        {isOwner && (
+          <div style={{ display: 'flex', gap: '12px' }}>
+            {editing ? (
+              <>
+                <Button
+                  onClick={() => { setEditing(false); setEditedDeal(deal); }}
+                  variant="outline"
+                  style={{ borderColor: colors.border, color: colors.textSecondary }}
+                >
+                  <X size={18} style={{ marginRight: '8px' }} />
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  style={{ background: gradients.primaryButton, border: 'none' }}
+                >
+                  <Save size={18} style={{ marginRight: '8px' }} />
+                  Save
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() => setEditing(true)}
+                  variant="outline"
+                  style={{ borderColor: colors.border, color: colors.textSecondary }}
+                >
+                  <Edit2 size={18} style={{ marginRight: '8px' }} />
+                  Edit
+                </Button>
+                <Button
+                  onClick={handleDelete}
+                  variant="outline"
+                  style={{ borderColor: '#ef4444', color: '#ef4444' }}
+                >
+                  <Trash2 size={18} style={{ marginRight: '8px' }} />
+                  Delete
+                </Button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: spacing.xl }}>
+        {/* Left Column - Main Details */}
+        <div>
+          {/* Price Card */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            marginBottom: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <div style={{ color: colors.textTertiary, fontSize: '13px', marginBottom: '8px' }}>
+              Asking Price
+            </div>
+            {editing ? (
+              <Input
+                type="number"
+                value={editedDeal.asking_price || ''}
+                onChange={(e) => setEditedDeal({ ...editedDeal, asking_price: parseFloat(e.target.value) })}
+                style={{ fontSize: '28px', background: colors.surfaceElevated }}
+              />
+            ) : (
+              <div style={{ color: colors.primary, fontSize: '36px', fontWeight: '700' }}>
+                {formatCurrency(deal.asking_price)}
+              </div>
+            )}
+          </div>
+
+          {/* Property Details */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            marginBottom: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
+              Property Details
+            </h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              {/* Asset Type */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Asset Type</Label>
+                {editing ? (
+                  <select
+                    value={editedDeal.asset_type || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, asset_type: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '8px',
+                      marginTop: '4px',
+                      borderRadius: '6px',
+                      background: colors.surfaceElevated,
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  >
+                    <option value="">Select type</option>
+                    {assetTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {deal.asset_type || 'N/A'}
+                  </div>
+                )}
+              </div>
+
+              {/* Size */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Size (SF)</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    value={editedDeal.size_sqft || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, size_sqft: parseFloat(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {deal.size_sqft ? deal.size_sqft.toLocaleString() : 'N/A'}
+                  </div>
+                )}
+              </div>
+
+              {/* Lot Size */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Lot Size (acres)</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={editedDeal.lot_size || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, lot_size: parseFloat(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {deal.lot_size || 'N/A'}
+                  </div>
+                )}
+              </div>
+
+              {/* Year Built */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Year Built</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    value={editedDeal.year_built || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, year_built: parseInt(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {deal.year_built || 'N/A'}
+                  </div>
+                )}
+              </div>
+
+              {/* Occupancy */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Occupancy (%)</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    value={editedDeal.occupancy || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, occupancy: parseFloat(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {deal.occupancy ? `${deal.occupancy}%` : 'N/A'}
+                  </div>
+                )}
+              </div>
+
+              {/* Zoning */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Zoning</Label>
+                {editing ? (
+                  <Input
+                    value={editedDeal.zoning || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, zoning: e.target.value })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {deal.zoning || 'N/A'}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Financial Details */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            marginBottom: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
+              Financial Details
+            </h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              {/* NOI */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>NOI</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    value={editedDeal.noi || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, noi: parseFloat(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {formatCurrency(deal.noi)}
+                  </div>
+                )}
+              </div>
+
+              {/* Cap Rate */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Cap Rate (%)</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={editedDeal.cap_rate || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, cap_rate: parseFloat(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {deal.cap_rate ? `${deal.cap_rate}%` : 'N/A'}
+                  </div>
+                )}
+              </div>
+
+              {/* Annual Income */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Annual Income</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    value={editedDeal.annual_income || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, annual_income: parseFloat(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {formatCurrency(deal.annual_income)}
+                  </div>
+                )}
+              </div>
+
+              {/* Annual Expenses */}
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Annual Expenses</Label>
+                {editing ? (
+                  <Input
+                    type="number"
+                    value={editedDeal.annual_expenses || ''}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, annual_expenses: parseFloat(e.target.value) })}
+                    style={{ marginTop: '4px', background: colors.surfaceElevated }}
+                  />
+                ) : (
+                  <div style={{ color: colors.textPrimary, fontWeight: '500', marginTop: '4px' }}>
+                    {formatCurrency(deal.annual_expenses)}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
+              Notes
+            </h3>
+            {editing ? (
+              <Textarea
+                value={editedDeal.notes || ''}
+                onChange={(e) => setEditedDeal({ ...editedDeal, notes: e.target.value })}
+                rows={5}
+                style={{ background: colors.surfaceElevated, border: `1px solid ${colors.border}` }}
+              />
+            ) : (
+              <p style={{ color: colors.textSecondary, lineHeight: '1.6' }}>
+                {deal.notes || 'No notes added'}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column - Contacts & Documents */}
+        <div>
+          {/* Linked Contacts */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            marginBottom: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600' }}>
+                Linked Contacts
+              </h3>
+              {isOwner && (
+                <Button
+                  onClick={() => setShowLinkContact(!showLinkContact)}
+                  size="sm"
+                  style={{ background: colors.primary, border: 'none' }}
+                >
+                  <Plus size={14} />
+                </Button>
+              )}
+            </div>
+
+            {showLinkContact && (
+              <div style={{
+                background: colors.surfaceElevated,
+                borderRadius: borderRadius.sm,
+                padding: '12px',
+                marginBottom: '12px'
+              }}>
+                <select
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleLinkContact(e.target.value, '');
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '6px',
+                    background: colors.surfaceCard,
+                    border: `1px solid ${colors.border}`,
+                    color: colors.textPrimary
+                  }}
+                >
+                  <option value="">Select a contact...</option>
+                  {allContacts
+                    .filter(c => !linkedContacts.find(lc => lc.id === c.id))
+                    .map(contact => (
+                      <option key={contact.id} value={contact.id}>
+                        {contact.name} - {contact.company || contact.email}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
+
+            {linkedContacts.length === 0 ? (
+              <p style={{ color: colors.textTertiary, fontSize: '14px' }}>
+                No contacts linked
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {linkedContacts.map(contact => (
+                  <div
+                    key={contact.id}
+                    style={{
+                      background: colors.surfaceElevated,
+                      borderRadius: borderRadius.sm,
+                      padding: '12px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <div>
+                      <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
+                        {contact.name}
+                      </div>
+                      <div style={{ color: colors.textTertiary, fontSize: '12px' }}>
+                        {contact.contact_type} {contact.role && `• ${contact.role}`}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {contact.phone && (
+                        <a href={`tel:${contact.phone}`} style={{ color: colors.textTertiary }}>
+                          <Phone size={16} />
+                        </a>
+                      )}
+                      {contact.email && (
+                        <a href={`mailto:${contact.email}`} style={{ color: colors.textTertiary }}>
+                          <Mail size={16} />
+                        </a>
+                      )}
+                      {isOwner && (
+                        <button
+                          onClick={() => handleUnlinkContact(contact.id)}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#ef4444',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Documents */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600' }}>
+                Documents
+              </h3>
+              {isOwner && (
+                <label style={{ cursor: 'pointer' }}>
+                  <input
+                    type="file"
+                    onChange={handleFileUpload}
+                    style={{ display: 'none' }}
+                    disabled={uploading}
+                  />
+                  <Button
+                    as="span"
+                    size="sm"
+                    style={{ background: colors.primary, border: 'none' }}
+                    disabled={uploading}
+                  >
+                    <Upload size={14} />
+                  </Button>
+                </label>
+              )}
+            </div>
+
+            {documents.length === 0 ? (
+              <p style={{ color: colors.textTertiary, fontSize: '14px' }}>
+                No documents uploaded
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {documents.map(doc => (
+                  <a
+                    key={doc.id}
+                    href={doc.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      background: colors.surfaceElevated,
+                      borderRadius: borderRadius.sm,
+                      padding: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      textDecoration: 'none',
+                      color: colors.textPrimary
+                    }}
+                  >
+                    <FileText size={20} style={{ color: colors.primary }} />
+                    <div style={{ flex: 1, overflow: 'hidden' }}>
+                      <div style={{ 
+                        fontWeight: '500',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                      }}>
+                        {doc.file_name}
+                      </div>
+                      <div style={{ color: colors.textTertiary, fontSize: '12px' }}>
+                        {doc.file_type?.toUpperCase()}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DealDetails;
