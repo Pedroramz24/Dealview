@@ -997,13 +997,58 @@ const MapView = () => {
                 </select>
               </div>
 
+              {/* Pipeline & Stage Selection */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Pipeline</Label>
+                  <select
+                    value={newDeal.pipeline_id}
+                    onChange={(e) => handlePipelineChange(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      marginTop: '6px',
+                      borderRadius: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary,
+                      fontSize: '14px'
+                    }}
+                  >
+                    {pipelines.map(pipeline => (
+                      <option key={pipeline.id} value={pipeline.id}>{pipeline.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Stage</Label>
+                  <select
+                    value={newDeal.pipeline_stage_id}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, pipeline_stage_id: e.target.value }))}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      marginTop: '6px',
+                      borderRadius: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary,
+                      fontSize: '14px'
+                    }}
+                  >
+                    {pipelineStages.map(stage => (
+                      <option key={stage.id} value={stage.id}>{stage.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Asking Price ($)</Label>
                   <Input
-                    type="number"
                     value={newDeal.asking_price}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, asking_price: e.target.value }))}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, asking_price: formatNumberInput(e.target.value) }))}
                     placeholder="2,500,000"
                     style={{
                       marginTop: '6px',
@@ -1016,9 +1061,8 @@ const MapView = () => {
                 <div>
                   <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Size (SF)</Label>
                   <Input
-                    type="number"
                     value={newDeal.size_sqft}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, size_sqft: e.target.value }))}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, size_sqft: formatNumberInput(e.target.value) }))}
                     placeholder="50,000"
                     style={{
                       marginTop: '6px',
@@ -1032,12 +1076,11 @@ const MapView = () => {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Lot Size (SF)</Label>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Lot Size (Acres)</Label>
                   <Input
-                    type="number"
                     value={newDeal.lot_size}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, lot_size: e.target.value }))}
-                    placeholder="100,000"
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, lot_size: formatNumberInput(e.target.value) }))}
+                    placeholder="2.5"
                     style={{
                       marginTop: '6px',
                       background: 'rgba(255,255,255,0.05)',
@@ -1046,6 +1089,23 @@ const MapView = () => {
                     }}
                   />
                 </div>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>AC Size (Tons)</Label>
+                  <Input
+                    value={newDeal.ac_size}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, ac_size: e.target.value }))}
+                    placeholder="150"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Year Built</Label>
                   <Input
@@ -1061,15 +1121,28 @@ const MapView = () => {
                     }}
                   />
                 </div>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Zoning</Label>
+                  <Input
+                    value={newDeal.zoning}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, zoning: e.target.value }))}
+                    placeholder="C-2, Commercial"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
                   <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>NOI ($)</Label>
                   <Input
-                    type="number"
                     value={newDeal.noi}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, noi: e.target.value }))}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, noi: formatNumberInput(e.target.value) }))}
                     placeholder="150,000"
                     style={{
                       marginTop: '6px',
@@ -1097,37 +1170,21 @@ const MapView = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Occupancy (%)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={newDeal.occupancy}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, occupancy: e.target.value }))}
-                    placeholder="95"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Zoning</Label>
-                  <Input
-                    value={newDeal.zoning}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, zoning: e.target.value }))}
-                    placeholder="C-2, Commercial"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
+              <div>
+                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Occupancy (%)</Label>
+                <Input
+                  type="number"
+                  step="0.1"
+                  value={newDeal.occupancy}
+                  onChange={(e) => setNewDeal(prev => ({ ...prev, occupancy: e.target.value }))}
+                  placeholder="95"
+                  style={{
+                    marginTop: '6px',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: `1px solid ${colors.border}`,
+                    color: colors.textPrimary
+                  }}
+                />
               </div>
             </div>
           </div>
