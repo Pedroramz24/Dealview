@@ -62,7 +62,7 @@ const CalendarView = () => {
 
   // Fetch events from V2 API
   const fetchEvents = useCallback(async () => {
-    const headers = getAuthHeaders();
+    const headers = await getAuthHeaders();
     if (!headers) {
       setLoading(false);
       return;
