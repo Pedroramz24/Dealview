@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { AuthContext } from '../App';
+import { supabase } from '../supabaseClient';
 import { Plus, X, CheckCircle, Edit2, Clock, Calendar as CalendarIcon, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
