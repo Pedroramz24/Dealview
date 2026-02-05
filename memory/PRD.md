@@ -32,74 +32,76 @@ Complete ground-up rebuild of DealLinked CRM application. Core instruction was t
 
 ## What's Been Implemented
 
-### Database (COMPLETE - 2024-02-05)
+### Database (COMPLETE)
 - Fresh Supabase schema with 11 tables
-- Row Level Security (RLS) policies
+- Row Level Security (RLS) policies - FIXED with INSERT WITH CHECK clauses
 - User creation triggers
 - Default pipeline creation trigger (with backend fallback)
 
-### Backend API V2 (COMPLETE - 2024-02-05)
+### Backend API V2 (COMPLETE)
 - Authentication routes (login, signup, profile)
 - Deals CRUD with document upload
-- Contacts CRUD with smart tags
-- Pipelines and stages management
+- Contacts CRUD with smart tags (including tag update/delete)
+- Pipelines and stages management (create, update, delete stages)
 - Teams and members
 - Calendar events
 - Dashboard statistics
 - Geocoding endpoints (autocomplete, reverse)
 
-### Frontend V2 (IN PROGRESS - 2024-02-05)
+### Frontend V2 (COMPLETE - 2024-02-05)
 - ✅ Login/Signup with Supabase Auth
 - ✅ Dashboard with statistics
 - ✅ MapView with optimized Esri tiles
 - ✅ Address autocomplete (Radar.io)
 - ✅ Click-to-add deal on map
 - ✅ Deal side panel on marker click
-- ✅ Pipeline/Kanban board with 8 default stages
-- ✅ Drag-and-drop deal management
-- ✅ **Contacts.js REBUILT** - Now uses V2 API with smart tags filtering
+- ✅ **Pipeline Page ENHANCED** - Stage management (create/edit/delete), color picker, deal stats
+- ✅ **Contacts Page ENHANCED** - Smart Tags Manager modal, quick filter bar, CRUD for tags
+- ✅ Create Deal form with all fields (AC size, pipeline/stage selection, auto-comma formatting)
 - ⏳ Team page (needs verification)
 - ⏳ DealDetails full page (needs verification)
 - ⏳ Calendar page (needs V2 API connection)
 - ⏳ Settings page (needs update)
+
+## Recent Changes (2024-02-05)
+
+### Pipeline Page Enhancements (DONE)
+- Added "Add Stage" button and empty column placeholder
+- Stage edit/delete functionality via modal
+- Color picker with 12 preset colors
+- Pipeline stats (total deals, total value) in header
+- Delete stage protection (can't delete if deals exist)
+
+### Contacts Page Enhancements (DONE)
+- **Smart Tags Manager Modal** - View all tags, edit name/color, delete tags
+- **Quick Filter Bar** - Filter contacts by clicking tag badges
+- Tags displayed with color indicators
+- Create new tags directly from filter bar
+- Removed old inline tag manager toggle
+
+### Create Deal Panel Enhancements (DONE)
+- Added AC Size field
+- Pipeline and Stage dropdown selectors
+- Auto-comma formatting for number fields (price, size, NOI)
+- Fixed backend deal creation error (get_user_team_id fix)
 
 ## Key Files
 - `/app/backend/server.py` - Main API server
 - `/app/backend/routes_v2/` - V2 route modules
 - `/app/frontend/src/App.js` - Main router
 - `/app/frontend/src/pages/MapView.js` - Map with all features
-- `/app/frontend/src/pages/Pipeline.js` - Kanban board
-- `/app/frontend/src/pages/Contacts.js` - **REBUILT** - V2 Contacts page
+- `/app/frontend/src/pages/Pipeline.js` - **ENHANCED** - Kanban board with stage management
+- `/app/frontend/src/pages/Contacts.js` - **ENHANCED** - Smart Tags Manager
 - `/app/supabase_migrations_rebuild/` - DB migration scripts
-
-## Recent Changes (2024-02-05)
-
-### Contacts Page Rebuild (DONE)
-- Completely rewrote `/app/frontend/src/pages/Contacts.js`
-- Old file: 1500+ lines using direct Supabase queries (V1 pattern)
-- New file: ~800 lines using V2 API endpoints
-- Features:
-  - Smart tags with create/delete functionality
-  - Filter by contact type, status, and tags
-  - Search by name, email, company
-  - Table and Card view modes
-  - Contact details panel with linked deals
-  - CRUD operations via `/api/contacts` endpoints
-
-### Critical Bug Found: RLS INSERT Policy Issue
-- **Issue**: Supabase RLS policies block INSERT operations for new users
-- **Affected tables**: contacts, contact_tags, pipelines, pipeline_stages, calendar_events
-- **Root cause**: Using `FOR ALL USING (...)` instead of explicit INSERT policies with `WITH CHECK`
-- **Fix**: Created `/app/supabase_migrations_rebuild/006_fix_rls_insert_policies.sql`
-- **Status**: ⚠️ REQUIRES MANUAL ACTION - Run migration in Supabase SQL Editor
 
 ## Prioritized Backlog
 
-### P0 (Critical - Blocking)
-- ⚠️ **Run RLS fix migration** - `/app/supabase_migrations_rebuild/006_fix_rls_insert_policies.sql`
-  - Without this, new users cannot create contacts, tags, or any data
+### P0 (Critical - Done)
+- ✅ RLS fix migration applied
+- ✅ Pipeline stage management
+- ✅ Smart Tags management interface
 
-### P1 (High Priority)
+### P1 (High Priority - Next)
 - Verify Team.js works with V2 API
 - Verify DealDetails.js displays all fields correctly
 
@@ -108,21 +110,14 @@ Complete ground-up rebuild of DealLinked CRM application. Core instruction was t
 - Update Settings.js for profile updates
 
 ### P3 (Low Priority)
-- Add more pipeline customization
 - Team deal performance metrics
 - Advanced filtering options
+- Import contacts from CSV
 
 ## Test Credentials
 - Create new user via signup
 - Users automatically get default pipeline with 8 stages
-- Test user: `contactstest_9ee073@testdeallinked.com` / `TestPassword123!`
-
-## Known Limitations
-1. **RLS INSERT policies need fixing** - Run migration `006_fix_rls_insert_policies.sql`
-2. Supabase database trigger for default pipeline may not work (backend fallback handles this)
-3. No marketplace functionality (intentionally removed)
-4. No AI features (intentionally removed)
 
 ## Test Reports
 - `/app/test_reports/iteration_1.json` - Initial pipeline tests
-- `/app/test_reports/iteration_2.json` - Contacts page tests (found RLS issue)
+- `/app/test_reports/iteration_2.json` - Contacts page tests
