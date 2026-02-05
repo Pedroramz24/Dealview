@@ -409,7 +409,13 @@ const MapView = () => {
         },
         body: JSON.stringify({
           ...newDeal,
-          asking_price: newDeal.asking_price ? parseFloat(newDeal.asking_price) : null
+          asking_price: newDeal.asking_price ? parseFloat(newDeal.asking_price) : null,
+          size_sqft: newDeal.size_sqft ? parseFloat(newDeal.size_sqft) : null,
+          lot_size: newDeal.lot_size ? parseFloat(newDeal.lot_size) : null,
+          year_built: newDeal.year_built ? parseInt(newDeal.year_built) : null,
+          noi: newDeal.noi ? parseFloat(newDeal.noi) : null,
+          cap_rate: newDeal.cap_rate ? parseFloat(newDeal.cap_rate) : null,
+          occupancy: newDeal.occupancy ? parseFloat(newDeal.occupancy) : null
         })
       });
       
