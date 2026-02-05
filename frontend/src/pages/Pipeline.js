@@ -362,20 +362,28 @@ const Pipeline = () => {
   const fetchPipelines = async () => {
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
+      console.log('fetchPipelines - token:', token ? 'exists' : 'null');
+      
       const response = await fetch(`${API}/pipelines`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      console.log('fetchPipelines - response status:', response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log('fetchPipelines - data:', data);
         const pipelineData = data.pipelines || [];
         setPipelines(pipelineData);
         
         // Select default or first pipeline
         const defaultPipeline = pipelineData.find(p => p.is_default) || pipelineData[0];
+        console.log('fetchPipelines - defaultPipeline:', defaultPipeline);
         if (defaultPipeline) {
           setSelectedPipeline(defaultPipeline);
-          setStages(defaultPipeline.stages || []);
+          const stagesData = defaultPipeline.stages || [];
+          console.log('fetchPipelines - stages:', stagesData);
+          setStages(stagesData);
         }
       }
     } catch (error) {
