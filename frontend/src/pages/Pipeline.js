@@ -630,7 +630,7 @@ const Pipeline = () => {
 
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
-      const response = await fetch(`${API}/pipelines/${selectedPipeline.id}/stages/${editingStage.id}`, {
+      const response = await fetch(`${API}/pipelines/stages/${editingStage.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
