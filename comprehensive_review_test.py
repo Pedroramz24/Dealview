@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://mapwise-crm.preview.emergentagent.com/api"
+BASE_URL = "https://deallinked-rebuild.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {
     "email": "contact@pedroarmando.com",
     "password": "Flin141812$"

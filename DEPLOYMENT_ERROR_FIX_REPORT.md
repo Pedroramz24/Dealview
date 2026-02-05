@@ -119,13 +119,13 @@ PERPLEXITY_API_KEY="..."
 RADAR_SECRET_KEY="..."
 RADAR_PUBLISHABLE_KEY="..."
 OPENCORPORATES_API_KEY=""
-FRONTEND_URL="https://mapwise-crm.preview.emergentagent.com"
+FRONTEND_URL="https://deallinked-rebuild.preview.emergentagent.com"
 ENCRYPTION_KEY="..."
 ```
 
 **Frontend** (`/app/frontend/.env`):
 ```bash
-REACT_APP_BACKEND_URL=https://mapwise-crm.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://deallinked-rebuild.preview.emergentagent.com
 WDS_SOCKET_PORT=443
 
 # Supabase Configuration
