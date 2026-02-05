@@ -1,24 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { supabase } from '../supabaseClient';
 import { AuthContext } from '../App';
-import { X, Save, Calendar, Clock, FileText, Tag } from 'lucide-react';
+import { X, Save, Calendar, Clock } from 'lucide-react';
 import { toast } from 'sonner';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
-const eventTypeOptions = [
-  { value: 'deal', label: 'Deal Milestone', color: '#10b981' },
-  { value: 'call', label: 'Call / Follow-up', color: '#3b82f6' },
+const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+const EVENT_TYPE_OPTIONS = [
+  { value: 'meeting', label: 'Meeting', color: '#f97316' },
+  { value: 'call', label: 'Call', color: '#3b82f6' },
   { value: 'task', label: 'Task', color: '#a855f7' },
   { value: 'deadline', label: 'Deadline', color: '#ef4444' },
-  { value: 'meeting', label: 'Meeting', color: '#f97316' }
+  { value: 'deal', label: 'Deal Milestone', color: '#10b981' }
 ];
 
 const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
-  const { user } = useContext(AuthContext);
+  const { session } = useContext(AuthContext);
   const [isSaving, setIsSaving] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [searchDeal, setSearchDeal] = useState('');
@@ -31,38 +28,53 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
   const [eventForm, setEventForm] = useState({
     title: '',
     event_type: 'task',
-    start_date: new Date().toISOString(),
-    end_date: null,
+    start_time: '',
+    end_time: '',
     all_day: true,
-    related_deal_id: null,
-    related_contact_id: null,
-    description: '',
-    reminder_enabled: false,
-    reminder_minutes_before: 60
+    deal_id: null,
+    contact_id: null,
+    description: ''
   });
 
+  const getAuthHeaders = () => {
+    if (!session?.access_token) return null;
+    return {
+      'Authorization': `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json'
+    };
+  };
+
   useEffect(() => {
-    if (isOpen && user) {
+    if (isOpen && session) {
       fetchDealsAndContacts();
+      // Set default start time
+      const now = new Date();
+      now.setMinutes(Math.ceil(now.getMinutes() / 15) * 15);
+      setEventForm(prev => ({
+        ...prev,
+        start_time: now.toISOString().slice(0, 16)
+      }));
     }
-  }, [isOpen, user]);
+  }, [isOpen, session]);
 
   const fetchDealsAndContacts = async () => {
-    try {
-      const { data: dealsData } = await supabase
-        .from('deals')
-        .select('id, title, address')
-        .eq('owner_id', user.id)
-        .limit(50);
-      
-      const { data: contactsData } = await supabase
-        .from('contacts')
-        .select('id, full_name, company')
-        .eq('owner_id', user.id)
-        .limit(50);
+    const headers = getAuthHeaders();
+    if (!headers) return;
 
-      setDeals(dealsData || []);
-      setContacts(contactsData || []);
+    try {
+      // Fetch deals
+      const dealsRes = await fetch(`${API_URL}/api/deals`, { headers });
+      const dealsData = await dealsRes.json();
+      if (dealsData.success) {
+        setDeals(dealsData.deals || []);
+      }
+
+      // Fetch contacts
+      const contactsRes = await fetch(`${API_URL}/api/contacts`, { headers });
+      const contactsData = await contactsRes.json();
+      if (contactsData.success) {
+        setContacts(contactsData.contacts || []);
+      }
     } catch (error) {
       console.error('Error fetching deals/contacts:', error);
     }
@@ -73,43 +85,49 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
       toast.error('Please enter an event title');
       return;
     }
+    if (!eventForm.start_time) {
+      toast.error('Please select a start time');
+      return;
+    }
+
+    const headers = getAuthHeaders();
+    if (!headers) {
+      toast.error('Authentication required');
+      return;
+    }
 
     setIsSaving(true);
     try {
-      const eventData = {
-        title: eventForm.title,
-        event_type: eventForm.event_type,
-        start_date: startDate.toISOString(),
-        end_date: endDate ? endDate.toISOString() : startDate.toISOString(),
-        all_day: eventForm.all_day,
-        related_deal_id: eventForm.related_deal_id,
-        related_contact_id: eventForm.related_contact_id,
-        description: eventForm.description,
-        reminder_enabled: eventForm.reminder_enabled,
-        reminder_minutes_before: eventForm.reminder_minutes_before,
-        owner_id: user.id,
-        status: 'pending'
-      };
+      const eventColor = EVENT_TYPE_OPTIONS.find(opt => opt.value === eventForm.event_type)?.color || '#00b8d4';
+      
+      const response = await fetch(`${API_URL}/api/calendar/events`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          title: eventForm.title,
+          description: eventForm.description,
+          start_time: new Date(eventForm.start_time).toISOString(),
+          end_time: eventForm.end_time ? new Date(eventForm.end_time).toISOString() : null,
+          all_day: eventForm.all_day,
+          deal_id: eventForm.deal_id,
+          contact_id: eventForm.contact_id,
+          event_type: eventForm.event_type,
+          color: eventColor
+        })
+      });
 
-      const { error } = await supabase
-        .from('calendar_events')
-        .insert([eventData]);
-
-      if (error) {
-        console.error('Supabase error:', error);
-        if (error.message.includes('relation') || error.message.includes('does not exist')) {
-          toast.error('Calendar table not set up yet. Please run the migration in Supabase SQL Editor.');
-        } else {
-          toast.error(`Failed to create event: ${error.message}`);
-        }
-        throw error;
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success('Event created successfully!');
+        onEventCreated();
+        resetForm();
+      } else {
+        toast.error(data.detail || 'Failed to create event');
       }
-
-      toast.success('Event created successfully!');
-      onEventCreated();
-      resetForm();
     } catch (error) {
       console.error('Error creating event:', error);
+      toast.error('Failed to create event');
     } finally {
       setIsSaving(false);
     }
@@ -119,17 +137,13 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
     setEventForm({
       title: '',
       event_type: 'task',
-      start_date: new Date().toISOString(),
-      end_date: null,
-      all_day: false,
-      related_deal_id: null,
-      related_contact_id: null,
-      description: '',
-      reminder_enabled: false,
-      reminder_minutes_before: 60
+      start_time: '',
+      end_time: '',
+      all_day: true,
+      deal_id: null,
+      contact_id: null,
+      description: ''
     });
-    setStartDate(new Date());
-    setEndDate(new Date());
     setSearchDeal('');
     setSearchContact('');
     setShowDealDropdown(false);
@@ -143,36 +157,36 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
   );
 
   const filteredContacts = contacts.filter(c => 
-    (c.full_name || '').toLowerCase().includes(searchContact.toLowerCase())
+    (c.name || '').toLowerCase().includes(searchContact.toLowerCase())
   );
 
   if (!isOpen) return null;
 
   return (
     <div
+      data-testid="create-event-panel"
       style={{
         position: 'fixed',
         top: 0,
-        right: isOpen ? '0' : '-600px',
+        right: 0,
         width: '500px',
         height: '100vh',
-        background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%)',
+        background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%)',
         backdropFilter: 'blur(20px)',
         borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
         zIndex: 3000,
-        transition: 'right 300ms cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '-30px 0 80px rgba(0, 0, 0, 0.8), inset 1px 0 0 rgba(255,255,255,0.03)'
+        boxShadow: '-30px 0 80px rgba(0, 0, 0, 0.8)'
       }}
     >
+      {/* Header */}
       <div style={{
         padding: '24px 28px 20px',
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        background: 'linear-gradient(180deg, rgba(0,184,212,0.04) 0%, transparent 100%)'
+        justifyContent: 'space-between'
       }}>
         <div className="flex items-center gap-3">
           <div style={{
@@ -183,14 +197,14 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            border: '1px solid rgba(0,184,212,0.25)',
-            boxShadow: '0 4px 20px rgba(0,184,212,0.2)'
+            border: '1px solid rgba(0,184,212,0.25)'
           }}>
             <Calendar className="w-5 h-5" style={{ color: '#00d4ff' }} />
           </div>
-          <h2 style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '800', letterSpacing: '-0.02em' }}>Create Event</h2>
+          <h2 style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '800' }}>Create Event</h2>
         </div>
         <button
+          data-testid="close-panel-btn"
           onClick={onClose}
           style={{
             width: '40px',
@@ -205,44 +219,47 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
             justifyContent: 'center',
             transition: 'all 0.2s ease'
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(239,68,68,0.15)';
-            e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)';
-            e.currentTarget.style.color = '#ef4444';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-            e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-          }}
         >
           <X className="w-5 h-5" />
         </button>
       </div>
 
+      {/* Form Content */}
       <div className="flex-1 overflow-y-auto" style={{ padding: '28px' }}>
         <div className="space-y-6">
+          {/* Title */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Event Title *
             </label>
             <input
+              data-testid="event-title-input"
               type="text"
               value={eventForm.title}
               onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
               placeholder="Enter event title..."
-              className="premium-input"
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '10px',
+                color: '#ffffff',
+                fontSize: '14px'
+              }}
             />
           </div>
 
+          {/* Event Type */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Event Type *
             </label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-              {eventTypeOptions.map(type => (
+              {EVENT_TYPE_OPTIONS.map(type => (
                 <button
                   key={type.value}
+                  data-testid={`type-btn-${type.value}`}
                   onClick={() => setEventForm({ ...eventForm, event_type: type.value })}
                   style={{
                     padding: '10px 18px',
@@ -253,8 +270,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                     fontSize: '13px',
                     fontWeight: '700',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: eventForm.event_type === type.value ? `0 0 20px ${type.color}20` : 'none'
+                    transition: 'all 0.2s ease'
                   }}
                 >
                   {type.label}
@@ -263,24 +279,54 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
             </div>
           </div>
 
+          {/* Start Date & Time */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Start Date & Time *
             </label>
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              showTimeSelect
-              timeFormat="h:mm aa"
-              timeIntervals={15}
-              dateFormat="MMMM d, yyyy h:mm aa"
-              className="premium-date-input"
-              wrapperClassName="w-full"
+            <input
+              data-testid="start-time-input"
+              type="datetime-local"
+              value={eventForm.start_time}
+              onChange={(e) => setEventForm({ ...eventForm, start_time: e.target.value })}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '10px',
+                color: '#ffffff',
+                fontSize: '14px'
+              }}
             />
           </div>
 
+          {/* End Date & Time */}
+          <div>
+            <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              End Date & Time (Optional)
+            </label>
+            <input
+              data-testid="end-time-input"
+              type="datetime-local"
+              value={eventForm.end_time}
+              onChange={(e) => setEventForm({ ...eventForm, end_time: e.target.value })}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '10px',
+                color: '#ffffff',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          {/* All Day Toggle */}
           <div className="flex items-center gap-3">
             <button
+              data-testid="all-day-toggle"
               onClick={() => setEventForm({ ...eventForm, all_day: !eventForm.all_day })}
               style={{
                 width: '52px',
@@ -290,8 +336,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                 borderRadius: '14px',
                 position: 'relative',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: eventForm.all_day ? '0 0 20px rgba(0,184,212,0.2)' : 'none'
+                transition: 'all 0.3s ease'
               }}
             >
               <div style={{
@@ -302,14 +347,13 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                 height: '22px',
                 background: eventForm.all_day ? '#00d4ff' : 'rgba(255,255,255,0.4)',
                 borderRadius: '11px',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }} />
             </button>
             <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', fontWeight: '600' }}>All Day Event</span>
           </div>
 
-          {/* Related Deal (Optional) */}
+          {/* Link to Deal (Optional) */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Link to Deal (Optional)
@@ -330,7 +374,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                 <button
                   onClick={() => {
                     setSelectedDeal(null);
-                    setEventForm({ ...eventForm, related_deal_id: null });
+                    setEventForm({ ...eventForm, deal_id: null });
                     setSearchDeal('');
                   }}
                   style={{
@@ -339,18 +383,16 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                     border: '1px solid rgba(239,68,68,0.2)',
                     borderRadius: '6px',
                     color: '#ef4444',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    cursor: 'pointer'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.2)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <>
+              <div style={{ position: 'relative' }}>
                 <input
+                  data-testid="deal-search-input"
                   type="text"
                   value={searchDeal}
                   onChange={(e) => {
@@ -359,16 +401,29 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                   }}
                   onFocus={() => setShowDealDropdown(true)}
                   placeholder="Search deals..."
-                  className="premium-input"
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '10px',
+                    color: '#ffffff',
+                    fontSize: '14px'
+                  }}
                 />
                 {showDealDropdown && searchDeal && filteredDeals.length > 0 && (
                   <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
                     marginTop: '8px',
-                    background: 'rgba(15,20,30,0.95)',
+                    background: 'rgba(15,20,30,0.98)',
                     border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '12px',
                     maxHeight: '200px',
                     overflowY: 'auto',
+                    zIndex: 100,
                     boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
                   }}>
                     {filteredDeals.map(deal => (
@@ -376,7 +431,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                         key={deal.id}
                         onClick={() => {
                           setSelectedDeal(deal);
-                          setEventForm({ ...eventForm, related_deal_id: deal.id });
+                          setEventForm({ ...eventForm, deal_id: deal.id });
                           setSearchDeal('');
                           setShowDealDropdown(false);
                         }}
@@ -394,11 +449,11 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                     ))}
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
 
-          {/* Related Contact (Optional) */}
+          {/* Link to Contact (Optional) */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Link to Contact (Optional)
@@ -415,7 +470,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
               }}>
                 <div>
                   <p style={{ color: '#10b981', fontSize: '14px', fontWeight: '600' }}>
-                    {selectedContact.full_name}
+                    {selectedContact.name}
                   </p>
                   {selectedContact.company && (
                     <p style={{ color: 'rgba(16,185,129,0.6)', fontSize: '12px' }}>{selectedContact.company}</p>
@@ -424,7 +479,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                 <button
                   onClick={() => {
                     setSelectedContact(null);
-                    setEventForm({ ...eventForm, related_contact_id: null });
+                    setEventForm({ ...eventForm, contact_id: null });
                     setSearchContact('');
                   }}
                   style={{
@@ -433,18 +488,16 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                     border: '1px solid rgba(239,68,68,0.2)',
                     borderRadius: '6px',
                     color: '#ef4444',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    cursor: 'pointer'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.2)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <>
+              <div style={{ position: 'relative' }}>
                 <input
+                  data-testid="contact-search-input"
                   type="text"
                   value={searchContact}
                   onChange={(e) => {
@@ -453,16 +506,29 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                   }}
                   onFocus={() => setShowContactDropdown(true)}
                   placeholder="Search contacts..."
-                  className="premium-input"
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '10px',
+                    color: '#ffffff',
+                    fontSize: '14px'
+                  }}
                 />
                 {showContactDropdown && searchContact && filteredContacts.length > 0 && (
                   <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
                     marginTop: '8px',
-                    background: 'rgba(15,20,30,0.95)',
+                    background: 'rgba(15,20,30,0.98)',
                     border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '12px',
                     maxHeight: '200px',
                     overflowY: 'auto',
+                    zIndex: 100,
                     boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
                   }}>
                     {filteredContacts.map(contact => (
@@ -470,7 +536,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                         key={contact.id}
                         onClick={() => {
                           setSelectedContact(contact);
-                          setEventForm({ ...eventForm, related_contact_id: contact.id });
+                          setEventForm({ ...eventForm, contact_id: contact.id });
                           setSearchContact('');
                           setShowContactDropdown(false);
                         }}
@@ -483,38 +549,50 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                         onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.05)'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                       >
-                        <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{contact.full_name}</p>
+                        <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{contact.name}</p>
                         {contact.company && <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{contact.company}</p>}
                       </div>
                     ))}
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
 
+          {/* Description */}
           <div>
             <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Notes / Description
             </label>
             <textarea
+              data-testid="description-input"
               value={eventForm.description}
               onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
               placeholder="Add notes or details..."
               rows={4}
-              className="premium-input"
-              style={{ resize: 'vertical' }}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '10px',
+                color: '#ffffff',
+                fontSize: '14px',
+                resize: 'vertical'
+              }}
             />
           </div>
         </div>
       </div>
 
+      {/* Footer */}
       <div style={{
         padding: '24px 28px',
         borderTop: '1px solid rgba(255, 255, 255, 0.1)',
         background: 'rgba(0,0,0,0.3)'
       }}>
         <button
+          data-testid="create-event-submit-btn"
           onClick={handleSubmit}
           disabled={isSaving}
           style={{
@@ -531,22 +609,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '12px',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: isSaving ? 'none' : '0 8px 32px rgba(0,184,212,0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
-          }}
-          onMouseEnter={(e) => {
-            if (!isSaving) {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.35), rgba(59, 130, 246, 0.35))';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 12px 48px rgba(0,184,212,0.35), inset 0 1px 0 rgba(255,255,255,0.15)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isSaving) {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,184,212,0.25), inset 0 1px 0 rgba(255,255,255,0.1)';
-            }
+            transition: 'all 0.3s ease'
           }}
         >
           <Save className="w-5 h-5" />
