@@ -280,7 +280,7 @@ async def upload_image(
 
 
 # ============================================================================
-# GEOCODING ROUTE (Using Radar.io)
+# GEOCODING ROUTES (Using Radar.io)
 # ============================================================================
 @api_router.get("/geocode")
 async def geocode_address(
@@ -321,6 +321,108 @@ async def geocode_address(
                     "latitude": addr.get('latitude'),
                     "longitude": addr.get('longitude'),
                     "formatted_address": addr.get('formattedAddress'),
+                    "city": addr.get('city'),
+                    "state": addr.get('state'),
+                    "zip": addr.get('postalCode')
+                }
+            }
+    except HTTPException:
+        raise
+
+
+@api_router.get("/geocode/autocomplete")
+async def autocomplete_address(
+    query: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get address autocomplete suggestions"""
+    import httpx
+    
+    try:
+        radar_key = os.environ.get('RADAR_SECRET_KEY')
+        if not radar_key:
+            raise HTTPException(status_code=500, detail="Geocoding service not configured")
+        
+        if len(query) < 3:
+            return {"success": True, "suggestions": []}
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://api.radar.io/v1/search/autocomplete",
+                params={"query": query, "limit": 5},
+                headers={"Authorization": radar_key}
+            )
+            
+            if response.status_code != 200:
+                return {"success": True, "suggestions": []}
+            
+            data = response.json()
+            
+            suggestions = []
+            for addr in data.get('addresses', []):
+                suggestions.append({
+                    "formatted_address": addr.get('formattedAddress'),
+                    "address": addr.get('addressLabel') or addr.get('formattedAddress', '').split(',')[0],
+                    "city": addr.get('city'),
+                    "state": addr.get('state'),
+                    "zip": addr.get('postalCode'),
+                    "latitude": addr.get('latitude'),
+                    "longitude": addr.get('longitude')
+                })
+            
+            return {
+                "success": True,
+                "suggestions": suggestions
+            }
+    except Exception as e:
+        logger.error(f"Autocomplete error: {str(e)}")
+        return {"success": True, "suggestions": []}
+
+
+@api_router.get("/geocode/reverse")
+async def reverse_geocode(
+    lat: float,
+    lng: float,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Reverse geocode lat/lng to address"""
+    import httpx
+    
+    try:
+        radar_key = os.environ.get('RADAR_SECRET_KEY')
+        if not radar_key:
+            raise HTTPException(status_code=500, detail="Geocoding service not configured")
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://api.radar.io/v1/geocode/reverse",
+                params={"coordinates": f"{lat},{lng}"},
+                headers={"Authorization": radar_key}
+            )
+            
+            if response.status_code != 200:
+                return {
+                    "success": False,
+                    "message": "Reverse geocoding failed"
+                }
+            
+            data = response.json()
+            
+            if not data.get('addresses'):
+                return {
+                    "success": False,
+                    "message": "No address found for this location"
+                }
+            
+            addr = data['addresses'][0]
+            
+            return {
+                "success": True,
+                "result": {
+                    "latitude": lat,
+                    "longitude": lng,
+                    "formatted_address": addr.get('formattedAddress'),
+                    "address": addr.get('addressLabel') or addr.get('formattedAddress', '').split(',')[0],
                     "city": addr.get('city'),
                     "state": addr.get('state'),
                     "zip": addr.get('postalCode')
