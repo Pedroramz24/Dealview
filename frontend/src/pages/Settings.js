@@ -88,9 +88,8 @@ const Settings = () => {
         .from('user_profiles')
         .update({
           full_name: profileData.full_name,
-          title: profileData.title,
           phone: profileData.phone,
-          timezone: profileData.timezone,
+          company: profileData.company,
           avatar_url: profileData.avatar_url
         })
         .eq('id', user.id)
