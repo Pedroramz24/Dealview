@@ -95,8 +95,13 @@ async def get_user_id(credentials: HTTPAuthorizationCredentials) -> str:
 async def get_user_team_id(user_id: str) -> Optional[str]:
     """Get user's team ID"""
     supabase = get_supabase()
-    response = supabase.table('user_profiles').select('team_id').eq('id', user_id).single().execute()
-    return response.data.get('team_id') if response.data else None
+    try:
+        response = supabase.table('user_profiles').select('team_id').eq('id', user_id).execute()
+        if response.data and len(response.data) > 0:
+            return response.data[0].get('team_id')
+        return None
+    except Exception:
+        return None
 
 
 # ============================================================================
