@@ -188,7 +188,7 @@ const CalendarView = () => {
   const handleDeleteEvent = async () => {
     if (!selectedEvent) return;
 
-    const headers = getAuthHeaders();
+    const headers = await getAuthHeaders();
     if (!headers) return;
 
     if (!window.confirm('Are you sure you want to delete this event?')) return;
