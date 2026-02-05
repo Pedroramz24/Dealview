@@ -481,3 +481,110 @@ async def unlink_contact_from_deal(
     except Exception as e:
         logger.error(f"Unlink contact error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to unlink contact")
+
+
+@router.post("/{deal_id}/documents")
+async def upload_document(
+    deal_id: str,
+    file: UploadFile = File(...),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Upload a document to a deal"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+        
+        # Verify ownership
+        deal = supabase.table('deals').select('owner_id').eq('id', deal_id).single().execute()
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        if deal.data['owner_id'] != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        # Read file content
+        content = await file.read()
+        
+        # Check file size (max 10MB)
+        if len(content) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File too large. Max size is 10MB")
+        
+        # Generate unique filename
+        file_ext = file.filename.split('.')[-1] if '.' in file.filename else ''
+        unique_filename = f"{deal_id}/{str(uuid.uuid4())}.{file_ext}"
+        
+        # Upload to Supabase storage
+        storage_response = supabase.storage.from_('deal-documents').upload(
+            unique_filename,
+            content,
+            file_options={"content-type": file.content_type}
+        )
+        
+        # Get public URL
+        file_url = supabase.storage.from_('deal-documents').get_public_url(unique_filename)
+        
+        # Save document record
+        doc_data = {
+            "id": str(uuid.uuid4()),
+            "deal_id": deal_id,
+            "file_name": file.filename,
+            "file_url": file_url,
+            "file_type": file_ext,
+            "file_size": len(content),
+            "uploaded_by": user_id
+        }
+        
+        response = supabase.table('deal_documents').insert(doc_data).execute()
+        
+        return {
+            "success": True,
+            "document": response.data[0] if response.data else doc_data
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Upload document error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to upload document: {str(e)}")
+
+
+@router.delete("/{deal_id}/documents/{document_id}")
+async def delete_document(
+    deal_id: str,
+    document_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete a document from a deal"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+        
+        # Verify ownership of deal
+        deal = supabase.table('deals').select('owner_id').eq('id', deal_id).single().execute()
+        if not deal.data or deal.data['owner_id'] != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        # Get document to find file path
+        doc = supabase.table('deal_documents').select('*').eq('id', document_id).single().execute()
+        if not doc.data:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        # Delete from storage (if possible)
+        try:
+            file_url = doc.data.get('file_url', '')
+            if 'deal-documents/' in file_url:
+                file_path = file_url.split('deal-documents/')[-1]
+                supabase.storage.from_('deal-documents').remove([file_path])
+        except:
+            pass  # Ignore storage deletion errors
+        
+        # Delete record
+        supabase.table('deal_documents').delete().eq('id', document_id).execute()
+        
+        return {
+            "success": True,
+            "message": "Document deleted"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete document error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to delete document")
