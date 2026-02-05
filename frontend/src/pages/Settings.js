@@ -64,9 +64,8 @@ const Settings = () => {
         setUserProfile(profile);
         const data = {
           full_name: profile.full_name || '',
-          title: profile.title || '',
           phone: profile.phone || '',
-          timezone: profile.timezone || 'America/Chicago',
+          company: profile.company || '',
           avatar_url: profile.avatar_url || ''
         };
         setProfileData(data);
