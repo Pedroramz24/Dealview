@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { 
   Search, Plus, X, GripVertical, Building2, MapPin, DollarSign,
-  ChevronDown, MoreVertical, Trash2, Eye, Edit
+  ChevronDown, MoreVertical, Trash2, Eye, Edit, Settings, Palette
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -17,7 +17,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragOverlay,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -25,7 +24,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { colors, gradients, borderRadius, spacing, shadows } from '../styles/designSystem';
+import { colors, gradients, borderRadius, shadows } from '../styles/designSystem';
 
 // Asset type colors
 const assetTypeColors = {
@@ -39,6 +38,13 @@ const assetTypeColors = {
 };
 
 const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Other'];
+
+// Stage color options
+const stageColorOptions = [
+  '#94a3b8', '#60a5fa', '#a78bfa', '#ec4899', 
+  '#f59e0b', '#10b981', '#00d4aa', '#ef4444',
+  '#06b6d4', '#8b5cf6', '#f97316', '#84cc16'
+];
 
 // Sortable Deal Card Component
 const SortableDealCard = ({ deal, onView, onDelete }) => {
@@ -68,12 +74,7 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      className="deal-card"
-    >
+    <div ref={setNodeRef} style={style} {...attributes} className="deal-card">
       <div style={{
         background: colors.surfaceCard,
         borderRadius: borderRadius.md,
@@ -92,7 +93,6 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
         e.currentTarget.style.boxShadow = 'none';
       }}
       >
-        {/* Drag Handle + Asset Type */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} {...listeners}>
             <GripVertical size={14} style={{ color: colors.textTertiary, cursor: 'grab' }} />
@@ -121,7 +121,6 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
             </div>
           </div>
           
-          {/* Actions */}
           <div style={{ display: 'flex', gap: '4px' }}>
             <button
               onClick={(e) => { e.stopPropagation(); onView(deal); }}
@@ -156,7 +155,6 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
           </div>
         </div>
 
-        {/* Title */}
         <div 
           style={{ 
             color: colors.textPrimary, 
@@ -170,7 +168,6 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
           {deal.title}
         </div>
 
-        {/* Address */}
         {deal.address && (
           <div style={{ 
             color: colors.textTertiary, 
@@ -185,7 +182,6 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
           </div>
         )}
 
-        {/* Price */}
         {deal.asking_price && (
           <div style={{ 
             color: colors.primary, 
@@ -201,7 +197,7 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
 };
 
 // Stage Column Component
-const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal }) => {
+const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal, onEditStage }) => {
   const stageDeals = deals.filter(d => d.pipeline_stage_id === stage.id);
   const totalValue = stageDeals.reduce((sum, d) => sum + (d.asking_price || 0), 0);
 
@@ -220,7 +216,6 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal }) => {
       flexDirection: 'column',
       height: '100%'
     }}>
-      {/* Stage Header */}
       <div style={{
         padding: '12px',
         borderRadius: `${borderRadius.md} ${borderRadius.md} 0 0`,
@@ -249,13 +244,29 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal }) => {
               {stageDeals.length}
             </span>
           </div>
-          <span style={{ color: colors.textTertiary, fontSize: '12px' }}>
-            {formatCurrency(totalValue)}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: colors.textTertiary, fontSize: '12px' }}>
+              {formatCurrency(totalValue)}
+            </span>
+            <button
+              onClick={() => onEditStage(stage)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: '4px',
+                cursor: 'pointer',
+                color: colors.textTertiary,
+                borderRadius: '4px'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.textTertiary}
+            >
+              <Edit size={12} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Deals Container */}
       <div style={{
         flex: 1,
         background: 'rgba(0,0,0,0.2)',
@@ -274,7 +285,6 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal }) => {
           ))}
         </SortableContext>
 
-        {/* Add Deal Button */}
         <button
           onClick={() => onAddDeal(stage.id)}
           style={{
@@ -313,13 +323,14 @@ const Pipeline = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   
-  // State
   const [pipelines, setPipelines] = useState([]);
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [stages, setStages] = useState([]);
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Deal modals
   const [showCreateDeal, setShowCreateDeal] = useState(false);
   const [selectedStageId, setSelectedStageId] = useState(null);
   const [newDeal, setNewDeal] = useState({
@@ -334,24 +345,26 @@ const Pipeline = () => {
   const [creatingDeal, setCreatingDeal] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState({ open: false, deal: null });
 
-  // DnD sensors
+  // Stage management
+  const [showStageManager, setShowStageManager] = useState(false);
+  const [editingStage, setEditingStage] = useState(null);
+  const [stageForm, setStageForm] = useState({ name: '', color: '#94a3b8' });
+  const [savingStage, setSavingStage] = useState(false);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 }
     })
   );
 
-  // Fetch pipelines on mount
   useEffect(() => {
     if (user) {
       fetchPipelines();
     } else {
-      // If no user, still set loading to false to show the page
       setLoading(false);
     }
   }, [user]);
 
-  // Fetch deals when pipeline changes
   useEffect(() => {
     if (selectedPipeline) {
       fetchDeals();
@@ -370,7 +383,6 @@ const Pipeline = () => {
         const pipelineData = data.pipelines || [];
         setPipelines(pipelineData);
         
-        // Select default or first pipeline
         const defaultPipeline = pipelineData.find(p => p.is_default) || pipelineData[0];
         if (defaultPipeline) {
           setSelectedPipeline(defaultPipeline);
@@ -401,7 +413,6 @@ const Pipeline = () => {
     }
   };
 
-  // Filter deals by search
   const filteredDeals = useMemo(() => {
     if (!searchTerm) return deals;
     const term = searchTerm.toLowerCase();
@@ -412,37 +423,27 @@ const Pipeline = () => {
     );
   }, [deals, searchTerm]);
 
-  // Handle drag end
   const handleDragEnd = async (event) => {
     const { active, over } = event;
-    
     if (!over) return;
     
     const dealId = active.id;
     const deal = deals.find(d => d.id === dealId);
-    
     if (!deal) return;
 
-    // Find the stage the deal was dropped into
-    // The over.id could be another deal or a stage
     let newStageId = null;
-    
-    // Check if dropped on a deal
     const overDeal = deals.find(d => d.id === over.id);
     if (overDeal) {
       newStageId = overDeal.pipeline_stage_id;
     } else {
-      // Dropped on stage itself
       newStageId = over.id;
     }
 
     if (newStageId && newStageId !== deal.pipeline_stage_id) {
-      // Optimistically update UI
       setDeals(prev => prev.map(d => 
         d.id === dealId ? { ...d, pipeline_stage_id: newStageId } : d
       ));
 
-      // Update in backend
       try {
         const token = (await supabase.auth.getSession()).data.session?.access_token;
         await fetch(`${API}/deals/${dealId}/stage`, {
@@ -456,12 +457,11 @@ const Pipeline = () => {
       } catch (error) {
         console.error('Error updating stage:', error);
         toast.error('Failed to update deal stage');
-        fetchDeals(); // Revert on error
+        fetchDeals();
       }
     }
   };
 
-  // Create deal
   const handleCreateDeal = async () => {
     if (!newDeal.title.trim()) {
       toast.error('Please enter a deal title');
@@ -480,7 +480,7 @@ const Pipeline = () => {
         },
         body: JSON.stringify({
           ...newDeal,
-          asking_price: newDeal.asking_price ? parseFloat(newDeal.asking_price) : null,
+          asking_price: newDeal.asking_price ? parseFloat(newDeal.asking_price.replace(/,/g, '')) : null,
           pipeline_id: selectedPipeline.id,
           pipeline_stage_id: selectedStageId || stages[0]?.id
         })
@@ -510,7 +510,6 @@ const Pipeline = () => {
     }
   };
 
-  // Delete deal
   const handleDeleteDeal = async () => {
     if (!deleteConfirm.deal) return;
     
@@ -535,15 +534,118 @@ const Pipeline = () => {
     }
   };
 
-  // View deal
   const handleViewDeal = (deal) => {
     navigate(`/deals/${deal.id}`);
   };
 
-  // Open create deal modal
   const handleAddDeal = (stageId) => {
     setSelectedStageId(stageId);
     setShowCreateDeal(true);
+  };
+
+  // Stage management functions
+  const handleOpenStageEdit = (stage) => {
+    setEditingStage(stage);
+    setStageForm({ name: stage.name, color: stage.color || '#94a3b8' });
+    setShowStageManager(true);
+  };
+
+  const handleOpenStageCreate = () => {
+    setEditingStage(null);
+    setStageForm({ name: '', color: '#94a3b8' });
+    setShowStageManager(true);
+  };
+
+  const handleSaveStage = async () => {
+    if (!stageForm.name.trim()) {
+      toast.error('Stage name is required');
+      return;
+    }
+
+    setSavingStage(true);
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      
+      if (editingStage) {
+        // Update existing stage
+        const response = await fetch(`${API}/pipelines/${selectedPipeline.id}/stages/${editingStage.id}`, {
+          method: 'PUT',
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(stageForm)
+        });
+        
+        if (response.ok) {
+          toast.success('Stage updated');
+          setStages(prev => prev.map(s => 
+            s.id === editingStage.id ? { ...s, ...stageForm } : s
+          ));
+        } else {
+          toast.error('Failed to update stage');
+        }
+      } else {
+        // Create new stage
+        const response = await fetch(`${API}/pipelines/${selectedPipeline.id}/stages`, {
+          method: 'POST',
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ...stageForm,
+            display_order: stages.length + 1
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          toast.success('Stage created');
+          setStages(prev => [...prev, data.stage]);
+        } else {
+          toast.error('Failed to create stage');
+        }
+      }
+      
+      setShowStageManager(false);
+      fetchPipelines(); // Refresh to get updated stages
+    } catch (error) {
+      console.error('Error saving stage:', error);
+      toast.error('Failed to save stage');
+    } finally {
+      setSavingStage(false);
+    }
+  };
+
+  const handleDeleteStage = async () => {
+    if (!editingStage) return;
+    
+    // Check if stage has deals
+    const stageDeals = deals.filter(d => d.pipeline_stage_id === editingStage.id);
+    if (stageDeals.length > 0) {
+      toast.error(`Cannot delete stage with ${stageDeals.length} deals. Move or delete deals first.`);
+      return;
+    }
+
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      const response = await fetch(`${API}/pipelines/${selectedPipeline.id}/stages/${editingStage.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success('Stage deleted');
+        setStages(prev => prev.filter(s => s.id !== editingStage.id));
+        setShowStageManager(false);
+      } else {
+        toast.error('Failed to delete stage');
+      }
+    } catch (error) {
+      console.error('Error deleting stage:', error);
+      toast.error('Failed to delete stage');
+    }
   };
 
   if (loading) {
@@ -560,6 +662,16 @@ const Pipeline = () => {
     );
   }
 
+  // Calculate pipeline stats
+  const totalDeals = deals.length;
+  const totalValue = deals.reduce((sum, d) => sum + (d.asking_price || 0), 0);
+  const formatTotalValue = (value) => {
+    if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
+    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
+    return `$${value}`;
+  };
+
   return (
     <div style={{ 
       display: 'flex', 
@@ -575,17 +687,28 @@ const Pipeline = () => {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <h1 style={{ 
-            color: colors.textPrimary, 
-            fontSize: '24px', 
-            fontWeight: '700' 
-          }}>
-            Pipeline
-          </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <div>
+            <h1 style={{ 
+              color: colors.textPrimary, 
+              fontSize: '24px', 
+              fontWeight: '700',
+              marginBottom: '4px'
+            }}>
+              Pipeline
+            </h1>
+            <div style={{ display: 'flex', gap: '16px', fontSize: '13px' }}>
+              <span style={{ color: colors.textTertiary }}>
+                {totalDeals} deals
+              </span>
+              <span style={{ color: colors.primary, fontWeight: '600' }}>
+                {formatTotalValue(totalValue)} total value
+              </span>
+            </div>
+          </div>
           
           {/* Pipeline Selector */}
-          {pipelines.length > 1 && (
+          {pipelines.length > 0 && (
             <select
               value={selectedPipeline?.id || ''}
               onChange={(e) => {
@@ -634,6 +757,19 @@ const Pipeline = () => {
             />
           </div>
 
+          {/* Manage Stages Button */}
+          <Button
+            onClick={handleOpenStageCreate}
+            variant="outline"
+            style={{
+              borderColor: colors.border,
+              color: colors.textSecondary
+            }}
+          >
+            <Settings size={16} style={{ marginRight: '8px' }} />
+            Add Stage
+          </Button>
+
           {/* Add Deal Button */}
           <Button
             onClick={() => handleAddDeal(stages[0]?.id)}
@@ -662,7 +798,7 @@ const Pipeline = () => {
           <div style={{
             display: 'flex',
             gap: '16px',
-            height: 'calc(100vh - 180px)',
+            height: 'calc(100vh - 200px)',
             minWidth: 'fit-content'
           }}>
             {stages.map(stage => (
@@ -673,8 +809,39 @@ const Pipeline = () => {
                 onDealView={handleViewDeal}
                 onDealDelete={(deal) => setDeleteConfirm({ open: true, deal })}
                 onAddDeal={handleAddDeal}
+                onEditStage={handleOpenStageEdit}
               />
             ))}
+            
+            {/* Add Stage Column */}
+            <div 
+              onClick={handleOpenStageCreate}
+              style={{
+                minWidth: '280px',
+                maxWidth: '280px',
+                height: '100%',
+                border: `2px dashed ${colors.border}`,
+                borderRadius: borderRadius.md,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                color: colors.textTertiary
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = colors.primary;
+                e.currentTarget.style.color = colors.primary;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = colors.border;
+                e.currentTarget.style.color = colors.textTertiary;
+              }}
+            >
+              <Plus size={32} />
+              <span style={{ marginTop: '8px', fontSize: '14px' }}>Add Stage</span>
+            </div>
           </div>
         </DndContext>
       </div>
@@ -726,9 +893,12 @@ const Pipeline = () => {
               <div>
                 <Label style={{ color: colors.textSecondary }}>Asking Price</Label>
                 <Input
-                  type="number"
                   value={newDeal.asking_price}
-                  onChange={(e) => setNewDeal(prev => ({ ...prev, asking_price: e.target.value }))}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    const formatted = value ? parseInt(value).toLocaleString() : '';
+                    setNewDeal(prev => ({ ...prev, asking_price: formatted }));
+                  }}
                   placeholder="0"
                   style={{ marginTop: '6px', background: colors.surfaceElevated }}
                 />
@@ -794,6 +964,90 @@ const Pipeline = () => {
                 }}
               >
                 {creatingDeal ? 'Creating...' : 'Create Deal'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Stage Manager Dialog */}
+      <Dialog open={showStageManager} onOpenChange={setShowStageManager}>
+        <DialogContent style={{ 
+          background: colors.surfaceCard, 
+          border: `1px solid ${colors.border}`,
+          maxWidth: '400px'
+        }}>
+          <DialogHeader>
+            <DialogTitle style={{ color: colors.textPrimary }}>
+              {editingStage ? 'Edit Stage' : 'Create New Stage'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
+            <div>
+              <Label style={{ color: colors.textSecondary }}>Stage Name *</Label>
+              <Input
+                value={stageForm.name}
+                onChange={(e) => setStageForm(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="e.g., Prospect, Negotiation, Closed"
+                style={{ marginTop: '6px', background: colors.surfaceElevated }}
+              />
+            </div>
+
+            <div>
+              <Label style={{ color: colors.textSecondary }}>Stage Color</Label>
+              <div style={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: '8px', 
+                marginTop: '8px' 
+              }}>
+                {stageColorOptions.map(color => (
+                  <button
+                    key={color}
+                    onClick={() => setStageForm(prev => ({ ...prev, color }))}
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '6px',
+                      background: color,
+                      border: stageForm.color === color ? '3px solid white' : '2px solid transparent',
+                      cursor: 'pointer',
+                      boxShadow: stageForm.color === color ? `0 0 0 2px ${color}` : 'none'
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+              {editingStage && (
+                <Button
+                  onClick={handleDeleteStage}
+                  variant="outline"
+                  style={{ borderColor: '#ef4444', color: '#ef4444' }}
+                >
+                  <Trash2 size={16} />
+                </Button>
+              )}
+              <Button
+                onClick={() => setShowStageManager(false)}
+                variant="outline"
+                style={{ flex: 1, borderColor: colors.border, color: colors.textSecondary }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveStage}
+                disabled={savingStage || !stageForm.name}
+                style={{ 
+                  flex: 1, 
+                  background: gradients.primaryButton, 
+                  border: 'none',
+                  opacity: (savingStage || !stageForm.name) ? 0.5 : 1
+                }}
+              >
+                {savingStage ? 'Saving...' : editingStage ? 'Update' : 'Create'}
               </Button>
             </div>
           </div>
