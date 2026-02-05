@@ -60,7 +60,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
   }, [isOpen, user]);
 
   const fetchDealsAndContacts = async () => {
-    const headers = getAuthHeaders();
+    const headers = await getAuthHeaders();
     if (!headers) return;
 
     try {
