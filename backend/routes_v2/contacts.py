@@ -347,8 +347,8 @@ async def update_contact(
     try:
         user_id = await get_user_id(credentials)
         
-        # Verify ownership
-        existing = supabase.table('contacts').select('owner_id').eq('id', contact_id).single().execute()
+        # Verify ownership - use maybe_single to avoid exception on no rows
+        existing = supabase.table('contacts').select('owner_id').eq('id', contact_id).maybe_single().execute()
         if not existing.data:
             raise HTTPException(status_code=404, detail="Contact not found")
         if existing.data['owner_id'] != user_id:
@@ -392,8 +392,8 @@ async def delete_contact(
     try:
         user_id = await get_user_id(credentials)
         
-        # Verify ownership
-        existing = supabase.table('contacts').select('owner_id').eq('id', contact_id).single().execute()
+        # Verify ownership - use maybe_single to avoid exception on no rows
+        existing = supabase.table('contacts').select('owner_id').eq('id', contact_id).maybe_single().execute()
         if not existing.data:
             raise HTTPException(status_code=404, detail="Contact not found")
         if existing.data['owner_id'] != user_id:
