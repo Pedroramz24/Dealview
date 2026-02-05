@@ -555,7 +555,7 @@ src/
 **Environment Variables:**
 ```bash
 # frontend/.env
-REACT_APP_BACKEND_URL=https://deallinked-rebuild.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://deallinked-v2.preview.emergentagent.com
 ```
 
 **API Communication:**
@@ -1023,7 +1023,7 @@ CORS_ORIGINS=*
 
 **Frontend (.env):**
 ```bash
-REACT_APP_BACKEND_URL=https://deallinked-rebuild.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://deallinked-v2.preview.emergentagent.com
 ```
 
 **Critical Rules:**

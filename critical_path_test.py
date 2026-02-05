@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://deallinked-rebuild.preview.emergentagent.com/api"
+BASE_URL = "https://deallinked-v2.preview.emergentagent.com/api"
 CREDENTIALS = {
     "email": "contact@pedroarmando.com",
     "password": "Flin141812$"

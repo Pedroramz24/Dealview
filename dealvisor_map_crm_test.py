@@ -8,7 +8,7 @@ import time
 from datetime import datetime
 
 # Configuration
-API_BASE = "https://deallinked-rebuild.preview.emergentagent.com/api"
+API_BASE = "https://deallinked-v2.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "contact@pedroarmando.com"
 TEST_USER_PASSWORD = "Flin141812$"
 
