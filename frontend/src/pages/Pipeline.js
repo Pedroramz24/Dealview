@@ -343,8 +343,12 @@ const Pipeline = () => {
 
   // Fetch pipelines on mount
   useEffect(() => {
+    console.log('Pipeline useEffect - user:', user);
     if (user) {
       fetchPipelines();
+    } else {
+      // If no user, still set loading to false to show the page
+      setLoading(false);
     }
   }, [user]);
 
