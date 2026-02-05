@@ -1,386 +1,290 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { supabase } from '../supabaseClient';
-import { useCapabilities } from '../contexts/CapabilitiesContext';
-import { Plus, X, CheckCircle, Edit2, ExternalLink, MapPin, DollarSign, FileText, Clock, User, Sparkles } from 'lucide-react';
+import { AuthContext } from '../App';
+import { Plus, X, CheckCircle, Edit2, Clock, Calendar as CalendarIcon, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
-import CreateEventPanel from '../components/CreateEventPanel';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const EVENT_COLORS = {
-  deal: { primary: '#10b981', glow: 'rgba(16, 185, 129, 0.25)', shadow: 'rgba(16, 185, 129, 0.2)' },
-  followup: { primary: '#3b82f6', glow: 'rgba(59, 130, 246, 0.25)', shadow: 'rgba(59, 130, 246, 0.2)' },
-  deadline: { primary: '#ef4444', glow: 'rgba(239, 68, 68, 0.25)', shadow: 'rgba(239, 68, 68, 0.2)' },
-  meeting: { primary: '#f97316', glow: 'rgba(249, 115, 22, 0.25)', shadow: 'rgba(249, 115, 22, 0.2)' },
-  task: { primary: '#a855f7', glow: 'rgba(168, 85, 247, 0.25)', shadow: 'rgba(168, 85, 247, 0.2)' }
+  meeting: { primary: '#f97316', bg: 'rgba(249, 115, 22, 0.15)' },
+  call: { primary: '#3b82f6', bg: 'rgba(59, 130, 246, 0.15)' },
+  task: { primary: '#a855f7', bg: 'rgba(168, 85, 247, 0.15)' },
+  deadline: { primary: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)' },
+  deal: { primary: '#10b981', bg: 'rgba(16, 185, 129, 0.15)' },
+  other: { primary: '#6b7280', bg: 'rgba(107, 114, 128, 0.15)' }
 };
 
+const EVENT_TYPE_OPTIONS = [
+  { value: 'meeting', label: 'Meeting' },
+  { value: 'call', label: 'Call' },
+  { value: 'task', label: 'Task' },
+  { value: 'deadline', label: 'Deadline' },
+  { value: 'deal', label: 'Deal' },
+  { value: 'other', label: 'Other' }
+];
+
 const CalendarView = () => {
-  const { capabilities } = useCapabilities();
-  const navigate = useNavigate();
+  const { session } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventPanel, setShowEventPanel] = useState(false);
-  const [showCreatePanel, setShowCreatePanel] = useState(false);
-  const [showReschedule, setShowReschedule] = useState(false);
-  const [rescheduleDate, setRescheduleDate] = useState('');
-  const [rescheduleTime, setRescheduleTime] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditMode, setShowEditMode] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
   const calendarRef = React.useRef(null);
-  
-  // Determine calendar context based on role
-  const calendarContext = capabilities?.primary_role || 'buyer'; // Used for event filtering/labeling
 
-  const fetchCalendarEvents = useCallback(async () => {
+  // Form state for creating/editing events
+  const [eventForm, setEventForm] = useState({
+    title: '',
+    description: '',
+    start_time: '',
+    end_time: '',
+    all_day: false,
+    event_type: 'task',
+    color: '#00b8d4'
+  });
+
+  const getAuthHeaders = useCallback(() => {
+    if (!session?.access_token) return null;
+    return {
+      'Authorization': `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json'
+    };
+  }, [session]);
+
+  // Fetch events from V2 API
+  const fetchEvents = useCallback(async () => {
+    const headers = getAuthHeaders();
+    if (!headers) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+      const response = await fetch(`${API_URL}/api/calendar/events`, { headers });
+      const data = await response.json();
 
-      const aggregatedEvents = [];
-
-      // Fetch standalone calendar events
-      try {
-        const { data: calendarEvents } = await supabase
-          .from('calendar_events')
-          .select('*')
-          .eq('owner_id', user.id);
-
-        if (calendarEvents) {
-          calendarEvents.forEach(event => {
-            const eventColor = EVENT_COLORS[event.event_type] || EVENT_COLORS.task;
-            aggregatedEvents.push({
-              id: event.id,
-              title: event.title,
-              start: event.start_date,
-              end: event.end_date || event.start_date,
-              allDay: event.all_day,
-              backgroundColor: eventColor.primary,
-              borderColor: 'transparent',
-              classNames: [`event-${event.event_type}`, 'premium-event'],
-              extendedProps: {
-                type: event.event_type,
-                category: event.event_type.charAt(0).toUpperCase() + event.event_type.slice(1),
-                description: event.description,
-                relatedDealId: event.related_deal_id,
-                relatedContactId: event.related_contact_id,
-                colorScheme: eventColor,
-                icon: '📅'
-              }
-            });
-          });
-        }
-      } catch (err) {
-        console.warn('Calendar events table may not exist yet:', err);
-      }
-
-      // Fetch deals - Mode-adaptive filtering
-      let dealsQuery = supabase.from('deals').select('*');
-      
-      if (calendarContext === 'seller') {
-        // Seller: Only their listings
-        dealsQuery = dealsQuery.eq('owner_id', user.id);
-      } else if (calendarContext === 'buyer') {
-        // Buyer: Only published deals or saved deals
-        dealsQuery = dealsQuery.eq('is_published', true);
-      } else {
-        // Broker: All deals
-        dealsQuery = dealsQuery.eq('owner_id', user.id);
-      }
-      
-      const { data: deals } = await dealsQuery;
-
-      if (deals) {
-        deals.forEach(deal => {
-          if (deal.target_close_date) {
-            aggregatedEvents.push({
-              id: `closing-${deal.id}`,
-              title: deal.address || deal.title,
-              start: deal.target_close_date,
-              allDay: true,
-              backgroundColor: EVENT_COLORS.deal.primary,
-              borderColor: 'transparent',
-              classNames: ['event-deal', 'premium-event'],
-              extendedProps: {
-                type: 'deal',
-                dealId: deal.id,
-                dealData: deal,
-                category: 'Closing',
-                icon: '🏁',
-                colorScheme: EVENT_COLORS.deal
-              }
-            });
-          }
-
-          if (deal.next_action_date) {
-            aggregatedEvents.push({
-              id: `action-${deal.id}`,
-              title: deal.next_action || 'Follow-up',
-              start: deal.next_action_date,
-              allDay: true,
-              backgroundColor: EVENT_COLORS.followup.primary,
-              borderColor: 'transparent',
-              classNames: ['event-followup', 'premium-event'],
-              extendedProps: {
-                type: 'followup',
-                dealId: deal.id,
-                dealData: deal,
-                category: 'Follow-up',
-                icon: '📋',
-                colorScheme: EVENT_COLORS.followup
-              }
-            });
-          }
+      if (data.success && data.events) {
+        const formattedEvents = data.events.map(event => {
+          const colorScheme = EVENT_COLORS[event.event_type] || EVENT_COLORS.other;
+          return {
+            id: event.id,
+            title: event.title,
+            start: event.start_time,
+            end: event.end_time || event.start_time,
+            allDay: event.all_day,
+            backgroundColor: colorScheme.primary,
+            borderColor: 'transparent',
+            extendedProps: {
+              ...event,
+              colorScheme
+            }
+          };
         });
+        setEvents(formattedEvents);
       }
-
-      // Fetch contacts
-      const { data: contacts } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('owner_id', user.id);
-
-      if (contacts) {
-        contacts.forEach(contact => {
-          if (contact.next_action) {
-            aggregatedEvents.push({
-              id: `contact-${contact.id}`,
-              title: contact.full_name,
-              start: contact.next_action,
-              allDay: true,
-              backgroundColor: EVENT_COLORS.followup.primary,
-              borderColor: 'transparent',
-              classNames: ['event-followup', 'premium-event'],
-              extendedProps: {
-                type: 'followup',
-                contactId: contact.id,
-                contactData: contact,
-                category: 'Call',
-                icon: '📞',
-                colorScheme: EVENT_COLORS.followup
-              }
-            });
-          }
-        });
-      }
-
-      console.log('[Calendar] Loaded', aggregatedEvents.length, 'total events');
-      setEvents(aggregatedEvents);
     } catch (error) {
-      console.error('Error loading calendar:', error);
+      console.error('Error fetching events:', error);
       toast.error('Failed to load calendar events');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [getAuthHeaders]);
 
   useEffect(() => {
-    fetchCalendarEvents();
-  }, [fetchCalendarEvents]);
+    fetchEvents();
+  }, [fetchEvents]);
 
-  const handleEventClick = async (info) => {
+  // Create new event
+  const handleCreateEvent = async () => {
+    if (!eventForm.title.trim()) {
+      toast.error('Please enter an event title');
+      return;
+    }
+    if (!eventForm.start_time) {
+      toast.error('Please select a start time');
+      return;
+    }
+
+    const headers = getAuthHeaders();
+    if (!headers) return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/calendar/events`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          title: eventForm.title,
+          description: eventForm.description,
+          start_time: new Date(eventForm.start_time).toISOString(),
+          end_time: eventForm.end_time ? new Date(eventForm.end_time).toISOString() : null,
+          all_day: eventForm.all_day,
+          event_type: eventForm.event_type,
+          color: EVENT_COLORS[eventForm.event_type]?.primary || '#00b8d4'
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Event created successfully!');
+        setShowCreateModal(false);
+        resetForm();
+        fetchEvents();
+      } else {
+        toast.error(data.detail || 'Failed to create event');
+      }
+    } catch (error) {
+      console.error('Error creating event:', error);
+      toast.error('Failed to create event');
+    }
+  };
+
+  // Update event
+  const handleUpdateEvent = async () => {
+    if (!selectedEvent) return;
+
+    const headers = getAuthHeaders();
+    if (!headers) return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/calendar/events/${selectedEvent.id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+          title: eventForm.title,
+          description: eventForm.description,
+          start_time: eventForm.start_time ? new Date(eventForm.start_time).toISOString() : undefined,
+          end_time: eventForm.end_time ? new Date(eventForm.end_time).toISOString() : null,
+          all_day: eventForm.all_day,
+          event_type: eventForm.event_type
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Event updated successfully!');
+        setShowEditMode(false);
+        setShowEventPanel(false);
+        fetchEvents();
+      } else {
+        toast.error(data.detail || 'Failed to update event');
+      }
+    } catch (error) {
+      console.error('Error updating event:', error);
+      toast.error('Failed to update event');
+    }
+  };
+
+  // Delete event
+  const handleDeleteEvent = async () => {
+    if (!selectedEvent) return;
+
+    const headers = getAuthHeaders();
+    if (!headers) return;
+
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/calendar/events/${selectedEvent.id}`, {
+        method: 'DELETE',
+        headers
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Event deleted successfully!');
+        setShowEventPanel(false);
+        setSelectedEvent(null);
+        fetchEvents();
+      } else {
+        toast.error(data.detail || 'Failed to delete event');
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      toast.error('Failed to delete event');
+    }
+  };
+
+  // Handle event click
+  const handleEventClick = (info) => {
     const event = {
       id: info.event.id,
       title: info.event.title,
       start: info.event.start,
+      end: info.event.end,
       allDay: info.event.allDay,
-      backgroundColor: info.event.backgroundColor,
       ...info.event.extendedProps
     };
-
-    // Fetch related deal if linked
-    if (event.relatedDealId && !event.dealData) {
-      try {
-        const { data: dealData } = await supabase
-          .from('deals')
-          .select('*')
-          .eq('id', event.relatedDealId)
-          .single();
-        
-        if (dealData) {
-          event.dealData = dealData;
-        }
-      } catch (err) {
-        console.error('Error fetching related deal:', err);
-      }
-    }
-
-    // Fetch related contact if linked
-    if (event.relatedContactId && !event.contactData) {
-      try {
-        const { data: contactData } = await supabase
-          .from('contacts')
-          .select('*')
-          .eq('id', event.relatedContactId)
-          .single();
-        
-        if (contactData) {
-          event.contactData = contactData;
-        }
-      } catch (err) {
-        console.error('Error fetching related contact:', err);
-      }
-    }
-
     setSelectedEvent(event);
     setShowEventPanel(true);
+    setShowEditMode(false);
   };
 
-  const handleMarkComplete = async () => {
-    try {
-      // For standalone calendar events
-      if (selectedEvent?.id && typeof selectedEvent.id === 'string' && !selectedEvent.id.includes('closing-') && !selectedEvent.id.includes('action-') && !selectedEvent.id.includes('contact-')) {
-        const { error } = await supabase
-          .from('calendar_events')
-          .update({ 
-            status: 'completed',
-            completed_at: new Date().toISOString()
-          })
-          .eq('id', selectedEvent.id);
-
-        if (error) throw error;
-      } 
-      // For deal-based events - mark the deal's next action as complete
-      else if (selectedEvent?.dealId && selectedEvent.id.includes('action-')) {
-        const { error } = await supabase
-          .from('deals')
-          .update({ 
-            next_action_date: null,
-            last_contact_date: new Date().toISOString().split('T')[0]
-          })
-          .eq('id', selectedEvent.dealId);
-
-        if (error) throw error;
-      }
-
-      toast.success('Event marked as complete!');
-      setShowEventPanel(false);
-      fetchCalendarEvents();
-    } catch (error) {
-      console.error('Error marking complete:', error);
-      toast.error('Failed to mark event complete');
-    }
+  // Start editing
+  const startEditing = () => {
+    if (!selectedEvent) return;
+    setEventForm({
+      title: selectedEvent.title || '',
+      description: selectedEvent.description || '',
+      start_time: selectedEvent.start_time ? new Date(selectedEvent.start_time).toISOString().slice(0, 16) : '',
+      end_time: selectedEvent.end_time ? new Date(selectedEvent.end_time).toISOString().slice(0, 16) : '',
+      all_day: selectedEvent.all_day || false,
+      event_type: selectedEvent.event_type || 'task',
+      color: selectedEvent.color || '#00b8d4'
+    });
+    setShowEditMode(true);
   };
 
-  const handleReschedule = () => {
-    // Extract current date and time from selected event
-    const eventDate = new Date(selectedEvent.start);
-    const dateStr = eventDate.toISOString().split('T')[0];
-    const timeStr = eventDate.toTimeString().slice(0, 5);
-    
-    setRescheduleDate(dateStr);
-    setRescheduleTime(timeStr);
-    setShowReschedule(true);
+  // Reset form
+  const resetForm = () => {
+    setEventForm({
+      title: '',
+      description: '',
+      start_time: '',
+      end_time: '',
+      all_day: false,
+      event_type: 'task',
+      color: '#00b8d4'
+    });
   };
 
-  const handleSaveReschedule = async () => {
-    if (!rescheduleDate) {
-      toast.error('Please select a date');
-      return;
-    }
-
-    try {
-      // Combine date and time
-      const dateTimeStr = rescheduleTime 
-        ? `${rescheduleDate}T${rescheduleTime}:00`
-        : `${rescheduleDate}T00:00:00`;
-      const parsedDate = new Date(dateTimeStr);
-
-      if (isNaN(parsedDate.getTime())) {
-        toast.error('Invalid date format');
-        return;
-      }
-
-      // For standalone calendar events
-      if (selectedEvent?.id && typeof selectedEvent.id === 'string' && !selectedEvent.id.includes('closing-') && !selectedEvent.id.includes('action-') && !selectedEvent.id.includes('contact-')) {
-        const { error } = await supabase
-          .from('calendar_events')
-          .update({ 
-            start_date: parsedDate.toISOString(),
-            end_date: parsedDate.toISOString()
-          })
-          .eq('id', selectedEvent.id);
-
-        if (error) throw error;
-      }
-      // For deal closing dates
-      else if (selectedEvent?.dealId && selectedEvent.id.includes('closing-')) {
-        const { error } = await supabase
-          .from('deals')
-          .update({ target_close_date: parsedDate.toISOString().split('T')[0] })
-          .eq('id', selectedEvent.dealId);
-
-        if (error) throw error;
-      }
-      // For deal follow-up dates
-      else if (selectedEvent?.dealId && selectedEvent.id.includes('action-')) {
-        const { error } = await supabase
-          .from('deals')
-          .update({ next_action_date: parsedDate.toISOString().split('T')[0] })
-          .eq('id', selectedEvent.dealId);
-
-        if (error) throw error;
-      }
-      // For contact follow-ups
-      else if (selectedEvent?.contactId) {
-        const { error } = await supabase
-          .from('contacts')
-          .update({ next_action: parsedDate.toISOString().split('T')[0] })
-          .eq('id', selectedEvent.contactId);
-
-        if (error) throw error;
-      }
-
-      toast.success('Event rescheduled successfully!');
-      setShowReschedule(false);
-      setShowEventPanel(false);
-      fetchCalendarEvents();
-    } catch (error) {
-      console.error('Error rescheduling:', error);
-      toast.error('Failed to reschedule event');
-    }
-  };
-
-  const handleViewDeal = () => {
-    if (selectedEvent?.dealId) {
-      navigate(`/deals/${selectedEvent.dealId}`);
-      setShowEventPanel(false);
-    }
-  };
-
-  const handleEventCreated = () => {
-    fetchCalendarEvents();
-    setShowCreatePanel(false);
-    toast.success('Event created successfully!');
+  // Open create modal
+  const openCreateModal = () => {
+    resetForm();
+    // Set default start time to now
+    const now = new Date();
+    now.setMinutes(Math.ceil(now.getMinutes() / 15) * 15);
+    setEventForm(prev => ({
+      ...prev,
+      start_time: now.toISOString().slice(0, 16)
+    }));
+    setShowCreateModal(true);
   };
 
   return (
-    <div style={{ height: '100vh', background: 'transparent', position: 'relative', overflow: 'hidden' }}>
-      {/* Global body gradient provides the atmospheric effect */}
-      
+    <div data-testid="calendar-page" style={{ height: '100vh', background: 'transparent', position: 'relative', overflow: 'hidden' }}>
       {/* Main Container */}
       <div style={{ height: '100%', position: 'relative', zIndex: 1, padding: '20px' }}>
-        {/* Premium Elevated Calendar Card */}
+        {/* Calendar Card */}
         <div style={{
           height: '100%',
           background: 'linear-gradient(145deg, rgba(12, 16, 22, 0.96) 0%, rgba(8, 12, 18, 0.96) 100%)',
           borderRadius: '28px',
           padding: '0',
-          boxShadow: '0 40px 100px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.04), inset 0 2px 0 rgba(255, 255, 255, 0.04)',
+          boxShadow: '0 40px 100px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.04)',
           border: '1px solid rgba(255, 255, 255, 0.06)',
           position: 'relative',
           overflow: 'hidden',
           backdropFilter: 'blur(30px)'
         }}>
-          {/* Glowing top edge - TONED DOWN */}
+          {/* Top edge glow */}
           <div style={{
             position: 'absolute',
             top: 0,
@@ -388,15 +292,13 @@ const CalendarView = () => {
             right: '0',
             height: '1px',
             background: 'linear-gradient(90deg, transparent 0%, rgba(0, 184, 212, 0.3) 50%, transparent 100%)',
-            boxShadow: '0 0 15px rgba(0, 184, 212, 0.2)',
             pointerEvents: 'none'
           }} />
 
-          {/* Custom Toolbar */}
+          {/* Toolbar */}
           <div style={{
             padding: '28px 40px 24px',
             borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-            background: 'linear-gradient(180deg, rgba(0, 184, 212, 0.02) 0%, transparent 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -410,14 +312,13 @@ const CalendarView = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '1px solid rgba(0,184,212,0.3)',
-                boxShadow: '0 8px 24px rgba(0,184,212,0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
+                border: '1px solid rgba(0,184,212,0.3)'
               }}>
-                <Sparkles className="w-6 h-6" style={{ color: '#00d4ff' }} />
+                <CalendarIcon className="w-6 h-6" style={{ color: '#00d4ff' }} />
               </div>
               <div>
                 <h1 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', letterSpacing: '-0.03em', marginBottom: '2px' }}>Calendar</h1>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', fontWeight: '600', letterSpacing: '0.02em' }}>Your unified command center</p>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', fontWeight: '600' }}>Manage your events</p>
               </div>
             </div>
 
@@ -433,6 +334,7 @@ const CalendarView = () => {
                 border: '1px solid rgba(255,255,255,0.06)'
               }}>
                 <button
+                  data-testid="calendar-prev-btn"
                   onClick={() => calendarRef.current?.getApi().prev()}
                   style={{
                     padding: '8px',
@@ -445,30 +347,22 @@ const CalendarView = () => {
                     display: 'flex',
                     alignItems: 'center'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(0,184,212,0.1)';
-                    e.currentTarget.style.color = '#00b8d4';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                  }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="15 18 9 12 15 6"></polyline>
                   </svg>
                 </button>
-                <span id="calendar-month-label" style={{ 
+                <span style={{ 
                   color: '#ffffff', 
                   fontSize: '16px', 
                   fontWeight: '800', 
                   minWidth: '140px', 
-                  textAlign: 'center',
-                  letterSpacing: '-0.01em'
+                  textAlign: 'center'
                 }}>
                   {currentMonth}
                 </span>
                 <button
+                  data-testid="calendar-next-btn"
                   onClick={() => calendarRef.current?.getApi().next()}
                   style={{
                     padding: '8px',
@@ -481,14 +375,6 @@ const CalendarView = () => {
                     display: 'flex',
                     alignItems: 'center'
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(0,184,212,0.1)';
-                    e.currentTarget.style.color = '#00b8d4';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                  }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -498,6 +384,7 @@ const CalendarView = () => {
 
               {/* Today Button */}
               <button
+                data-testid="calendar-today-btn"
                 onClick={() => calendarRef.current?.getApi().today()}
                 style={{
                   padding: '10px 20px',
@@ -509,14 +396,6 @@ const CalendarView = () => {
                   fontWeight: '700',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(0, 184, 212, 0.15))';
-                  e.currentTarget.style.transform = 'scale(1.02)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))';
-                  e.currentTarget.style.transform = 'scale(1)';
                 }}
               >
                 Today
@@ -539,6 +418,7 @@ const CalendarView = () => {
                 ].map(({ view: viewName, label }) => (
                   <button
                     key={viewName}
+                    data-testid={`calendar-view-${viewName}`}
                     onClick={() => calendarRef.current?.getApi().changeView(viewName)}
                     style={{
                       padding: '10px 18px',
@@ -551,14 +431,6 @@ const CalendarView = () => {
                       cursor: 'pointer',
                       transition: 'all 0.2s ease'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(0,184,212,0.1)';
-                      e.currentTarget.style.color = '#00b8d4';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                    }}
                   >
                     {label}
                   </button>
@@ -567,7 +439,8 @@ const CalendarView = () => {
 
               {/* Create Event Button */}
               <button
-                onClick={() => setShowCreatePanel(true)}
+                data-testid="create-event-btn"
+                onClick={openCreateModal}
                 style={{
                   padding: '12px 24px',
                   background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
@@ -580,18 +453,7 @@ const CalendarView = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.35), rgba(59, 130, 246, 0.35))';
-                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                  e.currentTarget.style.boxShadow = '0 16px 48px rgba(0, 184, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))';
-                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
+                  transition: 'all 0.3s ease'
                 }}
               >
                 <Plus className="w-5 h-5" />
@@ -600,9 +462,9 @@ const CalendarView = () => {
             </div>
           </div>
 
-          {/* Calendar - Full Height */}
+          {/* Calendar */}
           {loading ? (
-            <div className="flex items-center justify-center h-full" style={{ background: 'var(--bg-base)' }}>
+            <div className="flex items-center justify-center h-full">
               <div className="loading-spinner"></div>
             </div>
           ) : (
@@ -615,559 +477,674 @@ const CalendarView = () => {
                 events={events}
                 eventClick={handleEventClick}
                 datesSet={(dateInfo) => {
-                  // Get the actual month being displayed from the view's currentStart
                   const displayedDate = dateInfo.view.currentStart;
                   const monthYear = displayedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                   setCurrentMonth(monthYear);
                 }}
                 height="100%"
                 expandRows={true}
-                handleWindowResize={true}
-                dayMaxEvents={false}
-                moreLinkClick="popover"
+                dayMaxEvents={3}
                 weekends={true}
                 fixedWeekCount={false}
                 showNonCurrentDates={false}
-                validRange={{
-                  start: '2020-01-01',
-                  end: '2030-12-31'
-                }}
               />
             </div>
           )}
         </div>
       </div>
 
-      {/* Ultra-Premium Event Details Panel */}
+      {/* Event Details Panel */}
       {showEventPanel && selectedEvent && (
         <div
+          data-testid="event-details-panel"
           style={{
             position: 'fixed',
             top: 0,
-            right: showEventPanel ? '0' : '-600px',
-            width: '520px',
+            right: 0,
+            width: '480px',
             height: '100vh',
             background: 'linear-gradient(145deg, rgba(8, 10, 14, 0.98) 0%, rgba(12, 15, 20, 0.98) 100%)',
             backdropFilter: 'blur(40px)',
             borderLeft: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '-40px 0 100px rgba(0, 0, 0, 0.9), inset 1px 0 0 rgba(255, 255, 255, 0.04)',
+            boxShadow: '-40px 0 100px rgba(0, 0, 0, 0.9)',
             zIndex: 2000,
-            transition: 'right 500ms cubic-bezier(0.4, 0, 0.2, 1)',
             display: 'flex',
             flexDirection: 'column'
           }}
         >
-          {/* Animated gradient overlay - SUBTLE */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '300px',
-            background: `radial-gradient(circle at 50% 0%, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.08)'} 0%, transparent 70%)`,
-            pointerEvents: 'none',
-            opacity: 0.3
-          }} />
-
           {/* Panel Header */}
           <div style={{
-            padding: '32px 36px 28px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-            position: 'relative',
-            zIndex: 1
+            padding: '28px 32px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
           }}>
-            <div className="flex items-center justify-between mb-5">
-              <h2 style={{ color: '#ffffff', fontSize: '26px', fontWeight: '900', letterSpacing: '-0.03em' }}>Event Details</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 style={{ color: '#ffffff', fontSize: '22px', fontWeight: '900' }}>
+                {showEditMode ? 'Edit Event' : 'Event Details'}
+              </h2>
               <button
-                onClick={() => setShowEventPanel(false)}
+                data-testid="close-event-panel-btn"
+                onClick={() => {
+                  setShowEventPanel(false);
+                  setShowEditMode(false);
+                }}
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '40px',
+                  height: '40px',
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '12px',
+                  borderRadius: '10px',
                   color: 'rgba(255,255,255,0.6)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.15))';
-                  e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)';
-                  e.currentTarget.style.color = '#ef4444';
-                  e.currentTarget.style.transform = 'rotate(90deg) scale(1.05)';
-                  e.currentTarget.style.boxShadow = '0 0 10px rgba(239,68,68,0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                  e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
-                  e.currentTarget.style.boxShadow = 'none';
+                  justifyContent: 'center'
                 }}
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
             
-            {/* Glowing category badge - TONED DOWN */}
-            {selectedEvent.category && (
+            {/* Event Type Badge */}
+            {selectedEvent.event_type && (
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '8px 18px',
-                borderRadius: '10px',
+                padding: '8px 16px',
+                borderRadius: '8px',
                 fontSize: '13px',
-                fontWeight: '800',
-                background: `linear-gradient(135deg, ${selectedEvent.colorScheme?.primary || '#a855f7'}18, ${selectedEvent.colorScheme?.primary || '#a855f7'}08)`,
-                color: selectedEvent.colorScheme?.primary || '#a855f7',
-                border: `1px solid ${selectedEvent.colorScheme?.primary || '#a855f7'}30`,
-                boxShadow: `0 0 6px ${selectedEvent.colorScheme?.glow || 'rgba(168,85,247,0.08)'}, inset 0 1px 0 rgba(255,255,255,0.06)`
+                fontWeight: '700',
+                background: EVENT_COLORS[selectedEvent.event_type]?.bg || EVENT_COLORS.other.bg,
+                color: EVENT_COLORS[selectedEvent.event_type]?.primary || EVENT_COLORS.other.primary,
+                border: `1px solid ${EVENT_COLORS[selectedEvent.event_type]?.primary || EVENT_COLORS.other.primary}30`
               }}>
-                <span style={{ fontSize: '18px' }}>{selectedEvent.icon}</span>
-                <span>{selectedEvent.category}</span>
+                {selectedEvent.event_type.charAt(0).toUpperCase() + selectedEvent.event_type.slice(1)}
               </div>
             )}
           </div>
 
           {/* Panel Content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ padding: '36px', position: 'relative', zIndex: 1 }}>
-            {/* Event Title & Date */}
-            <div style={{ marginBottom: '40px' }}>
-              <h3 style={{ color: '#ffffff', fontSize: '32px', fontWeight: '900', letterSpacing: '-0.03em', lineHeight: '1.2', marginBottom: '20px' }}>
-                {selectedEvent.title}
-              </h3>
-              <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '20px' }}>
-                <div style={{
-                  width: '42px',
-                  height: '42px',
-                  background: 'linear-gradient(135deg, rgba(0,184,212,0.15), rgba(0,184,212,0.08))',
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '1px solid rgba(0,184,212,0.25)',
-                  boxShadow: '0 2px 10px rgba(0,184,212,0.1)'
-                }}>
-                  <Clock className="w-5 h-5" style={{ color: '#00b8d4' }} />
-                </div>
+          <div className="flex-1 overflow-y-auto" style={{ padding: '28px 32px' }}>
+            {showEditMode ? (
+              /* Edit Form */
+              <div className="space-y-5">
                 <div>
-                  <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Scheduled</p>
-                  <p style={{ fontSize: '15px', fontWeight: '700', color: '#ffffff' }}>
-                    {new Date(selectedEvent.start).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-                    {!selectedEvent.allDay && ` • ${new Date(selectedEvent.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`}
-                  </p>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Title *
+                  </label>
+                  <input
+                    data-testid="edit-event-title"
+                    type="text"
+                    value={eventForm.title}
+                    onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px'
+                    }}
+                  />
                 </div>
-              </div>
 
-              {/* Event Description/Notes */}
-              {selectedEvent.description && (
-                <div style={{
-                  padding: '20px',
-                  background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  borderRadius: '12px',
-                  marginTop: '20px'
-                }}>
-                  <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '12px' }}>Notes</p>
-                  <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: '1.6', fontWeight: '500' }}>
-                    {selectedEvent.description}
-                  </p>
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Event Type
+                  </label>
+                  <select
+                    data-testid="edit-event-type"
+                    value={eventForm.event_type}
+                    onChange={(e) => setEventForm({ ...eventForm, event_type: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px'
+                    }}
+                  >
+                    {EVENT_TYPE_OPTIONS.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 </div>
-              )}
-            </div>
 
-            {/* Deal Card - Ultra Premium */}
-            {selectedEvent.dealData && (
-              <div style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '20px',
-                padding: '32px',
-                marginBottom: '32px',
-                boxShadow: `0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03), inset 0 2px 0 rgba(255,255,255,0.06)`,
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
-              {/* Glowing corner effect - SUBTLE */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-100px',
-                  right: '-100px',
-                  width: '200px',
-                  height: '200px',
-                  background: `radial-gradient(circle, ${selectedEvent.colorScheme?.glow || 'rgba(0,184,212,0.03)'} 0%, transparent 70%)`,
-                  pointerEvents: 'none',
-                  opacity: 0.2
-                }} />
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Start Time *
+                  </label>
+                  <input
+                    data-testid="edit-event-start"
+                    type="datetime-local"
+                    value={eventForm.start_time}
+                    onChange={(e) => setEventForm({ ...eventForm, start_time: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
 
-                {selectedEvent.dealData.image_url && (
-                  <div style={{ position: 'relative', zIndex: 1, marginBottom: '28px' }}>
-                    <img
-                      src={selectedEvent.dealData.image_url}
-                      alt="Property"
-                      style={{
-                        width: '100%',
-                        height: '260px',
-                        objectFit: 'cover',
-                        borderRadius: '16px',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05)'
-                      }}
-                    />
-                    {/* Image overlay glow */}
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    End Time
+                  </label>
+                  <input
+                    data-testid="edit-event-end"
+                    type="datetime-local"
+                    value={eventForm.end_time}
+                    onChange={(e) => setEventForm({ ...eventForm, end_time: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    data-testid="edit-event-allday"
+                    onClick={() => setEventForm({ ...eventForm, all_day: !eventForm.all_day })}
+                    style={{
+                      width: '48px',
+                      height: '26px',
+                      background: eventForm.all_day ? 'rgba(0,184,212,0.3)' : 'rgba(255,255,255,0.05)',
+                      border: eventForm.all_day ? '1px solid rgba(0,184,212,0.4)' : '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '13px',
+                      position: 'relative',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
                     <div style={{
                       position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      height: '50%',
-                      background: 'linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%)',
-                      borderRadius: '0 0 16px 16px'
+                      top: '2px',
+                      left: eventForm.all_day ? '24px' : '2px',
+                      width: '20px',
+                      height: '20px',
+                      background: eventForm.all_day ? '#00d4ff' : 'rgba(255,255,255,0.4)',
+                      borderRadius: '10px',
+                      transition: 'all 0.3s ease'
                     }} />
-                  </div>
-                )}
-                
-                <div className="space-y-6" style={{ position: 'relative', zIndex: 1 }}>
-                  {selectedEvent.dealData.address && (
-                    <div className="flex items-start gap-4">
-                      <div style={{
-                        width: '48px',
-                        height: '48px',
-                        background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(0,184,212,0.1))',
-                        borderRadius: '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        border: '1px solid rgba(0,184,212,0.3)',
-                        boxShadow: '0 8px 24px rgba(0,184,212,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
-                      }}>
-                        <MapPin className="w-5 h-5" style={{ color: '#00d4ff' }} />
-                      </div>
-                      <div className="flex-1">
-                        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '8px' }}>Property Address</p>
-                        <p style={{ color: '#ffffff', fontSize: '16px', fontWeight: '700', lineHeight: '1.5' }}>
-                          {selectedEvent.dealData.address}
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  </button>
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', fontWeight: '600' }}>All Day Event</span>
+                </div>
 
-                  {selectedEvent.dealData.price && (
-                    <div className="flex items-start gap-4">
-                      <div style={{
-                        width: '48px',
-                        height: '48px',
-                        background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1))',
-                        borderRadius: '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        border: '1px solid rgba(16,185,129,0.3)',
-                        boxShadow: '0 8px 24px rgba(16,185,129,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
-                      }}>
-                        <DollarSign className="w-5 h-5" style={{ color: '#10b981' }} />
-                      </div>
-                      <div className="flex-1">
-                        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '8px' }}>Deal Value</p>
-                        <p style={{ color: '#ffffff', fontSize: '26px', fontWeight: '900', letterSpacing: '-0.03em' }}>
-                          ${parseInt(selectedEvent.dealData.price || 0).toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedEvent.dealData.stage && (
-                    <div className="flex items-start gap-4">
-                      <div style={{
-                        width: '48px',
-                        height: '48px',
-                        background: 'linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.1))',
-                        borderRadius: '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        border: '1px solid rgba(168,85,247,0.3)',
-                        boxShadow: '0 8px 24px rgba(168,85,247,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
-                      }}>
-                        <FileText className="w-5 h-5" style={{ color: '#a855f7' }} />
-                      </div>
-                      <div className="flex-1">
-                        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', marginBottom: '8px' }}>Pipeline Stage</p>
-                        <p style={{ color: '#ffffff', fontSize: '16px', fontWeight: '800' }}>
-                          {selectedEvent.dealData.stage}
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Description
+                  </label>
+                  <textarea
+                    data-testid="edit-event-description"
+                    value={eventForm.description}
+                    onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
+                    rows={3}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      resize: 'vertical'
+                    }}
+                  />
                 </div>
               </div>
-            )}
+            ) : (
+              /* View Mode */
+              <div className="space-y-6">
+                <div>
+                  <h3 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', lineHeight: '1.2', marginBottom: '16px' }}>
+                    {selectedEvent.title}
+                  </h3>
+                  
+                  <div className="flex items-center gap-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      background: 'linear-gradient(135deg, rgba(0,184,212,0.15), rgba(0,184,212,0.08))',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid rgba(0,184,212,0.25)'
+                    }}>
+                      <Clock className="w-5 h-5" style={{ color: '#00b8d4' }} />
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Scheduled</p>
+                      <p style={{ fontSize: '14px', fontWeight: '700', color: '#ffffff' }}>
+                        {new Date(selectedEvent.start_time || selectedEvent.start).toLocaleDateString('en-US', { 
+                          weekday: 'long', 
+                          month: 'long', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
+                        {!selectedEvent.all_day && (
+                          <span> at {new Date(selectedEvent.start_time || selectedEvent.start).toLocaleTimeString('en-US', { 
+                            hour: 'numeric', 
+                            minute: '2-digit', 
+                            hour12: true 
+                          })}</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* Contact Card */}
-            {selectedEvent.contactData && (
-              <div style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '20px',
-                padding: '28px',
-                marginBottom: '32px',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.4)'
-              }}>
-                <div className="flex items-center gap-4 mb-3">
+                {selectedEvent.description && (
                   <div style={{
-                    width: '44px',
-                    height: '44px',
-                    background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.1))',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '1px solid rgba(59,130,246,0.3)',
-                    boxShadow: '0 6px 20px rgba(59,130,246,0.2)'
+                    padding: '16px 20px',
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '12px'
                   }}>
-                    <User className="w-5 h-5" style={{ color: '#3b82f6' }} />
+                    <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '700', marginBottom: '10px' }}>Description</p>
+                    <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', lineHeight: '1.6' }}>
+                      {selectedEvent.description}
+                    </p>
                   </div>
-                  <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800' }}>Contact</p>
-                </div>
-                <p style={{ color: '#ffffff', fontSize: '22px', fontWeight: '900', marginBottom: '8px' }}>
-                  {selectedEvent.contactData.full_name}
-                </p>
-                {selectedEvent.contactData.company && (
-                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px', fontWeight: '600' }}>
-                    {selectedEvent.contactData.company}
-                  </p>
                 )}
-              </div>
-            )}
-
-            {/* Ultra-Premium Action Buttons */}
-            <div className="space-y-4">
-              <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '20px' }}>
-                Quick Actions
-              </p>
-              
-              {[
-                { icon: CheckCircle, label: 'Mark Complete', color: EVENT_COLORS.deal, action: handleMarkComplete },
-                { icon: Edit2, label: 'Reschedule Event', color: EVENT_COLORS.followup, action: handleReschedule },
-                ...(selectedEvent.dealId ? [{ icon: ExternalLink, label: 'View Full Deal', color: { primary: '#00b8d4', glow: 'rgba(0,184,212,0.4)' }, action: handleViewDeal }] : [])
-              ].map((btn, idx) => (
-                <button
-                  key={idx}
-                  onClick={btn.action}
-                  style={{
-                    width: '100%',
-                    padding: '18px 28px',
-                    background: `linear-gradient(135deg, ${btn.color.primary}15, ${btn.color.primary}08)`,
-                    border: `1px solid ${btn.color.primary}25`,
-                    borderRadius: '16px',
-                    color: btn.color.primary,
-                    fontWeight: '800',
-                    fontSize: '15px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '14px',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: `0 3px 12px ${btn.color.primary}06, inset 0 1px 0 rgba(255,255,255,0.06)`,
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${btn.color.primary}25, ${btn.color.primary}15)`;
-                    e.currentTarget.style.borderColor = `${btn.color.primary}40`;
-                    e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)';
-                    e.currentTarget.style.boxShadow = `0 8px 24px ${btn.color.glow}, inset 0 1px 0 rgba(255,255,255,0.12)`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${btn.color.primary}15, ${btn.color.primary}08)`;
-                    e.currentTarget.style.borderColor = `${btn.color.primary}25`;
-                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    e.currentTarget.style.boxShadow = `0 3px 12px ${btn.color.primary}06, inset 0 1px 0 rgba(255,255,255,0.06)`;
-                  }}
-                >
-                  <btn.icon className="w-5 h-5" />
-                  {btn.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Reschedule Section - Collapsible */}
-            {showReschedule && (
-              <div style={{
-                marginTop: '24px',
-                padding: '24px',
-                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04))',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
-                borderRadius: '16px',
-                animation: 'slideDown 0.3s ease-out'
-              }}>
-                <p style={{ 
-                  color: 'rgba(255,255,255,0.3)', 
-                  fontSize: '11px', 
-                  fontWeight: '900', 
-                  textTransform: 'uppercase', 
-                  letterSpacing: '0.12em', 
-                  marginBottom: '16px' 
-                }}>
-                  Reschedule Event
-                </p>
-
-                {/* Date Input */}
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ 
-                    display: 'block', 
-                    color: 'rgba(255,255,255,0.6)', 
-                    fontSize: '13px', 
-                    fontWeight: '600', 
-                    marginBottom: '8px' 
-                  }}>
-                    Date *
-                  </label>
-                  <input
-                    type="date"
-                    value={rescheduleDate}
-                    onChange={(e) => setRescheduleDate(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '10px',
-                      color: '#ffffff',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      outline: 'none',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.background = 'rgba(255,255,255,0.06)';
-                      e.target.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.background = 'rgba(255,255,255,0.04)';
-                      e.target.style.borderColor = 'rgba(255,255,255,0.1)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                {/* Time Input */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ 
-                    display: 'block', 
-                    color: 'rgba(255,255,255,0.6)', 
-                    fontSize: '13px', 
-                    fontWeight: '600', 
-                    marginBottom: '8px' 
-                  }}>
-                    Time (optional)
-                  </label>
-                  <input
-                    type="time"
-                    value={rescheduleTime}
-                    onChange={(e) => setRescheduleTime(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '10px',
-                      color: '#ffffff',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      outline: 'none',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.background = 'rgba(255,255,255,0.06)';
-                      e.target.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.background = 'rgba(255,255,255,0.04)';
-                      e.target.style.borderColor = 'rgba(255,255,255,0.1)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
 
                 {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '12px' }}>
+                <div className="space-y-3 pt-4">
+                  <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>
+                    Actions
+                  </p>
+                  
                   <button
-                    onClick={handleSaveReschedule}
+                    data-testid="edit-event-btn"
+                    onClick={startEditing}
                     style={{
-                      flex: 1,
-                      padding: '14px',
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15))',
-                      border: '1px solid rgba(59, 130, 246, 0.4)',
+                      width: '100%',
+                      padding: '14px 20px',
+                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08))',
+                      border: '1px solid rgba(59, 130, 246, 0.25)',
                       borderRadius: '12px',
                       color: '#3b82f6',
-                      fontWeight: '800',
+                      fontWeight: '700',
                       fontSize: '14px',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.25))';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.3)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15))';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '10px',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    Save Changes
+                    <Edit2 className="w-4 h-4" />
+                    Edit Event
                   </button>
+
                   <button
-                    onClick={() => setShowReschedule(false)}
+                    data-testid="delete-event-btn"
+                    onClick={handleDeleteEvent}
                     style={{
-                      flex: 1,
-                      padding: '14px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                      width: '100%',
+                      padding: '14px 20px',
+                      background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08))',
+                      border: '1px solid rgba(239, 68, 68, 0.25)',
                       borderRadius: '12px',
-                      color: 'rgba(255,255,255,0.6)',
-                      fontWeight: '800',
+                      color: '#ef4444',
+                      fontWeight: '700',
                       fontSize: '14px',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                      e.currentTarget.style.transform = 'translateY(0)';
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '10px',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    Cancel
+                    <Trash2 className="w-4 h-4" />
+                    Delete Event
                   </button>
                 </div>
               </div>
             )}
           </div>
+
+          {/* Footer for Edit Mode */}
+          {showEditMode && (
+            <div style={{
+              padding: '20px 32px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+              display: 'flex',
+              gap: '12px'
+            }}>
+              <button
+                data-testid="cancel-edit-btn"
+                onClick={() => setShowEditMode(false)}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '12px',
+                  color: 'rgba(255,255,255,0.6)',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                data-testid="save-edit-btn"
+                onClick={handleUpdateEvent}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
+                  border: '1px solid rgba(0, 184, 212, 0.4)',
+                  borderRadius: '12px',
+                  color: '#00d4ff',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  cursor: 'pointer'
+                }}
+              >
+                Save Changes
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Create Event Panel */}
-      <CreateEventPanel
-        isOpen={showCreatePanel}
-        onClose={() => setShowCreatePanel(false)}
-        onEventCreated={handleEventCreated}
-      />
+      {/* Create Event Modal */}
+      {showCreateModal && (
+        <div
+          data-testid="create-event-modal"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 3000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowCreateModal(false);
+          }}
+        >
+          <div style={{
+            width: '500px',
+            maxHeight: '90vh',
+            background: 'linear-gradient(145deg, rgba(12, 16, 22, 0.98) 0%, rgba(18, 22, 28, 0.98) 100%)',
+            borderRadius: '24px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: '0 40px 100px rgba(0, 0, 0, 0.9)',
+            overflow: 'hidden'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              padding: '24px 28px',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <div className="flex items-center gap-3">
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(0,184,212,0.1))',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid rgba(0,184,212,0.3)'
+                }}>
+                  <Plus className="w-5 h-5" style={{ color: '#00d4ff' }} />
+                </div>
+                <h2 style={{ color: '#ffffff', fontSize: '22px', fontWeight: '800' }}>Create Event</h2>
+              </div>
+              <button
+                data-testid="close-create-modal-btn"
+                onClick={() => setShowCreateModal(false)}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '10px',
+                  color: 'rgba(255,255,255,0.6)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div style={{ padding: '24px 28px', maxHeight: '60vh', overflowY: 'auto' }}>
+              <div className="space-y-5">
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Event Title *
+                  </label>
+                  <input
+                    data-testid="create-event-title"
+                    type="text"
+                    value={eventForm.title}
+                    onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                    placeholder="Enter event title..."
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Event Type
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {EVENT_TYPE_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        data-testid={`event-type-${opt.value}`}
+                        onClick={() => setEventForm({ ...eventForm, event_type: opt.value })}
+                        style={{
+                          padding: '10px 16px',
+                          background: eventForm.event_type === opt.value 
+                            ? EVENT_COLORS[opt.value].bg 
+                            : 'rgba(255, 255, 255, 0.03)',
+                          border: eventForm.event_type === opt.value 
+                            ? `1px solid ${EVENT_COLORS[opt.value].primary}40` 
+                            : '1px solid rgba(255, 255, 255, 0.08)',
+                          borderRadius: '8px',
+                          color: eventForm.event_type === opt.value 
+                            ? EVENT_COLORS[opt.value].primary 
+                            : 'rgba(255, 255, 255, 0.6)',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Start Time *
+                  </label>
+                  <input
+                    data-testid="create-event-start"
+                    type="datetime-local"
+                    value={eventForm.start_time}
+                    onChange={(e) => setEventForm({ ...eventForm, start_time: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    End Time (Optional)
+                  </label>
+                  <input
+                    data-testid="create-event-end"
+                    type="datetime-local"
+                    value={eventForm.end_time}
+                    onChange={(e) => setEventForm({ ...eventForm, end_time: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    data-testid="create-event-allday"
+                    onClick={() => setEventForm({ ...eventForm, all_day: !eventForm.all_day })}
+                    style={{
+                      width: '48px',
+                      height: '26px',
+                      background: eventForm.all_day ? 'rgba(0,184,212,0.3)' : 'rgba(255,255,255,0.05)',
+                      border: eventForm.all_day ? '1px solid rgba(0,184,212,0.4)' : '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '13px',
+                      position: 'relative',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    <div style={{
+                      position: 'absolute',
+                      top: '2px',
+                      left: eventForm.all_day ? '24px' : '2px',
+                      width: '20px',
+                      height: '20px',
+                      background: eventForm.all_day ? '#00d4ff' : 'rgba(255,255,255,0.4)',
+                      borderRadius: '10px',
+                      transition: 'all 0.3s ease'
+                    }} />
+                  </button>
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', fontWeight: '600' }}>All Day Event</span>
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Description (Optional)
+                  </label>
+                  <textarea
+                    data-testid="create-event-description"
+                    value={eventForm.description}
+                    onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
+                    placeholder="Add notes or details..."
+                    rows={3}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      resize: 'vertical'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div style={{
+              padding: '20px 28px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+              display: 'flex',
+              gap: '12px'
+            }}>
+              <button
+                data-testid="cancel-create-btn"
+                onClick={() => setShowCreateModal(false)}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '12px',
+                  color: 'rgba(255,255,255,0.6)',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                data-testid="submit-create-btn"
+                onClick={handleCreateEvent}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
+                  border: '1px solid rgba(0, 184, 212, 0.4)',
+                  borderRadius: '12px',
+                  color: '#00d4ff',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                <CheckCircle className="w-4 h-4" />
+                Create Event
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
