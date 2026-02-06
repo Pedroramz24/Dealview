@@ -942,6 +942,32 @@ const MapView = () => {
           {mapStyle === 'satellite' ? 'Street' : 'Satellite'}
         </Button>
 
+        {/* Asset Type Filter */}
+        <div style={{ position: 'relative' }}>
+          <select
+            data-testid="asset-type-filter"
+            value={assetTypeFilter}
+            onChange={(e) => setAssetTypeFilter(e.target.value)}
+            style={{
+              background: assetTypeFilter ? 'rgba(0,184,212,0.15)' : 'rgba(0,0,0,0.8)',
+              backdropFilter: 'blur(10px)',
+              border: `1px solid ${assetTypeFilter ? 'rgba(0,184,212,0.5)' : colors.border}`,
+              color: assetTypeFilter ? '#00d4ff' : colors.textPrimary,
+              padding: '8px 12px',
+              borderRadius: borderRadius.md,
+              fontSize: '14px',
+              cursor: 'pointer',
+              minWidth: '140px',
+              appearance: 'auto'
+            }}
+          >
+            <option value="">All Asset Types</option>
+            {Object.keys(assetTypeColors).map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
+
         {/* Click to Add Button */}
         <Button
           onClick={toggleClickMode}
