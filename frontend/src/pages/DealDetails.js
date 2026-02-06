@@ -92,6 +92,123 @@ const DealDetails = () => {
     }
   };
 
+  const fetchPipelines = async () => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+
+      const response = await fetch(`${API}/pipelines`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setPipelines(data.pipelines || []);
+      }
+    } catch (error) {
+      console.error('Error fetching pipelines:', error);
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`${API}/deals/${dealId}/images`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update deal with new image
+        const newImageUrl = data.image_url;
+        const updatedImages = deal.image_urls ? [...deal.image_urls, newImageUrl] : [newImageUrl];
+        setDeal({ ...deal, image_urls: updatedImages, image_url: deal.image_url || newImageUrl });
+        toast.success('Image uploaded successfully');
+      } else {
+        toast.error('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handlePipelineChange = async (pipelineId) => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      const pipeline = pipelines.find(p => p.id === pipelineId);
+      const firstStage = pipeline?.stages?.[0];
+
+      const response = await fetch(`${API}/deals/${dealId}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          pipeline_id: pipelineId,
+          pipeline_stage_id: firstStage?.id || null
+        })
+      });
+
+      if (response.ok) {
+        setDeal({ ...deal, pipeline_id: pipelineId, pipeline_stage_id: firstStage?.id });
+        toast.success('Pipeline updated');
+      } else {
+        toast.error('Failed to update pipeline');
+      }
+    } catch (error) {
+      toast.error('Failed to update pipeline');
+    }
+  };
+
+  const handleStageChange = async (stageId) => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+
+      const response = await fetch(`${API}/deals/${dealId}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pipeline_stage_id: stageId })
+      });
+
+      if (response.ok) {
+        setDeal({ ...deal, pipeline_stage_id: stageId });
+        toast.success('Stage updated');
+      } else {
+        toast.error('Failed to update stage');
+      }
+    } catch (error) {
+      toast.error('Failed to update stage');
+    }
+  };
+
   const handleSave = async () => {
     try {
       const session = await supabase.auth.getSession();
