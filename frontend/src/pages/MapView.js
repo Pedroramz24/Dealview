@@ -655,9 +655,14 @@ const MapView = () => {
     finally { setUploadingSidePanelImage(false); e.target.value = ''; }
   }, [selectedDeal, fetchDeals]);
 
-  // Memoized markers
+  // Memoized markers - filtered by asset type
+  const filteredDeals = useMemo(() => {
+    if (!assetTypeFilter) return deals;
+    return deals.filter(d => d.asset_type === assetTypeFilter);
+  }, [deals, assetTypeFilter]);
+
   const userMarkers = useMemo(() => {
-    return deals.map(deal => (
+    return filteredDeals.map(deal => (
       <Marker
         key={deal.id}
         longitude={deal.longitude}
@@ -671,7 +676,7 @@ const MapView = () => {
         />
       </Marker>
     ));
-  }, [deals, handleMarkerClick]);
+  }, [filteredDeals, handleMarkerClick]);
 
   const teamMarkers = useMemo(() => {
     if (!showTeamDeals) return null;
