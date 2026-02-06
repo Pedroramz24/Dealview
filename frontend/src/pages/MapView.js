@@ -6,8 +6,8 @@ import { AuthContext, API } from '../App';
 import { toast } from 'sonner';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
-  Building2, X, ChevronRight, Users, 
-  Eye, EyeOff, Filter, Layers, Plus, Search, MousePointer
+  Building2, X, ChevronRight, ChevronLeft, Users, 
+  Eye, EyeOff, Filter, Layers, Plus, Search, MousePointer, Upload, DollarSign
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
