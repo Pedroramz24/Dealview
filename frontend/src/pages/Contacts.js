@@ -366,6 +366,36 @@ const Contacts = () => {
     }));
   };
 
+  const handleInlineTagCreate = async () => {
+    if (!inlineTagName.trim()) return;
+    try {
+      const token = await getToken();
+      if (!token) return;
+      const response = await fetch(`${API}/contacts/tags`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: inlineTagName.trim(), color: inlineTagColor })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const newTag = data.tag;
+        await fetchTags();
+        // Auto-add the new tag to the contact form
+        if (newTag?.id) {
+          setContactForm(prev => ({ ...prev, tag_ids: [...prev.tag_ids, newTag.id] }));
+        }
+        setInlineTagName('');
+        setShowInlineTagCreate(false);
+        toast.success('Tag created and added');
+      } else {
+        const err = await response.json().catch(() => ({}));
+        toast.error(err.detail || 'Failed to create tag');
+      }
+    } catch (error) {
+      toast.error('Failed to create tag');
+    }
+  };
+
   const getStatusColor = (status) => {
     const option = statusOptions.find(s => s.value === status);
     return option?.color || '#6b7280';
