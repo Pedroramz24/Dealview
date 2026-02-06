@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { 
   ArrowLeft, MapPin, Building2, DollarSign, Calendar, 
   Edit2, Trash2, Save, X, Users, FileText, Upload,
-  Phone, Mail, Link2, Plus
+  Phone, Mail, Link2, Plus, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
