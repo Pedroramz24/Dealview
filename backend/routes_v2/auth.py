@@ -10,7 +10,7 @@ from datetime import datetime
 import logging
 
 from utils.db import get_supabase
-from utils.auth_helpers import security
+from utils.auth_helpers import security, get_user_id
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 logger = logging.getLogger(__name__)
