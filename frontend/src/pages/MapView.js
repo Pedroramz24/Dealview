@@ -1686,6 +1686,51 @@ const MapView = () => {
               </div>
             </div>
 
+            {/* Team Sharing Toggle */}
+            {!selectedDeal.isTeamDeal && (
+              <div data-testid="side-panel-team-sharing" style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '12px', marginBottom: '16px',
+                background: selectedDeal.team_id ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${selectedDeal.team_id ? 'rgba(16, 185, 129, 0.25)' : 'rgba(255,255,255,0.1)'}`,
+                borderRadius: borderRadius.md,
+                transition: 'all 0.2s ease'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {selectedDeal.team_id ? (
+                    <Globe size={16} style={{ color: '#10b981' }} />
+                  ) : (
+                    <Lock size={16} style={{ color: colors.textTertiary }} />
+                  )}
+                  <div>
+                    <div style={{ color: colors.textPrimary, fontSize: '13px', fontWeight: '500' }}>
+                      {selectedDeal.team_id ? 'Shared with Team' : 'Private'}
+                    </div>
+                    <div style={{ color: colors.textTertiary, fontSize: '11px' }}>
+                      {selectedDeal.team_id ? 'Visible in team deals' : 'Only visible to you'}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  data-testid="team-sharing-toggle"
+                  onClick={() => handleToggleTeamVisibility(!selectedDeal.team_id)}
+                  style={{
+                    width: '44px', height: '24px', borderRadius: '12px', padding: '2px',
+                    background: selectedDeal.team_id ? '#10b981' : 'rgba(255,255,255,0.15)',
+                    border: 'none', cursor: 'pointer', transition: 'background 0.2s ease',
+                    display: 'flex', alignItems: 'center',
+                    justifyContent: selectedDeal.team_id ? 'flex-end' : 'flex-start'
+                  }}
+                >
+                  <div style={{
+                    width: '20px', height: '20px', borderRadius: '50%',
+                    background: '#fff', transition: 'all 0.2s ease',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
+                  }} />
+                </button>
+              </div>
+            )}
+
             {/* Asking Price - editable with formatted display */}
             <div data-testid="side-panel-asking-price" style={{
               background: 'rgba(0, 184, 212, 0.1)', borderRadius: borderRadius.md,
