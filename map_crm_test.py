@@ -9,7 +9,7 @@ from datetime import datetime
 import os
 
 # Configuration
-BASE_URL = "https://property-pipeline-8.preview.emergentagent.com/api"
+BASE_URL = "https://deallinked-rebuild-1.preview.emergentagent.com/api"
 SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
 EMAIL = "contact@pedroarmando.com"
 PASSWORD = "Flin141812$"

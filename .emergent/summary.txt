@@ -1,170 +1,172 @@
 <analysis>**original_problem_statement:** The user wants to perform a complete, ground-up rebuild of their DealLinked CRM application. The core instruction is to nuke most of the existing application and database, and rebuild a simpler, more focused CRM.
 
 **PRODUCT REQUIREMENTS:**
--   **Keep:**
-    -   Map View with deal markers (pings) and a deal details side panel.
-    -   Full Property Details pages.
-    -   Pipeline/Kanban board.
-    -   Contacts page with specific fields and custom smart tags.
-    -   Team tab for collaboration.
-    -   Landing page, Login/Signup screens, and the DealLinked branding.
-    -   A simple calendar.
--   **Remove (Nuke):**
-    -   Marketplace functionality, Command Center, DealVisor, AI operations, and complex map layers.
--   **Database:**
-    -   Drop all existing tables and create a fresh, minimal Supabase schema.
--   **Specific Feature Details:**
-    -   **Deals:** Must include fields like , , , , etc.
-    -   **Map Interaction:** Click a deal marker to open a side panel. Add new deals by clicking the map. Address autocomplete is required. Team deals should have a distinct marker.
-    -   **Pipeline:** A default set of stages for new users. Users should be able to manage stages.
-    -   **Contacts:** Users should be able to manage smart tags.
+-   **Keep:** Map View, Property Details, Pipeline/Kanban, Contacts, Team tab, Landing/Login pages, and a simple Calendar.
+-   **Remove:** Marketplace, Command Center, DealVisor, AI operations, and complex map layers.
+-   **Database:** A fresh, minimal Supabase schema.
+-   **Recent User Requests (Driving Current Work):**
+    1.  **Tag Manager UI:** The Manage Smart Tags feature on the Contacts page should be a clean side panel, not a modal, listing all tags for easy editing and deletion.
+    2.  **Document Upload:** The document upload feature on the  page must be fixed to support drag-and-drop and allow actual file uploads.
+    3.  **Deal Persistence:** Deals created on the map must be saved permanently and reappear after navigation.
+    4.  **Images & Full Details:** Add image galleries to both the  page and the  side panel. Both views must show *all* deal fields (even if empty) and be editable at all times without a separate edit mode.
+    5.  **Image Carousel:** The image galleries should be carousels with navigation arrows.
+    6.  **Pipeline/Stage Management:** Both the  page and the  side panel must have dropdowns to change a deal's pipeline and stage.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application rebuild is well underway. The backend (FastAPI V2) and database (Supabase) are stable. The frontend has been significantly updated. Key pages like  and  have been rebuilt and enhanced with management features (Smart Tags, Pipeline Stages). The  Create New Deal panel has been fixed and now includes all user-requested fields.  and  have been reviewed and appear to be V2-compliant, pending testing. The  page is the last major V1 component that needs a full rewrite.
-
-A significant blocker exists: user signup is failing due to a Supabase Auth configuration issue (likely email domain restrictions), which prevents end-to-end UI testing.
+The application rebuild is nearly complete. The FastAPI V2 backend and Supabase database are stable and functional. All core pages (, , , , , ) have been rewritten for the V2 API. Critical signup, login, and data creation blockers related to Supabase Row Level Security (RLS) have been resolved with the user's help. The  tag manager has been successfully converted to a side panel, and deal creation/persistence on the map is now working. The agent had started implementing the user's latest, more complex UI requirements for the deal details views but has not finished.
 
 **Last working item**:
-The agent had just analyzed the state of the remaining V1/V2 pages and was preparing to rebuild the  page.
+The agent was in the middle of a major refactor of the  component to satisfy several user requests simultaneously.
 
--   Last item agent was working: Analyzing , , and . It concluded that  is the only one that needs a complete rewrite to use the V2 API, as the other two seem compliant. The next step is to begin this rebuild.
--   Status: **NOT STARTED**
--   Agent Testing Done: N/A
--   Which testing method agent to use? **frontend testing agent** (after the Calendar page is rebuilt).
+-   Last item agent was working: Refactoring  to:
+    1.  Make all property detail fields editable at all times (inline editing).
+    2.  Implement an image gallery as a carousel with navigation arrows.
+    3.  Fix the non-functional Add Image button.
+    4.  Ensure all deal fields are displayed, even if they have no value.
+-   Status: **IN PROGRESS**
+-   Agent Testing Done: N
+-   Which testing method agent to use? **frontend testing agent** (after the refactor is complete for both  and ).
 -   User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: (P0) User Signup and Login is Blocked
+-   Issue 1: (P0) Complete the Deal Details & Map Side Panel Overhaul
 
   Issues Detail:
   -   Issue 1:
-      -   **Description**: Users cannot sign up or log in through the UI. The browser console shows a 422 error from . This is not a code bug but a Supabase project configuration issue, likely related to email provider restrictions. This blocks all UI-based testing.
-      -   **Attempted fixes**: The agent initially suspected a Row Level Security (RLS) issue and created a migration file () to address potential  problems. When this didn't resolve the signup failure, further debugging pointed to a Supabase Auth configuration problem outside the codebase.
-      -   **Next debug checklist**: This cannot be fixed from within the codebase. The user needs to be informed that they must check their Supabase project's Authentication settings (e.g., Email provider list) to allow signups from the test email domains.
-      -   **Why fix this issue and what will be achieved with the fix?** Fixing this is critical to enable any form of UI testing and to verify the full user flow.
-      -   **Status**: **BLOCKED** (Requires user action in Supabase dashboard)
-      -   **Is recurring issue?** Y
+      -   **Description**: The user requires a significant UI/UX overhaul for both the main  page and the deal information side panel on the  page. The work was started but is incomplete.
+      -   **Attempted fixes**: The agent began refactoring  by adding the UI structure for an image carousel and the corresponding state. The logic for always-on editing and fixing the Add Image button has not yet been implemented.
+      -   **Next debug checklist**:
+          1.  **Resume in **:
+              -   Create a generic  function to save individual field changes to the backend.
+              -   Replace all static text displays for deal properties (e.g., Asking Price, NOI) with editable input components that call the new update function.
+              -   Ensure the Add Image button is correctly wired to a hidden file input and triggers the  function.
+              -   Complete the image carousel logic with navigation controls.
+          2.  **Refactor  Side Panel**:
+              -   Apply the exact same always-on editable components and image carousel logic from  to the side panel that appears when a deal marker is clicked.
+      -   **Why fix this issue and what will be achieved with the fix?** This will deliver the user's explicit workflow requirements for a more fluid and efficient deal management experience.
+      -   **Status**: **IN PROGRESS**
+      -   **Is recurring issue?** N
       -   **Should Test frontend/backend/both after fix?** both
       -   **Blocked on other issue**: None
 
 **In progress Task List**:
--   Task 1: Complete the Frontend Rebuild for V2
-
-  Task Detail:
-  -   Task 1:
-      -   **Where to resume**: Start rebuilding the  page to use the V2 backend API for fetching and managing events.
-      -   **What will be achieved with this?** This will complete the migration of all core pages to the V2 architecture.
-      -   **Status**: **IN PROGRESS**
-      -   **Should Test frontend/backend/both after fix?** frontend
-      -   **Blocked on something**: UI testing is blocked by the User Signup issue.
+-   Task 1: Complete the Deal Details and Map Side Panel Refactor
+    -   **Where to resume**: . The agent just added the state and UI for the image carousel. The next immediate step is to implement a generic function for updating individual deal fields to support inline editing.
+    -   **What will be achieved with this?**: A fully functional, always-editable deal detail view with an image carousel on both the dedicated page and the map side panel.
+    -   **Status**: **IN PROGRESS**
+    -   **Should Test frontend/backend/both after fix?** both
+    -   **Blocked on something**: None.
 
 **Upcoming and Future Tasks**
 -   Upcoming Tasks:
-    -   (P0) **Rebuild **: Rewrite the page to fetch and manage events using the V2 backend API instead of direct Supabase queries.
-    -   (P1) **Verify & Test **: The agent's analysis suggests this page is a full V2 implementation. It needs to be thoroughly tested to ensure it's bug-free.
-    -   (P2) **Verify & Test **: This page also appears to be a clean V2 implementation. It requires comprehensive testing.
-    -   (P3) **Update **: Update the user settings page to allow profile updates via the V2 API.
+    -   (P0) **Full End-to-End Test**: Once the current refactor is complete, perform a comprehensive test of the entire application flow: Sign up, create a team, create a pipeline stage, create a contact tag, create a deal on the map, upload an image and a document, change its pipeline/stage, and verify everything works seamlessly.
 -   Future Tasks:
-    -   Pipeline customization options.
+    -   CSV contact import.
+    -   Recurring calendar events.
     -   Team performance metrics.
-    -   Advanced filtering and Bulk Tag features for contacts.
+    -   Add tile prefetching for smoother map performance.
+    -   Implement a document preview modal.
 
 **Completed work in this session**
--   **MapView Create Deal Fixes (DONE):**
-    -   Fixed a 500 error on deal creation by modifying  and pipeline lookup in  to handle cases where no result is found.
-    -   Added all user-requested fields to the Create New Deal panel: , , , , , , , and .
-    -   Added automatic comma formatting for number inputs.
-    -   Added Pipeline and Stage selection dropdowns to the form.
-    -   Added a temporary marker on the map to show the location of the new deal being created.
-    -   Removed an emoji from the panel header.
--   **Pipeline Page Enhancement (DONE):** Rebuilt  to include a management UI for creating, editing, reordering, and deleting pipeline stages.
--   **Contacts Page Enhancement (DONE):** Rebuilt  with a dedicated settings panel for creating, renaming, and deleting Smart Tags.
--   **RLS Issue Identification (DONE):** Identified a potential Supabase RLS issue preventing  operations and created a migration file  for the user to apply.
--   **PRD Update (DONE):** Updated  with the latest progress.
+-   **Core Functionality Fixed (DONE):** Resolved all Failed to create... errors (for Teams, Tags, Stages, Events) by fixing a missing Supabase trigger that creates  records for new signups.
+-   **Calendar Page Rebuild (DONE):** Rebuilt  to use the V2 API and fixed event creation failures caused by RLS policies.
+-   **Team Page Fix (DONE):** Resolved team creation/viewing errors by fixing a backend embedding issue and adding the correct RLS policies.
+-   **Settings Page Fix (DONE):** Corrected profile update errors by aligning the frontend form with the actual database schema for the  table.
+-   **Tag Manager UI Rework (DONE):** Replaced the  tag management modal with a cleaner, more functional side panel.
+-   **Map View Enhancements (DONE):**
+    -   Improved map zoom/pan smoothness.
+    -   Fixed deal creation and persistence.
+    -   Added initial versions of the image gallery and pipeline/stage dropdowns to the  page and map side panel (now being overhauled).
+-   **Backend Endpoints (DONE):** Added new endpoints and database storage support for document and image uploads (, ).
 
 **Earlier issues found/mentioned but not fixed**
-None. The critical signup issue is documented in the Pending/In progress Issue list.
+None. All previously identified issues have either been resolved or are part of the current in-progress task.
 
 **Known issue recurrence from previous fork**
 -   **Issue recurrence in previous fork**: User Signup/Login failure.
--   **Recurrence count**: 2+ times this session.
--   **Status**: **BLOCKED**
+-   **Recurrence count**: 2+
+-   **Status**: **RESOLVED**
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
 -   **Backend:** FastAPI
--   **Frontend:** React, React Router
--   **Database:** Supabase (PostgreSQL) with Row Level Security (RLS).
--   **Mapping:** MapLibre GL JS
--   **Geocoding:** Radar.io
+-   **Frontend:** React, React Router, , 
+-   **Database:** Supabase (PostgreSQL) with Row Level Security (RLS) and Triggers.
+-   **Storage:** Supabase Storage for documents and images.
 
 **key DB schema**
--   : {{id, email, full_name, team_id}}
--   : {{id, owner_id, title, address, ... (many new fields added)}}
--   : {{id, owner_id, name, email, tag_ids, ...}}
--   : {{id, owner_id, name, color}}
--   : {{id, owner_id, name}}
--   : {{id, pipeline_id, name, color, order_index}}
+-   : {id, email, full_name, team_id, avatar_url}
+-   : {id, owner_id, title, address, image_urls: text[], ...}
+-   : {id, deal_id, file_name, storage_path}
+-   : {id, owner_id, name}
+-   : {id, owner_id, title, start_time, end_time}
+
+**changes in tech stack**
+None.
 
 **All files of reference**
--   : The next page to be rebuilt (currently V1).
--   : Recently rebuilt with Smart Tag management.
--   : Recently rebuilt with Stage management.
--   : Recently modified to fix the Create Deal panel.
--   : Modified to fix the deal creation error.
--   : Contains endpoints for tag management.
--   : Contains endpoints for stage management.
--   : New SQL migration file to fix RLS insert policies.
--   : The project's source of truth for requirements and progress.
+-   : **Currently being modified.** The primary file for the current refactoring effort.
+-   : Will need to be refactored to align its side panel with the changes made to .
+-   : Contains the relevant backend logic for updating deals and handling uploads.
+-   : Contains the full project history and requirements.
 
 **Areas that need refactoring**:
--   ****: Requires a complete rewrite from V1 (direct Supabase queries) to V2 (API calls).
+-   ****: Refactor is currently in progress.
+-   ****: The deal details side panel requires a refactor to mirror the new always-on editing and image carousel functionality from .
 
 **key api endpoints**
--   : Now works correctly.
--   : Used for updating a pipeline stage.
--   : Used for updating a smart tag.
+-   : Crucial for the upcoming inline editing functionality.
+-   : For the image carousel upload feature.
+-   : For the document upload feature.
 
 **Critical Info for New Agent**
--   **SIGNUP IS BLOCKED:** Do not waste time debugging the user signup flow in the code. It is an external configuration issue in the user's Supabase project. You must inform the user that they need to check their Supabase Authentication settings to allow new user signups. This blocks all UI testing.
--   **Proceed with Calendar Rebuild:** The highest priority development task is to rebuild  to use the V2 API, which will complete the core page migration.
--   **Backend Fixes are Live:** The 500 error on deal creation has been resolved in the backend. The backend services have been restarted.
--   **Frontend Fixes are Live:** The , , and  pages have been updated with the requested features and fixes. Assume the code is correct, as UI verification is blocked.
+-   **Resume Refactor Immediately:** You are in the middle of a large refactor of . Your first task is to complete it. Do not start new tasks.
+-   **Refactor Goals:** The user wants always-on editing (no save button, fields are always inputs), a working image carousel with arrows, and all deal fields visible even if empty.
+-   **Next Steps:**
+    1.  In , create a helper function like  to send  requests to the backend.
+    2.  Replace all static property displays with editable input components that use this new function.
+    3.  Fix the Add Image button's  handler.
+    4.  After  is working, apply the *exact same* logic and components to the side panel inside .
 
 **documents and test reports created in this job**
 -   
 -    (updated)
--    (new)
 
 **Last 10 User Messages and any pending HUMAN messages**
--   **User Message 1:** I ran the query you gave me, we are missing fields in the create new deal side panel that comes up, remove emoji from the Location set header and make sure the address is accurate to where you add the ping, the ping should also come up when you add it. - **Request to fix MapView.js. (Completed)**
--   **User Message 2:** We are missing AC size, and automatic comma placement when typing numbers, and a field to add it to a specific pipeline and then a specific stage, i am also getting a failed to create deal message when clicking create new deal. - **Further requests for MapView.js and report of a backend bug. (Completed)**
--   **User Message 3:** Looks really good, move to the next steps, the pipeline tab still looks like we havent built it out, as well as the contacts tab, the smart tags should be placed in a better location where we can manage current smart tags created rename them, add new ones etc. Move to the next steps - **Approval of MapView fixes and request to enhance Pipeline and Contacts pages. (Completed)**
--   **User Message 4:** Move to the next phase - **Approval of Pipeline/Contacts enhancements, giving the go-ahead to proceed with the remaining V2 migration tasks.**
+1.  **User:** Reports creation failures for deals, stages, tags, teams, events, and choppy map zoom. - **(Resolved)**
+2.  **Agent:** Asks user to run a query to fix the missing  trigger. - **(Done)**
+3.  **User:** Confirms query was run. - **(Done)**
+4.  **User:** The manage tags settings page should be cleaner... documents...needs to be fixed...deal was not saved. - **(Resolved)**
+5.  **Agent:** Asks user to run a query to add RLS policies for deals. - **(Done)**
+6.  **User:** Confirms query was run. - **(Done)**
+7.  **User:** Lets add pictures...see all the details [in map side panel]...drop down menu to be able to change between stages... - **(In Progress)**
+8.  **User:** Reports error about 'deal-images' bucket already existing. - **(Acknowledged)**
+9.  **Agent:** Asks user to confirm  bucket exists. - **(Done)**
+10. **User:** The add images button does not work...I want the deal details panel to be editable at all times without clicking edit...I want to be able to add multiple images and have carousel... - **(This is the current, active task).**
 
 **Project Health Check:**
--   **Working:** Backend API (V2), Database, Map View, Deal Creation, Pipeline View (with stage management), Contacts View (with tag management), Team View (unverified), Deal Details (unverified).
--   **Broken:**  (V1 page, non-functional). User Signup/Login is blocked by external configuration.
+-   **Working:** Backend API (V2), Database, Signup/Login, Core CRUD operations.
+-   **Broken/In Progress:** The  page and the  side panel are in a partially refactored state and are not fully functional. The Add Image button is currently broken as part of this refactor.
 
 **3rd Party Integrations**
--   Supabase (PostgreSQL)
+-   Supabase (PostgreSQL, Auth, Storage)
 -   Radar.io (Geocoding)
 -   MapLibre GL JS
--   Esri (Satellite map tiles)
--   CartoDB (Base map tiles)
+-   
+-   
 
 **Testing status**
--   Testing agent used after significant changes: YES. It was instrumental in diagnosing the initial RLS theory.
+-   Testing agent used after significant changes: YES
 -   Troubleshoot agent used after agent stuck in loop: NO
--   Test files created: None.
--   Known regressions: None.
+-   Test files created: None
+-   Known regressions: The Add Image button is currently non-functional due to the ongoing refactor.
 
 **Credentials to test flow:**
-**None**. Agent was unable to create or use a test user due to the Supabase Auth signup block. This needs to be resolved by the user.
+Signup is now functional. Create a new test user via the UI for each session (e.g., ).
 
 **What agent forgot to execute**
-The agent followed the user's requests sequentially and did not forget any implementation steps. The primary un-executed action is the end-to-end testing of any of the new UI features, which was impossible due to the signup/login blockage.</analysis>
+The agent did not fully complete the refactor of  in the last turn, leaving the component in a non-functional, half-finished state. It also did not test the Add Image button after its initial implementation, which led to the user discovering it was broken.</analysis>
