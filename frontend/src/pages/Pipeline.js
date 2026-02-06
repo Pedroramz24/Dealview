@@ -351,6 +351,12 @@ const Pipeline = () => {
   const [stageForm, setStageForm] = useState({ name: '', color: '#94a3b8' });
   const [savingStage, setSavingStage] = useState(false);
 
+  // Pipeline Manager
+  const [showPipelineManager, setShowPipelineManager] = useState(false);
+  const [pipelineEditName, setPipelineEditName] = useState('');
+  const [savingPipeline, setSavingPipeline] = useState(false);
+  const [newPipelineName, setNewPipelineName] = useState('');
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 }
