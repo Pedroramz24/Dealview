@@ -1758,6 +1758,17 @@ const MapView = () => {
                     disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
                 <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Land SQFT</label>
+                  <div style={{
+                    ...sidePanelFieldStyle,
+                    background: 'rgba(0,184,212,0.06)',
+                    color: selectedDeal.lot_size ? '#00b8d4' : 'rgba(255,255,255,0.3)',
+                    fontWeight: selectedDeal.lot_size ? '600' : '400'
+                  }}>
+                    {selectedDeal.lot_size ? formatNumberInput(String(Math.round(parseFloat(selectedDeal.lot_size) * 43560))) + ' SF' : '—'}
+                  </div>
+                </div>
+                <div>
                   <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Cap Rate (%)</label>
                   <input data-testid="side-panel-cap-rate-input" type="number" step="0.01" value={selectedDeal.cap_rate ?? ''}
                     onChange={(e) => setSelectedDeal(prev => ({ ...prev, cap_rate: e.target.value }))}
