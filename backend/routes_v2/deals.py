@@ -327,8 +327,8 @@ async def update_deal(
         if existing.data['owner_id'] != user_id:
             raise HTTPException(status_code=403, detail="Not authorized to update this deal")
         
-        # Build update data (only non-None fields)
-        update_data = deal.model_dump(exclude_unset=True, exclude_none=True)
+        # Build update data (only explicitly set fields, allows null to clear)
+        update_data = deal.model_dump(exclude_unset=True)
         
         if not update_data:
             raise HTTPException(status_code=400, detail="No fields to update")
