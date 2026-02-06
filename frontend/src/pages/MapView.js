@@ -565,6 +565,69 @@ const MapView = () => {
     }
   }, [clickMode]);
 
+  // --- Side panel: update a single deal field ---
+  const handleUpdateSelectedDealField = useCallback(async (field, value) => {
+    if (!selectedDeal) return;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${selectedDeal.id}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [field]: value })
+      });
+      if (response.ok) { fetchDeals(); }
+      else { toast.error('Failed to save'); }
+    } catch (error) { toast.error('Failed to save'); }
+  }, [selectedDeal, fetchDeals]);
+
+  const handleSelectedDealNumericBlur = useCallback((field) => {
+    if (!selectedDeal) return;
+    const raw = selectedDeal[field];
+    const parsed = raw === '' || raw === null || raw === undefined ? null : parseFloat(raw);
+    handleUpdateSelectedDealField(field, parsed);
+  }, [selectedDeal, handleUpdateSelectedDealField]);
+
+  const handleSelectedDealTextBlur = useCallback((field) => {
+    if (!selectedDeal) return;
+    handleUpdateSelectedDealField(field, selectedDeal[field] || null);
+  }, [selectedDeal, handleUpdateSelectedDealField]);
+
+  const handleSelectedDealIntBlur = useCallback((field) => {
+    if (!selectedDeal) return;
+    const raw = selectedDeal[field];
+    const parsed = raw === '' || raw === null || raw === undefined ? null : parseInt(raw, 10);
+    handleUpdateSelectedDealField(field, isNaN(parsed) ? null : parsed);
+  }, [selectedDeal, handleUpdateSelectedDealField]);
+
+  // --- Side panel: image upload ---
+  const handleSidePanelImageUpload = useCallback(async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedDeal) return;
+    if (!file.type.startsWith('image/')) { toast.error('Upload an image file'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error('Max 5MB'); return; }
+    setUploadingSidePanelImage(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await fetch(`${API}/deals/${selectedDeal.id}/images`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const updatedImages = selectedDeal.image_urls ? [...selectedDeal.image_urls, data.image_url] : [data.image_url];
+        setSelectedDeal(prev => ({ ...prev, image_urls: updatedImages }));
+        fetchDeals();
+        toast.success('Image uploaded');
+      } else { toast.error('Failed to upload'); }
+    } catch (err) { toast.error('Failed to upload'); }
+    finally { setUploadingSidePanelImage(false); e.target.value = ''; }
+  }, [selectedDeal, fetchDeals]);
+
   // Memoized markers
   const userMarkers = useMemo(() => {
     return deals.map(deal => (
