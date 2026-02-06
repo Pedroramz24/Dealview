@@ -179,11 +179,7 @@ async def delete_document(
     """Delete a document"""
     supabase = get_supabase()
     try:
-        # Verify user
-        user_response = supabase.auth.get_user(credentials.credentials)
-        if not user_response or not user_response.user:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        user_id = user_response.user.id
+        user_id = await get_user_id(credentials)
         
         # Get document
         doc = supabase.table('deal_documents').select('*').eq('id', document_id).single().execute()
