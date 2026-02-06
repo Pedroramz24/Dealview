@@ -403,3 +403,59 @@ async def delete_contact(
     except Exception as e:
         logger.error(f"Delete contact error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to delete contact")
+
+
+
+# ============================================================================
+# BULK IMPORT
+# ============================================================================
+
+class BulkContactCreate(BaseModel):
+    contacts: List[ContactCreate]
+
+@router.post("/bulk-import")
+async def bulk_import_contacts(
+    bulk: BulkContactCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Bulk import contacts from CSV data"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+        
+        created = 0
+        skipped = 0
+        errors = []
+        
+        for contact in bulk.contacts:
+            try:
+                contact_data = {
+                    "id": str(uuid.uuid4()),
+                    "owner_id": user_id,
+                    "name": contact.name,
+                    "email": contact.email,
+                    "phone": contact.phone,
+                    "company": contact.company,
+                    "contact_type": contact.contact_type or "Buyer",
+                    "status": contact.status or "Active",
+                    "notes": contact.notes,
+                    "tag_ids": contact.tag_ids or [],
+                }
+                supabase.table('contacts').insert(contact_data).execute()
+                created += 1
+            except Exception as e:
+                skipped += 1
+                errors.append(f"{contact.name}: {str(e)[:80]}")
+        
+        return {
+            "success": True,
+            "created": created,
+            "skipped": skipped,
+            "errors": errors[:10],
+            "message": f"Imported {created} contacts ({skipped} skipped)"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Bulk import error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to import contacts")
