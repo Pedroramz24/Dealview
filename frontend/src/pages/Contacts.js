@@ -1382,6 +1382,169 @@ const Contacts = () => {
           </div>
         </div>
       )}
+
+      {/* CSV Import Modal */}
+      {showCsvImport && csvData && (
+        <div
+          data-testid="csv-import-modal"
+          onClick={() => { setShowCsvImport(false); setCsvData(null); }}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.85)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#1a1f2e', borderRadius: '12px',
+              width: '90%', maxWidth: '800px', maxHeight: '90vh',
+              display: 'flex', flexDirection: 'column', overflow: 'hidden',
+              boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{
+              padding: '16px 20px', display: 'flex', justifyContent: 'space-between',
+              alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <FileText size={20} style={{ color: '#00d4ff' }} />
+                <span style={{ color: 'white', fontWeight: '600', fontSize: '16px' }}>
+                  Import Contacts from CSV
+                </span>
+                <span style={{ color: '#9ca3af', fontSize: '13px' }}>
+                  ({csvData.rows.length} rows found)
+                </span>
+              </div>
+              <button
+                data-testid="csv-import-close"
+                onClick={() => { setShowCsvImport(false); setCsvData(null); }}
+                style={{
+                  background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px', color: '#9ca3af', cursor: 'pointer',
+                  width: '32px', height: '32px', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center'
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Column Mapping */}
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+              <p style={{ color: '#9ca3af', fontSize: '13px', marginBottom: '12px' }}>
+                Map your CSV columns to contact fields:
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
+                {csvData.headers.map((header, idx) => (
+                  <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ color: '#e2e8f0', fontSize: '12px', fontWeight: '500' }}>{header}</span>
+                    <select
+                      data-testid={`csv-column-map-${idx}`}
+                      value={csvColumnMap[idx] || ''}
+                      onChange={(e) => {
+                        setCsvColumnMap(prev => {
+                          const next = { ...prev };
+                          // Remove previous mapping for this field
+                          Object.keys(next).forEach(k => {
+                            if (next[k] === e.target.value && k !== String(idx)) delete next[k];
+                          });
+                          if (e.target.value) next[idx] = e.target.value;
+                          else delete next[idx];
+                          return next;
+                        });
+                      }}
+                      style={{
+                        background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '6px', padding: '6px 8px', color: '#e2e8f0',
+                        fontSize: '13px', cursor: 'pointer', appearance: 'auto'
+                      }}
+                    >
+                      <option value="">-- Skip --</option>
+                      <option value="name">Name *</option>
+                      <option value="email">Email</option>
+                      <option value="phone">Phone</option>
+                      <option value="company">Company</option>
+                      <option value="contact_type">Type</option>
+                      <option value="status">Status</option>
+                      <option value="notes">Notes</option>
+                    </select>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Preview */}
+            <div style={{ flex: 1, overflow: 'auto', padding: '16px 20px' }}>
+              <p style={{ color: '#9ca3af', fontSize: '12px', marginBottom: '8px' }}>Preview (first 5 rows):</p>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                  <thead>
+                    <tr>
+                      {csvData.headers.map((h, i) => (
+                        <th key={i} style={{
+                          padding: '8px', textAlign: 'left', color: '#00d4ff',
+                          fontWeight: '600', borderBottom: '1px solid rgba(255,255,255,0.1)',
+                          whiteSpace: 'nowrap', fontSize: '11px', textTransform: 'uppercase'
+                        }}>
+                          {csvColumnMap[i] ? `${h} \u2192 ${csvColumnMap[i]}` : h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {csvData.rows.slice(0, 5).map((row, i) => (
+                      <tr key={i}>
+                        {row.map((cell, j) => (
+                          <td key={j} style={{
+                            padding: '8px', color: csvColumnMap[j] ? '#e2e8f0' : '#6b7280',
+                            borderBottom: '1px solid rgba(255,255,255,0.05)',
+                            whiteSpace: 'nowrap', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'
+                          }}>
+                            {cell || '-'}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div style={{
+              padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.08)',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+            }}>
+              <span style={{ color: '#9ca3af', fontSize: '13px' }}>
+                {Object.values(csvColumnMap).includes('name') 
+                  ? `Ready to import ${csvData.rows.filter(r => r[parseInt(Object.entries(csvColumnMap).find(([_,v]) => v === 'name')?.[0])]?.trim()).length} contacts`
+                  : 'Map at least the "Name" column to proceed'}
+              </span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Button
+                  onClick={() => { setShowCsvImport(false); setCsvData(null); }}
+                  variant="outline"
+                  className="border-gray-700 text-gray-300"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  data-testid="csv-import-confirm-button"
+                  onClick={handleCsvImport}
+                  disabled={importingCsv || !Object.values(csvColumnMap).includes('name')}
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                >
+                  {importingCsv ? 'Importing...' : 'Import Contacts'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
