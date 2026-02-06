@@ -655,6 +655,27 @@ const MapView = () => {
     finally { setUploadingSidePanelImage(false); e.target.value = ''; }
   }, [selectedDeal, fetchDeals]);
 
+  // --- Side panel: toggle team visibility ---
+  const handleToggleTeamVisibility = useCallback(async (shared) => {
+    if (!selectedDeal) return;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${selectedDeal.id}/visibility`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shared_with_team: shared })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedDeal(prev => ({ ...prev, team_id: shared ? (data.deal?.team_id || 'shared') : null }));
+        fetchDeals();
+        fetchTeamData();
+        toast.success(shared ? 'Shared with team' : 'Set to private');
+      } else { toast.error('Failed to update visibility'); }
+    } catch (err) { toast.error('Failed to update visibility'); }
+  }, [selectedDeal, fetchDeals]);
+
   // Memoized markers - filtered by asset type
   const filteredDeals = useMemo(() => {
     if (!assetTypeFilter) return deals;
