@@ -80,22 +80,22 @@ const PublicShare = () => {
       {/* Header */}
       <div style={{ padding: '14px 24px', background: 'rgba(10,10,11,0.97)', borderBottom: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(16px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ color: '#00b8d4', fontSize: '20px', fontWeight: 700, letterSpacing: '-0.5px' }}>DealLinked</span>
+          <img src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png" alt="DealLinked" style={{ height: '28px' }} />
           <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Shared Property</span>
         </div>
       </div>
 
-      {/* Hero Title */}
+      {/* Hero Title — Title first, then address, then asset type */}
       <div style={{ padding: '40px 24px 32px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ display: 'inline-block', padding: '4px 14px', background: 'rgba(0,184,212,0.1)', border: '1px solid rgba(0,184,212,0.2)', borderRadius: '20px', marginBottom: '16px' }}>
-          <span style={{ color: '#00b8d4', fontSize: '12px', fontWeight: 600 }}>{deal.asset_type || 'Property'}</span>
-        </div>
         <h1 style={{ color: '#fff', fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 700, marginBottom: '12px', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
           {deal.title || deal.address || 'Property Details'}
         </h1>
-        <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+        <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginBottom: '14px' }}>
           <MapPin size={14} />
           <span>{deal.address}{deal.city ? `, ${deal.city}` : ''}{deal.state ? `, ${deal.state}` : ''}{deal.zip_code ? ` ${deal.zip_code}` : ''}</span>
+        </div>
+        <div style={{ display: 'inline-block', padding: '4px 14px', background: 'rgba(0,184,212,0.1)', border: '1px solid rgba(0,184,212,0.2)', borderRadius: '20px' }}>
+          <span style={{ color: '#00b8d4', fontSize: '12px', fontWeight: 600 }}>{deal.asset_type || 'Property'}</span>
         </div>
       </div>
 
