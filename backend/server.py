@@ -26,7 +26,7 @@ from routes_v2.dashboard import router as dashboard_router
 
 # Import utilities
 from utils.db import get_supabase
-from utils.auth_helpers import security
+from utils.auth_helpers import security, get_user_id
 
 # Initialize FastAPI app
 app = FastAPI(
