@@ -211,6 +211,8 @@ const MapView = () => {
   const [creatingDeal, setCreatingDeal] = useState(false);
   const [sidePanelImageIdx, setSidePanelImageIdx] = useState(0);
   const [uploadingSidePanelImage, setUploadingSidePanelImage] = useState(false);
+  const [assetTypeFilter, setAssetTypeFilter] = useState('');
+  const [dealContacts, setDealContacts] = useState([]);
   
   // Map viewport
   const [viewState, setViewState] = useState({
