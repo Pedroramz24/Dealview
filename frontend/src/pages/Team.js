@@ -672,7 +672,7 @@ const MembersTab = ({ members, user, canManage, invites, handleRevokeInvite, set
 };
 
 // Team Deals Tab
-const TeamDealsTab = ({ teamDeals, statsLoading }) => {
+const TeamDealsTab = ({ teamDeals, statsLoading, navigate }) => {
   // Group deals by owner
   const dealsByOwner = {};
   teamDeals.forEach(deal => {
