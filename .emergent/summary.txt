@@ -1,172 +1,159 @@
-<analysis>**original_problem_statement:** The user wants to perform a complete, ground-up rebuild of their DealLinked CRM application. The core instruction is to nuke most of the existing application and database, and rebuild a simpler, more focused CRM.
+<analysis>**original_problem_statement:**
+The initial problem statement from the previous fork mentioned:
+*   Refactor the  component to be an inline editable form.
+*   Update the  side panel to include an image carousel and inline editing capabilities.
+*   Fix a backend bug where  or empty values are not saved, likely due to Pydantic's .
+*   A recurring issue with  causing auth problems.
 
-**PRODUCT REQUIREMENTS:**
--   **Keep:** Map View, Property Details, Pipeline/Kanban, Contacts, Team tab, Landing/Login pages, and a simple Calendar.
--   **Remove:** Marketplace, Command Center, DealVisor, AI operations, and complex map layers.
--   **Database:** A fresh, minimal Supabase schema.
--   **Recent User Requests (Driving Current Work):**
-    1.  **Tag Manager UI:** The Manage Smart Tags feature on the Contacts page should be a clean side panel, not a modal, listing all tags for easy editing and deletion.
-    2.  **Document Upload:** The document upload feature on the  page must be fixed to support drag-and-drop and allow actual file uploads.
-    3.  **Deal Persistence:** Deals created on the map must be saved permanently and reappear after navigation.
-    4.  **Images & Full Details:** Add image galleries to both the  page and the  side panel. Both views must show *all* deal fields (even if empty) and be editable at all times without a separate edit mode.
-    5.  **Image Carousel:** The image galleries should be carousels with navigation arrows.
-    6.  **Pipeline/Stage Management:** Both the  page and the  side panel must have dropdowns to change a deal's pipeline and stage.
+During the session, the user added more requirements:
+*   Add Map tile prefetching for smoother performance.
+*   **CRITICAL**: Fix data disappearing (deals, pipelines, teams not loading). This was the top priority.
+*   Add a filter to the map tab to filter deals by asset type.
+*   Show contact info in the property details panel on the map.
+*   Format the asking price with comma-delimited numbers in the property details panel.
+*   In the contacts tab, add the ability to filter by tags.
+*   In the contacts tab, clicking a contact should immediately open the edit panel.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application rebuild is nearly complete. The FastAPI V2 backend and Supabase database are stable and functional. All core pages (, , , , , ) have been rewritten for the V2 API. Critical signup, login, and data creation blockers related to Supabase Row Level Security (RLS) have been resolved with the user's help. The  tag manager has been successfully converted to a side panel, and deal creation/persistence on the map is now working. The agent had started implementing the user's latest, more complex UI requirements for the deal details views but has not finished.
+A full-stack web application for commercial real estate deal management.
+*   **Frontend**: A React application featuring a dashboard, a map view () for visualizing deals, a detailed deal view () with inline editing and document/image previews, a contacts page () with CSV import functionality, and a pipeline management view.
+*   **Backend**: A FastAPI server that connects to a Supabase PostgreSQL database. It handles CRUD operations for deals, contacts, pipelines, and teams, as well as document and image uploads.
+*   **Authentication**: User authentication is handled via Supabase, but a critical fix was implemented to bypass the  client's auth methods for user lookups in routes to prevent auth state corruption. A custom JWT decoding helper is now used.
 
 **Last working item**:
-The agent was in the middle of a major refactor of the  component to satisfy several user requests simultaneously.
-
--   Last item agent was working: Refactoring  to:
-    1.  Make all property detail fields editable at all times (inline editing).
-    2.  Implement an image gallery as a carousel with navigation arrows.
-    3.  Fix the non-functional Add Image button.
-    4.  Ensure all deal fields are displayed, even if they have no value.
--   Status: **IN PROGRESS**
--   Agent Testing Done: N
--   Which testing method agent to use? **frontend testing agent** (after the refactor is complete for both  and ).
--   User Testing Done: N
+*   Last item agent was working: The agent was preparing to start work on the new feature requests provided by the user in the last message. The agent has created a plan but has not started implementation.
+*   Status: NOT STARTED
+*   Agent Testing Done: N
+*   Which testing method agent to use?: both
+*   User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: (P0) Complete the Deal Details & Map Side Panel Overhaul
-
-  Issues Detail:
-  -   Issue 1:
-      -   **Description**: The user requires a significant UI/UX overhaul for both the main  page and the deal information side panel on the  page. The work was started but is incomplete.
-      -   **Attempted fixes**: The agent began refactoring  by adding the UI structure for an image carousel and the corresponding state. The logic for always-on editing and fixing the Add Image button has not yet been implemented.
-      -   **Next debug checklist**:
-          1.  **Resume in **:
-              -   Create a generic  function to save individual field changes to the backend.
-              -   Replace all static text displays for deal properties (e.g., Asking Price, NOI) with editable input components that call the new update function.
-              -   Ensure the Add Image button is correctly wired to a hidden file input and triggers the  function.
-              -   Complete the image carousel logic with navigation controls.
-          2.  **Refactor  Side Panel**:
-              -   Apply the exact same always-on editable components and image carousel logic from  to the side panel that appears when a deal marker is clicked.
-      -   **Why fix this issue and what will be achieved with the fix?** This will deliver the user's explicit workflow requirements for a more fluid and efficient deal management experience.
-      -   **Status**: **IN PROGRESS**
-      -   **Is recurring issue?** N
-      -   **Should Test frontend/backend/both after fix?** both
-      -   **Blocked on other issue**: None
+There are no outstanding bugs or issues. The pending work consists of new feature requests.
 
 **In progress Task List**:
--   Task 1: Complete the Deal Details and Map Side Panel Refactor
-    -   **Where to resume**: . The agent just added the state and UI for the image carousel. The next immediate step is to implement a generic function for updating individual deal fields to support inline editing.
-    -   **What will be achieved with this?**: A fully functional, always-editable deal detail view with an image carousel on both the dedicated page and the map side panel.
-    -   **Status**: **IN PROGRESS**
-    -   **Should Test frontend/backend/both after fix?** both
-    -   **Blocked on something**: None.
+*   **Task 1: Implement new features from the user's latest request (P0)**
+    *   Where to resume: The agent needs to start implementing the changes outlined in the user's last message. A new plan is needed for the following requests:
+        1.  Map tab: Filter deals by asset type.
+        2.  Map tab: Show contact info in the property details panel.
+        3.  Map tab: Format asking price with commas.
+        4.  Contacts tab: Filter by tags.
+        5.  Contacts tab: Open edit panel automatically on contact click.
+    *   What will be achieved with this?: Improved user experience and workflow efficiency on the map and contacts pages.
+    *   Status: NOT STARTED
+    *   Should Test frontend/backend/both after fix?: both
+    *   Blocked on something: No
 
 **Upcoming and Future Tasks**
--   Upcoming Tasks:
-    -   (P0) **Full End-to-End Test**: Once the current refactor is complete, perform a comprehensive test of the entire application flow: Sign up, create a team, create a pipeline stage, create a contact tag, create a deal on the map, upload an image and a document, change its pipeline/stage, and verify everything works seamlessly.
--   Future Tasks:
-    -   CSV contact import.
-    -   Recurring calendar events.
-    -   Team performance metrics.
-    -   Add tile prefetching for smoother map performance.
-    -   Implement a document preview modal.
+*   **Upcoming Tasks:**
+    *   **P0: Map Filter by Asset Type**: Modify  to include a filter control (e.g., a dropdown) that allows users to filter the deals displayed on the map based on their 'asset_type' field. This will likely involve state management for the filter and updating the data fetching or rendering logic.
+    *   **P0: Show Contact Info on Map Panel**: Update the side panel in  to display associated contact information for the selected deal.
+    *   **P0: Comma-Delimited Asking Price**: In 's side panel, format the  to be a comma-separated number for better readability (e.g.,  instead of ).
+    *   **P0: Filter Contacts by Tags**: In , implement a filtering mechanism (e.g., multi-select dropdown) to allow users to filter the contact list based on tags.
+    *   **P0: Simplify Contact Editing Workflow**: Modify  so that clicking on a contact in the list directly opens the inline editing interface, removing the intermediate step of clicking an Edit button.
+*   **Future Tasks:**
+    *   None.
 
 **Completed work in this session**
--   **Core Functionality Fixed (DONE):** Resolved all Failed to create... errors (for Teams, Tags, Stages, Events) by fixing a missing Supabase trigger that creates  records for new signups.
--   **Calendar Page Rebuild (DONE):** Rebuilt  to use the V2 API and fixed event creation failures caused by RLS policies.
--   **Team Page Fix (DONE):** Resolved team creation/viewing errors by fixing a backend embedding issue and adding the correct RLS policies.
--   **Settings Page Fix (DONE):** Corrected profile update errors by aligning the frontend form with the actual database schema for the  table.
--   **Tag Manager UI Rework (DONE):** Replaced the  tag management modal with a cleaner, more functional side panel.
--   **Map View Enhancements (DONE):**
-    -   Improved map zoom/pan smoothness.
-    -   Fixed deal creation and persistence.
-    -   Added initial versions of the image gallery and pipeline/stage dropdowns to the  page and map side panel (now being overhauled).
--   **Backend Endpoints (DONE):** Added new endpoints and database storage support for document and image uploads (, ).
+- **Critical Auth Refactor (DONE)**: Fixed a critical bug causing data loss. Replaced all instances of  in backend routes with a custom  helper () that decodes the JWT directly. This was a major refactoring across all route files (, , , , , ).
+- **Backend Field Update Fix (DONE)**: Modified Pydantic models in  by removing  to allow fields to be cleared (set to ) during updates.
+- **Inline Editing Refactor (DONE)**: Fully rewrote  to support always-on inline editing for all fields.
+- **Map Side Panel Enhancement (DONE)**: Updated  to include an image carousel, display all deal fields, and incorporate inline editing in the side panel.
+- **Map Performance Improvement (DONE)**: Implemented map tile prefetching in .
+- **Document Preview Modal (DONE)**: Added a modal in  to preview uploaded documents.
+- **CSV Contact Import (DONE)**: Added a backend endpoint  and a new UI in  to upload and import contacts from a CSV file.
 
 **Earlier issues found/mentioned but not fixed**
-None. All previously identified issues have either been resolved or are part of the current in-progress task.
+- None. All identified issues were addressed in this session.
 
 **Known issue recurrence from previous fork**
--   **Issue recurrence in previous fork**: User Signup/Login failure.
--   **Recurrence count**: 2+
--   **Status**: **RESOLVED**
+- **Issue recurrence in previous fork**: The  function was causing recurring authentication problems, leading to RLS errors and inability to fetch user-specific data.
+- **Recurrence count**: 1
+- **Status**: RESOLVED. The agent performed a comprehensive refactoring of the authentication logic in the backend, removing the problematic  call from all routes and replacing it with a stable custom JWT decoder. This should permanently fix the issue.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Backend:** FastAPI
--   **Frontend:** React, React Router, , 
--   **Database:** Supabase (PostgreSQL) with Row Level Security (RLS) and Triggers.
--   **Storage:** Supabase Storage for documents and images.
+*   **Frontend**: React,  for map visualization, Tailwind CSS.
+*   **Backend**: FastAPI (Python), Pydantic for data validation.
+*   **Database**: Supabase (PostgreSQL) with Row Level Security (RLS).
+*   **Authentication**: JWT-based. The backend now uses a custom helper to decode JWTs and get user IDs to avoid corrupting the  client's singleton state.
 
 **key DB schema**
--   : {id, email, full_name, team_id, avatar_url}
--   : {id, owner_id, title, address, image_urls: text[], ...}
--   : {id, deal_id, file_name, storage_path}
--   : {id, owner_id, name}
--   : {id, owner_id, title, start_time, end_time}
+- : {id, user_id, team_id, asset_type, asking_price, ...}
+- : {id, user_id, team_id, name, email, phone, tags, ...}
+- : {id, user_id, team_id, name, stages, ...}
+- : {id, user_id, team_id, ...}
+- : {id, owner_id, name, ...}
 
 **changes in tech stack**
-None.
+- **Significant Pattern Change**: The method for authenticating user requests on the backend was fundamentally changed. The application now avoids  and instead relies on a custom JWT decoding helper () for all routes.
 
 **All files of reference**
--   : **Currently being modified.** The primary file for the current refactoring effort.
--   : Will need to be refactored to align its side panel with the changes made to .
--   : Contains the relevant backend logic for updating deals and handling uploads.
--   : Contains the full project history and requirements.
+- : **NEW file**. Created to house the centralized, safe  function that avoids Supabase client auth state corruption.
+- : **MODIFIED**. All were updated to remove local  functions and import the new shared helper.
+- : **MODIFIED**. Added the  endpoint for CSV import.
+- : **MODIFIED**. Updated to use the new  helper for its upload endpoints.
+- : **MODIFIED**. Pydantic models were updated to allow clearing fields.
+- : **MODIFIED**. Major refactor for inline editing and added document preview modal.
+- : **MODIFIED**. Major updates to the side panel (carousel, inline editing) and implementation of map tile prefetching.
+- : **MODIFIED**. UI and logic added for the CSV import feature.
 
 **Areas that need refactoring**:
--   ****: Refactor is currently in progress.
--   ****: The deal details side panel requires a refactor to mirror the new always-on editing and image carousel functionality from .
+- : Will need refactoring to implement the new tag filtering and direct-to-edit workflow.
+- : Will need refactoring to add the asset type filter.
 
 **key api endpoints**
--   : Crucial for the upcoming inline editing functionality.
--   : For the image carousel upload feature.
--   : For the document upload feature.
+- : (NEW) Bulk create contacts from a list (used for CSV import).
+- : Fetches all deals for the user.
+- : Updates a deal.
+- : Fetches all contacts for the user.
+- : Uploads a document.
+- : Uploads an image.
+- : Fetches pipelines.
 
 **Critical Info for New Agent**
--   **Resume Refactor Immediately:** You are in the middle of a large refactor of . Your first task is to complete it. Do not start new tasks.
--   **Refactor Goals:** The user wants always-on editing (no save button, fields are always inputs), a working image carousel with arrows, and all deal fields visible even if empty.
--   **Next Steps:**
-    1.  In , create a helper function like  to send  requests to the backend.
-    2.  Replace all static property displays with editable input components that use this new function.
-    3.  Fix the Add Image button's  handler.
-    4.  After  is working, apply the *exact same* logic and components to the side panel inside .
+- **DO NOT USE  IN ANY BACKEND ROUTE.** This was the root cause of the critical data loss bug. The  client's auth state gets permanently switched from the service role to the user's role, causing subsequent database calls to fail due to RLS.
+- **USE THE SHARED HELPER**: For getting the user ID from a request header, always import and use  from . This function safely decodes the JWT without affecting the global Supabase client.
+- The user's latest requests involve significant UI changes on the Map and Contacts pages. Plan these changes carefully.
 
 **documents and test reports created in this job**
--   
--    (updated)
+- 
+- 
+- 
+- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Reports creation failures for deals, stages, tags, teams, events, and choppy map zoom. - **(Resolved)**
-2.  **Agent:** Asks user to run a query to fix the missing  trigger. - **(Done)**
-3.  **User:** Confirms query was run. - **(Done)**
-4.  **User:** The manage tags settings page should be cleaner... documents...needs to be fixed...deal was not saved. - **(Resolved)**
-5.  **Agent:** Asks user to run a query to add RLS policies for deals. - **(Done)**
-6.  **User:** Confirms query was run. - **(Done)**
-7.  **User:** Lets add pictures...see all the details [in map side panel]...drop down menu to be able to change between stages... - **(In Progress)**
-8.  **User:** Reports error about 'deal-images' bucket already existing. - **(Acknowledged)**
-9.  **Agent:** Asks user to confirm  bucket exists. - **(Done)**
-10. **User:** The add images button does not work...I want the deal details panel to be editable at all times without clicking edit...I want to be able to add multiple images and have carousel... - **(This is the current, active task).**
+- 1. **user**: Lets add a filter to the map tab so we can filter deals by asset type, the contact info should show in the property details panel, comma delimited numbers should be shown on the asking price in the property details panel. The contacts tab we need to be able to filter by tags and when i click on a contact on the contacts tab the edit panel should automatically come up instead of having to click edit on the panel that comes up when i click on a contact just to simply the workflow.
+    - **Status**: PENDING. This is the new set of tasks to be implemented.
+- 2. **user**: (After data loss fix) Yes start with the plan, another issue is that since i forked from the last session the deals that I had added previously are not showing up on the map and the pipeline was deleted as well. This is a critical issue, the team that i created was also deleted as well. The pipeline tab also is not showing the different stages
+    - **Status**: RESOLVED. This critical issue was investigated and fixed.
+- 3. **user**: Work on the next pending items - *Triggered agent to plan for Document Preview & CSV Import.*
+    - **Status**: COMPLETED.
+- 4. **user**: yes taht looks good move forward - *Approved the plan for map tile prefetching.*
+    - **Status**: COMPLETED.
+- 5. **user**: Move to the next action items - *Triggered agent to plan for map tile prefetching.*
+    - **Status**: COMPLETED.
+- 6. **user**: Yes proceed with the plan outlined above, add Map tile prefetching for smoother performance on the map to the upcoming tasks. - *Approved initial plan and added a new task.*
+    - **Status**: COMPLETED.
 
 **Project Health Check:**
--   **Working:** Backend API (V2), Database, Signup/Login, Core CRUD operations.
--   **Broken/In Progress:** The  page and the  side panel are in a partially refactored state and are not fully functional. The Add Image button is currently broken as part of this refactor.
+- **Broken**: Nothing is currently broken. The critical data loss bug has been fixed.
+- **Mocked**: No mocked components or endpoints.
 
 **3rd Party Integrations**
--   Supabase (PostgreSQL, Auth, Storage)
--   Radar.io (Geocoding)
--   MapLibre GL JS
--   
--   
+- Supabase (PostgreSQL, Authentication, Storage) - uses environment variables for keys.
 
 **Testing status**
--   Testing agent used after significant changes: YES
--   Troubleshoot agent used after agent stuck in loop: NO
--   Test files created: None
--   Known regressions: The Add Image button is currently non-functional due to the ongoing refactor.
+- **Testing agent used after significant changes**: YES. The agent ran the frontend and backend testing agents after the auth refactor and after implementing the document preview/CSV import features. All tests passed.
+- **Troubleshoot agent used after agent stuck in loop**: NO
+- **Test files created**: []
+- **Known regressions**: []
 
 **Credentials to test flow:**
-Signup is now functional. Create a new test user via the UI for each session (e.g., ).
+N/A
 
 **What agent forgot to execute**
-The agent did not fully complete the refactor of  in the last turn, leaving the component in a non-functional, half-finished state. It also did not test the Add Image button after its initial implementation, which led to the user discovering it was broken.</analysis>
+The agent has not yet started implementing the latest batch of feature requests from the user's last message. This is the immediate next step.</analysis>
