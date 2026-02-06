@@ -755,9 +755,8 @@ const DealDetails = () => {
                 <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>NOI</Label>
                 <input
                   data-testid="deal-noi-input"
-                  type="number"
-                  value={deal.noi ?? ''}
-                  onChange={(e) => handleFieldChange('noi', e.target.value)}
+                  value={deal.noi ? formatNumberInput(String(deal.noi)) : ''}
+                  onChange={(e) => handleFieldChange('noi', parseFormattedNumber(e.target.value))}
                   onBlur={() => handleNumericBlur('noi')}
                   disabled={!isOwner}
                   placeholder="0"
@@ -782,9 +781,8 @@ const DealDetails = () => {
                 <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Annual Income</Label>
                 <input
                   data-testid="deal-annual-income-input"
-                  type="number"
-                  value={deal.annual_income ?? ''}
-                  onChange={(e) => handleFieldChange('annual_income', e.target.value)}
+                  value={deal.annual_income ? formatNumberInput(String(deal.annual_income)) : ''}
+                  onChange={(e) => handleFieldChange('annual_income', parseFormattedNumber(e.target.value))}
                   onBlur={() => handleNumericBlur('annual_income')}
                   disabled={!isOwner}
                   placeholder="0"
@@ -795,9 +793,8 @@ const DealDetails = () => {
                 <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Annual Expenses</Label>
                 <input
                   data-testid="deal-annual-expenses-input"
-                  type="number"
-                  value={deal.annual_expenses ?? ''}
-                  onChange={(e) => handleFieldChange('annual_expenses', e.target.value)}
+                  value={deal.annual_expenses ? formatNumberInput(String(deal.annual_expenses)) : ''}
+                  onChange={(e) => handleFieldChange('annual_expenses', parseFormattedNumber(e.target.value))}
                   onBlur={() => handleNumericBlur('annual_expenses')}
                   disabled={!isOwner}
                   placeholder="0"
