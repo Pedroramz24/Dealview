@@ -651,39 +651,6 @@ const DealDetails = () => {
               </div>
             )}
           </div>
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => setDeal({ ...deal, image_url: url })}
-                      >
-                        <img 
-                          src={url} 
-                          alt="" 
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div style={{
-                border: `2px dashed ${colors.border}`,
-                borderRadius: borderRadius.md,
-                padding: '40px',
-                textAlign: 'center'
-              }}>
-                <Building2 size={48} style={{ color: colors.textTertiary, margin: '0 auto 12px' }} />
-                <p style={{ color: colors.textTertiary, fontSize: '14px' }}>
-                  No images uploaded yet
-                </p>
-                {isOwner && (
-                  <p style={{ color: colors.textTertiary, fontSize: '12px', marginTop: '8px' }}>
-                    Click "Add Image" to upload property photos
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
 
           {/* Pipeline & Stage */}
           <div style={{
