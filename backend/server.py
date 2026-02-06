@@ -430,6 +430,83 @@ api_router.include_router(teams_router)
 api_router.include_router(calendar_router)
 api_router.include_router(dashboard_router)
 
+
+# ============================================================================
+# PUBLIC SHARE ENDPOINT (no auth required)
+# ============================================================================
+@api_router.get("/share/{deal_id}")
+async def get_shared_deal(deal_id: str):
+    """Get deal details for public sharing - read-only, no auth required"""
+    supabase = get_supabase()
+    try:
+        response = supabase.table('deals').select(
+            '*, contact_deal_links(*, contacts(name, email, phone, company, contact_type))'
+        ).eq('id', deal_id).single().execute()
+
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+
+        deal = response.data
+
+        # Get documents
+        docs_response = supabase.table('deal_documents').select('*').eq('deal_id', deal_id).execute()
+        deal['documents'] = docs_response.data or []
+
+        # Strip sensitive fields
+        deal.pop('owner_id', None)
+        deal.pop('team_id', None)
+
+        return {"success": True, "deal": deal}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Public share error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch deal")
+
+
+# ============================================================================
+# AVATAR UPLOAD ENDPOINT
+# ============================================================================
+@api_router.post("/users/avatar/upload")
+async def upload_avatar(
+    file: UploadFile = File(...),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Upload user avatar image"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+
+        if not file.content_type or not file.content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail="File must be an image")
+
+        contents = await file.read()
+        if len(contents) > 5 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File too large (max 5MB)")
+
+        ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+        unique_filename = f"avatars/{user_id}/{uuid.uuid4()}.{ext}"
+
+        # Upload to Supabase storage
+        supabase.storage.from_('deal-images').upload(
+            unique_filename, contents,
+            file_options={"content-type": file.content_type, "upsert": "true"}
+        )
+
+        avatar_url = supabase.storage.from_('deal-images').get_public_url(unique_filename)
+
+        # Update user profile
+        supabase.table('user_profiles').update(
+            {"avatar_url": avatar_url}
+        ).eq('id', user_id).execute()
+
+        return {"success": True, "avatar_url": avatar_url}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Avatar upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to upload avatar")
+
 # Mount API router to app
 app.include_router(api_router)
 
