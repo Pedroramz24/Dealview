@@ -65,6 +65,11 @@ const Contacts = () => {
   const [csvColumnMap, setCsvColumnMap] = useState({});
   const [importingCsv, setImportingCsv] = useState(false);
   
+  // Inline tag creation in edit panel
+  const [showInlineTagCreate, setShowInlineTagCreate] = useState(false);
+  const [inlineTagName, setInlineTagName] = useState('');
+  const [inlineTagColor, setInlineTagColor] = useState('#00b8d4');
+  
   // Form state
   const [contactForm, setContactForm] = useState({
     name: '',
