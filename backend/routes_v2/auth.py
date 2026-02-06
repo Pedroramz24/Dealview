@@ -101,32 +101,41 @@ async def login(request: LoginRequest):
 
 @router.post("/signup")
 async def signup(request: SignupRequest):
-    """Sign up with email and password via Supabase Auth"""
-    supabase = get_supabase()
+    """Sign up with email and password via Supabase Auth REST API (safe, no client contamination)"""
     try:
-        # Create user in Supabase Auth
-        response = supabase.auth.sign_up({
-            "email": request.email,
-            "password": request.password,
-            "options": {
-                "data": {
-                    "full_name": request.full_name
-                }
-            }
-        })
+        # Use direct HTTP call to avoid contaminating the singleton client
+        resp = httpx.post(
+            f"{SUPABASE_URL}/auth/v1/signup",
+            json={
+                "email": request.email,
+                "password": request.password,
+                "data": {"full_name": request.full_name}
+            },
+            headers={"apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json"},
+            timeout=10
+        )
         
-        if not response.user:
-            raise HTTPException(status_code=400, detail="Failed to create account")
+        if resp.status_code not in (200, 201):
+            error_data = resp.json() if resp.text else {}
+            msg = error_data.get('msg', error_data.get('error_description', 'Failed to create account'))
+            if "already registered" in str(msg).lower():
+                raise HTTPException(status_code=400, detail="Email already registered")
+            raise HTTPException(status_code=400, detail=msg)
         
-        # Note: user_profiles record is created by database trigger
+        auth_data = resp.json()
+        user_data = auth_data.get('user', auth_data)
+        access_token = auth_data.get('access_token')
+        refresh_token = auth_data.get('refresh_token')
+        
+        user_id = user_data.get('id', '')
         
         return {
             "success": True,
-            "access_token": response.session.access_token if response.session else None,
-            "refresh_token": response.session.refresh_token if response.session else None,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
             "user": {
-                "id": response.user.id,
-                "email": response.user.email,
+                "id": user_id,
+                "email": user_data.get('email', request.email),
                 "full_name": request.full_name
             },
             "message": "Account created successfully"
