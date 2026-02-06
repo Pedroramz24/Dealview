@@ -1212,28 +1212,92 @@ const Contacts = () => {
 
               {/* Tags */}
               {tags.length > 0 && (
-                <div>
-                  <Label className="text-sm font-medium text-gray-300 mb-2 block">Tags</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {tags.map(tag => (
-                      <button
-                        key={tag.id}
-                        type="button"
-                        onClick={() => toggleTagInForm(tag.id)}
-                        className="px-3 py-1.5 rounded-full text-sm transition-all"
-                        style={{
-                          backgroundColor: contactForm.tag_ids.includes(tag.id) ? `${tag.color}30` : 'transparent',
-                          border: contactForm.tag_ids.includes(tag.id) ? `2px solid ${tag.color}` : '1px solid #374151',
-                          color: contactForm.tag_ids.includes(tag.id) ? tag.color : '#9ca3af'
-                        }}
-                        data-testid={`tag-toggle-${tag.id}`}
-                      >
-                        {tag.name}
-                      </button>
-                    ))}
-                  </div>
+              {/* Tags */}
+              <div>
+                <Label className="text-sm font-medium text-gray-300 mb-2 block">Tags</Label>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map(tag => (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      onClick={() => toggleTagInForm(tag.id)}
+                      className="px-3 py-1.5 rounded-full text-sm transition-all"
+                      style={{
+                        backgroundColor: contactForm.tag_ids.includes(tag.id) ? `${tag.color}30` : 'transparent',
+                        border: contactForm.tag_ids.includes(tag.id) ? `2px solid ${tag.color}` : '1px solid #374151',
+                        color: contactForm.tag_ids.includes(tag.id) ? tag.color : '#9ca3af'
+                      }}
+                      data-testid={`tag-toggle-${tag.id}`}
+                    >
+                      {tag.name}
+                    </button>
+                  ))}
+                  {/* Add Tag Button */}
+                  <button
+                    type="button"
+                    onClick={() => setShowInlineTagCreate(!showInlineTagCreate)}
+                    className="px-3 py-1.5 rounded-full text-sm transition-all flex items-center gap-1 border border-dashed border-gray-600 text-gray-400 hover:border-cyan-500 hover:text-cyan-400"
+                    data-testid="add-tag-inline-button"
+                  >
+                    <Plus className="w-3 h-3" />
+                    New Tag
+                  </button>
                 </div>
-              )}
+
+                {/* Inline Tag Creation */}
+                {showInlineTagCreate && (
+                  <div className="mt-3 p-3 rounded-lg bg-gray-800/80 border border-gray-700 space-y-3" data-testid="inline-tag-form">
+                    <Input
+                      value={inlineTagName}
+                      onChange={(e) => setInlineTagName(e.target.value)}
+                      placeholder="Tag name..."
+                      className="bg-gray-900 border-gray-600 text-white text-sm"
+                      data-testid="inline-tag-name-input"
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleInlineTagCreate(); } }}
+                      autoFocus
+                    />
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">Color:</span>
+                      <div className="flex gap-1.5 flex-wrap">
+                        {tagColorOptions.map(c => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setInlineTagColor(c)}
+                            className="w-5 h-5 rounded-full transition-all"
+                            style={{
+                              backgroundColor: c,
+                              border: inlineTagColor === c ? '2px solid white' : '2px solid transparent',
+                              transform: inlineTagColor === c ? 'scale(1.2)' : 'scale(1)'
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        onClick={handleInlineTagCreate}
+                        disabled={!inlineTagName.trim()}
+                        size="sm"
+                        className="bg-cyan-600 hover:bg-cyan-700 text-xs"
+                        data-testid="inline-tag-create-button"
+                      >
+                        Create & Add
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => { setShowInlineTagCreate(false); setInlineTagName(''); }}
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-400 text-xs"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Notes */}
               <div>
