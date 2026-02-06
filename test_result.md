@@ -2318,34 +2318,10 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    timestamp: "2026-02-06T17:45:00Z"
-    message: "Implemented 5 new features: (1) Map: Asset type filter dropdown on top controls, (2) Map: Contact info display in property details side panel, (3) Map: Comma-formatted asking price in side panel, (4) Contacts: Click on contact opens edit panel directly, (5) Contacts: Tag dropdown filter added in filter bar. All changes in MapView.js and Contacts.js. No backend changes needed. Please test all 5 features."
+    timestamp: "2026-02-06T18:15:00Z"
+    message: "Implemented 2 new features: (1) Contact edit panel: '+' button to create new tags inline with name and color picker, auto-adds to contact. (2) Map side panel: Team sharing toggle - switch between shared/private, uses PUT /api/deals/{id}/visibility endpoint to toggle team_id. Please test both features."
 
-  - task: "Map Asset Type Filter"
-    implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/MapView.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-
-  - task: "Map Contact Info in Side Panel"
-    implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/MapView.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-
-  - task: "Map Comma-Formatted Asking Price"
-    implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/MapView.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-
-  - task: "Contacts Click-to-Edit Workflow"
+  - task: "Contact Edit Panel Inline Tag Creation"
     implemented: true
     working: "NA"
     file: "/app/frontend/src/pages/Contacts.js"
@@ -2353,10 +2329,18 @@ agent_communication:
     priority: "high"
     needs_retesting: true
 
-  - task: "Contacts Tag Filter Dropdown"
+  - task: "Map Side Panel Team Sharing Toggle"
     implemented: true
     working: "NA"
-    file: "/app/frontend/src/pages/Contacts.js"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+
+  - task: "Deal Visibility API Endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes_v2/deals.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
