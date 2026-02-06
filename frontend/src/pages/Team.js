@@ -671,6 +671,21 @@ const MembersTab = ({ members, user, canManage, invites, handleRevokeInvite, set
 
 // Team Deals Tab
 const TeamDealsTab = ({ teamDeals, statsLoading }) => {
+  // Group deals by owner
+  const dealsByOwner = {};
+  teamDeals.forEach(deal => {
+    const ownerId = deal.owner_id || 'unknown';
+    if (!dealsByOwner[ownerId]) {
+      const profile = deal.user_profiles || {};
+      dealsByOwner[ownerId] = {
+        name: profile.full_name || profile.email || 'Team Member',
+        avatar_url: profile.avatar_url,
+        deals: []
+      };
+    }
+    dealsByOwner[ownerId].deals.push(deal);
+  });
+
   return (
     <div className="glass-surface" style={{ padding: '24px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
       <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 700, marginBottom: '16px', letterSpacing: '-0.01em' }}>Team Deals</h3>
@@ -684,20 +699,43 @@ const TeamDealsTab = ({ teamDeals, statsLoading }) => {
           <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '14px' }}>No shared team deals yet</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '14px' }}>
-          {teamDeals.map(deal => (
-            <div key={deal.id} style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '10px', padding: '18px', cursor: 'pointer', transition: 'border-color 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}>
-              <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: 600, margin: 0 }}>{deal.title || deal.address}</h4>
-                {deal.is_shared_with_team && <span style={{ padding: '3px 8px', background: 'rgba(0, 184, 212, 0.15)', border: '1px solid rgba(0, 184, 212, 0.3)', borderRadius: '4px', color: '#00b8d4', fontSize: '10px', fontWeight: 700 }}>SHARED</span>}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {Object.entries(dealsByOwner).map(([ownerId, ownerData]) => (
+            <div key={ownerId}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, rgba(0,184,212,0.3), rgba(0,184,212,0.1))', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,184,212,0.2)' }}>
+                  <User size={16} style={{ color: '#00b8d4' }} />
+                </div>
+                <div>
+                  <span style={{ color: '#fff', fontSize: '14px', fontWeight: 600 }}>{ownerData.name}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', marginLeft: '8px' }}>{ownerData.deals.length} deal{ownerData.deals.length !== 1 ? 's' : ''}</span>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                <MapPin size={13} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
-                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px', margin: 0 }}>{deal.address}</p>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justify: 'space-between', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                <span style={{ color: '#00b8d4', fontSize: '16px', fontWeight: 700 }}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(deal.price || 0)}</span>
-                <span style={{ padding: '4px 10px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', fontWeight: 600 }}>{deal.asset_type}</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '12px' }}>
+                {ownerData.deals.map(deal => (
+                  <div key={deal.id} style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '10px', padding: '16px', cursor: 'pointer', transition: 'border-color 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}>
+                    <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: 600, margin: 0 }}>{deal.title || deal.address || 'Untitled Deal'}</h4>
+                      <span style={{ padding: '3px 8px', background: 'rgba(0, 184, 212, 0.12)', border: '1px solid rgba(0, 184, 212, 0.25)', borderRadius: '4px', color: '#00b8d4', fontSize: '10px', fontWeight: 700, flexShrink: 0 }}>{deal.asset_type || 'N/A'}</span>
+                    </div>
+                    {deal.address && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                        <MapPin size={12} style={{ color: 'rgba(255, 255, 255, 0.35)' }} />
+                        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', margin: 0 }}>
+                          {deal.address}{deal.city ? `, ${deal.city}` : ''}{deal.state ? `, ${deal.state}` : ''}
+                        </p>
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                      <span style={{ color: '#10b981', fontSize: '17px', fontWeight: 700 }}>
+                        {deal.asking_price ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(deal.asking_price) : 'Price TBD'}
+                      </span>
+                      <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px' }}>
+                        {deal.status || 'active'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
