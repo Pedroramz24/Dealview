@@ -482,7 +482,7 @@ const DealDetails = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: spacing.xl }}>
         {/* Left Column - Main Details */}
         <div>
-          {/* Property Images */}
+          {/* Property Images with Carousel */}
           <div style={{
             background: colors.surfaceCard,
             borderRadius: borderRadius.md,
@@ -495,69 +495,161 @@ const DealDetails = () => {
                 Property Images
               </h3>
               {isOwner && (
-                <label style={{ cursor: 'pointer' }}>
+                <>
                   <input
+                    id="image-upload-input"
                     type="file"
                     accept="image/*"
+                    multiple
                     onChange={handleImageUpload}
                     style={{ display: 'none' }}
                     disabled={uploadingImage}
                   />
                   <Button
-                    as="span"
+                    onClick={() => document.getElementById('image-upload-input').click()}
                     size="sm"
                     disabled={uploadingImage}
                     style={{ 
                       background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(59,130,246,0.2))',
                       border: '1px solid rgba(0,184,212,0.3)',
-                      color: '#00d4ff'
+                      color: '#00d4ff',
+                      cursor: 'pointer'
                     }}
                   >
                     <Upload size={14} style={{ marginRight: '6px' }} />
-                    {uploadingImage ? 'Uploading...' : 'Add Image'}
+                    {uploadingImage ? 'Uploading...' : 'Add Images'}
                   </Button>
-                </label>
+                </>
               )}
             </div>
 
-            {(deal.image_url || (deal.image_urls && deal.image_urls.length > 0)) ? (
-              <div>
-                {/* Main Image */}
-                <div style={{
-                  width: '100%',
-                  height: '300px',
-                  borderRadius: borderRadius.md,
-                  overflow: 'hidden',
-                  marginBottom: '12px',
-                  background: colors.surfaceElevated
-                }}>
+            {/* Image Carousel */}
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                width: '100%',
+                height: '300px',
+                borderRadius: borderRadius.md,
+                overflow: 'hidden',
+                background: colors.surfaceElevated,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {(deal.image_urls && deal.image_urls.length > 0) ? (
                   <img 
-                    src={deal.image_url || deal.image_urls[0]} 
+                    src={deal.image_urls[currentImageIndex] || deal.image_url} 
                     alt={deal.title}
                     style={{ 
                       width: '100%', 
                       height: '100%', 
                       objectFit: 'cover' 
                     }}
-                    onError={(e) => e.target.style.display = 'none'}
+                    onError={(e) => e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23333" width="100" height="100"/><text fill="%23666" font-size="12" x="50%" y="50%" text-anchor="middle" dy=".3em">No Image</text></svg>'}
                   />
-                </div>
+                ) : (
+                  <div style={{ textAlign: 'center', color: colors.textTertiary }}>
+                    <Building2 size={64} style={{ marginBottom: '12px', opacity: 0.5 }} />
+                    <p style={{ fontSize: '14px' }}>No images uploaded</p>
+                    {isOwner && <p style={{ fontSize: '12px', marginTop: '4px' }}>Click "Add Images" to upload</p>}
+                  </div>
+                )}
+              </div>
 
-                {/* Thumbnail Gallery */}
-                {deal.image_urls && deal.image_urls.length > 1 && (
-                  <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px' }}>
-                    {deal.image_urls.map((url, idx) => (
-                      <div 
-                        key={idx} 
-                        style={{
-                          width: '80px',
-                          height: '80px',
-                          borderRadius: '8px',
-                          overflow: 'hidden',
-                          flexShrink: 0,
-                          border: url === (deal.image_url || deal.image_urls[0]) 
-                            ? '2px solid #00d4ff' 
-                            : '2px solid transparent',
+              {/* Carousel Arrows */}
+              {deal.image_urls && deal.image_urls.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setCurrentImageIndex(prev => prev === 0 ? deal.image_urls.length - 1 : prev - 1)}
+                    style={{
+                      position: 'absolute',
+                      left: '10px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: 'rgba(0,0,0,0.7)',
+                      border: 'none',
+                      color: 'white',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.8)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.7)'}
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    onClick={() => setCurrentImageIndex(prev => prev === deal.image_urls.length - 1 ? 0 : prev + 1)}
+                    style={{
+                      position: 'absolute',
+                      right: '10px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: 'rgba(0,0,0,0.7)',
+                      border: 'none',
+                      color: 'white',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.8)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.7)'}
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                  {/* Image Counter */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(0,0,0,0.7)',
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    color: 'white',
+                    fontSize: '13px',
+                    fontWeight: '500'
+                  }}>
+                    {currentImageIndex + 1} / {deal.image_urls.length}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnail Strip */}
+            {deal.image_urls && deal.image_urls.length > 1 && (
+              <div style={{ display: 'flex', gap: '8px', marginTop: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
+                {deal.image_urls.map((url, idx) => (
+                  <div 
+                    key={idx} 
+                    onClick={() => setCurrentImageIndex(idx)}
+                    style={{
+                      width: '70px',
+                      height: '70px',
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      flexShrink: 0,
+                      border: idx === currentImageIndex ? '3px solid #00d4ff' : '3px solid transparent',
+                      cursor: 'pointer',
+                      opacity: idx === currentImageIndex ? 1 : 0.6,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
                           cursor: 'pointer'
                         }}
                         onClick={() => setDeal({ ...deal, image_url: url })}
