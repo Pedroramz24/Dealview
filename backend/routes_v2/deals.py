@@ -12,7 +12,7 @@ import logging
 import uuid
 
 from utils.db import get_supabase
-from utils.auth_helpers import security
+from utils.auth_helpers import security, get_user_id
 
 router = APIRouter(prefix="/deals", tags=["Deals"])
 logger = logging.getLogger(__name__)
