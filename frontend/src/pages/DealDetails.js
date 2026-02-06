@@ -908,14 +908,13 @@ const DealDetails = () => {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {documents.map(doc => (
-                  <a
+                  <div
                     key={doc.id}
-                    href={doc.file_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    data-testid={`document-item-${doc.id}`}
+                    onClick={() => setPreviewDoc(doc)}
                     style={{
                       background: colors.surfaceElevated, borderRadius: borderRadius.sm, padding: '12px',
-                      display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none',
+                      display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer',
                       color: colors.textPrimary, transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
@@ -926,7 +925,8 @@ const DealDetails = () => {
                       <div style={{ fontWeight: '500', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc.file_name}</div>
                       <div style={{ color: colors.textTertiary, fontSize: '12px' }}>{doc.file_type?.toUpperCase()}</div>
                     </div>
-                  </a>
+                    <Eye size={16} style={{ color: colors.textTertiary, flexShrink: 0 }} />
+                  </div>
                 ))}
               </div>
             )}
