@@ -207,6 +207,8 @@ const MapView = () => {
     longitude: null
   });
   const [creatingDeal, setCreatingDeal] = useState(false);
+  const [sidePanelImageIdx, setSidePanelImageIdx] = useState(0);
+  const [uploadingSidePanelImage, setUploadingSidePanelImage] = useState(false);
   
   // Map viewport
   const [viewState, setViewState] = useState({
