@@ -683,9 +683,8 @@ const DealDetails = () => {
                 <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Size (SF)</Label>
                 <input
                   data-testid="deal-size-input"
-                  type="number"
-                  value={deal.size_sqft ?? ''}
-                  onChange={(e) => handleFieldChange('size_sqft', e.target.value)}
+                  value={deal.size_sqft ? formatNumberInput(String(deal.size_sqft)) : ''}
+                  onChange={(e) => handleFieldChange('size_sqft', parseFormattedNumber(e.target.value))}
                   onBlur={() => handleNumericBlur('size_sqft')}
                   disabled={!isOwner}
                   placeholder="0"
@@ -696,10 +695,8 @@ const DealDetails = () => {
                 <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Lot Size (acres)</Label>
                 <input
                   data-testid="deal-lot-size-input"
-                  type="number"
-                  step="0.01"
-                  value={deal.lot_size ?? ''}
-                  onChange={(e) => handleFieldChange('lot_size', e.target.value)}
+                  value={deal.lot_size ? formatNumberInput(String(deal.lot_size)) : ''}
+                  onChange={(e) => handleFieldChange('lot_size', parseFormattedNumber(e.target.value))}
                   onBlur={() => handleNumericBlur('lot_size')}
                   disabled={!isOwner}
                   placeholder="0"
