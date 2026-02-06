@@ -715,7 +715,7 @@ const TeamDealsTab = ({ teamDeals, statsLoading, navigate }) => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '12px' }}>
                 {ownerData.deals.map(deal => (
-                  <div key={deal.id} style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '10px', padding: '16px', cursor: 'pointer', transition: 'border-color 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}>
+                  <div key={deal.id} onClick={() => navigate(`/deals/${deal.id}`)} style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '10px', padding: '16px', cursor: 'pointer', transition: 'border-color 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}>
                     <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', marginBottom: '8px' }}>
                       <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: 600, margin: 0 }}>{deal.title || deal.address || 'Untitled Deal'}</h4>
                       <span style={{ padding: '3px 8px', background: 'rgba(0, 184, 212, 0.12)', border: '1px solid rgba(0, 184, 212, 0.25)', borderRadius: '4px', color: '#00b8d4', fontSize: '10px', fontWeight: 700, flexShrink: 0 }}>{deal.asset_type || 'N/A'}</span>
