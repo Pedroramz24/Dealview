@@ -462,9 +462,32 @@ const MapView = () => {
   }, [teamDeals, selectedMemberFilter]);
 
   // Handle marker click
-  const handleMarkerClick = useCallback((deal, isTeamDeal = false) => {
+  const handleMarkerClick = useCallback(async (deal, isTeamDeal = false) => {
     if (clickMode) return; // Don't show panel in click mode
     setSelectedDeal({ ...deal, isTeamDeal });
+    setDealContacts([]);
+    
+    // Fetch full deal details including linked contacts
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+      
+      const response = await fetch(`${API}/deals/${deal.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const fullDeal = data.deal;
+        // Extract contacts from contact_deal_links
+        const contacts = (fullDeal.contact_deal_links || [])
+          .map(link => link.contacts)
+          .filter(Boolean);
+        setDealContacts(contacts);
+      }
+    } catch (err) {
+      console.error('Error fetching deal contacts:', err);
+    }
   }, [clickMode]);
 
   // Format currency
