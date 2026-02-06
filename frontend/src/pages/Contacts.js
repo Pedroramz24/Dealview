@@ -59,6 +59,12 @@ const Contacts = () => {
   const [tagForm, setTagForm] = useState({ name: '', color: '#00b8d4' });
   const [savingTag, setSavingTag] = useState(false);
   
+  // CSV import state
+  const [showCsvImport, setShowCsvImport] = useState(false);
+  const [csvData, setCsvData] = useState(null);
+  const [csvColumnMap, setCsvColumnMap] = useState({});
+  const [importingCsv, setImportingCsv] = useState(false);
+  
   // Form state
   const [contactForm, setContactForm] = useState({
     name: '',
