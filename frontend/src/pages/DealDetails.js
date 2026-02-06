@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthContext, API } from '../App';
 import { toast } from 'sonner';
+import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
   ArrowLeft, MapPin, Building2, DollarSign, 
   Trash2, Users, FileText, Upload, Download, Eye,
