@@ -1185,6 +1185,111 @@ const Pipeline = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Pipeline & Stage Manager */}
+      <Dialog open={showPipelineManager} onOpenChange={setShowPipelineManager}>
+        <DialogContent style={{
+          background: colors.surfaceCard,
+          border: `1px solid ${colors.border}`,
+          maxWidth: '560px',
+          maxHeight: '85vh',
+          overflow: 'auto'
+        }}>
+          <DialogHeader>
+            <DialogTitle style={{ color: colors.textPrimary, fontSize: '18px' }}>
+              Pipeline & Stage Manager
+            </DialogTitle>
+          </DialogHeader>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '16px' }}>
+            {/* Pipeline Name */}
+            <div style={{ padding: '16px', background: colors.surfaceElevated, borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}>
+              <label style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', display: 'block', marginBottom: '8px', letterSpacing: '0.5px' }}>Pipeline Name</label>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Input
+                  value={pipelineEditName}
+                  onChange={(e) => setPipelineEditName(e.target.value)}
+                  style={{ flex: 1, background: colors.surfaceCard, border: `1px solid ${colors.border}` }}
+                />
+                <Button onClick={handleRenamePipeline} disabled={savingPipeline || !pipelineEditName.trim() || pipelineEditName === selectedPipeline?.name}
+                  size="sm" style={{ background: colors.primary, border: 'none', opacity: (!pipelineEditName.trim() || pipelineEditName === selectedPipeline?.name) ? 0.4 : 1 }}>
+                  Save
+                </Button>
+              </div>
+            </div>
+
+            {/* Stages */}
+            <div style={{ padding: '16px', background: colors.surfaceElevated, borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <label style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Stages ({stages.length})
+                </label>
+                <button onClick={handleOpenStageCreate} style={{ color: colors.primary, fontSize: '12px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Plus size={14} /> Add Stage
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {stages.map((stage, idx) => (
+                  <div key={stage.id} style={{
+                    display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px',
+                    background: colors.surfaceCard, borderRadius: '8px', border: `1px solid ${colors.border}`,
+                    transition: 'border-color 0.15s'
+                  }}>
+                    <div style={{ width: '14px', height: '14px', borderRadius: '4px', background: stage.color || '#6b7280', flexShrink: 0 }} />
+                    <span style={{ flex: 1, color: colors.textPrimary, fontSize: '14px', fontWeight: '500' }}>{stage.name}</span>
+                    <span style={{ color: colors.textTertiary, fontSize: '11px', marginRight: '4px' }}>
+                      {deals.filter(d => d.pipeline_stage_id === stage.id).length} deals
+                    </span>
+                    <button onClick={() => handleMoveStageOrder(stage.id, 'up')} disabled={idx === 0}
+                      style={{ padding: '3px', background: 'none', border: 'none', cursor: idx === 0 ? 'default' : 'pointer', opacity: idx === 0 ? 0.2 : 0.6, color: colors.textSecondary }}>
+                      <ChevronDown size={14} style={{ transform: 'rotate(180deg)' }} />
+                    </button>
+                    <button onClick={() => handleMoveStageOrder(stage.id, 'down')} disabled={idx === stages.length - 1}
+                      style={{ padding: '3px', background: 'none', border: 'none', cursor: idx === stages.length - 1 ? 'default' : 'pointer', opacity: idx === stages.length - 1 ? 0.2 : 0.6, color: colors.textSecondary }}>
+                      <ChevronDown size={14} />
+                    </button>
+                    <button onClick={() => handleOpenStageEdit(stage)}
+                      style={{ padding: '3px', background: 'none', border: 'none', cursor: 'pointer', color: colors.textTertiary }}>
+                      <Edit size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Create New Pipeline */}
+            <div style={{ padding: '16px', background: colors.surfaceElevated, borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}>
+              <label style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', display: 'block', marginBottom: '8px', letterSpacing: '0.5px' }}>Create New Pipeline</label>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Input
+                  value={newPipelineName}
+                  onChange={(e) => setNewPipelineName(e.target.value)}
+                  placeholder="Pipeline name..."
+                  style={{ flex: 1, background: colors.surfaceCard, border: `1px solid ${colors.border}` }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleCreatePipeline(); }}
+                />
+                <Button onClick={handleCreatePipeline} disabled={savingPipeline || !newPipelineName.trim()}
+                  size="sm" style={{ background: gradients.primaryButton, border: 'none' }}>
+                  Create
+                </Button>
+              </div>
+            </div>
+
+            {/* Danger Zone */}
+            <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.05)', borderRadius: borderRadius.md, border: '1px solid rgba(239, 68, 68, 0.15)' }}>
+              <label style={{ color: '#ef4444', fontSize: '11px', textTransform: 'uppercase', display: 'block', marginBottom: '8px', letterSpacing: '0.5px' }}>Danger Zone</label>
+              <p style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '12px' }}>
+                Deleting a pipeline removes all stages. Deals will be unassigned.
+              </p>
+              <Button onClick={handleDeletePipeline} variant="outline"
+                style={{ borderColor: '#ef4444', color: '#ef4444', width: '100%' }}>
+                <Trash2 size={14} style={{ marginRight: '8px' }} />
+                Delete "{selectedPipeline?.name}"
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
