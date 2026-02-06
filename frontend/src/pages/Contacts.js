@@ -777,7 +777,7 @@ const Contacts = () => {
               <div
                 key={contact.id}
                 className="p-5 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-cyan-500/50 transition-all cursor-pointer group"
-                onClick={() => handleViewDetails(contact)}
+                onClick={() => handleOpenEdit(contact)}
                 data-testid={`contact-card-${contact.id}`}
               >
                 {/* Header */}
