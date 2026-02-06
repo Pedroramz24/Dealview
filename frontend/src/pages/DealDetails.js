@@ -424,11 +424,12 @@ const DealDetails = () => {
               onClick={handleDelete}
               variant="outline"
               style={{ borderColor: '#ef4444', color: '#ef4444' }}
-          >
-            <Trash2 size={18} style={{ marginRight: '8px' }} />
-            Delete
-          </Button>
-        )}
+            >
+              <Trash2 size={18} style={{ marginRight: '8px' }} />
+              Delete
+            </Button>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: spacing.xl }}>
