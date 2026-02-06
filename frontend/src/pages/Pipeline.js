@@ -843,7 +843,10 @@ const Pipeline = () => {
 
           {/* Manage Stages Button */}
           <Button
-            onClick={handleOpenStageCreate}
+            onClick={() => {
+              setShowPipelineManager(true);
+              setPipelineEditName(selectedPipeline?.name || '');
+            }}
             variant="outline"
             style={{
               borderColor: colors.border,
@@ -851,6 +854,18 @@ const Pipeline = () => {
             }}
           >
             <Settings size={16} style={{ marginRight: '8px' }} />
+            Manage
+          </Button>
+
+          <Button
+            onClick={handleOpenStageCreate}
+            variant="outline"
+            style={{
+              borderColor: colors.border,
+              color: colors.textSecondary
+            }}
+          >
+            <Plus size={16} style={{ marginRight: '8px' }} />
             Add Stage
           </Button>
 
