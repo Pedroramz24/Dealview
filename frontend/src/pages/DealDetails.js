@@ -588,9 +588,11 @@ const DealDetails = () => {
               <DollarSign size={28} style={{ color: colors.primary, flexShrink: 0 }} />
               <input
                 data-testid="deal-asking-price-input"
-                type="number"
-                value={deal.asking_price ?? ''}
-                onChange={(e) => handleFieldChange('asking_price', e.target.value)}
+                value={deal.asking_price ? formatNumberInput(String(deal.asking_price)) : ''}
+                onChange={(e) => {
+                  const raw = parseFormattedNumber(e.target.value);
+                  handleFieldChange('asking_price', raw);
+                }}
                 onBlur={() => handleNumericBlur('asking_price')}
                 disabled={!isOwner}
                 placeholder="0"
