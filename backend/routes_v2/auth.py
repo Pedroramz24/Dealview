@@ -164,12 +164,7 @@ async def update_profile(
     """Update current user profile"""
     supabase = get_supabase()
     try:
-        # Verify token
-        user_response = supabase.auth.get_user(credentials.credentials)
-        if not user_response or not user_response.user:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        
-        user_id = user_response.user.id
+        user_id = await get_user_id(credentials)
         
         # Build update data
         update_data = {}
