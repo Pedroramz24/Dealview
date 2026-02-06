@@ -100,20 +100,32 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 
 async def get_current_user_supabase(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Verify Supabase JWT token and return user info."""
-    supabase = get_supabase()
+    """Verify Supabase JWT token and return user info.
+    Uses safe HTTP call to avoid contaminating Supabase client auth state."""
+    token = credentials.credentials
+    supabase_url = os.environ['SUPABASE_URL']
+    anon_key = os.environ['SUPABASE_ANON_KEY']
     try:
-        token = credentials.credentials
-        
-        # Verify token with Supabase
-        user_response = supabase.auth.get_user(token)
-        
-        if not user_response or not user_response.user:
+        resp = httpx.get(
+            f"{supabase_url}/auth/v1/user",
+            headers={"Authorization": f"Bearer {token}", "apikey": anon_key},
+            timeout=10
+        )
+        if resp.status_code != 200:
             raise HTTPException(status_code=401, detail="Invalid authentication token")
         
-        # Return user info from Supabase
-        return user_response.user
+        user_data = resp.json()
         
+        # Return a simple namespace object that mimics the supabase user object
+        class UserInfo:
+            def __init__(self, data):
+                self.id = data['id']
+                self.email = data.get('email', '')
+                self.user_metadata = data.get('user_metadata', {})
+        
+        return UserInfo(user_data)
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Supabase auth error: {str(e)}")
         raise HTTPException(status_code=401, detail="Authentication failed")
