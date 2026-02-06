@@ -1282,7 +1282,7 @@ const MapView = () => {
                   />
                 </div>
                 <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Size (SF)</Label>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Building Size (SF)</Label>
                   <Input
                     value={newDeal.size_sqft}
                     onChange={(e) => setNewDeal(prev => ({ ...prev, size_sqft: formatNumberInput(e.target.value) }))}
@@ -1298,6 +1298,20 @@ const MapView = () => {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Lot Size - Land (Acres)</Label>
+                  <Input
+                    value={newDeal.lot_size}
+                    onChange={(e) => setNewDeal(prev => ({ ...prev, lot_size: formatNumberInput(e.target.value) }))}
+                    placeholder="2.5"
+                    style={{
+                      marginTop: '6px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${colors.border}`,
+                      color: colors.textPrimary
+                    }}
+                  />
+                </div>
                 <div>
                   <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Year Built</Label>
                   <Input
