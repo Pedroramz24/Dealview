@@ -1,29 +1,36 @@
 # DealLinked CRM V2 - Product Requirements Document
 
 ## Original Problem Statement
-Complete ground-up rebuild of DealLinked CRM application for Commercial Real Estate. Built a simpler, more focused CRM with essential features.
+Complete ground-up rebuild of DealLinked CRM application for Commercial Real Estate.
 
 ## All Features Verified Working ✅
 
-### ✅ Authentication
-- Supabase Auth with email signup
-- JWT-based authentication
-- User profile creation trigger (FIXED)
-
 ### ✅ Map View
 - Satellite map with Esri tiles
-- Smoother zoom (fadeDuration: 300, scrollZoom smooth)
+- Smoother zoom animations
 - Address autocomplete via Radar.io
 - Click-to-add deal functionality
 - Deal markers with asset type colors
-- Team Deals toggle
-- Create New Deal panel with all fields
+- **NEW: Enhanced Side Panel** with:
+  - Property images display
+  - Pipeline/Stage dropdowns (editable)
+  - All deal details (size, lot, cap rate, NOI, year built, occupancy, zoning, AC size)
+  - "View Full Details" button
 
-### ✅ Deal Creation (FIXED)
-- Deal creation with location selection
-- All financial fields: price, NOI, cap rate, etc.
-- Deals persist after creation
-- RLS policies properly configured
+### ✅ Property Details Page
+- **NEW: Property Images Gallery**
+  - Main image display with thumbnails
+  - Click thumbnails to change main image
+  - "Add Image" upload button
+  - Drag & drop support (pending storage bucket)
+- **NEW: Pipeline Status Section**
+  - Pipeline dropdown (change pipeline)
+  - Stage dropdown (change stage)
+  - Current stage indicator with color
+- Full property details grid
+- Edit/Delete functionality
+- Linked Contacts management
+- Document upload with drag & drop
 
 ### ✅ Pipeline/Kanban Board  
 - Default 8 stages for new users
@@ -32,91 +39,65 @@ Complete ground-up rebuild of DealLinked CRM application for Commercial Real Est
 
 ### ✅ Contacts Page
 - Contact CRUD operations
-- **NEW: Side Panel Tag Manager** - Clean slide-in panel
-- Tag creation with color picker and preview
-- Tag editing and deletion
+- Side Panel Tag Manager
+- Tag creation with color picker
 - Quick filter by tags
 
 ### ✅ Team Collaboration
-- Team creation
-- Team member management
+- Team creation and management
 - Member stats display
 
 ### ✅ Calendar
-- Monthly/Weekly/Daily/List views
 - Event CRUD operations
-- Event types with color coding
+- Multiple view modes
 
 ### ✅ Settings
-- Profile management (name, company, phone)
-- Profile picture upload
+- Profile management
 - Password change
 
-### ✅ Document Upload (NEW)
-- Drag and drop document upload zone
-- Click to browse functionality
-- File type and size validation (max 10MB)
-- Supported formats: PDF, DOC, XLS, PPT, Images
+## Recent Updates (2024-02-06)
 
-## Technical Stack
-- **Frontend**: React, React Router, Tailwind CSS, Shadcn/UI
-- **Backend**: FastAPI (Python)
-- **Database**: Supabase (PostgreSQL) with Row Level Security
-- **Mapping**: MapLibre GL JS + Esri satellite tiles
-- **Geocoding**: Radar.io
-- **Calendar**: FullCalendar library
+### Map Side Panel Enhancement
+- Added property images display
+- Added Pipeline/Stage dropdowns (directly editable)
+- Added all property detail fields
+- Immediate update on dropdown change
 
-## Recent Fixes (2024-02-05)
+### DealDetails Page Enhancement
+- Added Property Images section with gallery
+- Added Pipeline Status section with dropdowns
+- Added current stage indicator with color
+- Added image upload API endpoint
 
-### Tag Manager Side Panel
-- Converted from modal to slide-in side panel
-- Shows list of all existing tags
-- Click on tag to edit/delete
-- Live preview of tag appearance
-- Clean design with dark theme
-
-### Document Upload
-- Added drag and drop functionality
-- Added visual drop zone with instructions
-- Upload button and file browser
-- Progress indicators
-
-### Deal Creation
-- Fixed RLS INSERT policy for deals table
-- Deals now persist correctly
-- All fields save properly
-
-### RLS Policies
-Fixed all tables with proper `TO authenticated`:
-- deals, deal_documents
-- calendar_events
-- contacts, contact_tags
-- pipelines, pipeline_stages
-- teams, team_members
-- user_profiles
-
-## Key API Endpoints
-
-### Documents
-- `POST /api/deals/{deal_id}/documents` - Upload document (multipart/form-data)
-- `DELETE /api/deals/{deal_id}/documents/{document_id}` - Delete document
-
-### Tags
-- `GET /api/contacts/tags` - List all tags
-- `POST /api/contacts/tags` - Create tag
-- `PUT /api/contacts/tags/{tag_id}` - Update tag
-- `DELETE /api/contacts/tags/{tag_id}` - Delete tag
+### Backend Updates
+- Added `POST /api/deals/{deal_id}/images` for image upload
+- Images stored in Supabase storage bucket
 
 ## Key Files
-- `/app/frontend/src/pages/Contacts.js` - New side panel tag manager
-- `/app/frontend/src/pages/DealDetails.js` - Drag & drop document upload
-- `/app/frontend/src/pages/MapView.js` - Smoother zoom
-- `/app/backend/routes_v2/deals.py` - Document upload endpoints
+- `/app/frontend/src/pages/MapView.js` - Enhanced side panel
+- `/app/frontend/src/pages/DealDetails.js` - Images & pipeline dropdowns
+- `/app/backend/routes_v2/deals.py` - Image upload endpoint
+
+## API Endpoints
+
+### Images
+- `POST /api/deals/{deal_id}/images` - Upload image (multipart/form-data)
+  - Returns: `{ success: true, image_url: "...", image_urls: [...] }`
+
+### Documents
+- `POST /api/deals/{deal_id}/documents` - Upload document
+- `DELETE /api/deals/{deal_id}/documents/{doc_id}` - Delete document
+
+## Database Fields (deals table)
+- `image_url` - Primary image URL
+- `image_urls` - Array of all image URLs
+- `pipeline_id` - Current pipeline
+- `pipeline_stage_id` - Current stage
 
 ## Remaining Backlog
 
 ### P2 (Medium)
-- DealDetails full page verification
+- Create Supabase storage buckets: `deal-images`, `deal-documents`
 - Team performance metrics
 
 ### P3 (Low)
