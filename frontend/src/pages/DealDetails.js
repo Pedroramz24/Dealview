@@ -966,6 +966,46 @@ const DealDetails = () => {
               </div>
             )}
           </div>
+
+          {/* Location Map */}
+          {deal.latitude && deal.longitude && (
+            <div data-testid="deal-location-map" style={{
+              background: colors.surfaceCard, borderRadius: borderRadius.md,
+              padding: spacing.lg, marginTop: spacing.lg, boxShadow: shadows.cardElevation
+            }}>
+              <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <MapPin size={18} style={{ color: colors.primary }} />
+                Location
+              </h3>
+              <div style={{ borderRadius: borderRadius.md, overflow: 'hidden', height: '220px' }}>
+                <Map
+                  initialViewState={{
+                    longitude: deal.longitude,
+                    latitude: deal.latitude,
+                    zoom: 14
+                  }}
+                  style={{ width: '100%', height: '100%' }}
+                  mapStyle={miniMapStyle}
+                  attributionControl={false}
+                  interactive={false}
+                >
+                  <Marker longitude={deal.longitude} latitude={deal.latitude} anchor="center">
+                    <div style={{
+                      width: '24px', height: '24px', borderRadius: '50%',
+                      background: colors.primary, border: '3px solid white',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                      <Building2 size={10} color="white" />
+                    </div>
+                  </Marker>
+                </Map>
+              </div>
+              <p style={{ color: colors.textTertiary, fontSize: '12px', marginTop: '8px' }}>
+                {deal.address && `${deal.address}, `}{deal.city && `${deal.city}, `}{deal.state} {deal.zip_code}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
