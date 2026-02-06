@@ -6,6 +6,7 @@ from jose import JWTError, jwt
 from datetime import datetime, timezone, timedelta
 import os
 import logging
+import httpx
 
 from models.user import User
 from utils.db import get_supabase
@@ -19,6 +20,29 @@ logger = logging.getLogger(__name__)
 JWT_SECRET = os.environ['JWT_SECRET']
 JWT_ALGORITHM = os.environ['JWT_ALGORITHM']
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 43200))
+
+
+async def get_user_id(credentials: HTTPAuthorizationCredentials) -> str:
+    """Extract user ID from Supabase token via direct HTTP call.
+    Avoids using the singleton supabase client for auth to prevent
+    PostgREST header contamination."""
+    token = credentials.credentials
+    supabase_url = os.environ['SUPABASE_URL']
+    anon_key = os.environ['SUPABASE_ANON_KEY']
+    try:
+        resp = httpx.get(
+            f"{supabase_url}/auth/v1/user",
+            headers={"Authorization": f"Bearer {token}", "apikey": anon_key},
+            timeout=10
+        )
+        if resp.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return resp.json()["id"]
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Token verification error: {e}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
