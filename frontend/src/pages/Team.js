@@ -465,7 +465,7 @@ const Team = () => {
       )}
       
       {activeTab === 'deals' && (
-        <TeamDealsTab teamDeals={teamDeals} statsLoading={statsLoading} />
+        <TeamDealsTab teamDeals={teamDeals} statsLoading={statsLoading} navigate={navigate} />
       )}
       
       {activeTab === 'performance' && (
