@@ -665,6 +665,62 @@ const MapView = () => {
     ));
   }, [showTeamDeals, filteredTeamDeals, handleMarkerClick]);
 
+  // --- Tile prefetching for smoother performance ---
+  const prefetchTimeoutRef = useRef(null);
+
+  const prefetchTiles = useCallback(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const zoom = Math.round(map.getZoom());
+    const bounds = map.getBounds();
+    if (!bounds) return;
+
+    const ne = bounds.getNorthEast();
+    const sw = bounds.getSouthWest();
+
+    const lng2tile = (lng, z) => Math.floor((lng + 180) / 360 * Math.pow(2, z));
+    const lat2tile = (lat, z) => {
+      const rad = lat * Math.PI / 180;
+      return Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * Math.pow(2, z));
+    };
+
+    const preloadForZoom = (z) => {
+      const maxTile = Math.pow(2, z);
+      const minX = Math.max(0, lng2tile(sw.lng, z) - 1);
+      const maxX = Math.min(maxTile - 1, lng2tile(ne.lng, z) + 1);
+      const minY = Math.max(0, lat2tile(ne.lat, z) - 1);
+      const maxY = Math.min(maxTile - 1, lat2tile(sw.lat, z) + 1);
+
+      // Limit to max 30 tiles per zoom level to avoid excessive requests
+      const tileCount = (maxX - minX + 1) * (maxY - minY + 1);
+      if (tileCount > 30) return;
+
+      const tileUrls = mapStyle === 'satellite'
+        ? [(x, y, z) => `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`]
+        : [
+            (x, y, z) => `https://a.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}@2x.png`,
+            (x, y, z) => `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}@2x.png`,
+          ];
+
+      for (let x = minX; x <= maxX; x++) {
+        for (let y = minY; y <= maxY; y++) {
+          const urlFn = tileUrls[(x + y) % tileUrls.length];
+          const img = new Image();
+          img.src = urlFn(x, y, z);
+        }
+      }
+    };
+
+    // Prefetch tiles at zoom+1 (one level deeper for zoom-in readiness)
+    if (zoom < 19) preloadForZoom(zoom + 1);
+  }, [mapStyle]);
+
+  const handleMapIdle = useCallback(() => {
+    if (prefetchTimeoutRef.current) clearTimeout(prefetchTimeoutRef.current);
+    prefetchTimeoutRef.current = setTimeout(prefetchTiles, 500);
+  }, [prefetchTiles]);
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       {/* Map */}
