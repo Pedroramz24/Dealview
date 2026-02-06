@@ -697,7 +697,7 @@ const DealDetails = () => {
                 />
               </div>
               <div>
-                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Size (SF)</Label>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Building Size (SF)</Label>
                 <input
                   data-testid="deal-size-input"
                   value={deal.size_sqft ? formatNumberInput(String(deal.size_sqft)) : ''}
@@ -709,7 +709,7 @@ const DealDetails = () => {
                 />
               </div>
               <div>
-                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Lot Size (acres)</Label>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Lot Size - Land (Acres)</Label>
                 <input
                   data-testid="deal-lot-size-input"
                   value={deal.lot_size ? formatNumberInput(String(deal.lot_size)) : ''}
