@@ -7,7 +7,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { 
   Plus, Mail, Phone, Building2, Search, X, Save, Edit, 
-  User, Grid, List, Trash2, Tag, Filter, Settings, Palette
+  User, Grid, List, Trash2, Tag, Filter, Settings, Palette, Upload, FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { colors, gradients, borderRadius } from '../styles/designSystem';
