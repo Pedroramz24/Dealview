@@ -132,6 +132,7 @@ const PublicShare = () => {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '20px' }}>
                 {deal.size_sqft && <Stat label="Building Size" value={`${formatNumber(deal.size_sqft)} SF`} />}
                 {deal.lot_size && <Stat label="Lot Size (Land)" value={`${formatNumber(deal.lot_size)} Acres`} />}
+                {deal.lot_size && <Stat label="Land SQFT" value={`${formatNumber(Math.round(deal.lot_size * 43560))} SF`} />}
                 {deal.year_built && <Stat label="Year Built" value={deal.year_built} />}
                 {deal.zoning && <Stat label="Zoning" value={deal.zoning} />}
                 {deal.occupancy && <Stat label="Occupancy" value={`${deal.occupancy}%`} />}
