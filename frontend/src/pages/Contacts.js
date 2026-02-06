@@ -1212,89 +1212,129 @@ const Contacts = () => {
 
               {/* Tags */}
               <div>
-                <Label className="text-sm font-medium text-gray-300 mb-2 block">Tags</Label>
-                <div className="flex flex-wrap gap-2">
-                  {tags.map(tag => (
-                    <button
-                      key={tag.id}
-                      type="button"
-                      onClick={() => toggleTagInForm(tag.id)}
-                      className="px-3 py-1.5 rounded-full text-sm transition-all"
-                      style={{
-                        backgroundColor: contactForm.tag_ids.includes(tag.id) ? `${tag.color}30` : 'transparent',
-                        border: contactForm.tag_ids.includes(tag.id) ? `2px solid ${tag.color}` : '1px solid #374151',
-                        color: contactForm.tag_ids.includes(tag.id) ? tag.color : '#9ca3af'
-                      }}
-                      data-testid={`tag-toggle-${tag.id}`}
-                    >
-                      {tag.name}
-                    </button>
-                  ))}
-                  {/* Add Tag Button */}
-                  <button
-                    type="button"
-                    onClick={() => setShowInlineTagCreate(!showInlineTagCreate)}
-                    className="px-3 py-1.5 rounded-full text-sm transition-all flex items-center gap-1 border border-dashed border-gray-600 text-gray-400 hover:border-cyan-500 hover:text-cyan-400"
-                    data-testid="add-tag-inline-button"
-                  >
-                    <Plus className="w-3 h-3" />
-                    New Tag
-                  </button>
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-sm font-medium text-gray-300">Tags</Label>
                 </div>
 
-                {/* Inline Tag Creation */}
-                {showInlineTagCreate && (
-                  <div className="mt-3 p-3 rounded-lg bg-gray-800/80 border border-gray-700 space-y-3" data-testid="inline-tag-form">
-                    <Input
-                      value={inlineTagName}
-                      onChange={(e) => setInlineTagName(e.target.value)}
-                      placeholder="Tag name..."
-                      className="bg-gray-900 border-gray-600 text-white text-sm"
-                      data-testid="inline-tag-name-input"
-                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleInlineTagCreate(); } }}
-                      autoFocus
-                    />
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500">Color:</span>
-                      <div className="flex gap-1.5 flex-wrap">
-                        {tagColorOptions.map(c => (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => setInlineTagColor(c)}
-                            className="w-5 h-5 rounded-full transition-all"
-                            style={{
-                              backgroundColor: c,
-                              border: inlineTagColor === c ? '2px solid white' : '2px solid transparent',
-                              transform: inlineTagColor === c ? 'scale(1.2)' : 'scale(1)'
-                            }}
-                          />
+                {/* Applied tags */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {tags.filter(t => contactForm.tag_ids.includes(t.id)).map(tag => (
+                    <span
+                      key={tag.id}
+                      className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 rounded-full text-sm font-medium"
+                      style={{ backgroundColor: `${tag.color}20`, color: tag.color, border: `1px solid ${tag.color}40` }}
+                    >
+                      {tag.name}
+                      <button type="button" onClick={() => toggleTagInForm(tag.id)}
+                        className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {contactForm.tag_ids.length === 0 && (
+                    <span className="text-xs text-gray-500 italic">No tags applied</span>
+                  )}
+                </div>
+
+                {/* Available tags to add */}
+                <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-gray-500 uppercase tracking-wider">Available Tags</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowInlineTagCreate(!showInlineTagCreate)}
+                      className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
+                    >
+                      <Plus className="w-3 h-3" />
+                      Create
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.filter(t => !contactForm.tag_ids.includes(t.id)).map(tag => (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        onClick={() => toggleTagInForm(tag.id)}
+                        className="group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs transition-all border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white"
+                      >
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} />
+                        {tag.name}
+                        <Plus className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    ))}
+                    {tags.filter(t => !contactForm.tag_ids.includes(t.id)).length === 0 && !showInlineTagCreate && (
+                      <span className="text-xs text-gray-600">All tags applied</span>
+                    )}
+                  </div>
+
+                  {/* Manage tags row */}
+                  {tags.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-700/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-gray-500">Manage</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {tags.map(tag => (
+                          <div key={tag.id} className="group inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-gray-900/50 border border-gray-700/50">
+                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: tag.color }} />
+                            <span className="text-gray-400">{tag.name}</span>
+                            <button type="button"
+                              onClick={() => { handleOpenTagEdit(tag); }}
+                              className="w-4 h-4 flex items-center justify-center text-gray-600 hover:text-cyan-400 transition-colors"
+                            >
+                              <Edit className="w-2.5 h-2.5" />
+                            </button>
+                            <button type="button"
+                              onClick={async () => {
+                                if (!window.confirm(`Delete tag "${tag.name}"?`)) return;
+                                try {
+                                  const token = await getToken();
+                                  const r = await fetch(`${API}/contacts/tags/${tag.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+                                  if (r.ok) { toast.success('Tag deleted'); fetchTags(); setContactForm(prev => ({ ...prev, tag_ids: prev.tag_ids.filter(id => id !== tag.id) })); }
+                                  else toast.error('Failed to delete tag');
+                                } catch { toast.error('Failed to delete tag'); }
+                              }}
+                              className="w-4 h-4 flex items-center justify-center text-gray-600 hover:text-red-400 transition-colors"
+                            >
+                              <Trash2 className="w-2.5 h-2.5" />
+                            </button>
+                          </div>
                         ))}
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        type="button"
-                        onClick={handleInlineTagCreate}
-                        disabled={!inlineTagName.trim()}
-                        size="sm"
-                        className="bg-cyan-600 hover:bg-cyan-700 text-xs"
-                        data-testid="inline-tag-create-button"
-                      >
-                        Create & Add
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={() => { setShowInlineTagCreate(false); setInlineTagName(''); }}
-                        variant="ghost"
-                        size="sm"
-                        className="text-gray-400 text-xs"
-                      >
-                        Cancel
-                      </Button>
+                  )}
+
+                  {/* Inline Tag Creation */}
+                  {showInlineTagCreate && (
+                    <div className="mt-3 pt-3 border-t border-gray-700/50 space-y-2.5">
+                      <div className="flex gap-2">
+                        <Input
+                          value={inlineTagName}
+                          onChange={(e) => setInlineTagName(e.target.value)}
+                          placeholder="Tag name..."
+                          className="bg-gray-900 border-gray-600 text-white text-sm flex-1"
+                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleInlineTagCreate(); } }}
+                          autoFocus
+                        />
+                        <Button type="button" onClick={handleInlineTagCreate} disabled={!inlineTagName.trim()} size="sm" className="bg-cyan-600 hover:bg-cyan-700 text-xs px-4">
+                          Add
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {tagColorOptions.map(c => (
+                          <button key={c} type="button" onClick={() => setInlineTagColor(c)}
+                            className="w-5 h-5 rounded-full transition-all"
+                            style={{ backgroundColor: c, border: inlineTagColor === c ? '2px solid white' : '2px solid transparent', transform: inlineTagColor === c ? 'scale(1.15)' : 'scale(1)' }}
+                          />
+                        ))}
+                        <button type="button" onClick={() => { setShowInlineTagCreate(false); setInlineTagName(''); }}
+                          className="ml-auto text-xs text-gray-500 hover:text-gray-300"
+                        >Cancel</button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Notes */}
