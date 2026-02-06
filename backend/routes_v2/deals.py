@@ -588,3 +588,67 @@ async def delete_document(
     except Exception as e:
         logger.error(f"Delete document error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to delete document")
+
+
+@router.post("/{deal_id}/images")
+async def upload_deal_image(
+    deal_id: str,
+    file: UploadFile = File(...),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Upload an image to a deal"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+        
+        # Verify ownership
+        deal = supabase.table('deals').select('owner_id, image_urls').eq('id', deal_id).single().execute()
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        if deal.data['owner_id'] != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        # Check file type
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail="File must be an image")
+        
+        # Read file content
+        content = await file.read()
+        
+        # Check file size (max 5MB)
+        if len(content) > 5 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="Image too large. Max size is 5MB")
+        
+        # Generate unique filename
+        file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+        unique_filename = f"{deal_id}/{str(uuid.uuid4())}.{file_ext}"
+        
+        # Upload to Supabase storage
+        storage_response = supabase.storage.from_('deal-images').upload(
+            unique_filename,
+            content,
+            file_options={"content-type": file.content_type}
+        )
+        
+        # Get public URL
+        image_url = supabase.storage.from_('deal-images').get_public_url(unique_filename)
+        
+        # Update deal with new image
+        existing_images = deal.data.get('image_urls') or []
+        updated_images = existing_images + [image_url]
+        
+        supabase.table('deals').update({
+            'image_urls': updated_images,
+            'image_url': existing_images[0] if existing_images else image_url
+        }).eq('id', deal_id).execute()
+        
+        return {
+            "success": True,
+            "image_url": image_url,
+            "image_urls": updated_images
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Upload image error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
