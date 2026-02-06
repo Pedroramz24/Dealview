@@ -225,19 +225,28 @@ async def update_profile(
 
 @router.post("/refresh")
 async def refresh_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Refresh access token"""
-    supabase = get_supabase()
+    """Refresh access token via Supabase Auth REST API (safe, no client contamination)"""
     try:
-        response = supabase.auth.refresh_session()
+        token = credentials.credentials
+        resp = httpx.post(
+            f"{SUPABASE_URL}/auth/v1/token?grant_type=refresh_token",
+            json={"refresh_token": token},
+            headers={"apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json"},
+            timeout=10
+        )
         
-        if not response.session:
+        if resp.status_code != 200:
             raise HTTPException(status_code=401, detail="Failed to refresh token")
+        
+        auth_data = resp.json()
         
         return {
             "success": True,
-            "access_token": response.session.access_token,
-            "refresh_token": response.session.refresh_token
+            "access_token": auth_data.get('access_token'),
+            "refresh_token": auth_data.get('refresh_token')
         }
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Refresh token error: {str(e)}")
         raise HTTPException(status_code=401, detail="Failed to refresh token")
