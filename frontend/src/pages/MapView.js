@@ -224,6 +224,11 @@ const MapView = () => {
     fetchPipelines();
   }, []);
 
+  // Reset side panel image index when deal changes
+  useEffect(() => {
+    setSidePanelImageIdx(0);
+  }, [selectedDeal?.id]);
+
   // Fetch pipelines
   const fetchPipelines = useCallback(async () => {
     try {
