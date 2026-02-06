@@ -296,8 +296,6 @@ async def get_team_stats(
         if not user_team_id or user_team_id != team_id:
             raise HTTPException(status_code=403, detail="Access denied")
         
-        user_id = user_data['id']
-        
         # Get all team deals (deals with this team_id)
         deals_response = supabase.table('deals').select(
             '*, user_profiles!deals_owner_id_fkey(full_name, email, avatar_url)'
