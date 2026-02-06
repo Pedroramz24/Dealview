@@ -375,6 +375,101 @@ const Contacts = () => {
     }).format(value);
   };
 
+  // CSV Import handlers
+  const handleCsvFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith('.csv')) { toast.error('Please select a CSV file'); return; }
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target.result;
+      const lines = text.split('\n').filter(l => l.trim());
+      if (lines.length < 2) { toast.error('CSV must have a header row and at least one data row'); return; }
+      
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+      const rows = lines.slice(1).map(line => {
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+        for (const char of line) {
+          if (char === '"') { inQuotes = !inQuotes; }
+          else if (char === ',' && !inQuotes) { values.push(current.trim()); current = ''; }
+          else { current += char; }
+        }
+        values.push(current.trim());
+        return values;
+      });
+      
+      // Auto-map columns
+      const targetFields = ['name', 'email', 'phone', 'company', 'contact_type', 'status', 'notes'];
+      const autoMap = {};
+      headers.forEach((h, i) => {
+        const lower = h.toLowerCase();
+        if (lower.includes('name') && !lower.includes('company')) autoMap[i] = 'name';
+        else if (lower.includes('email') || lower.includes('e-mail')) autoMap[i] = 'email';
+        else if (lower.includes('phone') || lower.includes('tel') || lower.includes('mobile')) autoMap[i] = 'phone';
+        else if (lower.includes('company') || lower.includes('org') || lower.includes('firm')) autoMap[i] = 'company';
+        else if (lower.includes('type') || lower.includes('role')) autoMap[i] = 'contact_type';
+        else if (lower.includes('status')) autoMap[i] = 'status';
+        else if (lower.includes('note')) autoMap[i] = 'notes';
+      });
+      
+      setCsvData({ headers, rows });
+      setCsvColumnMap(autoMap);
+      setShowCsvImport(true);
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const handleCsvImport = async () => {
+    if (!csvData) return;
+    const nameColIdx = Object.entries(csvColumnMap).find(([_, v]) => v === 'name')?.[0];
+    if (nameColIdx === undefined) { toast.error('Please map a column to "Name"'); return; }
+    
+    setImportingCsv(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      const contacts = csvData.rows
+        .filter(row => row[parseInt(nameColIdx)]?.trim())
+        .map(row => {
+          const contact = { name: row[parseInt(nameColIdx)].trim() };
+          Object.entries(csvColumnMap).forEach(([colIdx, field]) => {
+            if (field !== 'name' && row[parseInt(colIdx)]?.trim()) {
+              contact[field] = row[parseInt(colIdx)].trim();
+            }
+          });
+          return contact;
+        });
+      
+      if (contacts.length === 0) { toast.error('No valid contacts found'); setImportingCsv(false); return; }
+      
+      const response = await fetch(`${API}/contacts/bulk-import`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contacts })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message);
+        setShowCsvImport(false);
+        setCsvData(null);
+        setCsvColumnMap({});
+        fetchContacts();
+      } else {
+        toast.error('Failed to import contacts');
+      }
+    } catch (error) {
+      toast.error('Import failed');
+    } finally {
+      setImportingCsv(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full" data-testid="contacts-loading">
