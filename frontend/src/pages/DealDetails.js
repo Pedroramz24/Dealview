@@ -48,6 +48,7 @@ const DealDetails = () => {
   const [pipelines, setPipelines] = useState([]);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [previewDoc, setPreviewDoc] = useState(null);
   
   const initialDealRef = useRef(null);
 
