@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import logging
 
 from utils.db import get_supabase
-from utils.auth_helpers import security
+from utils.auth_helpers import security, get_user_id
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 logger = logging.getLogger(__name__)
