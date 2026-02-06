@@ -1284,7 +1284,7 @@ const Pipeline = () => {
               <Button onClick={handleDeletePipeline} variant="outline"
                 style={{ borderColor: '#ef4444', color: '#ef4444', width: '100%' }}>
                 <Trash2 size={14} style={{ marginRight: '8px' }} />
-                Delete "{selectedPipeline?.name}"
+                Delete &ldquo;{selectedPipeline?.name}&rdquo;
               </Button>
             </div>
           </div>
