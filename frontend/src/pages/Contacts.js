@@ -687,7 +687,7 @@ const Contacts = () => {
                   <tr 
                     key={contact.id}
                     className="border-b border-gray-700/30 hover:bg-gray-800/50 transition-all cursor-pointer"
-                    onClick={() => handleViewDetails(contact)}
+                    onClick={() => handleOpenEdit(contact)}
                     data-testid={`contact-row-${contact.id}`}
                   >
                     <td className="px-6 py-4">
