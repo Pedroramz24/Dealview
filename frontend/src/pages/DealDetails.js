@@ -312,6 +312,38 @@ const DealDetails = () => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(value);
   };
 
+  const formatNumber = (value) => {
+    if (!value && value !== 0) return '';
+    return new Intl.NumberFormat('en-US').format(value);
+  };
+
+  const formatNumberInput = (value) => {
+    if (!value) return '';
+    const cleanValue = value.toString().replace(/[^\d.]/g, '');
+    const parts = cleanValue.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  };
+
+  const parseFormattedNumber = (value) => {
+    if (!value) return '';
+    return value.replace(/,/g, '');
+  };
+
+  // Mini map style
+  const miniMapStyle = {
+    version: 8,
+    sources: {
+      'carto-dark': {
+        type: 'raster',
+        tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'],
+        tileSize: 256,
+        maxzoom: 18
+      }
+    },
+    layers: [{ id: 'carto-dark-layer', type: 'raster', source: 'carto-dark', minzoom: 0, maxzoom: 18 }]
+  };
+
   if (loading) {
     return (
       <div data-testid="deal-details-loading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: colors.textSecondary }}>
