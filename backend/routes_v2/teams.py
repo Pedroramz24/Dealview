@@ -282,6 +282,70 @@ async def list_team_members(
         raise HTTPException(status_code=500, detail="Failed to fetch team members")
 
 
+@router.get("/{team_id}/stats")
+async def get_team_stats(
+    team_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get team stats including shared deals"""
+    supabase = get_supabase()
+    try:
+        user_data = await get_user_with_team(credentials)
+        user_team_id = user_data.get('team_id')
+        
+        if not user_team_id or user_team_id != team_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        user_id = user_data['id']
+        
+        # Get all team deals (deals with this team_id)
+        deals_response = supabase.table('deals').select(
+            '*, user_profiles!deals_owner_id_fkey(full_name, email, avatar_url)'
+        ).eq('team_id', team_id).order('created_at', desc=True).execute()
+        
+        team_deals = deals_response.data or []
+        
+        # Get team members
+        members_response = supabase.table('team_members').select(
+            '*, user_profiles!team_members_user_id_fkey(full_name, email, avatar_url)'
+        ).eq('team_id', team_id).execute()
+        members = members_response.data or []
+        
+        # Compute agent stats
+        agent_stats = []
+        for member in members:
+            member_deals = [d for d in team_deals if d.get('owner_id') == member.get('user_id')]
+            profile = member.get('user_profiles', {}) or {}
+            agent_stats.append({
+                "user_id": member.get('user_id'),
+                "full_name": profile.get('full_name', ''),
+                "email": profile.get('email', ''),
+                "avatar_url": profile.get('avatar_url'),
+                "role": member.get('role', 'agent'),
+                "total_deals": len(member_deals),
+                "total_value": sum(d.get('asking_price', 0) or 0 for d in member_deals)
+            })
+        
+        # Team-level stats
+        team_stats = {
+            "total_members": len(members),
+            "total_active_deals": len(team_deals),
+            "total_pipeline_value": sum(d.get('asking_price', 0) or 0 for d in team_deals)
+        }
+        
+        return {
+            "success": True,
+            "team_stats": team_stats,
+            "agent_stats": agent_stats,
+            "team_deals": team_deals
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get team stats error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch team stats")
+
+
 @router.get("/members/{member_id}/deals")
 async def get_member_deals(
     member_id: str,
