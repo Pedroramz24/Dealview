@@ -143,15 +143,11 @@ async def list_documents(
     """List all documents for a deal"""
     supabase = get_supabase()
     try:
-        # Verify user
-        user_response = supabase.auth.get_user(credentials.credentials)
-        if not user_response or not user_response.user:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        user_id = user_response.user.id
+        user_id = await get_user_id(credentials)
         
         # Get user's team_id
-        profile = supabase.table('user_profiles').select('team_id').eq('id', user_id).single().execute()
-        team_id = profile.data.get('team_id') if profile.data else None
+        profile = supabase.table('user_profiles').select('team_id').eq('id', user_id).execute()
+        team_id = profile.data[0].get('team_id') if profile.data else None
         
         # Verify access (owner or same team)
         deal = supabase.table('deals').select('owner_id, team_id').eq('id', deal_id).single().execute()
