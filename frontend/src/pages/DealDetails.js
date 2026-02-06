@@ -330,18 +330,18 @@ const DealDetails = () => {
     return value.replace(/,/g, '');
   };
 
-  // Mini map style
+  // Mini map style - light street map
   const miniMapStyle = {
     version: 8,
     sources: {
-      'carto-dark': {
+      'osm-streets': {
         type: 'raster',
-        tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'],
+        tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
         tileSize: 256,
         maxzoom: 18
       }
     },
-    layers: [{ id: 'carto-dark-layer', type: 'raster', source: 'carto-dark', minzoom: 0, maxzoom: 18 }]
+    layers: [{ id: 'osm-streets-layer', type: 'raster', source: 'osm-streets', minzoom: 0, maxzoom: 18 }]
   };
 
   if (loading) {
