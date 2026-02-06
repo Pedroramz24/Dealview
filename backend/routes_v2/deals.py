@@ -80,6 +80,10 @@ class StageUpdate(BaseModel):
     pipeline_stage_id: str
 
 
+class VisibilityUpdate(BaseModel):
+    shared_with_team: bool
+
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
