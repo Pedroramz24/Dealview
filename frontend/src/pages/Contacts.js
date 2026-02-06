@@ -1211,8 +1211,6 @@ const Contacts = () => {
               </div>
 
               {/* Tags */}
-              {tags.length > 0 && (
-              {/* Tags */}
               <div>
                 <Label className="text-sm font-medium text-gray-300 mb-2 block">Tags</Label>
                 <div className="flex flex-wrap gap-2">
