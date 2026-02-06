@@ -47,19 +47,19 @@ class UpdateMemberRole(BaseModel):
 
 async def get_user_with_team(credentials: HTTPAuthorizationCredentials) -> dict:
     """Get user with their team info"""
+    user_id = await get_user_id(credentials)
     supabase = get_supabase()
-    user_response = supabase.auth.get_user(credentials.credentials)
-    if not user_response or not user_response.user:
-        raise HTTPException(status_code=401, detail="Invalid token")
     
-    user_id = user_response.user.id
-    # Use explicit foreign key reference to avoid ambiguity
-    profile = supabase.table('user_profiles').select('*').eq('id', user_id).single().execute()
+    try:
+        profile = supabase.table('user_profiles').select('*').eq('id', user_id).execute()
+        profile_data = profile.data[0] if profile.data else {}
+    except Exception:
+        profile_data = {}
     
     return {
         "id": user_id,
-        "profile": profile.data if profile.data else {},
-        "team_id": profile.data.get('team_id') if profile.data else None
+        "profile": profile_data,
+        "team_id": profile_data.get('team_id') if profile_data else None
     }
 
 
