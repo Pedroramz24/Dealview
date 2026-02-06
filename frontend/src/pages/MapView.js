@@ -750,8 +750,8 @@ const MapView = () => {
       const tileUrls = mapStyle === 'satellite'
         ? [(x, y, z) => `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`]
         : [
-            (x, y, z) => `https://a.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}@2x.png`,
-            (x, y, z) => `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}@2x.png`,
+            (x, y, z) => `https://a.tile.openstreetmap.org/${z}/${x}/${y}.png`,
+            (x, y, z) => `https://b.tile.openstreetmap.org/${z}/${x}/${y}.png`,
           ];
 
       for (let x = minX; x <= maxX; x++) {
