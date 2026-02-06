@@ -403,12 +403,27 @@ const DealDetails = () => {
           </div>
         </div>
         
-        {isOwner && (
+        <div style={{ display: 'flex', gap: '8px' }}>
           <Button
-            data-testid="deal-delete-button"
-            onClick={handleDelete}
+            onClick={() => {
+              const shareUrl = `${window.location.origin}/share/${dealId}`;
+              navigator.clipboard.writeText(shareUrl);
+              setShareCopied(true);
+              toast.success('Share link copied to clipboard');
+              setTimeout(() => setShareCopied(false), 2000);
+            }}
             variant="outline"
-            style={{ borderColor: '#ef4444', color: '#ef4444' }}
+            style={{ borderColor: colors.border, color: colors.primary }}
+          >
+            {shareCopied ? <Check size={16} style={{ marginRight: '6px' }} /> : <Share2 size={16} style={{ marginRight: '6px' }} />}
+            {shareCopied ? 'Copied!' : 'Share'}
+          </Button>
+          {isOwner && (
+            <Button
+              data-testid="deal-delete-button"
+              onClick={handleDelete}
+              variant="outline"
+              style={{ borderColor: '#ef4444', color: '#ef4444' }}
           >
             <Trash2 size={18} style={{ marginRight: '8px' }} />
             Delete
