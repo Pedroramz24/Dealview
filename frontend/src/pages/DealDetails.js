@@ -8,7 +8,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
   ArrowLeft, MapPin, Building2, DollarSign, 
   Trash2, Users, FileText, Upload, Download, Eye,
-  Phone, Mail, Plus, ChevronLeft, ChevronRight, X
+  Phone, Mail, Plus, ChevronLeft, ChevronRight, X, Share2, Copy, Check
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
