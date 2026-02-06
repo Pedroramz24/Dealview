@@ -12,6 +12,7 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Team = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [teams, setTeams] = useState([]);
   const [currentTeam, setCurrentTeam] = useState(null);
