@@ -1730,16 +1730,16 @@ const MapView = () => {
               <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '10px' }}>Property Details</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Size (SF)</label>
-                  <input data-testid="side-panel-size-input" type="number" value={selectedDeal.size_sqft ?? ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, size_sqft: e.target.value }))}
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Building Size (SF)</label>
+                  <input data-testid="side-panel-size-input" value={selectedDeal.size_sqft ? formatNumberInput(String(selectedDeal.size_sqft)) : ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, size_sqft: parseFormattedNumber(e.target.value) }))}
                     onBlur={() => handleSelectedDealNumericBlur('size_sqft')}
                     disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
                 <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Lot Size (Acres)</label>
-                  <input data-testid="side-panel-lot-size-input" type="number" step="0.01" value={selectedDeal.lot_size ?? ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, lot_size: e.target.value }))}
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Lot Size - Land (Acres)</label>
+                  <input data-testid="side-panel-lot-size-input" value={selectedDeal.lot_size ? formatNumberInput(String(selectedDeal.lot_size)) : ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, lot_size: parseFormattedNumber(e.target.value) }))}
                     onBlur={() => handleSelectedDealNumericBlur('lot_size')}
                     disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
