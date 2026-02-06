@@ -1760,6 +1760,65 @@ const MapView = () => {
 
             {/* Notes - always visible, editable */}
             <div data-testid="side-panel-notes" style={{ marginBottom: '16px' }}>
+
+            {/* Contact Information */}
+            {dealContacts.length > 0 && (
+              <div data-testid="side-panel-contacts" style={{ marginBottom: '16px' }}>
+                <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '10px' }}>
+                  Contacts ({dealContacts.length})
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {dealContacts.map((contact, idx) => (
+                    <div key={contact.id || idx} style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '8px',
+                      padding: '10px 12px'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <User size={14} style={{ color: colors.primary }} />
+                        <span style={{ color: colors.textPrimary, fontSize: '14px', fontWeight: '500' }}>
+                          {contact.name || 'Unnamed'}
+                        </span>
+                        {contact.contact_type && (
+                          <span style={{
+                            fontSize: '10px', padding: '2px 6px', borderRadius: '4px',
+                            background: 'rgba(0,184,212,0.15)', color: '#00d4ff', marginLeft: 'auto'
+                          }}>
+                            {contact.contact_type}
+                          </span>
+                        )}
+                      </div>
+                      {contact.email && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                          <Mail size={12} style={{ color: colors.textTertiary }} />
+                          <a href={`mailto:${contact.email}`} style={{ color: colors.textSecondary, fontSize: '12px', textDecoration: 'none' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#00d4ff'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = colors.textSecondary}
+                          >
+                            {contact.email}
+                          </a>
+                        </div>
+                      )}
+                      {contact.phone && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Phone size={12} style={{ color: colors.textTertiary }} />
+                          <a href={`tel:${contact.phone}`} style={{ color: colors.textSecondary, fontSize: '12px', textDecoration: 'none' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#00d4ff'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = colors.textSecondary}
+                          >
+                            {contact.phone}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Notes */}
+            <div data-testid="side-panel-notes-section" style={{ marginBottom: '16px' }}>
               <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '6px' }}>Notes</div>
               <textarea
                 data-testid="side-panel-notes-textarea"
