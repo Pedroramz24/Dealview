@@ -49,28 +49,41 @@ class ProfileUpdate(BaseModel):
 
 @router.post("/login")
 async def login(request: LoginRequest):
-    """Login with email and password via Supabase Auth"""
+    """Login with email and password via Supabase Auth REST API (safe, no client contamination)"""
     supabase = get_supabase()
     try:
-        response = supabase.auth.sign_in_with_password({
-            "email": request.email,
-            "password": request.password
-        })
+        # Use direct HTTP call to avoid contaminating the singleton client
+        resp = httpx.post(
+            f"{SUPABASE_URL}/auth/v1/token?grant_type=password",
+            json={"email": request.email, "password": request.password},
+            headers={"apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json"},
+            timeout=10
+        )
         
-        if not response.user:
+        if resp.status_code != 200:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        # Get user profile
-        profile_response = supabase.table('user_profiles').select('*').eq('id', response.user.id).single().execute()
+        auth_data = resp.json()
+        user_data = auth_data.get('user', {})
+        access_token = auth_data.get('access_token')
+        refresh_token = auth_data.get('refresh_token')
+        
+        if not user_data or not access_token:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        user_id = user_data['id']
+        
+        # Get user profile using the service_role client (safe - no auth contamination)
+        profile_response = supabase.table('user_profiles').select('*').eq('id', user_id).single().execute()
         profile = profile_response.data if profile_response.data else {}
         
         return {
             "success": True,
-            "access_token": response.session.access_token,
-            "refresh_token": response.session.refresh_token,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
             "user": {
-                "id": response.user.id,
-                "email": response.user.email,
+                "id": user_id,
+                "email": user_data.get('email', ''),
                 "full_name": profile.get('full_name', ''),
                 "phone": profile.get('phone'),
                 "company": profile.get('company'),
