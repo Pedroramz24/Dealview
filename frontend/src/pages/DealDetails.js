@@ -877,7 +877,12 @@ const DealDetails = () => {
                   }}>
                     <div>
                       <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{contact.name}</div>
-                      <div style={{ color: colors.textTertiary, fontSize: '12px' }}>
+                      {contact.phone && (
+                        <div style={{ color: colors.textSecondary, fontSize: '12px', marginTop: '2px' }}>
+                          {contact.phone}
+                        </div>
+                      )}
+                      <div style={{ color: colors.textTertiary, fontSize: '12px', marginTop: '1px' }}>
                         {contact.contact_type} {contact.role && `\u2022 ${contact.role}`}
                       </div>
                     </div>
