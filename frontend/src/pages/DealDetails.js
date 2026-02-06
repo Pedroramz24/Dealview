@@ -721,6 +721,17 @@ const DealDetails = () => {
                 />
               </div>
               <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Land SQFT</Label>
+                <div style={{
+                  ...fieldStyle, marginTop: '6px',
+                  background: 'rgba(0,184,212,0.05)', 
+                  color: deal.lot_size ? '#00b8d4' : colors.textTertiary,
+                  fontWeight: deal.lot_size ? '600' : '400'
+                }}>
+                  {deal.lot_size ? formatNumber(Math.round(parseFloat(deal.lot_size) * 43560)) + ' SF' : 'Auto-calculated from Acres'}
+                </div>
+              </div>
+              <div>
                 <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Year Built</Label>
                 <input
                   data-testid="deal-year-built-input"
