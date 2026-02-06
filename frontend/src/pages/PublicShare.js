@@ -80,7 +80,7 @@ const PublicShare = () => {
       {/* Header */}
       <div style={{ padding: '14px 24px', background: 'rgba(10,10,11,0.97)', borderBottom: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(16px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <img src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png" alt="DealLinked" style={{ height: '28px' }} />
+          <img src="https://customer-assets.emergentagent.com/job_unifydash/artifacts/zlxck81k_DealLinked%20Logo%20%28White%29.png" alt="DealLinked" style={{ height: '48px', objectFit: 'contain' }} />
           <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Shared Property</span>
         </div>
       </div>
