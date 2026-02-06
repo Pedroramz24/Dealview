@@ -7,7 +7,8 @@ import { toast } from 'sonner';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
   Building2, X, ChevronRight, ChevronLeft, Users, 
-  Eye, EyeOff, Filter, Layers, Plus, Search, MousePointer, Upload, DollarSign
+  Eye, EyeOff, Filter, Layers, Plus, Search, MousePointer, Upload, DollarSign,
+  User, Mail, Phone
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
