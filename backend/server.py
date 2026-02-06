@@ -77,11 +77,7 @@ async def upload_document(
     """Upload a document for a deal"""
     supabase = get_supabase()
     try:
-        # Verify user
-        user_response = supabase.auth.get_user(credentials.credentials)
-        if not user_response or not user_response.user:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        user_id = user_response.user.id
+        user_id = await get_user_id(credentials)
         
         # Verify deal ownership
         deal = supabase.table('deals').select('owner_id').eq('id', deal_id).single().execute()
