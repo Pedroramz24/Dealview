@@ -1758,9 +1758,6 @@ const MapView = () => {
               </div>
             </div>
 
-            {/* Notes - always visible, editable */}
-            <div data-testid="side-panel-notes" style={{ marginBottom: '16px' }}>
-
             {/* Contact Information */}
             {dealContacts.length > 0 && (
               <div data-testid="side-panel-contacts" style={{ marginBottom: '16px' }}>
