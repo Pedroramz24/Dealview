@@ -1227,9 +1227,9 @@ const MapView = () => {
           position: 'absolute',
           top: 0,
           right: 0,
-          width: '400px',
+          width: '420px',
           height: '100%',
-          background: 'rgba(12, 12, 12, 0.95)',
+          background: 'rgba(12, 12, 12, 0.98)',
           backdropFilter: 'blur(20px)',
           borderLeft: `1px solid ${colors.border}`,
           zIndex: 20,
@@ -1237,6 +1237,7 @@ const MapView = () => {
           flexDirection: 'column',
           animation: 'slideIn 0.3s ease'
         }}>
+          {/* Header */}
           <div style={{
             padding: '16px',
             borderBottom: `1px solid ${colors.border}`,
@@ -1271,21 +1272,171 @@ const MapView = () => {
           </div>
 
           <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
+            {/* Property Images */}
+            {(selectedDeal.image_url || (selectedDeal.image_urls && selectedDeal.image_urls.length > 0)) && (
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{
+                  width: '100%',
+                  height: '180px',
+                  borderRadius: borderRadius.md,
+                  overflow: 'hidden',
+                  background: colors.surfaceElevated
+                }}>
+                  <img 
+                    src={selectedDeal.image_url || selectedDeal.image_urls[0]} 
+                    alt={selectedDeal.title}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover' 
+                    }}
+                    onError={(e) => e.target.style.display = 'none'}
+                  />
+                </div>
+                {selectedDeal.image_urls && selectedDeal.image_urls.length > 1 && (
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px', overflowX: 'auto' }}>
+                    {selectedDeal.image_urls.slice(1, 4).map((url, idx) => (
+                      <div key={idx} style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        flexShrink: 0
+                      }}>
+                        <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    ))}
+                    {selectedDeal.image_urls.length > 4 && (
+                      <div style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '8px',
+                        background: 'rgba(0,0,0,0.6)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        +{selectedDeal.image_urls.length - 4}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             <h2 style={{ color: colors.textPrimary, fontSize: '20px', fontWeight: '600', marginBottom: '4px' }}>
               {selectedDeal.title}
             </h2>
             
-            <p style={{ color: colors.textTertiary, fontSize: '14px', marginBottom: '20px' }}>
+            <p style={{ color: colors.textTertiary, fontSize: '14px', marginBottom: '16px' }}>
               {selectedDeal.address && `${selectedDeal.address}, `}
               {selectedDeal.city && `${selectedDeal.city}, `}
               {selectedDeal.state} {selectedDeal.zip_code}
             </p>
 
+            {/* Pipeline & Stage Dropdowns */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: '1fr 1fr', 
+              gap: '12px', 
+              marginBottom: '16px',
+              padding: '12px',
+              background: 'rgba(0, 184, 212, 0.05)',
+              borderRadius: borderRadius.md,
+              border: '1px solid rgba(0, 184, 212, 0.15)'
+            }}>
+              <div>
+                <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>Pipeline</label>
+                <select
+                  value={selectedDeal.pipeline_id || ''}
+                  onChange={async (e) => {
+                    const newPipelineId = e.target.value;
+                    const pipeline = pipelines.find(p => p.id === newPipelineId);
+                    const firstStage = pipeline?.stages?.[0];
+                    try {
+                      const session = await supabase.auth.getSession();
+                      const token = session.data.session?.access_token;
+                      await fetch(`${API}/deals/${selectedDeal.id}`, {
+                        method: 'PUT',
+                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                          pipeline_id: newPipelineId,
+                          pipeline_stage_id: firstStage?.id || null
+                        })
+                      });
+                      setSelectedDeal(prev => ({ ...prev, pipeline_id: newPipelineId, pipeline_stage_id: firstStage?.id }));
+                      fetchDeals();
+                      toast.success('Pipeline updated');
+                    } catch (err) {
+                      toast.error('Failed to update pipeline');
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '8px 10px',
+                    background: colors.surfaceCard,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: '6px',
+                    color: colors.textPrimary,
+                    fontSize: '13px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="">Select Pipeline</option>
+                  {pipelines.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>Stage</label>
+                <select
+                  value={selectedDeal.pipeline_stage_id || ''}
+                  onChange={async (e) => {
+                    const newStageId = e.target.value;
+                    try {
+                      const session = await supabase.auth.getSession();
+                      const token = session.data.session?.access_token;
+                      await fetch(`${API}/deals/${selectedDeal.id}`, {
+                        method: 'PUT',
+                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ pipeline_stage_id: newStageId })
+                      });
+                      setSelectedDeal(prev => ({ ...prev, pipeline_stage_id: newStageId }));
+                      fetchDeals();
+                      toast.success('Stage updated');
+                    } catch (err) {
+                      toast.error('Failed to update stage');
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '8px 10px',
+                    background: colors.surfaceCard,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: '6px',
+                    color: colors.textPrimary,
+                    fontSize: '13px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="">Select Stage</option>
+                  {(pipelines.find(p => p.id === selectedDeal.pipeline_id)?.stages || []).map(s => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Asking Price */}
             <div style={{
               background: 'rgba(0, 184, 212, 0.1)',
               borderRadius: borderRadius.md,
               padding: '16px',
-              marginBottom: '20px'
+              marginBottom: '16px'
             }}>
               <div style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '4px' }}>Asking Price</div>
               <div style={{ color: colors.primary, fontSize: '28px', fontWeight: '700' }}>
@@ -1293,11 +1444,18 @@ const MapView = () => {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+            {/* Property Details Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
               {selectedDeal.size_sqft && (
                 <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
                   <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Size</div>
                   <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.size_sqft.toLocaleString()} SF</div>
+                </div>
+              )}
+              {selectedDeal.lot_size && (
+                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
+                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Lot Size</div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.lot_size} Acres</div>
                 </div>
               )}
               {selectedDeal.cap_rate && (
@@ -1318,10 +1476,28 @@ const MapView = () => {
                   <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.year_built}</div>
                 </div>
               )}
+              {selectedDeal.occupancy && (
+                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
+                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Occupancy</div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.occupancy}%</div>
+                </div>
+              )}
+              {selectedDeal.zoning && (
+                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
+                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Zoning</div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.zoning}</div>
+                </div>
+              )}
+              {selectedDeal.ac_size && (
+                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
+                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>AC Size</div>
+                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.ac_size} Tons</div>
+                </div>
+              )}
             </div>
 
             {selectedDeal.notes && (
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <div style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '8px' }}>Notes</div>
                 <p style={{ color: colors.textSecondary, fontSize: '14px', lineHeight: '1.5' }}>{selectedDeal.notes}</p>
               </div>
