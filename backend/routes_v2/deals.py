@@ -343,6 +343,45 @@ async def update_deal(
         raise HTTPException(status_code=500, detail="Failed to update deal")
 
 
+@router.put("/{deal_id}/visibility")
+async def update_deal_visibility(
+    deal_id: str,
+    visibility: VisibilityUpdate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Toggle deal team visibility - share with team or keep private"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+        
+        # Verify ownership
+        existing = supabase.table('deals').select('owner_id').eq('id', deal_id).single().execute()
+        if not existing.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        if existing.data['owner_id'] != user_id:
+            raise HTTPException(status_code=403, detail="Not authorized to update this deal")
+        
+        if visibility.shared_with_team:
+            team_id = await get_user_team_id(user_id)
+            update_data = {"team_id": team_id}
+        else:
+            update_data = {"team_id": None}
+        
+        response = supabase.table('deals').update(update_data).eq('id', deal_id).execute()
+        
+        return {
+            "success": True,
+            "deal": response.data[0] if response.data else None,
+            "shared_with_team": visibility.shared_with_team,
+            "message": f"Deal {'shared with team' if visibility.shared_with_team else 'set to private'}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Update deal visibility error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to update deal visibility")
+
+
 @router.patch("/{deal_id}/stage")
 async def update_deal_stage(
     deal_id: str,
