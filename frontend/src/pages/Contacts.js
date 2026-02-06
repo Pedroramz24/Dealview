@@ -524,6 +524,25 @@ const Contacts = () => {
             Manage Tags
           </Button>
 
+          {/* CSV Import */}
+          <input
+            id="csv-import-input"
+            data-testid="csv-import-file-input"
+            type="file"
+            accept=".csv"
+            onChange={handleCsvFileSelect}
+            style={{ display: 'none' }}
+          />
+          <Button
+            onClick={() => document.getElementById('csv-import-input').click()}
+            variant="outline"
+            className="border-gray-700 text-gray-300 hover:text-white"
+            data-testid="import-csv-button"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Import CSV
+          </Button>
+
           <Button
             onClick={handleOpenAdd}
             className="bg-cyan-600 hover:bg-cyan-700"
