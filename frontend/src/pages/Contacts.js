@@ -636,6 +636,19 @@ const Contacts = () => {
           ))}
         </select>
 
+        {/* Tag Filter */}
+        <select
+          value={filterTag}
+          onChange={(e) => setFilterTag(e.target.value)}
+          className="px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 text-gray-300 cursor-pointer"
+          data-testid="filter-tag"
+        >
+          <option value="">All Tags</option>
+          {tags.map(tag => (
+            <option key={tag.id} value={tag.id}>{tag.name}</option>
+          ))}
+        </select>
+
         {/* Clear Filters */}
         {(filterType || filterStatus || filterTag || searchTerm) && (
           <Button
