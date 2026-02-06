@@ -1060,7 +1060,7 @@ const LandingPage = () => {
           margin: '0 auto 60px',
           fontWeight: '500'
         }}>
-          Unlike LoopNet or CoStar, we don't hide deals behind expensive paywalls or tiered access.
+          Unlike LoopNet or CoStar, we don&apos;t hide deals behind expensive paywalls or tiered access.
         </p>
 
         <div style={{
