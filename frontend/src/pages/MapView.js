@@ -61,7 +61,7 @@ const getDealColor = (deal) => {
   return assetTypeColors[deal?.asset_type] || assetTypeColors['Other'];
 };
 
-// Optimized map styles
+// Optimized map styles with prefetch-friendly config
 const mapStyles = {
   satellite: {
     version: 8,
@@ -94,7 +94,8 @@ const mapStyles = {
         tiles: [
           'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
           'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-          'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'
+          'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+          'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'
         ],
         tileSize: 256,
         maxzoom: 20,
