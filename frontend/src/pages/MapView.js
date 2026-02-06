@@ -1665,7 +1665,7 @@ const MapView = () => {
               </div>
             </div>
 
-            {/* Asking Price - editable */}
+            {/* Asking Price - editable with formatted display */}
             <div data-testid="side-panel-asking-price" style={{
               background: 'rgba(0, 184, 212, 0.1)', borderRadius: borderRadius.md,
               padding: '14px', marginBottom: '16px'
@@ -1675,9 +1675,11 @@ const MapView = () => {
                 <DollarSign size={22} style={{ color: colors.primary, flexShrink: 0 }} />
                 <input
                   data-testid="side-panel-asking-price-input"
-                  type="number"
-                  value={selectedDeal.asking_price ?? ''}
-                  onChange={(e) => setSelectedDeal(prev => ({ ...prev, asking_price: e.target.value }))}
+                  value={selectedDeal.asking_price ? formatNumberInput(String(selectedDeal.asking_price)) : ''}
+                  onChange={(e) => {
+                    const raw = parseFormattedNumber(e.target.value);
+                    setSelectedDeal(prev => ({ ...prev, asking_price: raw }));
+                  }}
                   onBlur={() => handleSelectedDealNumericBlur('asking_price')}
                   disabled={selectedDeal.isTeamDeal}
                   placeholder="0"
