@@ -257,7 +257,7 @@ const PublishDealModal = ({ dealId, deal, onClose, onPublished }) => {
             lineHeight: '1.5'
           }}>
             <strong style={{ color: '#00b8d4' }}>📋 Review Process:</strong><br />
-            Your deal will be reviewed by our team before appearing in the Marketplace. You'll be notified once it's approved.
+            Your deal will be reviewed by our team before appearing in the Marketplace. You&apos;ll be notified once it&apos;s approved.
           </div>
         </form>
       </div>
