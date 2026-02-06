@@ -2318,29 +2318,37 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    timestamp: "2026-02-06T18:15:00Z"
-    message: "Implemented 2 new features: (1) Contact edit panel: '+' button to create new tags inline with name and color picker, auto-adds to contact. (2) Map side panel: Team sharing toggle - switch between shared/private, uses PUT /api/deals/{id}/visibility endpoint to toggle team_id. Please test both features."
+    timestamp: "2026-02-06T18:45:00Z"
+    message: "Implemented 4 fixes: (1) Created GET /api/teams/{team_id}/stats endpoint to return team_deals for the Team tab. (2) Added comma formatting for all numeric fields in DealDetails (asking price, size, NOI, annual income/expenses). (3) Added phone number display under contact name in DealDetails linked contacts. (4) Added mini map below documents showing deal location. Please test all features."
 
-  - task: "Contact Edit Panel Inline Tag Creation"
+  - task: "Team Stats Endpoint for Team Deals Tab"
     implemented: true
     working: "NA"
-    file: "/app/frontend/src/pages/Contacts.js"
+    file: "/app/backend/routes_v2/teams.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
 
-  - task: "Map Side Panel Team Sharing Toggle"
+  - task: "Comma Formatting in DealDetails"
     implemented: true
     working: "NA"
-    file: "/app/frontend/src/pages/MapView.js"
+    file: "/app/frontend/src/pages/DealDetails.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
 
-  - task: "Deal Visibility API Endpoint"
+  - task: "Phone Number Under Contact Name in DealDetails"
     implemented: true
     working: "NA"
-    file: "/app/backend/routes_v2/deals.py"
+    file: "/app/frontend/src/pages/DealDetails.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+
+  - task: "Mini Map in DealDetails"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/DealDetails.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
