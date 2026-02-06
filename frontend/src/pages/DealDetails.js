@@ -5,7 +5,7 @@ import { AuthContext, API } from '../App';
 import { toast } from 'sonner';
 import { 
   ArrowLeft, MapPin, Building2, DollarSign, 
-  Trash2, Users, FileText, Upload,
+  Trash2, Users, FileText, Upload, Download, Eye,
   Phone, Mail, Plus, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
