@@ -30,10 +30,13 @@ const DealDetails = () => {
   const [allContacts, setAllContacts] = useState([]);
   const [showLinkContact, setShowLinkContact] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [pipelines, setPipelines] = useState([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     fetchDeal();
     fetchContacts();
+    fetchPipelines();
   }, [dealId]);
 
   const fetchDeal = async () => {
