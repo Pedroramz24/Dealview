@@ -729,6 +729,7 @@ const MapView = () => {
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onClick={handleMapClick}
+        onIdle={handleMapIdle}
         style={{ 
           width: '100%', 
           height: '100%',
@@ -739,7 +740,9 @@ const MapView = () => {
         maxZoom={19}
         minZoom={2}
         renderWorldCopies={false}
-        fadeDuration={300}
+        fadeDuration={200}
+        maxTileCacheSize={300}
+        refreshExpiredTiles={false}
         scrollZoom={{ speed: 1.5, smooth: true }}
         touchZoomRotate={{ around: 'center' }}
         dragRotate={false}
