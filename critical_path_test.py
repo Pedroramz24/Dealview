@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://commercial-crm.preview.emergentagent.com/api"
+BASE_URL = "https://realty-crm-dev.preview.emergentagent.com/api"
 CREDENTIALS = {
     "email": "contact@pedroarmando.com",
     "password": "Flin141812$"

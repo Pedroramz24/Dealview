@@ -8,7 +8,7 @@ import time
 from datetime import datetime
 
 # Configuration
-API_BASE = "https://commercial-crm.preview.emergentagent.com/api"
+API_BASE = "https://realty-crm-dev.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "contact@pedroarmando.com"
 TEST_USER_PASSWORD = "Flin141812$"
 

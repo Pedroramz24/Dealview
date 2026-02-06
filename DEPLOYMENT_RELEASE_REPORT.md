@@ -209,7 +209,7 @@ $ curl -H "Authorization: Bearer $TOKEN" $API_URL/api/auth/me
 
 #### 3.1 Landing Page ✅ VERIFIED
 
-**URL**: https://commercial-crm.preview.emergentagent.com
+**URL**: https://realty-crm-dev.preview.emergentagent.com
 
 **Screenshot Evidence**: `/tmp/01_landing_page.png`
 
@@ -505,8 +505,8 @@ I am **confident this application can handle hundreds of users** with the unders
 - Project Reference: `ygezobmpewthqvsfqrbk`
 
 **Application URLs**:
-- Frontend: `https://commercial-crm.preview.emergentagent.com`
-- Backend API: `https://commercial-crm.preview.emergentagent.com/api`
+- Frontend: `https://realty-crm-dev.preview.emergentagent.com`
+- Backend API: `https://realty-crm-dev.preview.emergentagent.com/api`
 
 **Internal Services**:
 - Backend: `0.0.0.0:8001` (proxied via nginx)
