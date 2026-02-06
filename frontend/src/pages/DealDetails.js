@@ -482,6 +482,202 @@ const DealDetails = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: spacing.xl }}>
         {/* Left Column - Main Details */}
         <div>
+          {/* Property Images */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            marginBottom: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600' }}>
+                Property Images
+              </h3>
+              {isOwner && (
+                <label style={{ cursor: 'pointer' }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                    disabled={uploadingImage}
+                  />
+                  <Button
+                    as="span"
+                    size="sm"
+                    disabled={uploadingImage}
+                    style={{ 
+                      background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(59,130,246,0.2))',
+                      border: '1px solid rgba(0,184,212,0.3)',
+                      color: '#00d4ff'
+                    }}
+                  >
+                    <Upload size={14} style={{ marginRight: '6px' }} />
+                    {uploadingImage ? 'Uploading...' : 'Add Image'}
+                  </Button>
+                </label>
+              )}
+            </div>
+
+            {(deal.image_url || (deal.image_urls && deal.image_urls.length > 0)) ? (
+              <div>
+                {/* Main Image */}
+                <div style={{
+                  width: '100%',
+                  height: '300px',
+                  borderRadius: borderRadius.md,
+                  overflow: 'hidden',
+                  marginBottom: '12px',
+                  background: colors.surfaceElevated
+                }}>
+                  <img 
+                    src={deal.image_url || deal.image_urls[0]} 
+                    alt={deal.title}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover' 
+                    }}
+                    onError={(e) => e.target.style.display = 'none'}
+                  />
+                </div>
+
+                {/* Thumbnail Gallery */}
+                {deal.image_urls && deal.image_urls.length > 1 && (
+                  <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px' }}>
+                    {deal.image_urls.map((url, idx) => (
+                      <div 
+                        key={idx} 
+                        style={{
+                          width: '80px',
+                          height: '80px',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          flexShrink: 0,
+                          border: url === (deal.image_url || deal.image_urls[0]) 
+                            ? '2px solid #00d4ff' 
+                            : '2px solid transparent',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => setDeal({ ...deal, image_url: url })}
+                      >
+                        <img 
+                          src={url} 
+                          alt="" 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{
+                border: `2px dashed ${colors.border}`,
+                borderRadius: borderRadius.md,
+                padding: '40px',
+                textAlign: 'center'
+              }}>
+                <Building2 size={48} style={{ color: colors.textTertiary, margin: '0 auto 12px' }} />
+                <p style={{ color: colors.textTertiary, fontSize: '14px' }}>
+                  No images uploaded yet
+                </p>
+                {isOwner && (
+                  <p style={{ color: colors.textTertiary, fontSize: '12px', marginTop: '8px' }}>
+                    Click "Add Image" to upload property photos
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Pipeline & Stage */}
+          <div style={{
+            background: colors.surfaceCard,
+            borderRadius: borderRadius.md,
+            padding: spacing.lg,
+            marginBottom: spacing.lg,
+            boxShadow: shadows.cardElevation
+          }}>
+            <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
+              Pipeline Status
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px', display: 'block', marginBottom: '8px' }}>
+                  Pipeline
+                </Label>
+                <select
+                  value={deal.pipeline_id || ''}
+                  onChange={(e) => handlePipelineChange(e.target.value)}
+                  disabled={!isOwner}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: colors.surfaceElevated,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.sm,
+                    color: colors.textPrimary,
+                    fontSize: '14px',
+                    cursor: isOwner ? 'pointer' : 'default'
+                  }}
+                >
+                  <option value="">Select Pipeline</option>
+                  {pipelines.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px', display: 'block', marginBottom: '8px' }}>
+                  Stage
+                </Label>
+                <select
+                  value={deal.pipeline_stage_id || ''}
+                  onChange={(e) => handleStageChange(e.target.value)}
+                  disabled={!isOwner || !deal.pipeline_id}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: colors.surfaceElevated,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: borderRadius.sm,
+                    color: colors.textPrimary,
+                    fontSize: '14px',
+                    cursor: isOwner && deal.pipeline_id ? 'pointer' : 'default'
+                  }}
+                >
+                  <option value="">Select Stage</option>
+                  {(pipelines.find(p => p.id === deal.pipeline_id)?.stages || []).map(s => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {deal.pipeline_stage_id && (
+              <div style={{ 
+                marginTop: '16px', 
+                padding: '12px', 
+                background: 'rgba(0,184,212,0.1)',
+                borderRadius: borderRadius.sm,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: pipelines.find(p => p.id === deal.pipeline_id)?.stages?.find(s => s.id === deal.pipeline_stage_id)?.color || '#00d4ff'
+                }} />
+                <span style={{ color: colors.textPrimary, fontWeight: '500' }}>
+                  Current: {pipelines.find(p => p.id === deal.pipeline_id)?.stages?.find(s => s.id === deal.pipeline_stage_id)?.name || 'Unknown Stage'}
+                </span>
+              </div>
+            )}
+          </div>
+
           {/* Price Card */}
           <div style={{
             background: colors.surfaceCard,
