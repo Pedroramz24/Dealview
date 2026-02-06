@@ -1,105 +1,84 @@
-# DealLinked CRM V2 - Product Requirements Document
+# DealLinked CRM - Product Requirements Document
 
 ## Original Problem Statement
-Complete ground-up rebuild of DealLinked CRM application for Commercial Real Estate.
+Complete ground-up rebuild of "DealLinked CRM" — a CRE (Commercial Real Estate) deal management platform. Keep: Map View, Property Details, Pipeline/Kanban, Contacts, Team tab, Landing/Login pages, Calendar. Remove: Marketplace, Command Center, DealVisor, AI operations, complex map layers.
 
-## All Features Verified Working ✅
+## Tech Stack
+- **Frontend:** React, React Router, react-map-gl, MapLibre GL JS, Shadcn/UI
+- **Backend:** FastAPI (Python)
+- **Database:** Supabase (PostgreSQL + Auth + Storage)
+- **Geocoding:** Radar.io
+- **Styling:** Custom design system (dark theme)
 
-### ✅ Map View
-- Satellite map with Esri tiles
-- Smoother zoom animations
-- Address autocomplete via Radar.io
-- Click-to-add deal functionality
-- Deal markers with asset type colors
-- **NEW: Enhanced Side Panel** with:
-  - Property images display
-  - Pipeline/Stage dropdowns (editable)
-  - All deal details (size, lot, cap rate, NOI, year built, occupancy, zoning, AC size)
-  - "View Full Details" button
+## Architecture
+```
+/app/
+├── backend/
+│   ├── routes_v2/         # All API routes (deals, contacts, pipelines, teams, calendar, etc.)
+│   ├── utils/             # DB helpers, auth helpers
+│   └── server.py          # FastAPI app entry
+├── frontend/
+│   ├── src/
+│   │   ├── pages/         # DealDetails, MapView, Pipeline, Contacts, Calendar, Team, Settings, Landing, Login
+│   │   ├── components/ui/ # Shadcn/UI components
+│   │   └── styles/        # Design system
+│   └── .env
+└── memory/
+    └── PRD.md
+```
 
-### ✅ Property Details Page
-- **NEW: Property Images Gallery**
-  - Main image display with thumbnails
-  - Click thumbnails to change main image
-  - "Add Image" upload button
-  - Drag & drop support (pending storage bucket)
-- **NEW: Pipeline Status Section**
-  - Pipeline dropdown (change pipeline)
-  - Stage dropdown (change stage)
-  - Current stage indicator with color
-- Full property details grid
-- Edit/Delete functionality
-- Linked Contacts management
-- Document upload with drag & drop
+## What's Been Implemented
 
-### ✅ Pipeline/Kanban Board  
-- Default 8 stages for new users
-- Stage management (create, edit, delete)
-- Deal cards with drag-and-drop
-
-### ✅ Contacts Page
-- Contact CRUD operations
-- Side Panel Tag Manager
-- Tag creation with color picker
-- Quick filter by tags
-
-### ✅ Team Collaboration
+### Core Infrastructure (DONE)
+- Supabase database with RLS policies and triggers
+- FastAPI V2 backend with all CRUD endpoints
+- React frontend with dark theme design system
+- User signup/login with Supabase Auth
 - Team creation and management
-- Member stats display
 
-### ✅ Calendar
-- Event CRUD operations
-- Multiple view modes
+### Pages (ALL DONE)
+- **Landing Page:** Dark theme hero with "Get Started" CTA
+- **Login/Signup:** Supabase auth with email/password
+- **Map View:** Satellite/street toggle, deal markers, click-to-add, search with geocoding, team deals overlay
+- **Deal Details:** Full property view with inline editing, image carousel, document upload
+- **Pipeline/Kanban:** Drag-and-drop deal stages
+- **Contacts:** Contact CRUD with smart tags side panel
+- **Calendar:** Event creation and management
+- **Team:** Team member management
+- **Settings:** Profile settings
 
-### ✅ Settings
-- Profile management
-- Password change
+### Dec 2025 - Deal Details & Map Side Panel Overhaul (DONE)
+- **Always-on inline editing:** All deal fields are always editable inputs — no edit/save toggle button
+- **Image carousel:** Navigation arrows (prev/next), thumbnail strip, counter badge
+- **Image upload:** "Add Images" button on DealDetails, "Add" button on MapView side panel
+- **All fields visible:** Every deal field renders even when empty (with placeholders)
+- **Auto-save on blur:** Field changes save automatically when user tabs/clicks away
+- **Pipeline/Stage dropdowns:** Working on both DealDetails and MapView side panel
+- **Document upload:** Drag-and-drop zone with file browse fallback
+- **MapView side panel:** Full refactor — image carousel, inline editing, all property fields, notes textarea
 
-## Recent Updates (2024-02-06)
+### Key API Endpoints
+- `GET/POST /api/deals` — List/Create deals
+- `GET/PUT/DELETE /api/deals/{id}` — Deal CRUD
+- `POST /api/deals/{id}/images` — Image upload
+- `POST /api/deals/{id}/documents` — Document upload
+- `GET/POST /api/contacts` — Contact CRUD
+- `GET/POST /api/pipelines` — Pipeline/Stage CRUD
+- `GET/POST /api/teams` — Team CRUD
+- `GET/POST /api/calendar/events` — Calendar events
+- `GET /api/geocode/autocomplete` — Address search
+- `GET /api/geocode/reverse` — Reverse geocoding
 
-### Map Side Panel Enhancement
-- Added property images display
-- Added Pipeline/Stage dropdowns (directly editable)
-- Added all property detail fields
-- Immediate update on dropdown change
+## Prioritized Backlog
 
-### DealDetails Page Enhancement
-- Added Property Images section with gallery
-- Added Pipeline Status section with dropdowns
-- Added current stage indicator with color
-- Added image upload API endpoint
+### P0 (Next)
+- Map tile prefetching for smoother performance
+- Full E2E test of complete app flow
 
-### Backend Updates
-- Added `POST /api/deals/{deal_id}/images` for image upload
-- Images stored in Supabase storage bucket
-
-## Key Files
-- `/app/frontend/src/pages/MapView.js` - Enhanced side panel
-- `/app/frontend/src/pages/DealDetails.js` - Images & pipeline dropdowns
-- `/app/backend/routes_v2/deals.py` - Image upload endpoint
-
-## API Endpoints
-
-### Images
-- `POST /api/deals/{deal_id}/images` - Upload image (multipart/form-data)
-  - Returns: `{ success: true, image_url: "...", image_urls: [...] }`
-
-### Documents
-- `POST /api/deals/{deal_id}/documents` - Upload document
-- `DELETE /api/deals/{deal_id}/documents/{doc_id}` - Delete document
-
-## Database Fields (deals table)
-- `image_url` - Primary image URL
-- `image_urls` - Array of all image URLs
-- `pipeline_id` - Current pipeline
-- `pipeline_stage_id` - Current stage
-
-## Remaining Backlog
-
-### P2 (Medium)
-- Create Supabase storage buckets: `deal-images`, `deal-documents`
-- Team performance metrics
-
-### P3 (Low)
+### P1
 - CSV contact import
+- Document preview modal
+
+### P2
 - Recurring calendar events
+- Team performance metrics
