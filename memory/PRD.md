@@ -39,7 +39,8 @@ Complete ground-up rebuild of "DealLinked CRM" — a CRE (Commercial Real Estate
 ### Pages (ALL DONE)
 - **Landing Page:** Dark theme hero with "Get Started" CTA
 - **Login/Signup:** Supabase auth with email/password
-- **Map View:** Satellite/street toggle, deal markers, click-to-add, search with geocoding, team deals overlay
+- **Dashboard:** Stats overview (Total Deals, Pipeline Value, Contacts, This Week)
+- **Map View:** Satellite/street toggle, deal markers, click-to-add, search with geocoding, team deals overlay, tile prefetching
 - **Deal Details:** Full property view with inline editing, image carousel, document upload
 - **Pipeline/Kanban:** Drag-and-drop deal stages
 - **Contacts:** Contact CRUD with smart tags side panel
@@ -48,14 +49,20 @@ Complete ground-up rebuild of "DealLinked CRM" — a CRE (Commercial Real Estate
 - **Settings:** Profile settings
 
 ### Dec 2025 - Deal Details & Map Side Panel Overhaul (DONE)
-- **Always-on inline editing:** All deal fields are always editable inputs — no edit/save toggle button
-- **Image carousel:** Navigation arrows (prev/next), thumbnail strip, counter badge
-- **Image upload:** "Add Images" button on DealDetails, "Add" button on MapView side panel
-- **All fields visible:** Every deal field renders even when empty (with placeholders)
-- **Auto-save on blur:** Field changes save automatically when user tabs/clicks away
-- **Pipeline/Stage dropdowns:** Working on both DealDetails and MapView side panel
-- **Document upload:** Drag-and-drop zone with file browse fallback
-- **MapView side panel:** Full refactor — image carousel, inline editing, all property fields, notes textarea
+- Always-on inline editing (no edit/save toggle)
+- Image carousel with navigation arrows and thumbnail strip
+- Image upload on both DealDetails and MapView side panel
+- All fields visible even when empty
+- Auto-save on blur
+- Pipeline/Stage dropdowns on both views
+- Document drag-and-drop upload
+
+### Dec 2025 - Map Tile Prefetching (DONE)
+- `maxTileCacheSize=300` for large tile cache
+- `refreshExpiredTiles=false` to avoid refetching cached tiles
+- On-idle prefetch of tiles at zoom+1 around current viewport
+- Added 4th CARTO tile server for better load distribution
+- Reduced fade duration to 200ms for snappier transitions
 
 ### Key API Endpoints
 - `GET/POST /api/deals` — List/Create deals
@@ -69,16 +76,18 @@ Complete ground-up rebuild of "DealLinked CRM" — a CRE (Commercial Real Estate
 - `GET /api/geocode/autocomplete` — Address search
 - `GET /api/geocode/reverse` — Reverse geocoding
 
+### E2E Test Results
+- Backend: 13/13 tests passed (Auth, Deals CRUD, Pipelines, Geocoding)
+- Frontend: All pages load and function correctly
+- Test files: `/app/backend/tests/test_deallinked_api.py`, `/app/test_reports/iteration_5.json`
+
 ## Prioritized Backlog
 
-### P0 (Next)
-- Map tile prefetching for smoother performance
-- Full E2E test of complete app flow
-
 ### P1
-- CSV contact import
 - Document preview modal
+- CSV contact import
 
 ### P2
 - Recurring calendar events
 - Team performance metrics
+- Quick stats dashboard enhancement
