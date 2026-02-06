@@ -851,18 +851,24 @@ const DealDetails = () => {
 
             {showLinkContact && (
               <div style={{ background: colors.surfaceElevated, borderRadius: borderRadius.sm, padding: '12px', marginBottom: '12px' }}>
+                <Label style={{ color: colors.textTertiary, fontSize: '12px', display: 'block', marginBottom: '6px' }}>Choose a contact to link</Label>
                 <select
                   data-testid="link-contact-select"
                   onChange={(e) => { if (e.target.value) handleLinkContact(e.target.value, ''); }}
-                  style={{ width: '100%', padding: '8px', borderRadius: '6px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, color: colors.textPrimary }}
+                  style={{ width: '100%', padding: '10px', borderRadius: '6px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, color: colors.textPrimary, fontSize: '14px', cursor: 'pointer' }}
                 >
                   <option value="">Select a contact...</option>
                   {allContacts
                     .filter(c => !linkedContacts.find(lc => lc.id === c.id))
                     .map(contact => (
-                      <option key={contact.id} value={contact.id}>{contact.name} - {contact.company || contact.email}</option>
+                      <option key={contact.id} value={contact.id}>{contact.name} {contact.company ? `- ${contact.company}` : ''} {contact.email ? `(${contact.email})` : ''}</option>
                     ))}
                 </select>
+                {allContacts.filter(c => !linkedContacts.find(lc => lc.id === c.id)).length === 0 && (
+                  <p style={{ color: colors.textTertiary, fontSize: '12px', marginTop: '8px', textAlign: 'center' }}>
+                    No contacts available. Create contacts first in the Contacts tab.
+                  </p>
+                )}
               </div>
             )}
 
