@@ -933,6 +933,104 @@ const DealDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Document Preview Modal */}
+      {previewDoc && (
+        <div
+          data-testid="document-preview-modal"
+          onClick={() => setPreviewDoc(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.85)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: colors.surfaceCard, borderRadius: borderRadius.lg,
+              width: '90%', maxWidth: '900px', maxHeight: '90vh',
+              display: 'flex', flexDirection: 'column', overflow: 'hidden',
+              boxShadow: '0 25px 50px rgba(0,0,0,0.5)'
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{
+              padding: '16px 20px', display: 'flex', justifyContent: 'space-between',
+              alignItems: 'center', borderBottom: `1px solid ${colors.border}`
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', overflow: 'hidden' }}>
+                <FileText size={20} style={{ color: colors.primary, flexShrink: 0 }} />
+                <span style={{ color: colors.textPrimary, fontWeight: '600', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {previewDoc.file_name}
+                </span>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                <a
+                  data-testid="document-download-button"
+                  href={previewDoc.file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px',
+                    background: 'rgba(0,184,212,0.15)', border: '1px solid rgba(0,184,212,0.3)',
+                    borderRadius: '8px', color: '#00d4ff', textDecoration: 'none',
+                    fontSize: '13px', fontWeight: '500', cursor: 'pointer'
+                  }}
+                >
+                  <Download size={14} /> Download
+                </a>
+                <button
+                  data-testid="document-preview-close"
+                  onClick={() => setPreviewDoc(null)}
+                  style={{
+                    background: 'transparent', border: `1px solid ${colors.border}`,
+                    borderRadius: '8px', color: colors.textSecondary, cursor: 'pointer',
+                    width: '36px', height: '36px', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center'
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+            {/* Modal Content */}
+            <div style={{ flex: 1, overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+              {(() => {
+                const ext = (previewDoc.file_name || '').split('.').pop()?.toLowerCase();
+                if (ext === 'pdf') {
+                  return (
+                    <iframe
+                      data-testid="document-pdf-viewer"
+                      src={previewDoc.file_url}
+                      style={{ width: '100%', height: '70vh', border: 'none' }}
+                      title={previewDoc.file_name}
+                    />
+                  );
+                }
+                if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+                  return (
+                    <img
+                      data-testid="document-image-viewer"
+                      src={previewDoc.file_url}
+                      alt={previewDoc.file_name}
+                      style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', padding: '20px' }}
+                    />
+                  );
+                }
+                return (
+                  <div style={{ textAlign: 'center', padding: '60px 20px', color: colors.textTertiary }}>
+                    <FileText size={64} style={{ marginBottom: '16px', opacity: 0.4 }} />
+                    <p style={{ fontSize: '16px', marginBottom: '8px' }}>Preview not available for .{ext} files</p>
+                    <p style={{ fontSize: '13px' }}>Click "Download" to view this file</p>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
