@@ -2318,37 +2318,21 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    timestamp: "2026-02-06T18:45:00Z"
-    message: "Implemented 4 fixes: (1) Created GET /api/teams/{team_id}/stats endpoint to return team_deals for the Team tab. (2) Added comma formatting for all numeric fields in DealDetails (asking price, size, NOI, annual income/expenses). (3) Added phone number display under contact name in DealDetails linked contacts. (4) Added mini map below documents showing deal location. Please test all features."
+    timestamp: "2026-02-06T19:50:00Z"
+    message: "4 features: (1) Removed AC Tons field from MapView. (2) Redesigned tags UI in Contacts edit panel with applied/available sections, edit/delete per tag. (3) Pipeline Manager wizard with rename, delete, stage reorder, create new pipeline. (4) Street map changed to OSM light tiles."
 
-  - task: "Team Stats Endpoint for Team Deals Tab"
+  - task: "Tags Edit/Delete in Contacts Panel"
     implemented: true
     working: "NA"
-    file: "/app/backend/routes_v2/teams.py"
+    file: "/app/frontend/src/pages/Contacts.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
 
-  - task: "Comma Formatting in DealDetails"
+  - task: "Pipeline & Stage Manager"
     implemented: true
     working: "NA"
-    file: "/app/frontend/src/pages/DealDetails.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-
-  - task: "Phone Number Under Contact Name in DealDetails"
-    implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/DealDetails.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-
-  - task: "Mini Map in DealDetails"
-    implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/DealDetails.js"
+    file: "/app/frontend/src/pages/Pipeline.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
