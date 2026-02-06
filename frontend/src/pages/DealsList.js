@@ -1235,7 +1235,12 @@ const DealsList = () => {
           </thead>
           <tbody>
             {filteredDeals.map((deal) => (
-              <tr key={deal.id} data-testid={`deal-row-${deal.id}`}>
+              <tr key={deal.id} data-testid={`deal-row-${deal.id}`}
+                style={{ cursor: 'pointer', transition: 'background 0.15s ease' }}
+                onClick={() => navigate(`/deals/${deal.id}`)}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = ''}
+              >
                 <td>
                   <div className="font-medium" style={{ color: 'var(--text-primary)' }}>{deal.address}</div>
                 </td>
