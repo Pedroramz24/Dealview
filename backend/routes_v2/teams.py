@@ -44,14 +44,6 @@ class UpdateMemberRole(BaseModel):
 # HELPER FUNCTIONS
 # ============================================================================
 
-async def get_user_id(credentials: HTTPAuthorizationCredentials) -> str:
-    """Extract user ID from Supabase token"""
-    supabase = get_supabase()
-    user_response = supabase.auth.get_user(credentials.credentials)
-    if not user_response or not user_response.user:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    return user_response.user.id
-
 
 async def get_user_with_team(credentials: HTTPAuthorizationCredentials) -> dict:
     """Get user with their team info"""
