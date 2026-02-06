@@ -125,20 +125,15 @@ async def get_current_user_profile(credentials: HTTPAuthorizationCredentials = D
     """Get current user profile"""
     supabase = get_supabase()
     try:
-        # Verify token
-        user_response = supabase.auth.get_user(credentials.credentials)
-        if not user_response or not user_response.user:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        
-        user_id = user_response.user.id
+        user_id = await get_user_id(credentials)
         
         # Get profile from user_profiles table
-        profile_response = supabase.table('user_profiles').select('*').eq('id', user_id).single().execute()
+        profile_response = supabase.table('user_profiles').select('*').eq('id', user_id).execute()
         
         if not profile_response.data:
             raise HTTPException(status_code=404, detail="Profile not found")
         
-        profile = profile_response.data
+        profile = profile_response.data[0]
         
         return {
             "success": True,
