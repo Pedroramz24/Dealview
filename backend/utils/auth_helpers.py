@@ -68,27 +68,29 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
 
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
-    """Get current user from Supabase JWT token."""
-    supabase = get_supabase()
+    """Get current user from Supabase JWT token.
+    Uses safe HTTP call to avoid contaminating Supabase client auth state."""
+    token = credentials.credentials
+    supabase_url = os.environ['SUPABASE_URL']
+    anon_key = os.environ['SUPABASE_ANON_KEY']
     try:
-        token = credentials.credentials
-        
-        # Verify token with Supabase
-        user_response = supabase.auth.get_user(token)
-        
-        if not user_response or not user_response.user:
+        resp = httpx.get(
+            f"{supabase_url}/auth/v1/user",
+            headers={"Authorization": f"Bearer {token}", "apikey": anon_key},
+            timeout=10
+        )
+        if resp.status_code != 200:
             raise HTTPException(status_code=401, detail="Invalid authentication token")
         
-        # Get user profile from Supabase
-        user_data = user_response.user
+        user_data = resp.json()
+        metadata = user_data.get('user_metadata', {})
         
-        # Create User model from Supabase auth data
         return User(
-            id=user_data.id,
-            email=user_data.email,
-            full_name=user_data.user_metadata.get('full_name', ''),
-            phone=user_data.user_metadata.get('phone'),
-            role=user_data.user_metadata.get('role', 'broker')
+            id=user_data['id'],
+            email=user_data.get('email', ''),
+            full_name=metadata.get('full_name', ''),
+            phone=metadata.get('phone'),
+            role=metadata.get('role', 'broker')
         )
     except HTTPException:
         raise
