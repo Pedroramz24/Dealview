@@ -1,6 +1,8 @@
 """
 DealLinked CRM V2 - Authentication Routes
 Handles login, signup, and user profile
+CRITICAL: Never use supabase.auth.* methods on the singleton client - 
+they contaminate the service_role session causing RLS failures everywhere.
 """
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -8,12 +10,17 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 import logging
+import os
+import httpx
 
 from utils.db import get_supabase
 from utils.auth_helpers import security, get_user_id
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 logger = logging.getLogger(__name__)
+
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
 
 
 # ============================================================================
