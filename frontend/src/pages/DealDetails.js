@@ -46,6 +46,7 @@ const DealDetails = () => {
   const [linkedContacts, setLinkedContacts] = useState([]);
   const [allContacts, setAllContacts] = useState([]);
   const [showLinkContact, setShowLinkContact] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [pipelines, setPipelines] = useState([]);
   const [uploadingImage, setUploadingImage] = useState(false);
