@@ -1355,66 +1355,128 @@ const MapView = () => {
           </div>
 
           <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
-            {/* Property Images */}
-            {(selectedDeal.image_url || (selectedDeal.image_urls && selectedDeal.image_urls.length > 0)) && (
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{
-                  width: '100%',
-                  height: '180px',
-                  borderRadius: borderRadius.md,
-                  overflow: 'hidden',
-                  background: colors.surfaceElevated
-                }}>
-                  <img 
-                    src={selectedDeal.image_url || selectedDeal.image_urls[0]} 
-                    alt={selectedDeal.title}
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'cover' 
-                    }}
-                    onError={(e) => e.target.style.display = 'none'}
-                  />
-                </div>
-                {selectedDeal.image_urls && selectedDeal.image_urls.length > 1 && (
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px', overflowX: 'auto' }}>
-                    {selectedDeal.image_urls.slice(1, 4).map((url, idx) => (
-                      <div key={idx} style={{
-                        width: '60px',
-                        height: '60px',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        flexShrink: 0
-                      }}>
-                        <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                    ))}
-                    {selectedDeal.image_urls.length > 4 && (
-                      <div style={{
-                        width: '60px',
-                        height: '60px',
-                        borderRadius: '8px',
-                        background: 'rgba(0,0,0,0.6)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '12px',
-                        fontWeight: '600'
-                      }}>
-                        +{selectedDeal.image_urls.length - 4}
-                      </div>
-                    )}
-                  </div>
+            {/* Image Carousel */}
+            <div data-testid="side-panel-image-carousel" style={{ position: 'relative', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase' }}>Images</span>
+                {!selectedDeal.isTeamDeal && (
+                  <>
+                    <input
+                      id="side-panel-image-upload"
+                      data-testid="side-panel-image-upload-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleSidePanelImageUpload}
+                      style={{ display: 'none' }}
+                      disabled={uploadingSidePanelImage}
+                    />
+                    <button
+                      data-testid="side-panel-add-image-button"
+                      onClick={() => document.getElementById('side-panel-image-upload').click()}
+                      disabled={uploadingSidePanelImage}
+                      style={{
+                        background: 'rgba(0,184,212,0.15)', border: '1px solid rgba(0,184,212,0.3)',
+                        color: '#00d4ff', fontSize: '12px', padding: '4px 10px', borderRadius: '6px',
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
+                      }}
+                    >
+                      <Upload size={12} />
+                      {uploadingSidePanelImage ? 'Uploading...' : 'Add'}
+                    </button>
+                  </>
                 )}
               </div>
-            )}
+              <div style={{
+                width: '100%', height: '180px', borderRadius: borderRadius.md, overflow: 'hidden',
+                background: colors.surfaceElevated, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative'
+              }}>
+                {(selectedDeal.image_urls && selectedDeal.image_urls.length > 0) ? (
+                  <img
+                    data-testid="side-panel-carousel-image"
+                    src={selectedDeal.image_urls[sidePanelImageIdx] || selectedDeal.image_urls[0]}
+                    alt={selectedDeal.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    onError={(e) => e.target.style.display = 'none'}
+                  />
+                ) : (
+                  <div style={{ textAlign: 'center', color: colors.textTertiary }}>
+                    <Building2 size={40} style={{ opacity: 0.4, marginBottom: '6px' }} />
+                    <p style={{ fontSize: '12px' }}>No images</p>
+                  </div>
+                )}
+                {selectedDeal.image_urls && selectedDeal.image_urls.length > 1 && (
+                  <>
+                    <button
+                      data-testid="side-panel-carousel-prev"
+                      onClick={() => setSidePanelImageIdx(prev => prev === 0 ? selectedDeal.image_urls.length - 1 : prev - 1)}
+                      style={{
+                        position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)',
+                        width: '30px', height: '30px', borderRadius: '50%', background: 'rgba(0,0,0,0.7)',
+                        border: 'none', color: 'white', cursor: 'pointer', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center'
+                      }}
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button
+                      data-testid="side-panel-carousel-next"
+                      onClick={() => setSidePanelImageIdx(prev => prev === selectedDeal.image_urls.length - 1 ? 0 : prev + 1)}
+                      style={{
+                        position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)',
+                        width: '30px', height: '30px', borderRadius: '50%', background: 'rgba(0,0,0,0.7)',
+                        border: 'none', color: 'white', cursor: 'pointer', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center'
+                      }}
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+                    <div style={{
+                      position: 'absolute', bottom: '6px', left: '50%', transform: 'translateX(-50%)',
+                      background: 'rgba(0,0,0,0.7)', padding: '3px 10px', borderRadius: '12px',
+                      color: 'white', fontSize: '11px'
+                    }}>
+                      {sidePanelImageIdx + 1} / {selectedDeal.image_urls.length}
+                    </div>
+                  </>
+                )}
+              </div>
+              {/* Thumbnail strip */}
+              {selectedDeal.image_urls && selectedDeal.image_urls.length > 1 && (
+                <div style={{ display: 'flex', gap: '6px', marginTop: '8px', overflowX: 'auto' }}>
+                  {selectedDeal.image_urls.map((url, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => setSidePanelImageIdx(idx)}
+                      style={{
+                        width: '50px', height: '50px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0,
+                        border: idx === sidePanelImageIdx ? '2px solid #00d4ff' : '2px solid transparent',
+                        cursor: 'pointer', opacity: idx === sidePanelImageIdx ? 1 : 0.6
+                      }}
+                    >
+                      <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            <h2 style={{ color: colors.textPrimary, fontSize: '20px', fontWeight: '600', marginBottom: '4px' }}>
-              {selectedDeal.title}
-            </h2>
+            {/* Title - editable */}
+            <input
+              data-testid="side-panel-title-input"
+              value={selectedDeal.title || ''}
+              onChange={(e) => setSelectedDeal(prev => ({ ...prev, title: e.target.value }))}
+              onBlur={() => handleSelectedDealTextBlur('title')}
+              disabled={selectedDeal.isTeamDeal}
+              style={{
+                fontSize: '20px', fontWeight: '600', color: colors.textPrimary, background: 'transparent',
+                border: 'none', borderBottom: !selectedDeal.isTeamDeal ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                width: '100%', outline: 'none', padding: '2px 0', marginBottom: '4px'
+              }}
+              placeholder="Deal Title"
+            />
             
-            <p style={{ color: colors.textTertiary, fontSize: '14px', marginBottom: '16px' }}>
+            <p style={{ color: colors.textTertiary, fontSize: '13px', marginBottom: '16px' }}>
               {selectedDeal.address && `${selectedDeal.address}, `}
               {selectedDeal.city && `${selectedDeal.city}, `}
               {selectedDeal.state} {selectedDeal.zip_code}
@@ -1422,18 +1484,14 @@ const MapView = () => {
 
             {/* Pipeline & Stage Dropdowns */}
             <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: '1fr 1fr', 
-              gap: '12px', 
-              marginBottom: '16px',
-              padding: '12px',
-              background: 'rgba(0, 184, 212, 0.05)',
-              borderRadius: borderRadius.md,
-              border: '1px solid rgba(0, 184, 212, 0.15)'
+              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px',
+              padding: '12px', background: 'rgba(0, 184, 212, 0.05)',
+              borderRadius: borderRadius.md, border: '1px solid rgba(0, 184, 212, 0.15)'
             }}>
               <div>
                 <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>Pipeline</label>
                 <select
+                  data-testid="side-panel-pipeline-select"
                   value={selectedDeal.pipeline_id || ''}
                   onChange={async (e) => {
                     const newPipelineId = e.target.value;
@@ -1445,38 +1503,24 @@ const MapView = () => {
                       await fetch(`${API}/deals/${selectedDeal.id}`, {
                         method: 'PUT',
                         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                          pipeline_id: newPipelineId,
-                          pipeline_stage_id: firstStage?.id || null
-                        })
+                        body: JSON.stringify({ pipeline_id: newPipelineId, pipeline_stage_id: firstStage?.id || null })
                       });
                       setSelectedDeal(prev => ({ ...prev, pipeline_id: newPipelineId, pipeline_stage_id: firstStage?.id }));
                       fetchDeals();
                       toast.success('Pipeline updated');
-                    } catch (err) {
-                      toast.error('Failed to update pipeline');
-                    }
+                    } catch (err) { toast.error('Failed to update pipeline'); }
                   }}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    background: colors.surfaceCard,
-                    border: `1px solid ${colors.border}`,
-                    borderRadius: '6px',
-                    color: colors.textPrimary,
-                    fontSize: '13px',
-                    cursor: 'pointer'
-                  }}
+                  disabled={selectedDeal.isTeamDeal}
+                  style={{ ...sidePanelFieldStyle, cursor: 'pointer', appearance: 'auto' }}
                 >
                   <option value="">Select Pipeline</option>
-                  {pipelines.map(p => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
+                  {pipelines.map(p => (<option key={p.id} value={p.id}>{p.name}</option>))}
                 </select>
               </div>
               <div>
                 <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>Stage</label>
                 <select
+                  data-testid="side-panel-stage-select"
                   value={selectedDeal.pipeline_stage_id || ''}
                   onChange={async (e) => {
                     const newStageId = e.target.value;
@@ -1491,20 +1535,10 @@ const MapView = () => {
                       setSelectedDeal(prev => ({ ...prev, pipeline_stage_id: newStageId }));
                       fetchDeals();
                       toast.success('Stage updated');
-                    } catch (err) {
-                      toast.error('Failed to update stage');
-                    }
+                    } catch (err) { toast.error('Failed to update stage'); }
                   }}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    background: colors.surfaceCard,
-                    border: `1px solid ${colors.border}`,
-                    borderRadius: '6px',
-                    color: colors.textPrimary,
-                    fontSize: '13px',
-                    cursor: 'pointer'
-                  }}
+                  disabled={selectedDeal.isTeamDeal}
+                  style={{ ...sidePanelFieldStyle, cursor: 'pointer', appearance: 'auto' }}
                 >
                   <option value="">Select Stage</option>
                   {(pipelines.find(p => p.id === selectedDeal.pipeline_id)?.stages || []).map(s => (
@@ -1514,86 +1548,116 @@ const MapView = () => {
               </div>
             </div>
 
-            {/* Asking Price */}
-            <div style={{
-              background: 'rgba(0, 184, 212, 0.1)',
-              borderRadius: borderRadius.md,
-              padding: '16px',
-              marginBottom: '16px'
+            {/* Asking Price - editable */}
+            <div data-testid="side-panel-asking-price" style={{
+              background: 'rgba(0, 184, 212, 0.1)', borderRadius: borderRadius.md,
+              padding: '14px', marginBottom: '16px'
             }}>
-              <div style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '4px' }}>Asking Price</div>
-              <div style={{ color: colors.primary, fontSize: '28px', fontWeight: '700' }}>
-                {formatCurrency(selectedDeal.asking_price)}
+              <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>Asking Price</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <DollarSign size={22} style={{ color: colors.primary, flexShrink: 0 }} />
+                <input
+                  data-testid="side-panel-asking-price-input"
+                  type="number"
+                  value={selectedDeal.asking_price ?? ''}
+                  onChange={(e) => setSelectedDeal(prev => ({ ...prev, asking_price: e.target.value }))}
+                  onBlur={() => handleSelectedDealNumericBlur('asking_price')}
+                  disabled={selectedDeal.isTeamDeal}
+                  placeholder="0"
+                  style={{
+                    fontSize: '24px', fontWeight: '700', color: colors.primary,
+                    background: 'transparent', border: 'none', outline: 'none', width: '100%'
+                  }}
+                />
               </div>
             </div>
 
-            {/* Property Details Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
-              {selectedDeal.size_sqft && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Size</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.size_sqft.toLocaleString()} SF</div>
+            {/* All Property Details - editable grid */}
+            <div data-testid="side-panel-property-details" style={{ marginBottom: '16px' }}>
+              <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '10px' }}>Property Details</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Size (SF)</label>
+                  <input data-testid="side-panel-size-input" type="number" value={selectedDeal.size_sqft ?? ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, size_sqft: e.target.value }))}
+                    onBlur={() => handleSelectedDealNumericBlur('size_sqft')}
+                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
-              )}
-              {selectedDeal.lot_size && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Lot Size</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.lot_size} Acres</div>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Lot Size (Acres)</label>
+                  <input data-testid="side-panel-lot-size-input" type="number" step="0.01" value={selectedDeal.lot_size ?? ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, lot_size: e.target.value }))}
+                    onBlur={() => handleSelectedDealNumericBlur('lot_size')}
+                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
-              )}
-              {selectedDeal.cap_rate && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Cap Rate</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.cap_rate}%</div>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Cap Rate (%)</label>
+                  <input data-testid="side-panel-cap-rate-input" type="number" step="0.01" value={selectedDeal.cap_rate ?? ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, cap_rate: e.target.value }))}
+                    onBlur={() => handleSelectedDealNumericBlur('cap_rate')}
+                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
-              )}
-              {selectedDeal.noi && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>NOI</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{formatCurrency(selectedDeal.noi)}</div>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>NOI ($)</label>
+                  <input data-testid="side-panel-noi-input" type="number" value={selectedDeal.noi ?? ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, noi: e.target.value }))}
+                    onBlur={() => handleSelectedDealNumericBlur('noi')}
+                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
-              )}
-              {selectedDeal.year_built && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Year Built</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.year_built}</div>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Year Built</label>
+                  <input data-testid="side-panel-year-built-input" type="number" value={selectedDeal.year_built ?? ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, year_built: e.target.value }))}
+                    onBlur={() => handleSelectedDealIntBlur('year_built')}
+                    disabled={selectedDeal.isTeamDeal} placeholder="Year" style={sidePanelFieldStyle} />
                 </div>
-              )}
-              {selectedDeal.occupancy && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Occupancy</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.occupancy}%</div>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Occupancy (%)</label>
+                  <input data-testid="side-panel-occupancy-input" type="number" value={selectedDeal.occupancy ?? ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, occupancy: e.target.value }))}
+                    onBlur={() => handleSelectedDealNumericBlur('occupancy')}
+                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
                 </div>
-              )}
-              {selectedDeal.zoning && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>Zoning</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.zoning}</div>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Zoning</label>
+                  <input data-testid="side-panel-zoning-input" value={selectedDeal.zoning || ''}
+                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, zoning: e.target.value }))}
+                    onBlur={() => handleSelectedDealTextBlur('zoning')}
+                    disabled={selectedDeal.isTeamDeal} placeholder="Zoning" style={sidePanelFieldStyle} />
                 </div>
-              )}
-              {selectedDeal.ac_size && (
-                <div style={{ background: colors.surfaceElevated, padding: '12px', borderRadius: borderRadius.sm }}>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px' }}>AC Size</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>{selectedDeal.ac_size} Tons</div>
+                <div>
+                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Asset Type</label>
+                  <select data-testid="side-panel-asset-type-select" value={selectedDeal.asset_type || ''}
+                    onChange={(e) => { setSelectedDeal(prev => ({ ...prev, asset_type: e.target.value })); handleUpdateSelectedDealField('asset_type', e.target.value); }}
+                    disabled={selectedDeal.isTeamDeal}
+                    style={{ ...sidePanelFieldStyle, cursor: 'pointer', appearance: 'auto' }}
+                  >
+                    <option value="">Select type</option>
+                    {Object.keys(assetTypeColors).map(type => (<option key={type} value={type}>{type}</option>))}
+                  </select>
                 </div>
-              )}
+              </div>
             </div>
 
-            {selectedDeal.notes && (
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ color: colors.textTertiary, fontSize: '12px', marginBottom: '8px' }}>Notes</div>
-                <p style={{ color: colors.textSecondary, fontSize: '14px', lineHeight: '1.5' }}>{selectedDeal.notes}</p>
-              </div>
-            )}
+            {/* Notes - always visible, editable */}
+            <div data-testid="side-panel-notes" style={{ marginBottom: '16px' }}>
+              <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '6px' }}>Notes</div>
+              <textarea
+                data-testid="side-panel-notes-textarea"
+                value={selectedDeal.notes || ''}
+                onChange={(e) => setSelectedDeal(prev => ({ ...prev, notes: e.target.value }))}
+                onBlur={() => handleSelectedDealTextBlur('notes')}
+                disabled={selectedDeal.isTeamDeal}
+                rows={3}
+                placeholder="Add notes..."
+                style={{ ...sidePanelFieldStyle, resize: 'vertical', minHeight: '60px', lineHeight: '1.5' }}
+              />
+            </div>
 
             {selectedDeal.isTeamDeal && selectedDeal.user_profiles && (
               <div style={{
-                background: colors.surfaceElevated,
-                borderRadius: borderRadius.md,
-                padding: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
+                background: colors.surfaceElevated, borderRadius: borderRadius.md,
+                padding: '12px', display: 'flex', alignItems: 'center', gap: '12px'
               }}>
                 <Users size={20} style={{ color: colors.textTertiary }} />
                 <div>
