@@ -167,8 +167,8 @@ async def delete_tag(
         user_id = await get_user_id(credentials)
         
         # Verify ownership
-        existing = supabase.table('contact_tags').select('owner_id').eq('id', tag_id).single().execute()
-        if not existing.data or existing.data['owner_id'] != user_id:
+        existing = supabase.table('contact_tags').select('owner_id').eq('id', tag_id).maybe_single().execute()
+        if not existing or not existing.data or existing.data['owner_id'] != user_id:
             raise HTTPException(status_code=404, detail="Tag not found")
         
         supabase.table('contact_tags').delete().eq('id', tag_id).execute()
