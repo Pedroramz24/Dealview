@@ -654,6 +654,84 @@ const Pipeline = () => {
     }
   };
 
+  // Pipeline management functions
+  const handleRenamePipeline = async () => {
+    if (!pipelineEditName.trim() || !selectedPipeline) return;
+    setSavingPipeline(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/pipelines/${selectedPipeline.id}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: pipelineEditName.trim() })
+      });
+      if (response.ok) {
+        toast.success('Pipeline renamed');
+        setSelectedPipeline(prev => ({ ...prev, name: pipelineEditName.trim() }));
+        setPipelines(prev => prev.map(p => p.id === selectedPipeline.id ? { ...p, name: pipelineEditName.trim() } : p));
+      } else toast.error('Failed to rename');
+    } catch { toast.error('Failed to rename'); }
+    finally { setSavingPipeline(false); }
+  };
+
+  const handleDeletePipeline = async () => {
+    if (!selectedPipeline) return;
+    if (!window.confirm(`Delete pipeline "${selectedPipeline.name}" and all its stages? Deals will be unassigned.`)) return;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/pipelines/${selectedPipeline.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        toast.success('Pipeline deleted');
+        setShowPipelineManager(false);
+        fetchPipelines();
+      } else toast.error('Failed to delete pipeline');
+    } catch { toast.error('Failed to delete pipeline'); }
+  };
+
+  const handleCreatePipeline = async () => {
+    if (!newPipelineName.trim()) return;
+    setSavingPipeline(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/pipelines`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newPipelineName.trim() })
+      });
+      if (response.ok) {
+        toast.success('Pipeline created');
+        setNewPipelineName('');
+        fetchPipelines();
+      } else toast.error('Failed to create pipeline');
+    } catch { toast.error('Failed to create pipeline'); }
+    finally { setSavingPipeline(false); }
+  };
+
+  const handleMoveStageOrder = async (stageId, direction) => {
+    const idx = stages.findIndex(s => s.id === stageId);
+    if ((direction === 'up' && idx <= 0) || (direction === 'down' && idx >= stages.length - 1)) return;
+    const newStages = [...stages];
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    [newStages[idx], newStages[swapIdx]] = [newStages[swapIdx], newStages[idx]];
+    setStages(newStages);
+    // Save reorder
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      await fetch(`${API}/pipelines/${selectedPipeline.id}/stages/reorder`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage_ids: newStages.map(s => s.id) })
+      });
+    } catch { /* silent - UI already updated */ }
+  };
+
   if (loading) {
     return (
       <div style={{
