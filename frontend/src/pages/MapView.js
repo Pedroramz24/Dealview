@@ -32,6 +32,19 @@ const parseFormattedNumber = (value) => {
   return value.replace(/,/g, '');
 };
 
+// Inline editable field style for side panel
+const sidePanelFieldStyle = {
+  background: 'rgba(255,255,255,0.04)',
+  border: '1px solid rgba(255,255,255,0.1)',
+  borderRadius: '6px',
+  padding: '6px 8px',
+  color: '#e2e8f0',
+  fontSize: '13px',
+  width: '100%',
+  outline: 'none',
+  fontFamily: 'inherit',
+};
+
 // Asset type colors
 const assetTypeColors = {
   'Office': '#3b82f6',
