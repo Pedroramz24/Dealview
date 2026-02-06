@@ -2304,20 +2304,60 @@ backend:
 
 metadata:
   created_by: "testing_agent"
-  version: "5.0"
-  test_sequence: 8
-  last_test_date: "2026-01-16"
-  run_ui: false
+  version: "6.0"
+  test_sequence: 9
+  last_test_date: "2026-02-06"
+  run_ui: true
 
 test_plan:
   current_focus:
-    - "All backend tests completed successfully"
+    - "New feature implementation: Map asset type filter, contact info in map panel, formatted asking price, contacts tag filter, click-to-edit contacts"
   stuck_tasks: []
   test_all: false
   test_priority: "critical_first"
 
 agent_communication:
-  - agent: "testing"
-    timestamp: "2026-01-16T17:00:00Z"
-    message: "✅ COMPREHENSIVE BACKEND TESTING COMPLETE - ALL CRITICAL TESTS PASSED (7/8). TEST RESULTS: (1) Property to Deal Conversion: ✅ WORKING - Successfully converted properties to deals with pipeline_id and pipeline_stage_id populated. (2) Deals Table Verification: ✅ WORKING - 8 out of 10 deals have pipeline assignments. Specific deal 99f88b90 confirmed with pipeline data. (3) Map Properties Table: ✅ WORKING - 3 properties marked as converted with deal_id populated. (4) Pipeline Endpoints: ✅ WORKING - Retrieved 2 pipelines with stages. (5) Dashboard Stats: ✅ WORKING - Correctly calculating $22.9M total pipeline value across 10 deals. (6) Map CRM Properties API: ✅ WORKING - Retrieved 100 properties with status filtering. (7) Authentication: ✅ WORKING - Supabase JWT authentication working correctly. MINOR ISSUE: map_property_activity table doesn't exist, causing activity logging to fail (non-critical). SPECIFIC PROPERTY NOT FOUND: Property d91f1ccf-fe86-496a-bb62-6e3c495d677b mentioned in review request doesn't exist in database. SUCCESS RATE: 87.5% (7/8 tests passed). VERDICT: ✅ BACKEND IS PRODUCTION-READY. All critical functionality working correctly. Property to deal conversion with pipeline assignment is working as expected."
+  - agent: "main"
+    timestamp: "2026-02-06T17:45:00Z"
+    message: "Implemented 5 new features: (1) Map: Asset type filter dropdown on top controls, (2) Map: Contact info display in property details side panel, (3) Map: Comma-formatted asking price in side panel, (4) Contacts: Click on contact opens edit panel directly, (5) Contacts: Tag dropdown filter added in filter bar. All changes in MapView.js and Contacts.js. No backend changes needed. Please test all 5 features."
+
+  - task: "Map Asset Type Filter"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+
+  - task: "Map Contact Info in Side Panel"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+
+  - task: "Map Comma-Formatted Asking Price"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+
+  - task: "Contacts Click-to-Edit Workflow"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Contacts.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+
+  - task: "Contacts Tag Filter Dropdown"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Contacts.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
 
