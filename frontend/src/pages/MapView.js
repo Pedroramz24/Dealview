@@ -927,8 +927,8 @@ const MapView = () => {
         maxZoom={19}
         minZoom={2}
         renderWorldCopies={false}
-        fadeDuration={200}
-        maxTileCacheSize={300}
+        fadeDuration={0}
+        maxTileCacheSize={500}
         refreshExpiredTiles={false}
         scrollZoom={{ speed: 1.5, smooth: true }}
         touchZoomRotate={{ around: 'center' }}
