@@ -81,10 +81,7 @@ const mapStyles = {
       },
       'ofm-vector': {
         type: 'vector',
-        tiles: [
-          'https://tiles.openfreemap.org/planet/{z}/{x}/{y}.pbf'
-        ],
-        maxzoom: 14,
+        url: 'https://tiles.openfreemap.org/planet',
         attribution: '© OpenFreeMap © OpenStreetMap'
       }
     },
