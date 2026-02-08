@@ -54,6 +54,8 @@ const assetTypeColors = {
   'Multifamily': '#8b5cf6',
   'Land': '#ec4899',
   'Mixed Use': '#06b6d4',
+  'Hotels': '#a855f7',
+  'Medical': '#14b8a6',
   'Other': '#6b7280'
 };
 
