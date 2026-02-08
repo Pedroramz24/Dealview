@@ -1413,6 +1413,8 @@ const DealsList = () => {
                           <option value="Multifamily">Multifamily</option>
                           <option value="Land">Land</option>
                           <option value="Mixed Use">Mixed Use</option>
+                          <option value="Hotels">Hotels</option>
+                          <option value="Medical">Medical</option>
                         </select>
                       </div>
 
