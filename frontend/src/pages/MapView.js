@@ -77,6 +77,17 @@ const mapStyles = {
         tileSize: 256,
         maxzoom: 19,
         attribution: '© Esri'
+      },
+      'carto-labels': {
+        type: 'raster',
+        tiles: [
+          'https://a.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}@2x.png',
+          'https://b.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}@2x.png',
+          'https://c.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}@2x.png'
+        ],
+        tileSize: 256,
+        maxzoom: 19,
+        attribution: '© CartoDB'
       }
     },
     layers: [
@@ -84,6 +95,13 @@ const mapStyles = {
         id: 'esri-satellite-layer',
         type: 'raster',
         source: 'esri-satellite',
+        minzoom: 0,
+        maxzoom: 19
+      },
+      {
+        id: 'carto-labels-layer',
+        type: 'raster',
+        source: 'carto-labels',
         minzoom: 0,
         maxzoom: 19
       }
