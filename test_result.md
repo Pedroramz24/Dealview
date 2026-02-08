@@ -2318,22 +2318,30 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    timestamp: "2026-02-06T19:50:00Z"
-    message: "4 features: (1) Removed AC Tons field from MapView. (2) Redesigned tags UI in Contacts edit panel with applied/available sections, edit/delete per tag. (3) Pipeline Manager wizard with rename, delete, stage reorder, create new pipeline. (4) Street map changed to OSM light tiles."
+    timestamp: "2026-02-08T20:40:00Z"
+    message: "2 changes: (1) Added Hotels and Medical to all asset type lists (MapView colors, MapView legend, MapView filter/dropdown, DealsList create/edit/filter, OnboardingWizard, assetTypeColors utility). (2) Added CartoDB dark_only_labels overlay to satellite map for street names, city names, county labels."
 
-  - task: "Tags Edit/Delete in Contacts Panel"
+  - task: "Hotels and Medical Asset Types"
     implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/Contacts.js"
+    working: true
+    file: "/app/frontend/src/pages/MapView.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Verified via screenshot - Hotels and Medical appear in map legend and all dropdowns"
 
-  - task: "Pipeline & Stage Manager"
+  - task: "Satellite Map Labels Overlay"
     implemented: true
-    working: "NA"
-    file: "/app/frontend/src/pages/Pipeline.js"
+    working: true
+    file: "/app/frontend/src/pages/MapView.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Verified via screenshot - city names (SAN ANTONIO, Castroville, Cibolo), street names (Market St), neighborhoods (HEMISFAIR, ARSENAL, CATTLEMANS SQUARE) all visible on satellite view"
 
