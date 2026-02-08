@@ -68,6 +68,7 @@ const getDealColor = (deal) => {
 const mapStyles = {
   satellite: {
     version: 8,
+    glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
     sources: {
       'esri-satellite': {
         type: 'raster',
@@ -78,16 +79,13 @@ const mapStyles = {
         maxzoom: 19,
         attribution: '© Esri'
       },
-      'carto-labels': {
-        type: 'raster',
+      'ofm-vector': {
+        type: 'vector',
         tiles: [
-          'https://a.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}@2x.png',
-          'https://b.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}@2x.png',
-          'https://c.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}@2x.png'
+          'https://tiles.openfreemap.org/planet/{z}/{x}/{y}.pbf'
         ],
-        tileSize: 256,
-        maxzoom: 19,
-        attribution: '© CartoDB'
+        maxzoom: 14,
+        attribution: '© OpenFreeMap © OpenStreetMap'
       }
     },
     layers: [
@@ -96,14 +94,132 @@ const mapStyles = {
         type: 'raster',
         source: 'esri-satellite',
         minzoom: 0,
-        maxzoom: 19
+        maxzoom: 19,
+        paint: { 'raster-fade-duration': 0 }
       },
       {
-        id: 'carto-labels-layer',
-        type: 'raster',
-        source: 'carto-labels',
-        minzoom: 0,
-        maxzoom: 19
+        id: 'road-labels',
+        type: 'symbol',
+        source: 'ofm-vector',
+        'source-layer': 'transportation_name',
+        minzoom: 13,
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 10, 16, 13, 18, 15],
+          'symbol-placement': 'line',
+          'text-max-angle': 30,
+          'text-padding': 2,
+          'symbol-spacing': 250
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': 'rgba(0,0,0,0.75)',
+          'text-halo-width': 1.5,
+          'text-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0.7, 15, 1]
+        }
+      },
+      {
+        id: 'water-labels',
+        type: 'symbol',
+        source: 'ofm-vector',
+        'source-layer': 'water_name',
+        minzoom: 8,
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['Noto Sans Italic'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 8, 11, 14, 14],
+          'text-letter-spacing': 0.1
+        },
+        paint: {
+          'text-color': '#a0d8ef',
+          'text-halo-color': 'rgba(0,0,0,0.6)',
+          'text-halo-width': 1
+        }
+      },
+      {
+        id: 'place-city-labels',
+        type: 'symbol',
+        source: 'ofm-vector',
+        'source-layer': 'place',
+        minzoom: 3,
+        maxzoom: 14,
+        filter: ['in', ['get', 'class'], ['literal', ['city', 'town']]],
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['Noto Sans Bold'],
+          'text-size': ['interpolate', ['linear'], ['zoom'],
+            3, 10, 6, 12, 8, 14, 10, 16, 12, 18
+          ],
+          'text-transform': 'uppercase',
+          'text-letter-spacing': 0.08,
+          'text-max-width': 8,
+          'text-allow-overlap': false,
+          'text-padding': 6
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': 'rgba(0,0,0,0.7)',
+          'text-halo-width': 2
+        }
+      },
+      {
+        id: 'place-village-labels',
+        type: 'symbol',
+        source: 'ofm-vector',
+        'source-layer': 'place',
+        minzoom: 10,
+        maxzoom: 16,
+        filter: ['in', ['get', 'class'], ['literal', ['village', 'suburb', 'neighbourhood', 'hamlet']]],
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 10, 10, 14, 13],
+          'text-max-width': 8,
+          'text-padding': 4
+        },
+        paint: {
+          'text-color': 'rgba(255,255,255,0.9)',
+          'text-halo-color': 'rgba(0,0,0,0.6)',
+          'text-halo-width': 1.5
+        }
+      },
+      {
+        id: 'place-state-labels',
+        type: 'symbol',
+        source: 'ofm-vector',
+        'source-layer': 'place',
+        minzoom: 3,
+        maxzoom: 8,
+        filter: ['==', ['get', 'class'], 'state'],
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 3, 9, 6, 12],
+          'text-transform': 'uppercase',
+          'text-letter-spacing': 0.15,
+          'text-max-width': 8,
+          'text-padding': 6
+        },
+        paint: {
+          'text-color': 'rgba(255,255,255,0.6)',
+          'text-halo-color': 'rgba(0,0,0,0.5)',
+          'text-halo-width': 1
+        }
+      },
+      {
+        id: 'county-boundary',
+        type: 'line',
+        source: 'ofm-vector',
+        'source-layer': 'boundary',
+        minzoom: 8,
+        maxzoom: 14,
+        filter: ['all', ['==', ['get', 'admin_level'], 6]],
+        paint: {
+          'line-color': 'rgba(255,255,255,0.25)',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 12, 1.5],
+          'line-dasharray': [4, 3]
+        }
       }
     ]
   },
