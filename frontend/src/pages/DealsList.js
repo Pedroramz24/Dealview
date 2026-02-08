@@ -679,10 +679,11 @@ const DealsList = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Office">Office</SelectItem>
-                          <SelectItem value="Retail Centers">Retail Centers</SelectItem>
+                          <SelectItem value="Retail">Retail</SelectItem>
                           <SelectItem value="Industrial">Industrial</SelectItem>
+                          <SelectItem value="Multifamily">Multifamily</SelectItem>
                           <SelectItem value="Land">Land</SelectItem>
-                          <SelectItem value="Restaurants">Restaurants</SelectItem>
+                          <SelectItem value="Mixed Use">Mixed Use</SelectItem>
                           <SelectItem value="Hotels">Hotels</SelectItem>
                           <SelectItem value="Medical">Medical</SelectItem>
                         </SelectContent>
