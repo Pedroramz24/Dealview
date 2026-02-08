@@ -24,7 +24,7 @@ const OnboardingWizard = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const markets = ['San Antonio', 'Austin', 'Houston', 'DFW', 'RGV', 'El Paso', 'Corpus Christi'];
-  const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Special Purpose'];
+  const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Hotels', 'Medical', 'Special Purpose'];
   const strategies = ['Core', 'Core+', 'Value-Add', 'Development', 'Reposition'];
 
   const toggleArrayItem = (array, item) => {
