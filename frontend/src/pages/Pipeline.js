@@ -886,9 +886,11 @@ const Pipeline = () => {
       {/* Pipeline Board */}
       <div style={{
         flex: 1,
-        overflow: 'auto',
+        overflow: 'hidden',
         padding: '16px 24px',
-        minHeight: 0
+        minHeight: 0,
+        display: 'flex',
+        flexDirection: 'column'
       }}>
         <DndContext
           sensors={sensors}
@@ -898,7 +900,8 @@ const Pipeline = () => {
           <div style={{
             display: 'flex',
             gap: '16px',
-            height: '100%',
+            flex: 1,
+            minHeight: 0,
             width: '100%'
           }}>
             {stages.map(stage => (
