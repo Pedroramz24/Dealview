@@ -25,14 +25,8 @@ const Login = () => {
     setLoading(true);
     
     try {
-      if (isLogin) {
-        await login(email, password);
-        toast.success('Welcome back!');
-      } else {
-        // Signup
-        await signup(email, password, { full_name: fullName });
-        toast.success('Account created! Please check your email to verify.');
-      }
+      await login(email, password);
+      toast.success('Welcome back!');
     } catch (error) {
       toast.error(error.message || 'Authentication failed');
     } finally {
