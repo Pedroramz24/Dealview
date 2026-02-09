@@ -182,41 +182,23 @@ const Login = () => {
               }}>
                 <button
                   type="button"
-                  onClick={() => setIsLogin(true)}
                   style={{
                     flex: 1,
                     padding: '10px',
                     borderRadius: '6px',
                     border: 'none',
-                    background: isLogin ? colors.primary : 'transparent',
-                    color: isLogin ? '#fff' : colors.textTertiary,
+                    background: colors.primary,
+                    color: '#fff',
                     fontWeight: '500',
-                    cursor: 'pointer',
+                    cursor: 'default',
                     transition: 'all 0.2s'
                   }}
                 >
                   Login
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(false)}
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    background: !isLogin ? colors.primary : 'transparent',
-                    color: !isLogin ? '#fff' : colors.textTertiary,
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  Sign Up
-                </button>
               </div>
 
-              {/* Full Name (Signup only) */}
+              {/* Signup disabled for private launch */}
               {!isLogin && (
                 <div style={{ marginBottom: '16px' }}>
                   <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Full Name</Label>
