@@ -10,7 +10,7 @@ from datetime import datetime
 import sys
 
 # Configuration
-BASE_URL = "https://realty-crm-dev.preview.emergentagent.com/api"
+BASE_URL = "https://contact-mgmt-v1.preview.emergentagent.com/api"
 TEST_CREDENTIALS = {
     "email": "contact@pedroarmando.com",
     "password": "Flin141812$"

@@ -3,7 +3,7 @@ import requests
 SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
 EMAIL = "contact@pedroarmando.com"
 PASSWORD = "Flin141812$"
-BASE_URL = "https://realty-crm-dev.preview.emergentagent.com/api"
+BASE_URL = "https://contact-mgmt-v1.preview.emergentagent.com/api"
 
 # Authenticate
 auth_response = requests.post(

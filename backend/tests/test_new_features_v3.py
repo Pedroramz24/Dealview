@@ -13,7 +13,7 @@ import time
 import uuid
 
 # Get backend URL from environment variable
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://realty-crm-dev.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://contact-mgmt-v1.preview.emergentagent.com')
 
 # Supabase credentials from environment
 SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://ygezobmpewthqvsfqrbk.supabase.co')

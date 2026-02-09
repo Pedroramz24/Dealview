@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-API_URL="https://realty-crm-dev.preview.emergentagent.com"
+API_URL="https://contact-mgmt-v1.preview.emergentagent.com"
 USER_EMAIL="contact@pedroarmando.com"
 USER_PASS="Flin141812$"
 
