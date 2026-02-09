@@ -459,10 +459,13 @@ async def link_contact_to_deal(
         user_id = await get_user_id(credentials)
         
         # Verify ownership of both deal and contact
-        deal = supabase.table('deals').select('owner_id').eq('id', deal_id).single().execute()
-        contact = supabase.table('contacts').select('owner_id').eq('id', contact_id).single().execute()
+        try:
+            deal = supabase.table('deals').select('owner_id').eq('id', deal_id).maybe_single().execute()
+            contact = supabase.table('contacts').select('owner_id').eq('id', contact_id).maybe_single().execute()
+        except Exception:
+            raise HTTPException(status_code=404, detail="Deal or contact not found")
         
-        if not deal.data or not contact.data:
+        if not deal or not deal.data or not contact or not contact.data:
             raise HTTPException(status_code=404, detail="Deal or contact not found")
         if deal.data['owner_id'] != user_id or contact.data['owner_id'] != user_id:
             raise HTTPException(status_code=403, detail="Access denied")
