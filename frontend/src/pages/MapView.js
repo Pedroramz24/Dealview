@@ -815,6 +815,99 @@ const MapView = () => {
     } catch (err) { toast.error('Failed to update visibility'); }
   }, [selectedDeal, fetchDeals]);
 
+  // --- Contact management from side panel ---
+  const fetchAllContacts = useCallback(async () => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+      const response = await fetch(`${API}/contacts`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAllContacts(data.contacts || []);
+      }
+    } catch (err) { console.error('Error fetching contacts:', err); }
+  }, []);
+
+  const handleLinkContact = useCallback(async (contactId) => {
+    if (!selectedDeal) return;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${selectedDeal.id}/contacts/${contactId}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        // Refresh contacts for this deal
+        handleMarkerClick(selectedDeal, selectedDeal.isTeamDeal);
+        setShowContactSearch(false);
+        setContactSearchQuery('');
+        toast.success('Contact linked');
+      } else { toast.error('Failed to link contact'); }
+    } catch (err) { toast.error('Failed to link contact'); }
+  }, [selectedDeal, handleMarkerClick]);
+
+  const handleUnlinkContact = useCallback(async (contactId) => {
+    if (!selectedDeal) return;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${selectedDeal.id}/contacts/${contactId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        setDealContacts(prev => prev.filter(c => c.id !== contactId));
+        toast.success('Contact unlinked');
+      } else { toast.error('Failed to unlink contact'); }
+    } catch (err) { toast.error('Failed to unlink contact'); }
+  }, [selectedDeal]);
+
+  const handleCreateAndLinkContact = useCallback(async () => {
+    if (!newContact.name.trim() || !selectedDeal) return;
+    setSavingContact(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      // Create the contact
+      const createRes = await fetch(`${API}/contacts`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(newContact)
+      });
+      if (!createRes.ok) { toast.error('Failed to create contact'); return; }
+      const created = await createRes.json();
+      const contactId = created.contact?.id;
+      if (!contactId) { toast.error('Failed to create contact'); return; }
+      // Link to deal
+      await fetch(`${API}/deals/${selectedDeal.id}/contacts/${contactId}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      handleMarkerClick(selectedDeal, selectedDeal.isTeamDeal);
+      setShowNewContactForm(false);
+      setShowContactSearch(false);
+      setNewContact({ name: '', email: '', phone: '', contact_type: 'Buyer' });
+      toast.success('Contact created & linked');
+    } catch (err) { toast.error('Failed to create contact'); }
+    finally { setSavingContact(false); }
+  }, [newContact, selectedDeal, handleMarkerClick]);
+
+  const filteredContactResults = useMemo(() => {
+    if (!contactSearchQuery.trim()) return allContacts;
+    const q = contactSearchQuery.toLowerCase();
+    return allContacts.filter(c =>
+      (c.name && c.name.toLowerCase().includes(q)) ||
+      (c.email && c.email.toLowerCase().includes(q)) ||
+      (c.phone && c.phone.includes(q))
+    );
+  }, [allContacts, contactSearchQuery]);
+
+  const linkedContactIds = useMemo(() => new Set(dealContacts.map(c => c.id)), [dealContacts]);
+
   // Memoized markers - filtered by asset type
   const filteredDeals = useMemo(() => {
     if (!assetTypeFilter) return deals;
