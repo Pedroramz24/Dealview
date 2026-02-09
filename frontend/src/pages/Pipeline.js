@@ -272,6 +272,7 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal, onEdit
         background: 'rgba(0,0,0,0.2)',
         padding: '8px',
         overflowY: 'auto',
+        minHeight: 0,
         borderRadius: `0 0 ${borderRadius.md} ${borderRadius.md}`
       }}>
         <SortableContext items={stageDeals.map(d => d.id)} strategy={verticalListSortingStrategy}>
