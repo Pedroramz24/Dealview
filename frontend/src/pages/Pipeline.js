@@ -886,10 +886,9 @@ const Pipeline = () => {
 
       {/* Pipeline Board */}
       <div style={{
-        flex: 1,
+        height: 'calc(100vh - 90px)',
         overflow: 'hidden',
         padding: '16px 24px',
-        minHeight: 0,
         display: 'flex',
         flexDirection: 'column'
       }}>
