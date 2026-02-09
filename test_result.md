@@ -2345,3 +2345,15 @@ agent_communication:
         agent: "main"
         comment: "Verified via screenshot - city names (SAN ANTONIO, Castroville, Cibolo), street names (Market St), neighborhoods (HEMISFAIR, ARSENAL, CATTLEMANS SQUARE) all visible on satellite view"
 
+  - task: "Inline Contact Management from Side Panel"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/MapView.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Verified via screenshot - full flow: click deal marker -> side panel shows Contacts section with + Add button -> search existing contacts with Link button -> Create New Contact inline form with name/email/phone/type -> Create & Link button creates contact and links to deal -> contact appears in panel with unlink X button. Toast 'Contact created & linked' confirmed."
+
