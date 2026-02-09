@@ -152,7 +152,7 @@ const LandingPage = () => {
           </p>
 
           <button
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate('/login')}
             style={{
               padding: 'clamp(12px, 1.5vh, 16px) clamp(28px, 4vw, 40px)',
               background: '#3063ff',
@@ -1094,7 +1094,7 @@ const LandingPage = () => {
           </p>
 
           <button
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate('/login')}
             style={{
               width: '100%',
               padding: '18px',
