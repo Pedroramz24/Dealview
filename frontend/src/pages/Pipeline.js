@@ -887,7 +887,8 @@ const Pipeline = () => {
       <div style={{
         flex: 1,
         overflow: 'auto',
-        padding: '16px 24px'
+        padding: '16px 24px',
+        minHeight: 0
       }}>
         <DndContext
           sensors={sensors}
@@ -897,7 +898,7 @@ const Pipeline = () => {
           <div style={{
             display: 'flex',
             gap: '16px',
-            height: 'calc(100vh - 200px)',
+            height: '100%',
             width: '100%'
           }}>
             {stages.map(stage => (
