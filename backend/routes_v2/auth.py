@@ -101,7 +101,8 @@ async def login(request: LoginRequest):
 
 @router.post("/signup")
 async def signup(request: SignupRequest):
-    """Sign up with email and password via Supabase Auth REST API (safe, no client contamination)"""
+    """Sign up temporarily disabled for private launch"""
+    raise HTTPException(status_code=403, detail="Registration is currently closed. Contact the administrator for access.")
     try:
         # Use direct HTTP call to avoid contaminating the singleton client
         resp = httpx.post(
