@@ -346,6 +346,12 @@ const MapView = () => {
   const [uploadingSidePanelImage, setUploadingSidePanelImage] = useState(false);
   const [assetTypeFilter, setAssetTypeFilter] = useState('');
   const [dealContacts, setDealContacts] = useState([]);
+  const [showContactSearch, setShowContactSearch] = useState(false);
+  const [contactSearchQuery, setContactSearchQuery] = useState('');
+  const [allContacts, setAllContacts] = useState([]);
+  const [showNewContactForm, setShowNewContactForm] = useState(false);
+  const [newContact, setNewContact] = useState({ name: '', email: '', phone: '', contact_type: 'Buyer' });
+  const [savingContact, setSavingContact] = useState(false);
   
   // Map viewport
   const [viewState, setViewState] = useState({
