@@ -924,7 +924,7 @@ const Pipeline = () => {
                 flex: stages.length === 0 ? 1 : 0,
                 minWidth: '60px',
                 maxWidth: stages.length === 0 ? 'none' : '120px',
-                height: '100%',
+                minHeight: 0,
                 border: `2px dashed ${colors.border}`,
                 borderRadius: borderRadius.md,
                 display: 'flex',
