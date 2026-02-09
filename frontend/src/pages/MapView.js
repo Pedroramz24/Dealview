@@ -1998,11 +1998,126 @@ const MapView = () => {
             </div>
 
             {/* Contact Information */}
-            {dealContacts.length > 0 && (
-              <div data-testid="side-panel-contacts" style={{ marginBottom: '16px' }}>
-                <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '10px' }}>
+            <div data-testid="side-panel-contacts" style={{ marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <span style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase' }}>
                   Contacts ({dealContacts.length})
+                </span>
+                {!selectedDeal.isTeamDeal && (
+                  <button
+                    onClick={() => { setShowContactSearch(!showContactSearch); setShowNewContactForm(false); if (!showContactSearch) fetchAllContacts(); }}
+                    style={{
+                      background: 'rgba(0,184,212,0.1)', border: '1px solid rgba(0,184,212,0.25)',
+                      borderRadius: '5px', padding: '3px 8px', cursor: 'pointer',
+                      color: '#00d4ff', fontSize: '11px', fontWeight: 600,
+                      display: 'flex', alignItems: 'center', gap: '4px'
+                    }}
+                  >
+                    <Plus size={11} /> Add
+                  </button>
+                )}
+              </div>
+
+              {/* Contact Search / Link Panel */}
+              {showContactSearch && (
+                <div style={{
+                  background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px', padding: '10px', marginBottom: '10px'
+                }}>
+                  {!showNewContactForm ? (
+                    <>
+                      <input
+                        type="text"
+                        placeholder="Search contacts..."
+                        value={contactSearchQuery}
+                        onChange={(e) => setContactSearchQuery(e.target.value)}
+                        style={{
+                          width: '100%', padding: '8px 10px', background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px',
+                          color: '#fff', fontSize: '12px', marginBottom: '8px'
+                        }}
+                      />
+                      <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                        {filteredContactResults.length === 0 ? (
+                          <div style={{ color: colors.textTertiary, fontSize: '12px', textAlign: 'center', padding: '12px 0' }}>
+                            No contacts found
+                          </div>
+                        ) : (
+                          filteredContactResults.slice(0, 8).map(contact => (
+                            <div key={contact.id} style={{
+                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                              padding: '6px 8px', borderRadius: '5px', cursor: 'pointer',
+                              opacity: linkedContactIds.has(contact.id) ? 0.5 : 1
+                            }}
+                              onMouseEnter={(e) => { if (!linkedContactIds.has(contact.id)) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                            >
+                              <div style={{ minWidth: 0, flex: 1 }}>
+                                <div style={{ color: '#fff', fontSize: '12px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {contact.name}
+                                </div>
+                                {contact.email && <div style={{ color: colors.textTertiary, fontSize: '10px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.email}</div>}
+                              </div>
+                              {linkedContactIds.has(contact.id) ? (
+                                <span style={{ fontSize: '10px', color: colors.textTertiary, flexShrink: 0, marginLeft: '6px' }}>Linked</span>
+                              ) : (
+                                <button onClick={() => handleLinkContact(contact.id)} style={{
+                                  background: 'rgba(0,184,212,0.15)', border: 'none', borderRadius: '4px',
+                                  padding: '3px 8px', color: '#00d4ff', fontSize: '10px', fontWeight: 600,
+                                  cursor: 'pointer', flexShrink: 0, marginLeft: '6px'
+                                }}>Link</button>
+                              )}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setShowNewContactForm(true)}
+                        style={{
+                          width: '100%', marginTop: '8px', padding: '7px',
+                          background: 'rgba(0,184,212,0.08)', border: '1px dashed rgba(0,184,212,0.3)',
+                          borderRadius: '6px', color: '#00d4ff', fontSize: '11px', fontWeight: 600,
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px'
+                        }}
+                      >
+                        <Plus size={12} /> Create New Contact
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: '12px', color: '#fff', fontWeight: 600, marginBottom: '8px' }}>New Contact</div>
+                      <input placeholder="Name *" value={newContact.name} onChange={(e) => setNewContact(p => ({ ...p, name: e.target.value }))}
+                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '6px' }} />
+                      <input placeholder="Email" value={newContact.email} onChange={(e) => setNewContact(p => ({ ...p, email: e.target.value }))}
+                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '6px' }} />
+                      <input placeholder="Phone" value={newContact.phone} onChange={(e) => setNewContact(p => ({ ...p, phone: e.target.value }))}
+                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '6px' }} />
+                      <select value={newContact.contact_type} onChange={(e) => setNewContact(p => ({ ...p, contact_type: e.target.value }))}
+                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '8px' }}>
+                        <option value="Buyer">Buyer</option>
+                        <option value="Seller">Seller</option>
+                        <option value="Broker">Broker</option>
+                        <option value="Landlord">Landlord</option>
+                        <option value="Tenant">Tenant</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button onClick={() => setShowNewContactForm(false)}
+                          style={{ flex: 1, padding: '7px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '11px', fontWeight: 600, cursor: 'pointer' }}>
+                          Back
+                        </button>
+                        <button onClick={handleCreateAndLinkContact} disabled={!newContact.name.trim() || savingContact}
+                          style={{ flex: 1, padding: '7px', background: newContact.name.trim() ? '#00b8d4' : 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '6px', color: newContact.name.trim() ? '#000' : 'rgba(255,255,255,0.3)', fontSize: '11px', fontWeight: 700, cursor: newContact.name.trim() ? 'pointer' : 'not-allowed' }}>
+                          {savingContact ? 'Saving...' : 'Create & Link'}
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
+              )}
+
+              {/* Linked Contacts List */}
+              {dealContacts.length > 0 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {dealContacts.map((contact, idx) => (
                     <div key={contact.id || idx} style={{
@@ -2013,16 +2128,25 @@ const MapView = () => {
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
                         <User size={14} style={{ color: colors.primary }} />
-                        <span style={{ color: colors.textPrimary, fontSize: '14px', fontWeight: '500' }}>
+                        <span style={{ color: colors.textPrimary, fontSize: '14px', fontWeight: '500', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {contact.name || 'Unnamed'}
                         </span>
                         {contact.contact_type && (
                           <span style={{
                             fontSize: '10px', padding: '2px 6px', borderRadius: '4px',
-                            background: 'rgba(0,184,212,0.15)', color: '#00d4ff', marginLeft: 'auto'
+                            background: 'rgba(0,184,212,0.15)', color: '#00d4ff', flexShrink: 0
                           }}>
                             {contact.contact_type}
                           </span>
+                        )}
+                        {!selectedDeal.isTeamDeal && (
+                          <button onClick={() => handleUnlinkContact(contact.id)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', flexShrink: 0, opacity: 0.4 }}
+                            onMouseEnter={(e) => { e.currentTarget.style.opacity = 1; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.opacity = 0.4; }}
+                          >
+                            <X size={13} style={{ color: '#ff4444' }} />
+                          </button>
                         )}
                       </div>
                       {contact.email && (
@@ -2050,8 +2174,13 @@ const MapView = () => {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+              {dealContacts.length === 0 && !showContactSearch && (
+                <div style={{ color: colors.textTertiary, fontSize: '12px', textAlign: 'center', padding: '8px 0' }}>
+                  No contacts linked
+                </div>
+              )}
+            </div>
 
             {/* Notes */}
             <div data-testid="side-panel-notes-section" style={{ marginBottom: '16px' }}>
