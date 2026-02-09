@@ -210,8 +210,8 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal, onEdit
 
   return (
     <div style={{
-      minWidth: '280px',
-      maxWidth: '280px',
+      flex: 1,
+      minWidth: '250px',
       display: 'flex',
       flexDirection: 'column',
       height: '100%'
@@ -898,7 +898,7 @@ const Pipeline = () => {
             display: 'flex',
             gap: '16px',
             height: 'calc(100vh - 200px)',
-            minWidth: 'fit-content'
+            width: '100%'
           }}>
             {stages.map(stage => (
               <StageColumn
@@ -916,8 +916,9 @@ const Pipeline = () => {
             <div 
               onClick={handleOpenStageCreate}
               style={{
-                minWidth: '280px',
-                maxWidth: '280px',
+                flex: stages.length === 0 ? 1 : 0,
+                minWidth: '60px',
+                maxWidth: stages.length === 0 ? 'none' : '120px',
                 height: '100%',
                 border: `2px dashed ${colors.border}`,
                 borderRadius: borderRadius.md,
