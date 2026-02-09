@@ -214,7 +214,7 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal, onEdit
       minWidth: '250px',
       display: 'flex',
       flexDirection: 'column',
-      height: '100%'
+      minHeight: 0
     }}>
       <div style={{
         padding: '12px',
