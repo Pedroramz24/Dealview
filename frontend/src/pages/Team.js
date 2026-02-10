@@ -440,7 +440,7 @@ const Team = () => {
 
       {/* Modals */}
       {showCreateTeam && <CreateTeamModal onClose={() => setShowCreateTeam(false)} onCreate={handleCreateTeam} />}
-      {showInviteMember && <InviteMemberModal onClose={() => { setShowInviteMember(false); setInviteLink(''); }} onCreate={handleCreateInvite} inviteLink={inviteLink} copyLink={() => { navigator.clipboard.writeText(inviteLink); toast.success('Invite link copied'); }} />}
+      {showInviteMember && <InviteMemberModal onClose={() => setShowInviteMember(false)} onInvite={handleInviteMember} />}
       {showTeamSettings && <TeamSettingsModal team={currentTeam} onClose={() => setShowTeamSettings(false)} onUpdate={loadData} />}
     </div>
   );
