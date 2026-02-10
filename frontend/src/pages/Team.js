@@ -816,6 +816,52 @@ const InviteMemberModal = ({ onClose, onInvite }) => {
   );
 };
 
-const TeamSettingsModal = ({ team, onClose, onUpdate }) => { const [teamName, setTeamName] = useState(team?.name || ''); const [defaultSharing, setDefaultSharing] = useState(team?.default_deal_sharing || 'private'); const [saving, setSaving] = useState(false); const handleSave = async () => { setSaving(true); try { const { data: session } = await supabase.auth.getSession(); const response = await fetch(`${BACKEND_URL}/api/teams/${team.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.session?.access_token}` }, body: JSON.stringify({ name: teamName, default_deal_sharing: defaultSharing }) }); if (response.ok) { toast.success('Team settings updated'); onClose(); await onUpdate(); } else { toast.error('Failed to update'); } } catch (error) { toast.error('Failed to update'); } finally { setSaving(false); } }; return (<div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}><div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: '500px', background: 'rgba(10, 10, 10, 0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '32px', boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)' }}><div style={{ marginBottom: '24px' }}><h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.4px' }}>Team Settings</h2><p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Manage your team</p></div><div style={{ marginBottom: '18px' }}><label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>Team Name</label><input type="text" value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{ width: '100%', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff', fontSize: '14px' }} /></div><div style={{ marginBottom: '24px' }}><label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', display: 'block', marginBottom: '10px', fontWeight: 600 }}>Default Deal Sharing</label><div style={{ display: 'flex', gap: '10px' }}>{[{ value: 'private', label: 'Private', desc: 'Deals private by default' }, { value: 'team', label: 'Team', desc: 'Auto-share new deals' }].map(opt => <button key={opt.value} type="button" onClick={() => setDefaultSharing(opt.value)} style={{ flex: 1, padding: '14px', background: defaultSharing === opt.value ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.03)', border: `1px solid ${defaultSharing === opt.value ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`, borderRadius: '8px', cursor: 'pointer', textAlign: 'center' }}><div style={{ color: defaultSharing === opt.value ? '#00b8d4' : '#fff', fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>{opt.label}</div><div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>{opt.desc}</div></button>)}</div></div><div style={{ display: 'flex', gap: '10px' }}><button onClick={onClose} style={{ flex: 1, padding: '12px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button><button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '12px', background: saving ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4', border: 'none', borderRadius: '8px', color: '#000', fontSize: '14px', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}Save</button></div></div></div>); };
+const TeamSettingsModal = ({ team, onClose, onUpdate }) => {
+  const [teamName, setTeamName] = useState(team?.name || '');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!teamName.trim()) { toast.error('Team name required'); return; }
+    setSaving(true);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const response = await fetch(`${BACKEND_URL}/api/teams`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.session?.access_token}` },
+        body: JSON.stringify({ name: teamName.trim() })
+      });
+      if (response.ok) {
+        toast.success('Team settings updated');
+        onClose();
+        await onUpdate();
+      } else {
+        const data = await response.json();
+        toast.error(data.detail || 'Failed to update');
+      }
+    } catch (error) { toast.error('Failed to update'); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: '500px', background: 'rgba(10, 10, 10, 0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '32px', boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.4px' }}>Team Settings</h2>
+          <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Manage your team</p>
+        </div>
+        <div style={{ marginBottom: '24px' }}>
+          <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>Team Name</label>
+          <input type="text" value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{ width: '100%', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff', fontSize: '14px' }} />
+        </div>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={onClose} style={{ flex: 1, padding: '12px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
+          <button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '12px', background: saving ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4', border: 'none', borderRadius: '8px', color: '#000', fontSize: '14px', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Team;
