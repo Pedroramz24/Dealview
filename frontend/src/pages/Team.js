@@ -216,7 +216,7 @@ const Team = () => {
       const { data: session } = await supabase.auth.getSession();
       const token = session?.session?.access_token;
 
-      const response = await fetch(`${BACKEND_URL}/api/teams/${currentTeam.id}/members/${userId}/role`, {
+      const response = await fetch(`${BACKEND_URL}/api/teams/members/${userId}/role`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ const Team = () => {
       if (response.ok) {
         toast.success(`Role updated to ${newRole}`);
         setOpenMemberMenu(null);
-        await loadTeamData(currentTeam.id, token);
+        await loadData();
       } else {
         const data = await response.json();
         toast.error(data.detail || 'Failed to update role');
