@@ -183,28 +183,6 @@ const Team = () => {
     }
   };
 
-  const handleRevokeInvite = async (inviteId) => {
-    try {
-      const { data: session } = await supabase.auth.getSession();
-      const token = session?.session?.access_token;
-
-      const response = await fetch(`${BACKEND_URL}/api/teams/${currentTeam.id}/invites/${inviteId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        toast.success('Invite revoked');
-        await loadTeamData(currentTeam.id, token);
-      } else {
-        toast.error('Failed to revoke invite');
-      }
-    } catch (error) {
-      console.error('Error revoking invite:', error);
-      toast.error('Failed to revoke invite');
-    }
-  };
-
   const handleRemoveMember = async (userId) => {
     if (!window.confirm('Are you sure you want to remove this member from the team?')) {
       return;
