@@ -30,8 +30,7 @@ const Team = () => {
   const [showCreateTeam, setShowCreateTeam] = useState(false);
   const [showInviteMember, setShowInviteMember] = useState(false);
   const [showTeamSettings, setShowTeamSettings] = useState(false);
-  const [openMemberMenu, setOpenMemberMenu] = useState(null); // Track which member's menu is open
-  const [inviteLink, setInviteLink] = useState('');
+  const [openMemberMenu, setOpenMemberMenu] = useState(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
