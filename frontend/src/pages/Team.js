@@ -422,8 +422,6 @@ const Team = () => {
           members={members} 
           user={user} 
           canManage={canManage} 
-          invites={invites} 
-          handleRevokeInvite={handleRevokeInvite} 
           setShowInviteMember={setShowInviteMember}
           openMemberMenu={openMemberMenu}
           setOpenMemberMenu={setOpenMemberMenu}
