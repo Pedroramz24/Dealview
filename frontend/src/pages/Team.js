@@ -91,22 +91,13 @@ const Team = () => {
 
   const loadTeamData = async (teamId, token) => {
     try {
-      const membersRes = await fetch(`${BACKEND_URL}/api/teams/${teamId}/members`, {
+      const membersRes = await fetch(`${BACKEND_URL}/api/teams/members`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
       if (membersRes.ok) {
         const data = await membersRes.json();
         setMembers(data.members || []);
-      }
-
-      const invitesRes = await fetch(`${BACKEND_URL}/api/teams/${teamId}/invites`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      
-      if (invitesRes.ok) {
-        const data = await invitesRes.json();
-        setInvites(data.invites || []);
       }
     } catch (error) {
       console.error('Error loading team data:', error);
