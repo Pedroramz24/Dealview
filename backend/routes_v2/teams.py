@@ -399,15 +399,17 @@ async def invite_member(
             raise HTTPException(status_code=403, detail="Only team owners/admins can invite members")
         
         # Find user by email
-        invitee = supabase.table('user_profiles').select('id, team_id').eq('email', invite.email).single().execute()
+        invitee_response = supabase.table('user_profiles').select('id, team_id').eq('email', invite.email).execute()
         
-        if not invitee.data:
-            raise HTTPException(status_code=404, detail="User not found with that email")
+        if not invitee_response.data:
+            raise HTTPException(status_code=404, detail="User not found with that email. They must have an account first.")
         
-        if invitee.data.get('team_id'):
+        invitee_data = invitee_response.data[0]
+        
+        if invitee_data.get('team_id'):
             raise HTTPException(status_code=400, detail="User is already part of a team")
         
-        invitee_id = invitee.data['id']
+        invitee_id = invitee_data['id']
         
         # Add to team_members
         member_data = {
