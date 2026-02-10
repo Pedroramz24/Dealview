@@ -733,7 +733,88 @@ const PerformanceTab = ({ agentStats, members, statsLoading }) => {
 // Modals (unchanged)
 const CreateTeamModal = ({ onClose, onCreate }) => { const [teamName, setTeamName] = useState(''); const [loading, setLoading] = useState(false); const handleSubmit = async (e) => { e.preventDefault(); if (!teamName.trim()) { toast.error('Please enter a team name'); return; } setLoading(true); await onCreate(teamName); setLoading(false); }; return (<div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}><div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: '480px', background: 'rgba(10, 10, 10, 0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '32px', boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)' }}><div style={{ marginBottom: '28px' }}><h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.4px' }}>Create a Team</h2><p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Start collaborating with your colleagues</p></div><form onSubmit={handleSubmit}><div style={{ marginBottom: '24px' }}><label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>Team Name</label><input type="text" value={teamName} onChange={(e) => setTeamName(e.target.value)} placeholder="e.g., Armando Real Estate Group" autoFocus style={{ width: '100%', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff', fontSize: '14px' }} /></div><div style={{ display: 'flex', gap: '10px' }}><button type="button" onClick={onClose} style={{ flex: 1, padding: '12px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button><button type="submit" disabled={loading || !teamName.trim()} style={{ flex: 1, padding: '12px', background: (loading || !teamName.trim()) ? 'rgba(0, 184, 212, 0.3)' : '#00b8d4', border: 'none', borderRadius: '8px', color: '#000', fontSize: '14px', fontWeight: 700, cursor: (loading || !teamName.trim()) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{loading && <Loader2 size={15} className="animate-spin" />}Create Team</button></div></form></div></div>); };
 
-const InviteMemberModal = ({ onClose, onCreate, inviteLink, copyLink }) => { const [selectedRole, setSelectedRole] = useState('agent'); const [loading, setLoading] = useState(false); const roles = [{ value: 'admin', label: 'Admin', desc: 'Manage team and settings', icon: Shield, color: '#a78bfa' }, { value: 'agent', label: 'Agent', desc: 'Create and share deals', icon: User, color: '#00b8d4' }, { value: 'viewer', label: 'Viewer', desc: 'View only', icon: Eye, color: '#6b7280' }]; return (<div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}><div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: '500px', background: 'rgba(10, 10, 10, 0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '32px', boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)' }}><div style={{ marginBottom: '24px' }}><h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.4px' }}>Invite Team Member</h2><p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Generate a shareable invite link</p></div>{!inviteLink ? (<div><label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', display: 'block', marginBottom: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Select Role</label><div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>{roles.map(role => { const Icon = role.icon; const isSelected = selectedRole === role.value; return (<button key={role.value} type="button" onClick={() => setSelectedRole(role.value)} style={{ padding: '14px', background: isSelected ? `${role.color}12` : 'rgba(255, 255, 255, 0.03)', border: `1px solid ${isSelected ? `${role.color}40` : 'rgba(255, 255, 255, 0.08)'}`, borderRadius: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '32px', height: '32px', borderRadius: '6px', background: `${role.color}18`, border: `1px solid ${role.color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon size={16} style={{ color: role.color }} /></div><div style={{ flex: 1 }}><div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}><span style={{ color: isSelected ? role.color : '#fff', fontSize: '14px', fontWeight: 600 }}>{role.label}</span>{isSelected && <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: role.color }} />}</div><div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>{role.desc}</div></div></button>); })}</div><button onClick={async () => { setLoading(true); await onCreate(selectedRole); setLoading(false); }} disabled={loading} style={{ width: '100%', padding: '12px', background: loading ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4', border: 'none', borderRadius: '8px', color: '#000', fontSize: '14px', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{loading ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />}Generate Invite Link</button></div>) : (<div><div style={{ padding: '16px', background: 'rgba(0, 184, 212, 0.08)', border: '1px solid rgba(0, 184, 212, 0.25)', borderRadius: '10px', marginBottom: '16px' }}><div className="flex items-center gap-2 mb-3"><CheckCircle2 size={16} style={{ color: '#00b8d4' }} /><span style={{ color: '#00b8d4', fontSize: '14px', fontWeight: 600 }}>Invite Link Ready</span></div><p style={{ color: '#00b8d4', fontSize: '12px', fontFamily: 'monospace', wordBreak: 'break-all', marginBottom: '12px', padding: '10px', background: 'rgba(0, 0, 0, 0.4)', borderRadius: '6px' }}>{inviteLink}</p><button onClick={copyLink} style={{ width: '100%', padding: '10px', background: '#00b8d4', border: 'none', borderRadius: '7px', color: '#000', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Copy size={14} />Copy to Clipboard</button></div><button onClick={onClose} style={{ width: '100%', padding: '11px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Done</button></div>)}</div></div>); };
+const InviteMemberModal = ({ onClose, onInvite }) => {
+  const [email, setEmail] = useState('');
+  const [selectedRole, setSelectedRole] = useState('agent');
+  const [loading, setLoading] = useState(false);
+
+  const roles = [
+    { value: 'admin', label: 'Admin', desc: 'Manage team and settings', icon: Shield, color: '#a78bfa' },
+    { value: 'agent', label: 'Agent', desc: 'Create and share deals', icon: User, color: '#00b8d4' },
+    { value: 'viewer', label: 'Viewer', desc: 'View only', icon: Eye, color: '#6b7280' }
+  ];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) { toast.error('Please enter an email'); return; }
+    setLoading(true);
+    await onInvite(email.trim(), selectedRole);
+    setLoading(false);
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: '500px', background: 'rgba(10, 10, 10, 0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '32px', boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.4px' }}>Add Team Member</h2>
+          <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Add an existing user to your team by email</p>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="colleague@company.com"
+              autoFocus
+              required
+              style={{ width: '100%', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff', fontSize: '14px' }}
+            />
+          </div>
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', display: 'block', marginBottom: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Select Role</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {roles.map(role => {
+                const Icon = role.icon;
+                const isSelected = selectedRole === role.value;
+                return (
+                  <button key={role.value} type="button" onClick={() => setSelectedRole(role.value)} style={{
+                    padding: '14px', background: isSelected ? `${role.color}12` : 'rgba(255, 255, 255, 0.03)',
+                    border: `1px solid ${isSelected ? `${role.color}40` : 'rgba(255, 255, 255, 0.08)'}`,
+                    borderRadius: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '12px'
+                  }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: `${role.color}18`, border: `1px solid ${role.color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={16} style={{ color: role.color }} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
+                        <span style={{ color: isSelected ? role.color : '#fff', fontSize: '14px', fontWeight: 600 }}>{role.label}</span>
+                        {isSelected && <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: role.color }} />}
+                      </div>
+                      <div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>{role.desc}</div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button type="button" onClick={onClose} style={{ flex: 1, padding: '12px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button>
+            <button type="submit" disabled={loading || !email.trim()} style={{
+              flex: 1, padding: '12px', background: (loading || !email.trim()) ? 'rgba(0, 184, 212, 0.3)' : '#00b8d4',
+              border: 'none', borderRadius: '8px', color: '#000', fontSize: '14px', fontWeight: 700,
+              cursor: (loading || !email.trim()) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+            }}>
+              {loading ? <Loader2 size={15} className="animate-spin" /> : <UserPlus size={15} />}
+              Add to Team
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 const TeamSettingsModal = ({ team, onClose, onUpdate }) => { const [teamName, setTeamName] = useState(team?.name || ''); const [defaultSharing, setDefaultSharing] = useState(team?.default_deal_sharing || 'private'); const [saving, setSaving] = useState(false); const handleSave = async () => { setSaving(true); try { const { data: session } = await supabase.auth.getSession(); const response = await fetch(`${BACKEND_URL}/api/teams/${team.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.session?.access_token}` }, body: JSON.stringify({ name: teamName, default_deal_sharing: defaultSharing }) }); if (response.ok) { toast.success('Team settings updated'); onClose(); await onUpdate(); } else { toast.error('Failed to update'); } } catch (error) { toast.error('Failed to update'); } finally { setSaving(false); } }; return (<div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}><div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: '500px', background: 'rgba(10, 10, 10, 0.98)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '32px', boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)' }}><div style={{ marginBottom: '24px' }}><h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.4px' }}>Team Settings</h2><p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Manage your team</p></div><div style={{ marginBottom: '18px' }}><label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>Team Name</label><input type="text" value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{ width: '100%', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff', fontSize: '14px' }} /></div><div style={{ marginBottom: '24px' }}><label style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13px', display: 'block', marginBottom: '10px', fontWeight: 600 }}>Default Deal Sharing</label><div style={{ display: 'flex', gap: '10px' }}>{[{ value: 'private', label: 'Private', desc: 'Deals private by default' }, { value: 'team', label: 'Team', desc: 'Auto-share new deals' }].map(opt => <button key={opt.value} type="button" onClick={() => setDefaultSharing(opt.value)} style={{ flex: 1, padding: '14px', background: defaultSharing === opt.value ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.03)', border: `1px solid ${defaultSharing === opt.value ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`, borderRadius: '8px', cursor: 'pointer', textAlign: 'center' }}><div style={{ color: defaultSharing === opt.value ? '#00b8d4' : '#fff', fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>{opt.label}</div><div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '12px' }}>{opt.desc}</div></button>)}</div></div><div style={{ display: 'flex', gap: '10px' }}><button onClick={onClose} style={{ flex: 1, padding: '12px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Cancel</button><button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '12px', background: saving ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4', border: 'none', borderRadius: '8px', color: '#000', fontSize: '14px', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}Save</button></div></div></div>); };
 
