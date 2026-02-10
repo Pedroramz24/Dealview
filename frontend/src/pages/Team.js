@@ -600,38 +600,6 @@ const MembersTab = ({ members, user, canManage, setShowInviteMember, openMemberM
           })}
         </div>
       </div>
-
-      {canManage && invites.length > 0 && (
-        <div className="glass-surface" style={{ padding: '24px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <h3 style={{ color: '#FFFFFF', fontSize: '16px', fontWeight: 700, letterSpacing: '-0.01em', margin: 0 }}>Pending Invitations</h3>
-            <span style={{ padding: '4px 10px', background: 'rgba(251, 191, 36, 0.15)', border: '1px solid rgba(251, 191, 36, 0.3)', borderRadius: '12px', color: '#fbbf24', fontSize: '11px', fontWeight: 700, letterSpacing: '0.3px' }}>{invites.length} PENDING</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {invites.map(invite => {
-              const roleColor = getRoleColor(invite.role); const RoleIcon = getRoleIcon(invite.role); const expiresAt = new Date(invite.expires_at); const daysLeft = Math.ceil((expiresAt - new Date()) / (1000 * 60 * 60 * 24));
-              return (
-                <div key={invite.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${roleColor}15`, border: `1px solid ${roleColor}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RoleIcon size={18} style={{ color: roleColor }} /></div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <span style={{ color: '#fff', fontSize: '14px', fontWeight: 600, textTransform: 'capitalize' }}>{invite.role}</span>
-                        {invite.email && <><span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>•</span><span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px' }}>{invite.email}</span></> }
-                      </div>
-                      <p style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '12px', margin: 0 }}>Expires in {daysLeft} {daysLeft === 1 ? 'day' : 'days'}</p>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/join-team/${invite.token}`); toast.success('Invite link copied'); }} style={{ padding: '7px 14px', background: 'rgba(0, 184, 212, 0.1)', border: '1px solid rgba(0, 184, 212, 0.3)', borderRadius: '6px', color: '#00b8d4', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}><Copy size={12} />Copy</button>
-                    <button onClick={() => handleRevokeInvite(invite.id)} style={{ padding: '7px 14px', background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.3)', borderRadius: '6px', color: '#ff4444', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>Revoke</button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
