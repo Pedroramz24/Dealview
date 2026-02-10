@@ -307,7 +307,7 @@ const Team = () => {
     );
   }
 
-  const userRole = currentTeam?.user_role || 'viewer';
+  const userRole = members.find(m => m.user_id === user?.id)?.role || 'viewer';
   const canManage = ['owner', 'admin'].includes(userRole);
 
   return (
