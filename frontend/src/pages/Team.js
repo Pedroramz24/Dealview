@@ -447,7 +447,7 @@ const Team = () => {
 };
 
 // Members Tab Component
-const MembersTab = ({ members, user, canManage, invites, handleRevokeInvite, setShowInviteMember, openMemberMenu, setOpenMemberMenu, handleRemoveMember, handleUpdateRole }) => {
+const MembersTab = ({ members, user, canManage, setShowInviteMember, openMemberMenu, setOpenMemberMenu, handleRemoveMember, handleUpdateRole }) => {
   const getRoleIcon = (role) => {
     switch(role) { case 'owner': return Crown; case 'admin': return Shield; case 'agent': return User; case 'viewer': return Eye; default: return User; }
   };
