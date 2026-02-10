@@ -269,7 +269,7 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal, onEdit
 
       <div style={{
         flex: 1,
-        background: 'rgba(0,0,0,0.2)',
+        background: 'rgba(0,100,200,0.3)',
         padding: '8px',
         overflowY: 'auto',
         minHeight: 0,
