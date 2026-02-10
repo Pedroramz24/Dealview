@@ -887,7 +887,8 @@ const Pipeline = () => {
       {/* Pipeline Board */}
       <div style={{
         height: 'calc(100vh - 90px)',
-        overflow: 'hidden',
+        overflowX: 'auto',
+        overflowY: 'hidden',
         padding: '16px 24px',
         display: 'flex',
         flexDirection: 'column'
@@ -902,7 +903,7 @@ const Pipeline = () => {
             gap: '16px',
             flex: 1,
             minHeight: 0,
-            width: '100%'
+            minWidth: 'min-content'
           }}>
             {stages.map(stage => (
               <StageColumn
