@@ -192,7 +192,7 @@ const Team = () => {
       const { data: session } = await supabase.auth.getSession();
       const token = session?.session?.access_token;
 
-      const response = await fetch(`${BACKEND_URL}/api/teams/${currentTeam.id}/members/${userId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/teams/members/${userId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -200,7 +200,7 @@ const Team = () => {
       if (response.ok) {
         toast.success('Member removed successfully');
         setOpenMemberMenu(null);
-        await loadTeamData(currentTeam.id, token);
+        await loadData();
       } else {
         const data = await response.json();
         toast.error(data.detail || 'Failed to remove member');
