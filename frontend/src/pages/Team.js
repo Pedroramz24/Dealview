@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { toast } from 'sonner';
 import { 
-  Users, Plus, Link2, Copy, X, Loader2, Crown, Shield, 
+  Users, Plus, X, Loader2, Crown, Shield, 
   User, Eye, Trash2, MoreVertical, Mail, TrendingUp, 
   Target, Activity, CheckCircle2, Settings, UserPlus, Save,
   BarChart3, DollarSign, MapPin, Building2, Calendar
