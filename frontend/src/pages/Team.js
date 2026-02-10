@@ -17,7 +17,6 @@ const Team = () => {
   const [teams, setTeams] = useState([]);
   const [currentTeam, setCurrentTeam] = useState(null);
   const [members, setMembers] = useState([]);
-  const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('members');
   
