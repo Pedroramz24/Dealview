@@ -72,7 +72,8 @@ Complete ground-up rebuild of "DealLinked CRM" — a CRE (Commercial Real Estate
 - **Auth singleton contamination** (Dec 2025): supabase.auth.get_user() was changing PostgREST headers from service_role to user JWT, causing empty query results. Fixed by moving token verification to direct HTTP calls in auth_helpers.py.
 
 ## Recent Changes
-- **Feb 2026:** Pipeline stage columns now use full screen width (flex: 1, minWidth: 250px) instead of fixed 280px columns. The "Add Stage" placeholder is compact when stages exist.
+- **Feb 2026:** Fixed Team Management — all API route mismatches between frontend/backend resolved, invite flow changed from broken link-based to working email-based, role detection fixed so Settings/Invite buttons show for owners/admins
+- **Feb 2026:** Pipeline stage columns now use full screen width and height
 - **Signup disabled** for private launch (POST /api/auth/signup returns 403)
 - **Inline contact management** added to map side panel
 - **Map optimizations:** Vector tile overlays, parallel ESRI loading, tuned MapLibre cache
