@@ -327,7 +327,7 @@ const Team = () => {
                     {currentTeam?.name}
                   </h3>
                   <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '13px' }}>
-                    {members.length} members • {invites.length} pending invites
+                    {members.length} member{members.length !== 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
