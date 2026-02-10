@@ -155,32 +155,31 @@ const Team = () => {
     }
   };
 
-  const handleCreateInvite = async (role) => {
+  const handleInviteMember = async (email, role) => {
     try {
       const { data: session } = await supabase.auth.getSession();
       const token = session?.session?.access_token;
 
-      const response = await fetch(`${BACKEND_URL}/api/teams/${currentTeam.id}/invite`, {
+      const response = await fetch(`${BACKEND_URL}/api/teams/invite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ role })
+        body: JSON.stringify({ email, role })
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setInviteLink(data.invite_link);
-        const { data: session2 } = await supabase.auth.getSession();
-        await loadTeamData(currentTeam.id, session2?.session?.access_token);
-        toast.success('Invite link created');
+        toast.success(`${email} added to the team`);
+        setShowInviteMember(false);
+        await loadData();
       } else {
-        toast.error('Failed to create invite');
+        const data = await response.json();
+        toast.error(data.detail || 'Failed to invite member');
       }
     } catch (error) {
-      console.error('Error creating invite:', error);
-      toast.error('Failed to create invite');
+      console.error('Error inviting member:', error);
+      toast.error('Failed to invite member');
     }
   };
 
