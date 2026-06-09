@@ -27,12 +27,12 @@ const TeamCollaborationPanel = ({
           width: '36px',
           height: '36px',
           borderRadius: '8px',
-          background: 'rgba(0, 184, 212, 0.1)',
+          background: 'rgba(255, 0, 0, 0.1)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <Users size={18} style={{ color: '#00b8d4' }} />
+          <Users size={18} style={{ color: '#ff0000' }} />
         </div>
         <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>
           Team Collaboration
@@ -51,8 +51,8 @@ const TeamCollaborationPanel = ({
               width: '52px',
               height: '28px',
               borderRadius: '14px',
-              background: isSharedWithTeam ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)',
-              border: `1px solid ${isSharedWithTeam ? '#00b8d4' : 'rgba(255, 255, 255, 0.15)'}`,
+              background: isSharedWithTeam ? '#ff0000' : 'rgba(255, 255, 255, 0.1)',
+              border: `1px solid ${isSharedWithTeam ? '#ff0000' : 'rgba(255, 255, 255, 0.15)'}`,
               cursor: 'pointer',
               position: 'relative',
               transition: 'all 0.25s ease'
@@ -116,10 +116,10 @@ const TeamCollaborationPanel = ({
             onClick={onSaveTeamNotes}
             style={{
               padding: '6px 14px',
-              background: 'rgba(0, 184, 212, 0.1)',
-              border: '1px solid rgba(0, 184, 212, 0.3)',
+              background: 'rgba(255, 0, 0, 0.1)',
+              border: '1px solid rgba(255, 0, 0, 0.3)',
               borderRadius: '6px',
-              color: '#00b8d4',
+              color: '#ff0000',
               fontSize: '12px',
               fontWeight: 600,
               cursor: 'pointer',

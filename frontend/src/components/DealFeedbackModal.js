@@ -159,7 +159,7 @@ const DealFeedbackModal = ({ dealId, interactionType = 'offer_submitted', onClos
           alignItems: 'center'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <MessageSquare size={24} color="#00b8d4" />
+            <MessageSquare size={24} color="#ff0000" />
             <div>
               <h2 style={{ color: '#fff', fontSize: '22px', fontWeight: '700', marginBottom: '4px' }}>
                 Share Your Experience
@@ -245,14 +245,14 @@ const DealFeedbackModal = ({ dealId, interactionType = 'offer_submitted', onClos
           <div style={{
             marginTop: '24px',
             padding: '16px',
-            background: 'rgba(0, 184, 212, 0.05)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.05)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '12px',
             fontSize: '12px',
             color: 'rgba(255,255,255,0.7)',
             lineHeight: '1.6'
           }}>
-            <strong style={{ color: '#00b8d4' }}>Privacy:</strong> Your feedback is private and anonymous. It will not be published publicly. We use this data solely to calculate broker quality scores and improve platform integrity.
+            <strong style={{ color: '#ff0000' }}>Privacy:</strong> Your feedback is private and anonymous. It will not be published publicly. We use this data solely to calculate broker quality scores and improve platform integrity.
           </div>
         </div>
 
@@ -287,8 +287,8 @@ const DealFeedbackModal = ({ dealId, interactionType = 'offer_submitted', onClos
             style={{
               padding: '12px 24px',
               background: (submitting || feedback.seller_engaged === null || feedback.terms_accurate === null || feedback.would_recommend === null)
-                ? 'rgba(0, 184, 212, 0.3)'
-                : 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
+                ? 'rgba(255, 0, 0, 0.3)'
+                : 'linear-gradient(135deg, #ff0000 0%, #ff0000 100%)',
               border: 'none',
               borderRadius: '10px',
               color: (submitting || feedback.seller_engaged === null || feedback.terms_accurate === null || feedback.would_recommend === null) ? 'rgba(0,0,0,0.4)' : '#000',

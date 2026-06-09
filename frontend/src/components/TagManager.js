@@ -17,7 +17,7 @@ const TagManager = ({ contactId, currentTags = [], onTagsUpdate }) => {
     { name: 'VIP', color: '#f59e0b' },
     { name: 'Newsletter', color: '#22c55e' },
     { name: 'Follow Up', color: '#8b5cf6' },
-    { name: 'Investor', color: '#00b8d4' },
+    { name: 'Investor', color: '#ff0000' },
     { name: 'Broker', color: '#ec4899' },
     { name: 'Seller', color: '#10b981' },
     { name: 'Buyer', color: '#3b82f6' },
@@ -93,7 +93,7 @@ const TagManager = ({ contactId, currentTags = [], onTagsUpdate }) => {
 
   const getTagColor = (tagName) => {
     const suggestion = tagSuggestions.find(s => s.name.toLowerCase() === tagName.toLowerCase());
-    return suggestion?.color || '#00b8d4';
+    return suggestion?.color || '#ff0000';
   };
 
   return (
@@ -106,10 +106,10 @@ const TagManager = ({ contactId, currentTags = [], onTagsUpdate }) => {
           onClick={() => setShowAddTag(!showAddTag)}
           style={{
             padding: '4px 10px',
-            background: 'rgba(0, 184, 212, 0.1)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
+            background: 'rgba(255, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 0, 0, 0.3)',
             borderRadius: '6px',
-            color: '#00b8d4',
+            color: '#ff0000',
             fontSize: '12px',
             cursor: 'pointer',
             display: 'flex',
@@ -125,8 +125,8 @@ const TagManager = ({ contactId, currentTags = [], onTagsUpdate }) => {
       {/* Add New Tag */}
       {showAddTag && (
         <div className="mb-3 p-3" style={{
-          background: 'rgba(0, 184, 212, 0.05)',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
+          background: 'rgba(255, 0, 0, 0.05)',
+          border: '1px solid rgba(255, 0, 0, 0.2)',
           borderRadius: '6px'
         }}>
           <input
@@ -182,7 +182,7 @@ const TagManager = ({ contactId, currentTags = [], onTagsUpdate }) => {
               style={{
                 flex: 1,
                 padding: '6px 12px',
-                background: '#00b8d4',
+                background: '#ff0000',
                 color: '#000',
                 border: 'none',
                 borderRadius: '4px',

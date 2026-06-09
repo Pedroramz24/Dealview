@@ -29,8 +29,10 @@ class EventCreate(BaseModel):
     all_day: Optional[bool] = False
     deal_id: Optional[str] = None
     contact_id: Optional[str] = None
-    event_type: Optional[str] = "meeting"  # meeting, call, tour, deadline, other
-    color: Optional[str] = "#00b8d4"
+    event_type: Optional[str] = "meeting"
+    color: Optional[str] = "#ff0000"
+    recurrence_rule: Optional[str] = None  # none, daily, weekly, biweekly, monthly
+    recurrence_end: Optional[str] = None
 
 
 class EventUpdate(BaseModel):
@@ -43,6 +45,8 @@ class EventUpdate(BaseModel):
     contact_id: Optional[str] = None
     event_type: Optional[str] = None
     color: Optional[str] = None
+    recurrence_rule: Optional[str] = None
+    recurrence_end: Optional[str] = None
 
 
 # ============================================================================
@@ -178,7 +182,9 @@ async def create_event(
             "deal_id": event.deal_id,
             "contact_id": event.contact_id,
             "event_type": event.event_type or "meeting",
-            "color": event.color or "#00b8d4"
+            "color": event.color or "#ff0000",
+            "recurrence_rule": event.recurrence_rule,
+            "recurrence_end": event.recurrence_end,
         }
         
         response = supabase.table('calendar_events').insert(event_data).execute()

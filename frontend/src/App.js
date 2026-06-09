@@ -14,6 +14,8 @@ import Pipeline from './pages/Pipeline';
 import Team from './pages/Team';
 import CalendarView from './pages/Calendar';
 import Settings from './pages/Settings';
+import Portals from './pages/Portals';
+import PortalDetail from './pages/PortalDetail';
 
 // Layouts
 import MainLayout from './components/MainLayout';
@@ -21,6 +23,12 @@ import MainLayout from './components/MainLayout';
 // Public Pages
 import PublicShare from './pages/PublicShare';
 import ResetPassword from './pages/ResetPassword';
+
+// Investor Portal Pages
+import PortalLogin from './pages/PortalLogin';
+import PortalMap from './pages/PortalMap';
+import PortalDealDetail from './pages/PortalDealDetail';
+import PortalLayout from './components/PortalLayout';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -96,7 +104,7 @@ function App() {
         minHeight: '100vh',
         background: '#000'
       }}>
-        <div style={{ color: '#00b8d4' }}>Loading...</div>
+        <div style={{ color: '#ff0000' }}>Loading...</div>
       </div>
     );
   }
@@ -112,6 +120,13 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/share/:dealId" element={<PublicShare />} />
 
+          {/* Investor Portal Routes (separate auth, no Supabase JWT) */}
+          <Route path="/portal/:portalId" element={<PortalLogin />} />
+          <Route path="/portal/:portalId/*" element={<PortalLayout />}>
+            <Route path="map" element={<PortalMap />} />
+            <Route path="deal/:dealId" element={<PortalDealDetail />} />
+          </Route>
+
           {/* Protected Routes - Main CRM */}
           <Route
             path="/"
@@ -125,6 +140,8 @@ function App() {
             <Route path="team" element={<Team />} />
             <Route path="calendar" element={<CalendarView />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="portals" element={<Portals />} />
+            <Route path="portals/:portalId" element={<PortalDetail />} />
           </Route>
 
           {/* Default redirect */}

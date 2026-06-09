@@ -14,12 +14,12 @@ import requests
 import os
 
 # Get auth token from Supabase
-SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0"
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://contact-mgmt-v1.preview.emergentagent.com')
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://image-upload-fix-30.preview.emergentagent.com')
 
-TEST_EMAIL = "test@test.com"
-TEST_PASSWORD = "test1234"
+TEST_EMAIL = os.environ.get("TEST_EMAIL", "")
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "")
 
 
 def get_auth_token():

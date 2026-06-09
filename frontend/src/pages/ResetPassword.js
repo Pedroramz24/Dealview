@@ -108,14 +108,14 @@ const ResetPassword = () => {
               width: '64px',
               height: '64px',
               margin: '0 auto 16px',
-              background: 'rgba(0, 184, 212, 0.1)',
+              background: 'rgba(255, 0, 0, 0.1)',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid rgba(0, 184, 212, 0.3)'
+              border: '1px solid rgba(255, 0, 0, 0.3)'
             }}>
-              <Lock size={32} style={{ color: '#00b8d4' }} />
+              <Lock size={32} style={{ color: '#ff0000' }} />
             </div>
             <h2 style={{
               fontSize: '24px',
@@ -223,7 +223,7 @@ const ResetPassword = () => {
               className="w-full"
               disabled={loading}
               style={{
-                background: loading ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, #00b8d4 0%, #0095b3 100%)',
+                background: loading ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, #ff0000 0%, #0095b3 100%)',
                 color: '#ffffff',
                 padding: '12px',
                 fontSize: '15px',

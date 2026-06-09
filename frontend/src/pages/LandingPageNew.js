@@ -308,7 +308,7 @@ const LandingPageNew = () => {
             </p>
             <p style={{
               fontSize: 'clamp(13px, 1.5vw, 15px)',
-              color: 'rgba(0, 184, 212, 0.9)',
+              color: 'rgba(255, 0, 0, 0.9)',
               fontWeight: '600',
               letterSpacing: '0.5px'
             }}>
@@ -330,7 +330,7 @@ const LandingPageNew = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)',
               position: 'relative',
               minHeight: '420px',
               display: 'flex',
@@ -343,23 +343,23 @@ const LandingPageNew = () => {
                 width: '80px',
                 height: '80px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
+                background: 'radial-gradient(circle, rgba(255, 0, 0, 0.4) 0%, rgba(255, 0, 0, 0.1) 70%)',
+                border: '2px solid rgba(255, 0, 0, 0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 40px rgba(255, 0, 0, 0.4)'
               }}>
-                <Shield size={36} color="#00b8d4" />
+                <Shield size={36} color="#ff0000" />
               </div>
 
               {/* Verified User Badges */}
               <div style={{ marginBottom: '32px', width: '100%' }}>
                 {['Broker', 'Buyer', 'Owner'].map((role, idx) => (
                   <div key={idx} style={{
-                    background: 'rgba(0, 184, 212, 0.12)',
-                    border: '1px solid rgba(0, 184, 212, 0.25)',
+                    background: 'rgba(255, 0, 0, 0.12)',
+                    border: '1px solid rgba(255, 0, 0, 0.25)',
                     borderRadius: '12px',
                     padding: '12px 16px',
                     marginBottom: '10px',
@@ -371,14 +371,14 @@ const LandingPageNew = () => {
                       width: '32px',
                       height: '32px',
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3), rgba(100, 200, 255, 0.3))',
-                      border: '2px solid rgba(0, 184, 212, 0.5)'
+                      background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(100, 200, 255, 0.3))',
+                      border: '2px solid rgba(255, 0, 0, 0.5)'
                     }} />
                     <div style={{ flex: 1, textAlign: 'left' }}>
                       <div style={{ fontSize: '14px', color: '#fff', fontWeight: '600' }}>
                         {role} Verified
                       </div>
-                      <div style={{ fontSize: '11px', color: 'rgba(0, 184, 212, 0.8)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ fontSize: '11px', color: 'rgba(255, 0, 0, 0.8)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <CheckCircle size={12} />
                         Active
                       </div>
@@ -414,7 +414,7 @@ const LandingPageNew = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)',
               position: 'relative',
               minHeight: '420px',
               display: 'flex',
@@ -427,37 +427,37 @@ const LandingPageNew = () => {
                 width: '80px',
                 height: '80px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
+                background: 'radial-gradient(circle, rgba(255, 0, 0, 0.4) 0%, rgba(255, 0, 0, 0.1) 70%)',
+                border: '2px solid rgba(255, 0, 0, 0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 40px rgba(255, 0, 0, 0.4)'
               }}>
-                <TrendingUp size={36} color="#00b8d4" />
+                <TrendingUp size={36} color="#ff0000" />
               </div>
 
               {/* Pipeline Stages Flowchart */}
               <div style={{ marginBottom: '32px', width: '100%' }}>
                 {[
-                  { stage: 'Discovery', status: 'Active', color: '#00b8d4' },
+                  { stage: 'Discovery', status: 'Active', color: '#ff0000' },
                   { stage: 'NCND Signed', status: 'Completed', color: '#10b981' },
-                  { stage: 'Due Diligence', status: 'In Progress', color: '#00b8d4' },
+                  { stage: 'Due Diligence', status: 'In Progress', color: '#ff0000' },
                   { stage: 'Close', status: 'Pending', color: '#6b7280' }
                 ].map((item, idx) => (
-                  <div key={idx} style={{ marginBottom: '8px' }}>
+                  <div key={item.stage} style={{ marginBottom: '8px' }}>
                     <div style={{
                       background: item.status === 'Completed' 
                         ? 'rgba(16, 185, 129, 0.15)' 
                         : item.status === 'Active' || item.status === 'In Progress'
-                        ? 'rgba(0, 184, 212, 0.15)'
+                        ? 'rgba(255, 0, 0, 0.15)'
                         : 'rgba(100, 100, 100, 0.1)',
                       border: `1px solid ${
                         item.status === 'Completed' 
                           ? 'rgba(16, 185, 129, 0.3)' 
                           : item.status === 'Active' || item.status === 'In Progress'
-                          ? 'rgba(0, 184, 212, 0.3)'
+                          ? 'rgba(255, 0, 0, 0.3)'
                           : 'rgba(100, 100, 100, 0.2)'
                       }`,
                       borderRadius: '10px',
@@ -483,7 +483,7 @@ const LandingPageNew = () => {
                       <div style={{
                         width: '2px',
                         height: '12px',
-                        background: 'rgba(0, 184, 212, 0.3)',
+                        background: 'rgba(255, 0, 0, 0.3)',
                         margin: '0 auto'
                       }} />
                     )}
@@ -518,7 +518,7 @@ const LandingPageNew = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)',
               position: 'relative',
               minHeight: '420px',
               display: 'flex',
@@ -531,29 +531,29 @@ const LandingPageNew = () => {
                 width: '80px',
                 height: '80px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
+                background: 'radial-gradient(circle, rgba(255, 0, 0, 0.4) 0%, rgba(255, 0, 0, 0.1) 70%)',
+                border: '2px solid rgba(255, 0, 0, 0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 40px rgba(255, 0, 0, 0.4)'
               }}>
-                <Users size={36} color="#00b8d4" />
+                <Users size={36} color="#ff0000" />
               </div>
 
               {/* Role Dashboards */}
               <div style={{ marginBottom: '32px', width: '100%' }}>
                 {[
-                  { icon: Building2, role: 'Broker', color: '#00b8d4' },
+                  { icon: Building2, role: 'Broker', color: '#ff0000' },
                   { icon: Users, role: 'Buyer', color: '#3063ff' },
                   { icon: Award, role: 'Owner', color: '#10b981' }
                 ].map((item, idx) => {
                   const IconComponent = item.icon;
                   return (
-                    <div key={idx} style={{
-                      background: `rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.12)`,
-                      border: `1px solid rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.25)`,
+                    <div key={item.role} style={{
+                      background: `rgba(${item.color === '#ff0000' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.12)`,
+                      border: `1px solid rgba(${item.color === '#ff0000' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.25)`,
                       borderRadius: '10px',
                       padding: '14px 18px',
                       marginBottom: '10px',
@@ -565,7 +565,7 @@ const LandingPageNew = () => {
                         width: '36px',
                         height: '36px',
                         borderRadius: '8px',
-                        background: `rgba(${item.color === '#00b8d4' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.2)`,
+                        background: `rgba(${item.color === '#ff0000' ? '0, 184, 212' : item.color === '#3063ff' ? '48, 99, 255' : '16, 185, 129'}, 0.2)`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -607,7 +607,7 @@ const LandingPageNew = () => {
               padding: '40px 32px',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)',
               position: 'relative',
               minHeight: '420px',
               display: 'flex',
@@ -620,15 +620,15 @@ const LandingPageNew = () => {
                 width: '80px',
                 height: '80px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.4) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.5)',
+                background: 'radial-gradient(circle, rgba(255, 0, 0, 0.4) 0%, rgba(255, 0, 0, 0.1) 70%)',
+                border: '2px solid rgba(255, 0, 0, 0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '32px',
-                boxShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 40px rgba(255, 0, 0, 0.4)'
               }}>
-                <FileCheck size={36} color="#00b8d4" />
+                <FileCheck size={36} color="#ff0000" />
               </div>
 
               {/* Integrated Tools List */}
@@ -640,7 +640,7 @@ const LandingPageNew = () => {
                   { tool: 'Documents', emoji: '📄' },
                   { tool: 'Calendar', emoji: '📅' }
                 ].map((item, idx) => (
-                  <div key={idx} style={{
+                  <div key={item.tool} style={{
                     background: 'rgba(255, 255, 255, 0.04)',
                     border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
@@ -696,7 +696,7 @@ const LandingPageNew = () => {
           transform: 'translate(-50%, -50%)',
           width: '1000px',
           height: '1000px',
-          background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(255, 0, 0, 0.15) 0%, transparent 70%)',
           pointerEvents: 'none',
           zIndex: 0,
           filter: 'blur(80px)'
@@ -745,7 +745,7 @@ const LandingPageNew = () => {
                 height: 'auto',
                 display: 'block',
                 borderRadius: '20px',
-                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(0, 184, 212, 0.3)',
+                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(255, 0, 0, 0.3)',
                 border: '1px solid rgba(255, 255, 255, 0.1)'
               }}
             />
@@ -789,8 +789,8 @@ const LandingPageNew = () => {
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               padding: '40px 32px',
               borderRadius: '20px',
-              border: '1px solid rgba(0, 184, 212, 0.2)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              border: '1px solid rgba(255, 0, 0, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)',
               textAlign: 'center',
               transition: 'all 0.3s'
             }}>
@@ -798,15 +798,15 @@ const LandingPageNew = () => {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 0, 0, 0.3) 0%, rgba(255, 0, 0, 0.1) 70%)',
+                border: '2px solid rgba(255, 0, 0, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(255, 0, 0, 0.4)'
               }}>
-                <Building2 size={32} color="#00b8d4" />
+                <Building2 size={32} color="#ff0000" />
               </div>
               <h3 style={{
                 fontSize: '24px',
@@ -917,9 +917,9 @@ const LandingPageNew = () => {
       {/* SECTION 6 - PRICING & CTA */}
       <section style={{
         padding: '120px clamp(20px, 5vw, 60px)',
-        background: 'rgba(0, 184, 212, 0.03)',
-        borderTop: '1px solid rgba(0, 184, 212, 0.15)',
-        borderBottom: '1px solid rgba(0, 184, 212, 0.15)',
+        background: 'rgba(255, 0, 0, 0.03)',
+        borderTop: '1px solid rgba(255, 0, 0, 0.15)',
+        borderBottom: '1px solid rgba(255, 0, 0, 0.15)',
         position: 'relative',
         zIndex: 20,
         textAlign: 'center'
@@ -947,8 +947,8 @@ const LandingPageNew = () => {
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           padding: '60px 80px',
           borderRadius: '24px',
-          border: '2px solid rgba(0, 184, 212, 0.3)',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+          border: '2px solid rgba(255, 0, 0, 0.3)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(255, 0, 0, 0.2), inset 0 0 60px rgba(255, 0, 0, 0.05)',
           minWidth: '400px'
         }}>
           <div style={{
@@ -956,7 +956,7 @@ const LandingPageNew = () => {
             fontWeight: '800',
             color: '#fff',
             marginBottom: '12px',
-            textShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+            textShadow: '0 0 40px rgba(255, 0, 0, 0.4)'
           }}>
             $50
             <span style={{ fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: '600', color: 'rgba(255,255,255,0.6)' }}>/month</span>
@@ -975,14 +975,14 @@ const LandingPageNew = () => {
             style={{
               width: '100%',
               padding: '18px',
-              background: '#00b8d4',
+              background: '#ff0000',
               border: 'none',
               borderRadius: '12px',
               color: '#000',
               fontSize: 'clamp(16px, 2vw, 18px)',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 24px rgba(0, 184, 212, 0.3)',
+              boxShadow: '0 0 40px rgba(255, 0, 0, 0.6), 0 8px 24px rgba(255, 0, 0, 0.3)',
               transition: 'all 0.3s',
               display: 'inline-flex',
               alignItems: 'center',
@@ -991,11 +991,11 @@ const LandingPageNew = () => {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.8), 0 12px 32px rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.boxShadow = '0 0 60px rgba(255, 0, 0, 0.8), 0 12px 32px rgba(255, 0, 0, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.6), 0 8px 24px rgba(0, 184, 212, 0.3)';
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(255, 0, 0, 0.6), 0 8px 24px rgba(255, 0, 0, 0.3)';
             }}
           >
             Get Started

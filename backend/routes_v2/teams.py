@@ -243,15 +243,23 @@ async def list_team_members(
             '*, user_profiles(id, email, full_name, avatar_url)'
         ).eq('team_id', team_id).execute()
         
+        # Batch fetch all deals for all team members in a single query
+        all_member_ids = [m['user_id'] for m in (members_response.data or [])]
+        deals_by_owner = {}
+        if all_member_ids:
+            all_deals_response = supabase.table('deals').select('id, asking_price, status, owner_id').in_('owner_id', all_member_ids).execute()
+            for deal in (all_deals_response.data or []):
+                owner = deal['owner_id']
+                if owner not in deals_by_owner:
+                    deals_by_owner[owner] = []
+                deals_by_owner[owner].append(deal)
+
         members = []
         for member in (members_response.data or []):
             profile = member.get('user_profiles', {})
             user_id = member['user_id']
             
-            # Get deals stats for this member
-            deals_response = supabase.table('deals').select('id, asking_price, status').eq('owner_id', user_id).execute()
-            deals = deals_response.data or []
-            
+            deals = deals_by_owner.get(user_id, [])
             total_deals = len(deals)
             active_deals = len([d for d in deals if d.get('status') == 'active'])
             total_value = sum([d.get('asking_price', 0) or 0 for d in deals])
@@ -309,32 +317,44 @@ async def get_team_stats(
         ).eq('team_id', team_id).execute()
         members = members_response.data or []
         
-        # Compute agent stats
-        agent_stats = []
+        # Team-level stats — add closed + activity counts
+        closed_count = len([d for d in team_deals if (d.get('status') or '').lower() in ('closed', 'closed_won')])
+        agent_stats_with_counts = []
         for member in members:
             member_deals = [d for d in team_deals if d.get('owner_id') == member.get('user_id')]
             profile = member.get('user_profiles', {}) or {}
-            agent_stats.append({
+            agent_stats_with_counts.append({
                 "user_id": member.get('user_id'),
                 "full_name": profile.get('full_name', ''),
                 "email": profile.get('email', ''),
                 "avatar_url": profile.get('avatar_url'),
                 "role": member.get('role', 'agent'),
+                "active_deals": len([d for d in member_deals if (d.get('status') or 'active').lower() not in ('closed', 'closed_won')]),
+                "closed_this_quarter": len([d for d in member_deals if (d.get('status') or '').lower() in ('closed', 'closed_won')]),
+                "pipeline_value": sum(d.get('asking_price', 0) or 0 for d in member_deals),
+                "primary_asset_focus": next(
+                    (at for at, _ in sorted(
+                        {d.get('asset_type'): sum(1 for x in member_deals if x.get('asset_type') == d.get('asset_type'))
+                         for d in member_deals if d.get('asset_type')}.items(),
+                        key=lambda x: -x[1]
+                    )), None
+                ),
                 "total_deals": len(member_deals),
                 "total_value": sum(d.get('asking_price', 0) or 0 for d in member_deals)
             })
-        
-        # Team-level stats
+
         team_stats = {
             "total_members": len(members),
             "total_active_deals": len(team_deals),
-            "total_pipeline_value": sum(d.get('asking_price', 0) or 0 for d in team_deals)
+            "total_pipeline_value": sum(d.get('asking_price', 0) or 0 for d in team_deals),
+            "closed_this_month": closed_count,
+            "team_activity": len(team_deals),
         }
-        
+
         return {
             "success": True,
             "team_stats": team_stats,
-            "agent_stats": agent_stats,
+            "agent_stats": agent_stats_with_counts,
             "team_deals": team_deals
         }
     except HTTPException:

@@ -10,7 +10,7 @@ const TemplateSelector = ({ isOpen, onClose, onSelectTemplate }) => {
       name: 'Property Listing',
       description: 'Showcase a commercial property with images and details',
       icon: Home,
-      color: '#00b8d4',
+      color: '#ff0000',
       design: {
         // This would be the Unlayer design JSON for a property listing template
         // For now, we'll start with blank and user can customize
@@ -25,7 +25,7 @@ const TemplateSelector = ({ isOpen, onClose, onSelectTemplate }) => {
                     text: 'New Property Available',
                     headingType: 'h1',
                     textAlign: 'center',
-                    color: '#00b8d4'
+                    color: '#ff0000'
                   }
                 }]
               }]
@@ -179,8 +179,8 @@ const TemplateSelector = ({ isOpen, onClose, onSelectTemplate }) => {
           onClick={() => onSelectTemplate(null)}
           style={{
             padding: '20px 24px',
-            background: 'rgba(0, 184, 212, 0.1)',
-            border: '2px dashed rgba(0, 184, 212, 0.3)',
+            background: 'rgba(255, 0, 0, 0.1)',
+            border: '2px dashed rgba(255, 0, 0, 0.3)',
             borderRadius: '12px',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
@@ -190,16 +190,16 @@ const TemplateSelector = ({ isOpen, onClose, onSelectTemplate }) => {
             gap: '12px'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
-            e.currentTarget.style.borderColor = '#00b8d4';
+            e.currentTarget.style.background = 'rgba(255, 0, 0, 0.15)';
+            e.currentTarget.style.borderColor = '#ff0000';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
+            e.currentTarget.style.background = 'rgba(255, 0, 0, 0.1)';
+            e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.3)';
           }}
         >
-          <Sparkles size={20} style={{ color: '#00b8d4' }} />
-          <span style={{ color: '#00b8d4', fontSize: '15px', fontWeight: 600 }}>
+          <Sparkles size={20} style={{ color: '#ff0000' }} />
+          <span style={{ color: '#ff0000', fontSize: '15px', fontWeight: 600 }}>
             Start from Scratch (Blank Canvas)
           </span>
         </div>

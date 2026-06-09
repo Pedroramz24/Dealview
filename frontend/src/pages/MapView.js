@@ -8,12 +8,15 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
   Building2, X, ChevronRight, ChevronLeft, Users, 
   Eye, EyeOff, Filter, Layers, Plus, Search, MousePointer, Upload, DollarSign,
-  User, Mail, Phone, Lock, Globe
+  User, Mail, Phone, Lock, Globe, Trash2, MapPin
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { colors, gradients, borderRadius, spacing } from '../styles/designSystem';
+import { assetTypeColors } from '../utils/assetTypeColors';
+import PropertyIntelligencePanel from '../components/PropertyIntelligencePanel';
+import ContactFormPanel from '../components/ContactFormPanel';
 
 // Format number with commas
 const formatNumberInput = (value) => {
@@ -47,21 +50,9 @@ const sidePanelFieldStyle = {
 };
 
 // Asset type colors
-const assetTypeColors = {
-  'Office': '#3b82f6',
-  'Retail': '#10b981',
-  'Industrial': '#f59e0b',
-  'Multifamily': '#8b5cf6',
-  'Land': '#ec4899',
-  'Mixed Use': '#06b6d4',
-  'Hotels': '#a855f7',
-  'Medical': '#14b8a6',
-  'Other': '#6b7280'
-};
-
-// Get color for a deal based on asset type
+// Get pin color for a deal based on asset type — uses shared utility map
 const getDealColor = (deal) => {
-  return assetTypeColors[deal?.asset_type] || assetTypeColors['Other'];
+  return assetTypeColors[deal?.asset_type]?.color || '#6b7280';
 };
 
 // Optimized map styles with prefetch-friendly config
@@ -254,44 +245,21 @@ const DealMarker = React.memo(({ deal, onClick, isTeamDeal }) => {
   
   if (isTeamDeal) {
     return (
-      <div
-        onClick={onClick}
-        style={{
-          width: 0,
-          height: 0,
-          borderLeft: '10px solid transparent',
-          borderRight: '10px solid transparent',
-          borderBottom: `20px solid ${color}`,
-          filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.4))',
-          cursor: 'pointer',
-          transition: 'transform 0.15s ease'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-      />
+      <div onClick={onClick} style={{ cursor: 'pointer', position: 'relative' }}>
+        <svg width="24" height="32" viewBox="0 0 24 32" fill="none">
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 20 12 20s12-11 12-20C24 5.373 18.627 0 12 0z" fill={color} stroke="white" strokeWidth="2"/>
+          <circle cx="12" cy="11" r="4" fill="white" opacity="0.9"/>
+        </svg>
+      </div>
     );
   }
   
   return (
-    <div
-      onClick={onClick}
-      style={{
-        width: '22px',
-        height: '22px',
-        borderRadius: '50%',
-        background: color,
-        border: '2px solid white',
-        boxShadow: '0 2px 6px rgba(0,0,0,0.35)',
-        cursor: 'pointer',
-        transition: 'transform 0.15s ease',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
-      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-    >
-      <Building2 size={10} color="white" />
+    <div onClick={onClick} style={{ cursor: 'pointer', position: 'relative' }}>
+      <svg width="28" height="36" viewBox="0 0 28 36" fill="none">
+        <path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z" fill={color} stroke="white" strokeWidth="2.5"/>
+        <circle cx="14" cy="13" r="5" fill="white" opacity="0.9"/>
+      </svg>
     </div>
   );
 });
@@ -317,7 +285,8 @@ const MapView = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [clickMode, setClickMode] = useState(false); // For click-to-add
-  const [showCreateDeal, setShowCreateDeal] = useState(false);
+  const [showTitlePrompt, setShowTitlePrompt] = useState(false);
+  const [promptTitle, setPromptTitle] = useState('');
   const [pipelines, setPipelines] = useState([]);
   const [pipelineStages, setPipelineStages] = useState([]);
   const [newDeal, setNewDeal] = useState({
@@ -353,8 +322,29 @@ const MapView = () => {
   const [newContact, setNewContact] = useState({ name: '', email: '', phone: '', contact_type: 'Buyer' });
   const [savingContact, setSavingContact] = useState(false);
   
-  // Map viewport
-  const [viewState, setViewState] = useState({
+  // Create deal contact state
+  const [createDealContact, setCreateDealContact] = useState(null); // selected existing contact
+  const [showCreateDealContactForm, setShowCreateDealContactForm] = useState(false);
+  const [createDealNewContact, setCreateDealNewContact] = useState({ name: '', phone: '', email: '', company: '', tag_ids: [] });
+  const [createDealContactSearch, setCreateDealContactSearch] = useState('');
+  const [showCreateDealContactPanel, setShowCreateDealContactPanel] = useState(false);
+
+  // Helper: optimistically update a deal in local state without refetching
+  const updateDealInState = useCallback((dealId, updates) => {
+    setDeals(prev => prev.map(d => d.id === dealId ? { ...d, ...updates } : d));
+  }, []);
+
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    };
+  }, []);
+
+  // Map viewport — uncontrolled for performance (MapLibre handles its own state)
+  const initialViewState = useRef({
     longitude: -98.4936,
     latitude: 29.4241,
     zoom: 10
@@ -434,13 +424,16 @@ const MapView = () => {
         const dealsData = data.deals || [];
         setDeals(dealsData);
         
-        if (dealsData.length > 0 && dealsData[0].latitude && dealsData[0].longitude) {
-          setViewState(prev => ({
-            ...prev,
-            longitude: dealsData[0].longitude,
-            latitude: dealsData[0].latitude,
-            zoom: 12
-          }));
+        // Only center map on first load, never on refetch
+        if (!initialLoadDone && dealsData.length > 0 && dealsData[0].latitude && dealsData[0].longitude) {
+          if (mapRef.current) {
+            mapRef.current.flyTo({
+              center: [dealsData[0].longitude, dealsData[0].latitude],
+              zoom: 12,
+              duration: 1000
+            });
+          }
+          setInitialLoadDone(true);
         }
       }
     } catch (error) {
@@ -518,11 +511,13 @@ const MapView = () => {
     setSuggestions([]);
     setShowSuggestions(false);
     
-    setViewState({
-      longitude: suggestion.longitude,
-      latitude: suggestion.latitude,
-      zoom: 16
-    });
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: [suggestion.longitude, suggestion.latitude],
+        zoom: 16,
+        duration: 1200
+      });
+    }
     
     setNewDeal(prev => ({
       ...prev,
@@ -577,9 +572,9 @@ const MapView = () => {
           }));
         }
         
-        setShowCreateDeal(true);
+        setShowTitlePrompt(true);
         setClickMode(false);
-        toast.success('Location selected');
+        
       }
     } catch (error) {
       console.error('Reverse geocode error:', error);
@@ -589,8 +584,9 @@ const MapView = () => {
         latitude: lngLat.lat,
         longitude: lngLat.lng
       }));
-      setShowCreateDeal(true);
+      setShowTitlePrompt(true);
       setClickMode(false);
+      fetchAllContacts();
     }
   }, [clickMode]);
 
@@ -618,6 +614,8 @@ const MapView = () => {
       if (response.ok) {
         const data = await response.json();
         const fullDeal = data.deal;
+        // Update selectedDeal with full data from API
+        setSelectedDeal({ ...fullDeal, isTeamDeal });
         // Extract contacts from contact_deal_links
         const contacts = (fullDeal.contact_deal_links || [])
           .map(link => link.contacts)
@@ -639,14 +637,11 @@ const MapView = () => {
     }).format(value);
   }, []);
 
-  // Create deal
-  const handleCreateDeal = useCallback(async () => {
-    if (!newDeal.title.trim()) {
-      toast.error('Please enter a deal title');
-      return;
-    }
+  // Quick-create deal: title + location only, then open PropertyIntelligencePanel
+  const handleQuickCreateDeal = useCallback(async () => {
+    const title = promptTitle.trim() || newDeal.address || 'New Deal';
     if (!newDeal.latitude || !newDeal.longitude) {
-      toast.error('Please select a location');
+      toast.error('Please select a location on the map first');
       return;
     }
 
@@ -654,66 +649,39 @@ const MapView = () => {
     try {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
-      
+      const defaultPipeline = pipelines.find(p => p.is_default) || pipelines[0];
+
       const response = await fetch(`${API}/deals`, {
         method: 'POST',
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: newDeal.title,
+          title,
           address: newDeal.address,
           city: newDeal.city,
           state: newDeal.state,
           zip_code: newDeal.zip_code,
-          asset_type: newDeal.asset_type,
           latitude: newDeal.latitude,
           longitude: newDeal.longitude,
-          zoning: newDeal.zoning,
-          pipeline_id: newDeal.pipeline_id || null,
-          pipeline_stage_id: newDeal.pipeline_stage_id || null,
-          asking_price: newDeal.asking_price ? parseFloat(parseFormattedNumber(newDeal.asking_price)) : null,
-          size_sqft: newDeal.size_sqft ? parseFloat(parseFormattedNumber(newDeal.size_sqft)) : null,
-          lot_size: newDeal.lot_size ? parseFloat(parseFormattedNumber(newDeal.lot_size)) : null,
-          year_built: newDeal.year_built ? parseInt(newDeal.year_built) : null,
-          noi: newDeal.noi ? parseFloat(parseFormattedNumber(newDeal.noi)) : null,
-          cap_rate: newDeal.cap_rate ? parseFloat(newDeal.cap_rate) : null,
-          occupancy: newDeal.occupancy ? parseFloat(newDeal.occupancy) : null
+          pipeline_id: defaultPipeline?.id || null,
+          pipeline_stage_id: defaultPipeline?.stages?.[0]?.id || null,
         })
       });
-      
+
       if (response.ok) {
-        toast.success('Deal created successfully');
-        setShowCreateDeal(false);
-        // Reset form but keep default pipeline
-        const defaultPipeline = pipelines.find(p => p.is_default) || pipelines[0];
-        setNewDeal({
-          title: '',
-          address: '',
-          city: '',
-          state: '',
-          zip_code: '',
-          asset_type: 'Office',
-          asking_price: '',
-          size_sqft: '',
-          lot_size: '',
-          ac_size: '',
-          year_built: '',
-          noi: '',
-          cap_rate: '',
-          occupancy: '',
-          zoning: '',
-          pipeline_id: defaultPipeline?.id || '',
-          pipeline_stage_id: defaultPipeline?.stages?.[0]?.id || '',
-          latitude: null,
-          longitude: null
-        });
+        const dealData = await response.json();
+        toast.success('Deal created — fill in the details below');
+        // Close prompt and open PropertyIntelligencePanel immediately
+        setShowTitlePrompt(false);
+        setPromptTitle('');
+        setNewDeal(prev => ({ ...prev, latitude: null, longitude: null, address: '', city: '', state: '', zip_code: '' }));
         setSearchQuery('');
+        if (dealData.deal) {
+          setSelectedDeal({ ...dealData.deal });
+        }
         fetchDeals();
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        toast.error(errorData.detail || 'Failed to create deal');
+        const err = await response.json().catch(() => ({}));
+        toast.error(err.detail || 'Failed to create deal');
       }
     } catch (error) {
       console.error('Error creating deal:', error);
@@ -721,7 +689,7 @@ const MapView = () => {
     } finally {
       setCreatingDeal(false);
     }
-  }, [newDeal, fetchDeals]);
+  }, [promptTitle, newDeal, pipelines, fetchDeals]);
 
   // Toggle click mode
   const toggleClickMode = useCallback(() => {
@@ -742,10 +710,13 @@ const MapView = () => {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ [field]: value })
       });
-      if (response.ok) { fetchDeals(); }
+      if (response.ok) {
+        // Optimistic: update only this deal in local state, no full refetch
+        updateDealInState(selectedDeal.id, { [field]: value });
+      }
       else { toast.error('Failed to save'); }
     } catch (error) { toast.error('Failed to save'); }
-  }, [selectedDeal, fetchDeals]);
+  }, [selectedDeal, updateDealInState]);
 
   const handleSelectedDealNumericBlur = useCallback((field) => {
     if (!selectedDeal) return;
@@ -787,12 +758,16 @@ const MapView = () => {
         const data = await response.json();
         const updatedImages = selectedDeal.image_urls ? [...selectedDeal.image_urls, data.image_url] : [data.image_url];
         setSelectedDeal(prev => ({ ...prev, image_urls: updatedImages }));
-        fetchDeals();
-        toast.success('Image uploaded');
-      } else { toast.error('Failed to upload'); }
-    } catch (err) { toast.error('Failed to upload'); }
+        // Optimistic update — no full refetch
+        updateDealInState(selectedDeal.id, { image_urls: updatedImages });
+        
+      } else {
+        const errData = await response.json().catch(() => null);
+        toast.error(errData?.detail || `Upload failed (${response.status})`);
+      }
+    } catch (err) { toast.error(`Upload error: ${err.message}`); }
     finally { setUploadingSidePanelImage(false); e.target.value = ''; }
-  }, [selectedDeal, fetchDeals]);
+  }, [selectedDeal, updateDealInState]);
 
   // --- Side panel: toggle team visibility ---
   const handleToggleTeamVisibility = useCallback(async (shared) => {
@@ -807,13 +782,38 @@ const MapView = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setSelectedDeal(prev => ({ ...prev, team_id: shared ? (data.deal?.team_id || 'shared') : null }));
-        fetchDeals();
-        fetchTeamData();
-        toast.success(shared ? 'Shared with team' : 'Set to private');
+        const newTeamId = shared ? (data.deal?.team_id || 'shared') : null;
+        setSelectedDeal(prev => ({ ...prev, team_id: newTeamId }));
+        updateDealInState(selectedDeal.id, { team_id: newTeamId });
+        // Optimistically update teamDeals without refetching
+        if (shared) {
+          setTeamDeals(prev => [...prev.filter(d => d.id !== selectedDeal.id), { ...selectedDeal, team_id: newTeamId }]);
+        } else {
+          setTeamDeals(prev => prev.filter(d => d.id !== selectedDeal.id));
+        }
       } else { toast.error('Failed to update visibility'); }
     } catch (err) { toast.error('Failed to update visibility'); }
-  }, [selectedDeal, fetchDeals]);
+  }, [selectedDeal, updateDealInState]);
+
+  // --- Delete deal from side panel ---
+  const handleDeleteSelectedDeal = useCallback(async () => {
+    if (!selectedDeal || selectedDeal.isTeamDeal) return;
+    if (!window.confirm(`Delete "${selectedDeal.title || selectedDeal.address}"? This cannot be undone.`)) return;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${selectedDeal.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        setDeals(prev => prev.filter(d => d.id !== selectedDeal.id));
+        setTeamDeals(prev => prev.filter(d => d.id !== selectedDeal.id));
+        setSelectedDeal(null);
+        toast.success('Deal deleted');
+      } else { toast.error('Failed to delete deal'); }
+    } catch { toast.error('Failed to delete deal'); }
+  }, [selectedDeal]);
 
   // --- Contact management from side panel ---
   const fetchAllContacts = useCallback(async () => {
@@ -845,7 +845,7 @@ const MapView = () => {
         handleMarkerClick(selectedDeal, selectedDeal.isTeamDeal);
         setShowContactSearch(false);
         setContactSearchQuery('');
-        toast.success('Contact linked');
+        
       } else { toast.error('Failed to link contact'); }
     } catch (err) { toast.error('Failed to link contact'); }
   }, [selectedDeal, handleMarkerClick]);
@@ -861,7 +861,7 @@ const MapView = () => {
       });
       if (response.ok) {
         setDealContacts(prev => prev.filter(c => c.id !== contactId));
-        toast.success('Contact unlinked');
+        
       } else { toast.error('Failed to unlink contact'); }
     } catch (err) { toast.error('Failed to unlink contact'); }
   }, [selectedDeal]);
@@ -891,7 +891,7 @@ const MapView = () => {
       setShowNewContactForm(false);
       setShowContactSearch(false);
       setNewContact({ name: '', email: '', phone: '', contact_type: 'Buyer' });
-      toast.success('Contact created & linked');
+      
     } catch (err) { toast.error('Failed to create contact'); }
     finally { setSavingContact(false); }
   }, [newContact, selectedDeal, handleMarkerClick]);
@@ -920,7 +920,7 @@ const MapView = () => {
         key={deal.id}
         longitude={deal.longitude}
         latitude={deal.latitude}
-        anchor="center"
+        anchor="bottom"
       >
         <DealMarker 
           deal={deal} 
@@ -938,7 +938,7 @@ const MapView = () => {
         key={`team-${deal.id}`}
         longitude={deal.longitude}
         latitude={deal.latitude}
-        anchor="center"
+        anchor="bottom"
       >
         <DealMarker 
           deal={deal} 
@@ -953,13 +953,45 @@ const MapView = () => {
   // The previous prefetchTiles function created Image() requests that competed
   // with MapLibre for the browser's 6-connection-per-domain limit, causing lag.
 
+  // Callbacks for the unified PropertyIntelligencePanel
+  const handlePanelClose = useCallback(() => {
+    setSelectedDeal(null);
+  }, []);
+
+  const handlePanelUpdate = useCallback(async () => {
+    if (!selectedDeal) return;
+    // Re-fetch this specific deal from the API to get fresh, authoritative data
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (!token) return;
+      const response = await fetch(`${API}/deals/${selectedDeal.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const result = await response.json();
+        const freshDeal = { ...result.deal, isTeamDeal: selectedDeal.isTeamDeal };
+        setSelectedDeal(freshDeal);
+        updateDealInState(selectedDeal.id, freshDeal);
+      }
+    } catch (err) {
+      // Fallback: just spread current selectedDeal (already mutated by panel)
+      updateDealInState(selectedDeal.id, { ...selectedDeal });
+    }
+  }, [selectedDeal, updateDealInState]);
+
+  const handlePanelDealDeleted = useCallback((deletedId) => {
+    setDeals(prev => prev.filter(d => d.id !== deletedId));
+    setTeamDeals(prev => prev.filter(d => d.id !== deletedId));
+    setSelectedDeal(null);
+  }, []);
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       {/* Map */}
       <Map
         ref={mapRef}
-        {...viewState}
-        onMove={evt => setViewState(evt.viewState)}
+        initialViewState={initialViewState.current}
         onClick={handleMapClick}
         style={{ 
           width: '100%', 
@@ -974,7 +1006,7 @@ const MapView = () => {
         fadeDuration={0}
         maxTileCacheSize={800}
         refreshExpiredTiles={false}
-        scrollZoom={{ speed: 1.5, smooth: true }}
+        scrollZoom={{ speed: 1.0 }}
         touchZoomRotate={{ around: 'center' }}
         dragRotate={false}
       >
@@ -984,7 +1016,7 @@ const MapView = () => {
         {teamMarkers}
         
         {/* Temporary marker for new deal placement */}
-        {showCreateDeal && newDeal.latitude && newDeal.longitude && (
+        {showTitlePrompt && newDeal.latitude && newDeal.longitude && (
           <Marker
             longitude={newDeal.longitude}
             latitude={newDeal.latitude}
@@ -996,8 +1028,8 @@ const MapView = () => {
                 height: '28px',
                 borderRadius: '50%',
                 background: getDealColor(newDeal),
-                border: '3px solid #00b8d4',
-                boxShadow: '0 0 12px rgba(0, 184, 212, 0.6), 0 2px 8px rgba(0,0,0,0.4)',
+                border: '3px solid #ff0000',
+                boxShadow: '0 0 12px rgba(255, 0, 0, 0.6), 0 2px 8px rgba(0,0,0,0.4)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -1052,7 +1084,7 @@ const MapView = () => {
         position: 'absolute',
         top: '16px',
         left: '16px',
-        right: selectedDeal || showCreateDeal ? '420px' : '16px',
+        right: selectedDeal ? '420px' : '16px',
         display: 'flex',
         gap: '12px',
         zIndex: 10,
@@ -1105,7 +1137,7 @@ const MapView = () => {
             }}>
               {suggestions.map((suggestion, idx) => (
                 <button
-                  key={idx}
+                  key={suggestion.place_id || suggestion.display_name || idx}
                   onClick={() => handleSelectSuggestion(suggestion)}
                   style={{
                     width: '100%',
@@ -1149,10 +1181,10 @@ const MapView = () => {
             value={assetTypeFilter}
             onChange={(e) => setAssetTypeFilter(e.target.value)}
             style={{
-              background: assetTypeFilter ? 'rgba(0,184,212,0.15)' : 'rgba(0,0,0,0.8)',
+              background: assetTypeFilter ? 'rgba(212,18,18,0.15)' : 'rgba(0,0,0,0.8)',
               backdropFilter: 'blur(10px)',
-              border: `1px solid ${assetTypeFilter ? 'rgba(0,184,212,0.5)' : colors.border}`,
-              color: assetTypeFilter ? '#00d4ff' : colors.textPrimary,
+              border: `1px solid ${assetTypeFilter ? 'rgba(212,18,18,0.5)' : colors.border}`,
+              color: assetTypeFilter ? '#ff0000' : colors.textPrimary,
               padding: '8px 12px',
               borderRadius: borderRadius.md,
               fontSize: '14px',
@@ -1182,16 +1214,16 @@ const MapView = () => {
           Click to Add
         </Button>
 
-        {/* Add Deal Button */}
+        {/* Add Deal Button — activates click mode to place on map */}
         <Button
-          onClick={() => setShowCreateDeal(true)}
+          onClick={toggleClickMode}
           style={{
-            background: gradients.primaryButton,
+            background: clickMode ? colors.primary : gradients.primaryButton,
             border: 'none'
           }}
         >
           <Plus size={18} style={{ marginRight: '8px' }} />
-          Add Deal
+          {clickMode ? 'Click Map to Place' : 'Add Deal'}
         </Button>
       </div>
 
@@ -1266,7 +1298,7 @@ const MapView = () => {
       <div style={{
         position: 'absolute',
         bottom: '40px',
-        right: selectedDeal || showCreateDeal ? '420px' : '60px',
+        right: selectedDeal ? '520px' : '60px',
         background: 'rgba(0,0,0,0.8)',
         backdropFilter: 'blur(10px)',
         border: `1px solid ${colors.border}`,
@@ -1279,10 +1311,10 @@ const MapView = () => {
           Asset Types
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          {Object.entries(assetTypeColors).map(([type, color]) => (
+          {Object.entries(assetTypeColors).map(([type, val]) => (
             <div key={type} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: color }} />
-              <span style={{ color: colors.textSecondary, fontSize: '12px' }}>{type}</span>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: val.color, flexShrink: 0 }} />
+              <span style={{ color: colors.textSecondary, fontSize: '11px' }}>{type}</span>
             </div>
           ))}
         </div>
@@ -1301,929 +1333,97 @@ const MapView = () => {
         )}
       </div>
 
-      {/* Create Deal Panel */}
-      {showCreateDeal && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '400px',
-          height: '100%',
-          background: 'rgba(12, 12, 12, 0.95)',
-          backdropFilter: 'blur(20px)',
-          borderLeft: `1px solid ${colors.border}`,
-          zIndex: 20,
-          display: 'flex',
-          flexDirection: 'column',
-          animation: 'slideIn 0.3s ease'
-        }}>
-          <div style={{
-            padding: '16px',
-            borderBottom: `1px solid ${colors.border}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <h3 style={{ color: colors.textPrimary, fontSize: '18px', fontWeight: '600' }}>
-              Create New Deal
+      {/* Minimal title prompt — replaces old Create Deal form */}
+      {showTitlePrompt && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1060,
+            background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          onClick={() => { setShowTitlePrompt(false); setClickMode(false); setPromptTitle(''); }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%', maxWidth: '480px', margin: '0 16px',
+              background: 'rgba(11,12,14,0.98)', border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: '16px', padding: '32px',
+              boxShadow: '0 24px 60px rgba(0,0,0,0.8)',
+            }}
+          >
+            <h3 style={{ color: '#fff', fontSize: '20px', fontWeight: '700', marginBottom: '6px', letterSpacing: '-0.02em' }}>
+              Name Your Deal
             </h3>
-            <button
-              onClick={() => { setShowCreateDeal(false); setClickMode(false); }}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: colors.textTertiary,
-                cursor: 'pointer',
-                padding: '4px'
-              }}
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
-            <p style={{ color: colors.textTertiary, fontSize: '13px', marginBottom: '16px' }}>
-              Search for an address above or click on the map to set location.
-            </p>
-
-            {newDeal.latitude && newDeal.longitude && (
-              <div style={{
-                background: 'rgba(0, 184, 212, 0.1)',
-                borderRadius: borderRadius.sm,
-                padding: '12px',
-                marginBottom: '16px'
-              }}>
-                <div style={{ color: colors.primary, fontSize: '13px', fontWeight: '500' }}>
-                  Location Set
-                </div>
-                <div style={{ color: colors.textSecondary, fontSize: '12px', marginTop: '4px' }}>
-                  {newDeal.address ? `${newDeal.address}, ${newDeal.city}, ${newDeal.state} ${newDeal.zip_code}` : `${newDeal.latitude.toFixed(5)}, ${newDeal.longitude.toFixed(5)}`}
-                </div>
-              </div>
+            {newDeal.address && (
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <MapPin size={12} style={{ color: colors.primary, flexShrink: 0 }} />
+                {newDeal.address}{newDeal.city ? `, ${newDeal.city}` : ''}{newDeal.state ? `, ${newDeal.state}` : ''}
+              </p>
             )}
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Deal Title *</Label>
-                <Input
-                  value={newDeal.title}
-                  onChange={(e) => setNewDeal(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="e.g., Downtown Office Building"
-                  style={{
-                    marginTop: '6px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: `1px solid ${colors.border}`,
-                    color: colors.textPrimary
-                  }}
-                />
-              </div>
-
-              <div>
-                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Asset Type</Label>
-                <select
-                  value={newDeal.asset_type}
-                  onChange={(e) => setNewDeal(prev => ({ ...prev, asset_type: e.target.value }))}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    marginTop: '6px',
-                    borderRadius: '6px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: `1px solid ${colors.border}`,
-                    color: colors.textPrimary,
-                    fontSize: '14px'
-                  }}
-                >
-                  {Object.keys(assetTypeColors).map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Pipeline & Stage Selection */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Pipeline</Label>
-                  <select
-                    value={newDeal.pipeline_id}
-                    onChange={(e) => handlePipelineChange(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      marginTop: '6px',
-                      borderRadius: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary,
-                      fontSize: '14px'
-                    }}
-                  >
-                    {pipelines.map(pipeline => (
-                      <option key={pipeline.id} value={pipeline.id}>{pipeline.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Stage</Label>
-                  <select
-                    value={newDeal.pipeline_stage_id}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, pipeline_stage_id: e.target.value }))}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      marginTop: '6px',
-                      borderRadius: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary,
-                      fontSize: '14px'
-                    }}
-                  >
-                    {pipelineStages.map(stage => (
-                      <option key={stage.id} value={stage.id}>{stage.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Asking Price ($)</Label>
-                  <Input
-                    value={newDeal.asking_price}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, asking_price: formatNumberInput(e.target.value) }))}
-                    placeholder="2,500,000"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Building Size (SF)</Label>
-                  <Input
-                    value={newDeal.size_sqft}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, size_sqft: formatNumberInput(e.target.value) }))}
-                    placeholder="50,000"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Lot Size - Land (Acres)</Label>
-                  <Input
-                    value={newDeal.lot_size}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, lot_size: formatNumberInput(e.target.value) }))}
-                    placeholder="2.5"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Year Built</Label>
-                  <Input
-                    type="number"
-                    value={newDeal.year_built}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, year_built: e.target.value }))}
-                    placeholder="2005"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Zoning</Label>
-                  <Input
-                    value={newDeal.zoning}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, zoning: e.target.value }))}
-                    placeholder="C-2, Commercial"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>NOI ($)</Label>
-                  <Input
-                    value={newDeal.noi}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, noi: formatNumberInput(e.target.value) }))}
-                    placeholder="150,000"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Cap Rate (%)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={newDeal.cap_rate}
-                    onChange={(e) => setNewDeal(prev => ({ ...prev, cap_rate: e.target.value }))}
-                    placeholder="6.5"
-                    style={{
-                      marginTop: '6px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Occupancy (%)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={newDeal.occupancy}
-                  onChange={(e) => setNewDeal(prev => ({ ...prev, occupancy: e.target.value }))}
-                  placeholder="95"
-                  style={{
-                    marginTop: '6px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: `1px solid ${colors.border}`,
-                    color: colors.textPrimary
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div style={{
-            padding: '16px',
-            borderTop: `1px solid ${colors.border}`,
-            display: 'flex',
-            gap: '12px'
-          }}>
-            <Button
-              onClick={() => { setShowCreateDeal(false); setClickMode(false); }}
-              variant="outline"
-              style={{ flex: 1, borderColor: colors.border, color: colors.textSecondary }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleCreateDeal}
-              disabled={creatingDeal || !newDeal.title || !newDeal.latitude}
-              style={{
-                flex: 1,
-                background: gradients.primaryButton,
-                border: 'none',
-                opacity: (creatingDeal || !newDeal.title || !newDeal.latitude) ? 0.5 : 1
-              }}
-            >
-              {creatingDeal ? 'Creating...' : 'Create Deal'}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Deal Side Panel */}
-      {selectedDeal && !showCreateDeal && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '420px',
-          height: '100%',
-          background: 'rgba(12, 12, 12, 0.98)',
-          backdropFilter: 'blur(20px)',
-          borderLeft: `1px solid ${colors.border}`,
-          zIndex: 20,
-          display: 'flex',
-          flexDirection: 'column',
-          animation: 'slideIn 0.3s ease'
-        }}>
-          {/* Header */}
-          <div style={{
-            padding: '16px',
-            borderBottom: `1px solid ${colors.border}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                background: getDealColor(selectedDeal)
-              }} />
-              <span style={{ color: colors.textTertiary, fontSize: '12px', textTransform: 'uppercase' }}>
-                {selectedDeal.asset_type || 'Property'}
-                {selectedDeal.isTeamDeal && ' • Team Deal'}
-              </span>
-            </div>
-            <button
-              onClick={() => setSelectedDeal(null)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: colors.textTertiary,
-                cursor: 'pointer',
-                padding: '4px'
-              }}
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
-            {/* Image Carousel */}
-            <div data-testid="side-panel-image-carousel" style={{ position: 'relative', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase' }}>Images</span>
-                {!selectedDeal.isTeamDeal && (
-                  <>
-                    <input
-                      id="side-panel-image-upload"
-                      data-testid="side-panel-image-upload-input"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleSidePanelImageUpload}
-                      style={{ display: 'none' }}
-                      disabled={uploadingSidePanelImage}
-                    />
-                    <button
-                      data-testid="side-panel-add-image-button"
-                      onClick={() => document.getElementById('side-panel-image-upload').click()}
-                      disabled={uploadingSidePanelImage}
-                      style={{
-                        background: 'rgba(0,184,212,0.15)', border: '1px solid rgba(0,184,212,0.3)',
-                        color: '#00d4ff', fontSize: '12px', padding: '4px 10px', borderRadius: '6px',
-                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
-                      }}
-                    >
-                      <Upload size={12} />
-                      {uploadingSidePanelImage ? 'Uploading...' : 'Add'}
-                    </button>
-                  </>
-                )}
-              </div>
-              <div style={{
-                width: '100%', height: '180px', borderRadius: borderRadius.md, overflow: 'hidden',
-                background: colors.surfaceElevated, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                position: 'relative'
-              }}>
-                {(selectedDeal.image_urls && selectedDeal.image_urls.length > 0) ? (
-                  <img
-                    data-testid="side-panel-carousel-image"
-                    src={selectedDeal.image_urls[sidePanelImageIdx] || selectedDeal.image_urls[0]}
-                    alt={selectedDeal.title}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={(e) => e.target.style.display = 'none'}
-                  />
-                ) : (
-                  <div style={{ textAlign: 'center', color: colors.textTertiary }}>
-                    <Building2 size={40} style={{ opacity: 0.4, marginBottom: '6px' }} />
-                    <p style={{ fontSize: '12px' }}>No images</p>
-                  </div>
-                )}
-                {selectedDeal.image_urls && selectedDeal.image_urls.length > 1 && (
-                  <>
-                    <button
-                      data-testid="side-panel-carousel-prev"
-                      onClick={() => setSidePanelImageIdx(prev => prev === 0 ? selectedDeal.image_urls.length - 1 : prev - 1)}
-                      style={{
-                        position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)',
-                        width: '30px', height: '30px', borderRadius: '50%', background: 'rgba(0,0,0,0.7)',
-                        border: 'none', color: 'white', cursor: 'pointer', display: 'flex',
-                        alignItems: 'center', justifyContent: 'center'
-                      }}
-                    >
-                      <ChevronLeft size={18} />
-                    </button>
-                    <button
-                      data-testid="side-panel-carousel-next"
-                      onClick={() => setSidePanelImageIdx(prev => prev === selectedDeal.image_urls.length - 1 ? 0 : prev + 1)}
-                      style={{
-                        position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)',
-                        width: '30px', height: '30px', borderRadius: '50%', background: 'rgba(0,0,0,0.7)',
-                        border: 'none', color: 'white', cursor: 'pointer', display: 'flex',
-                        alignItems: 'center', justifyContent: 'center'
-                      }}
-                    >
-                      <ChevronRight size={18} />
-                    </button>
-                    <div style={{
-                      position: 'absolute', bottom: '6px', left: '50%', transform: 'translateX(-50%)',
-                      background: 'rgba(0,0,0,0.7)', padding: '3px 10px', borderRadius: '12px',
-                      color: 'white', fontSize: '11px'
-                    }}>
-                      {sidePanelImageIdx + 1} / {selectedDeal.image_urls.length}
-                    </div>
-                  </>
-                )}
-              </div>
-              {/* Thumbnail strip */}
-              {selectedDeal.image_urls && selectedDeal.image_urls.length > 1 && (
-                <div style={{ display: 'flex', gap: '6px', marginTop: '8px', overflowX: 'auto' }}>
-                  {selectedDeal.image_urls.map((url, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => setSidePanelImageIdx(idx)}
-                      style={{
-                        width: '50px', height: '50px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0,
-                        border: idx === sidePanelImageIdx ? '2px solid #00d4ff' : '2px solid transparent',
-                        cursor: 'pointer', opacity: idx === sidePanelImageIdx ? 1 : 0.6
-                      }}
-                    >
-                      <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Title - editable */}
             <input
-              data-testid="side-panel-title-input"
-              value={selectedDeal.title || ''}
-              onChange={(e) => setSelectedDeal(prev => ({ ...prev, title: e.target.value }))}
-              onBlur={() => handleSelectedDealTextBlur('title')}
-              disabled={selectedDeal.isTeamDeal}
+              autoFocus
+              data-testid="quick-deal-title-input"
+              type="text"
+              value={promptTitle}
+              onChange={(e) => setPromptTitle(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !creatingDeal) handleQuickCreateDeal(); if (e.key === 'Escape') { setShowTitlePrompt(false); setClickMode(false); setPromptTitle(''); } }}
+              placeholder={newDeal.address || 'e.g., Downtown Office Building'}
               style={{
-                fontSize: '20px', fontWeight: '600', color: colors.textPrimary, background: 'transparent',
-                border: 'none', borderBottom: !selectedDeal.isTeamDeal ? '1px solid rgba(255,255,255,0.08)' : 'none',
-                width: '100%', outline: 'none', padding: '2px 0', marginBottom: '4px'
+                width: '100%', padding: '14px 16px',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: '10px', color: '#fff', fontSize: '16px', outline: 'none',
+                marginBottom: '20px', transition: 'border-color 0.2s',
               }}
-              placeholder="Deal Title"
+              onFocus={(e) => { e.target.style.borderColor = colors.primary; }}
+              onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.15)'; }}
             />
-            
-            <p style={{ color: colors.textTertiary, fontSize: '13px', marginBottom: '16px' }}>
-              {selectedDeal.address && `${selectedDeal.address}, `}
-              {selectedDeal.city && `${selectedDeal.city}, `}
-              {selectedDeal.state} {selectedDeal.zip_code}
+            <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '12px', marginBottom: '20px' }}>
+              Leave blank to use the address as the title. You can edit all details after creation.
             </p>
-
-            {/* Pipeline & Stage Dropdowns */}
-            <div style={{ 
-              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px',
-              padding: '12px', background: 'rgba(0, 184, 212, 0.05)',
-              borderRadius: borderRadius.md, border: '1px solid rgba(0, 184, 212, 0.15)'
-            }}>
-              <div>
-                <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>Pipeline</label>
-                <select
-                  data-testid="side-panel-pipeline-select"
-                  value={selectedDeal.pipeline_id || ''}
-                  onChange={async (e) => {
-                    const newPipelineId = e.target.value;
-                    const pipeline = pipelines.find(p => p.id === newPipelineId);
-                    const firstStage = pipeline?.stages?.[0];
-                    try {
-                      const session = await supabase.auth.getSession();
-                      const token = session.data.session?.access_token;
-                      await fetch(`${API}/deals/${selectedDeal.id}`, {
-                        method: 'PUT',
-                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ pipeline_id: newPipelineId, pipeline_stage_id: firstStage?.id || null })
-                      });
-                      setSelectedDeal(prev => ({ ...prev, pipeline_id: newPipelineId, pipeline_stage_id: firstStage?.id }));
-                      fetchDeals();
-                      toast.success('Pipeline updated');
-                    } catch (err) { toast.error('Failed to update pipeline'); }
-                  }}
-                  disabled={selectedDeal.isTeamDeal}
-                  style={{ ...sidePanelFieldStyle, cursor: 'pointer', appearance: 'auto' }}
-                >
-                  <option value="">Select Pipeline</option>
-                  {pipelines.map(p => (<option key={p.id} value={p.id}>{p.name}</option>))}
-                </select>
-              </div>
-              <div>
-                <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>Stage</label>
-                <select
-                  data-testid="side-panel-stage-select"
-                  value={selectedDeal.pipeline_stage_id || ''}
-                  onChange={async (e) => {
-                    const newStageId = e.target.value;
-                    try {
-                      const session = await supabase.auth.getSession();
-                      const token = session.data.session?.access_token;
-                      await fetch(`${API}/deals/${selectedDeal.id}`, {
-                        method: 'PUT',
-                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ pipeline_stage_id: newStageId })
-                      });
-                      setSelectedDeal(prev => ({ ...prev, pipeline_stage_id: newStageId }));
-                      fetchDeals();
-                      toast.success('Stage updated');
-                    } catch (err) { toast.error('Failed to update stage'); }
-                  }}
-                  disabled={selectedDeal.isTeamDeal}
-                  style={{ ...sidePanelFieldStyle, cursor: 'pointer', appearance: 'auto' }}
-                >
-                  <option value="">Select Stage</option>
-                  {(pipelines.find(p => p.id === selectedDeal.pipeline_id)?.stages || []).map(s => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))}
-                </select>
-              </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => { setShowTitlePrompt(false); setClickMode(false); setPromptTitle(''); }}
+                style={{
+                  flex: 1, padding: '13px', background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
+                  color: 'rgba(255,255,255,0.6)', fontSize: '14px', fontWeight: '600', cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                data-testid="quick-deal-create-btn"
+                onClick={handleQuickCreateDeal}
+                disabled={creatingDeal}
+                style={{
+                  flex: 2, padding: '13px',
+                  background: creatingDeal ? 'rgba(212,18,18,0.4)' : '#ff0000',
+                  border: 'none', borderRadius: '10px',
+                  color: '#fff', fontSize: '14px', fontWeight: '700',
+                  cursor: creatingDeal ? 'not-allowed' : 'pointer',
+                  boxShadow: creatingDeal ? 'none' : '0 4px 16px rgba(255,0,0,0.35)',
+                }}
+              >
+                {creatingDeal ? 'Creating...' : 'Create Deal & Open Details'}
+              </button>
             </div>
-
-            {/* Team Sharing Toggle */}
-            {!selectedDeal.isTeamDeal && (
-              <div data-testid="side-panel-team-sharing" style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '12px', marginBottom: '16px',
-                background: selectedDeal.team_id ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${selectedDeal.team_id ? 'rgba(16, 185, 129, 0.25)' : 'rgba(255,255,255,0.1)'}`,
-                borderRadius: borderRadius.md,
-                transition: 'all 0.2s ease'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {selectedDeal.team_id ? (
-                    <Globe size={16} style={{ color: '#10b981' }} />
-                  ) : (
-                    <Lock size={16} style={{ color: colors.textTertiary }} />
-                  )}
-                  <div>
-                    <div style={{ color: colors.textPrimary, fontSize: '13px', fontWeight: '500' }}>
-                      {selectedDeal.team_id ? 'Shared with Team' : 'Private'}
-                    </div>
-                    <div style={{ color: colors.textTertiary, fontSize: '11px' }}>
-                      {selectedDeal.team_id ? 'Visible in team deals' : 'Only visible to you'}
-                    </div>
-                  </div>
-                </div>
-                <button
-                  data-testid="team-sharing-toggle"
-                  onClick={() => handleToggleTeamVisibility(!selectedDeal.team_id)}
-                  style={{
-                    width: '44px', height: '24px', borderRadius: '12px', padding: '2px',
-                    background: selectedDeal.team_id ? '#10b981' : 'rgba(255,255,255,0.15)',
-                    border: 'none', cursor: 'pointer', transition: 'background 0.2s ease',
-                    display: 'flex', alignItems: 'center',
-                    justifyContent: selectedDeal.team_id ? 'flex-end' : 'flex-start'
-                  }}
-                >
-                  <div style={{
-                    width: '20px', height: '20px', borderRadius: '50%',
-                    background: '#fff', transition: 'all 0.2s ease',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
-                  }} />
-                </button>
-              </div>
-            )}
-
-            {/* Asking Price - editable with formatted display */}
-            <div data-testid="side-panel-asking-price" style={{
-              background: 'rgba(0, 184, 212, 0.1)', borderRadius: borderRadius.md,
-              padding: '14px', marginBottom: '16px'
-            }}>
-              <div style={{ color: colors.textTertiary, fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}>Asking Price</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <DollarSign size={22} style={{ color: colors.primary, flexShrink: 0 }} />
-                <input
-                  data-testid="side-panel-asking-price-input"
-                  value={selectedDeal.asking_price ? formatNumberInput(String(selectedDeal.asking_price)) : ''}
-                  onChange={(e) => {
-                    const raw = parseFormattedNumber(e.target.value);
-                    setSelectedDeal(prev => ({ ...prev, asking_price: raw }));
-                  }}
-                  onBlur={() => handleSelectedDealNumericBlur('asking_price')}
-                  disabled={selectedDeal.isTeamDeal}
-                  placeholder="0"
-                  style={{
-                    fontSize: '24px', fontWeight: '700', color: colors.primary,
-                    background: 'transparent', border: 'none', outline: 'none', width: '100%'
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* All Property Details - editable grid */}
-            <div data-testid="side-panel-property-details" style={{ marginBottom: '16px' }}>
-              <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '10px' }}>Property Details</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Building Size (SF)</label>
-                  <input data-testid="side-panel-size-input" value={selectedDeal.size_sqft ? formatNumberInput(String(selectedDeal.size_sqft)) : ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, size_sqft: parseFormattedNumber(e.target.value) }))}
-                    onBlur={() => handleSelectedDealNumericBlur('size_sqft')}
-                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Lot Size - Land (Acres)</label>
-                  <input data-testid="side-panel-lot-size-input" value={selectedDeal.lot_size ? formatNumberInput(String(selectedDeal.lot_size)) : ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, lot_size: parseFormattedNumber(e.target.value) }))}
-                    onBlur={() => handleSelectedDealNumericBlur('lot_size')}
-                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Land SQFT</label>
-                  <div style={{
-                    ...sidePanelFieldStyle,
-                    background: 'rgba(0,184,212,0.06)',
-                    color: selectedDeal.lot_size ? '#00b8d4' : 'rgba(255,255,255,0.3)',
-                    fontWeight: selectedDeal.lot_size ? '600' : '400'
-                  }}>
-                    {selectedDeal.lot_size ? formatNumberInput(String(Math.round(parseFloat(selectedDeal.lot_size) * 43560))) + ' SF' : '—'}
-                  </div>
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Cap Rate (%)</label>
-                  <input data-testid="side-panel-cap-rate-input" type="number" step="0.01" value={selectedDeal.cap_rate ?? ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, cap_rate: e.target.value }))}
-                    onBlur={() => handleSelectedDealNumericBlur('cap_rate')}
-                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>NOI ($)</label>
-                  <input data-testid="side-panel-noi-input" type="number" value={selectedDeal.noi ?? ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, noi: e.target.value }))}
-                    onBlur={() => handleSelectedDealNumericBlur('noi')}
-                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Year Built</label>
-                  <input data-testid="side-panel-year-built-input" type="number" value={selectedDeal.year_built ?? ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, year_built: e.target.value }))}
-                    onBlur={() => handleSelectedDealIntBlur('year_built')}
-                    disabled={selectedDeal.isTeamDeal} placeholder="Year" style={sidePanelFieldStyle} />
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Occupancy (%)</label>
-                  <input data-testid="side-panel-occupancy-input" type="number" value={selectedDeal.occupancy ?? ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, occupancy: e.target.value }))}
-                    onBlur={() => handleSelectedDealNumericBlur('occupancy')}
-                    disabled={selectedDeal.isTeamDeal} placeholder="0" style={sidePanelFieldStyle} />
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Zoning</label>
-                  <input data-testid="side-panel-zoning-input" value={selectedDeal.zoning || ''}
-                    onChange={(e) => setSelectedDeal(prev => ({ ...prev, zoning: e.target.value }))}
-                    onBlur={() => handleSelectedDealTextBlur('zoning')}
-                    disabled={selectedDeal.isTeamDeal} placeholder="Zoning" style={sidePanelFieldStyle} />
-                </div>
-                <div>
-                  <label style={{ color: colors.textTertiary, fontSize: '11px', display: 'block', marginBottom: '4px' }}>Asset Type</label>
-                  <select data-testid="side-panel-asset-type-select" value={selectedDeal.asset_type || ''}
-                    onChange={(e) => { setSelectedDeal(prev => ({ ...prev, asset_type: e.target.value })); handleUpdateSelectedDealField('asset_type', e.target.value); }}
-                    disabled={selectedDeal.isTeamDeal}
-                    style={{ ...sidePanelFieldStyle, cursor: 'pointer', appearance: 'auto' }}
-                  >
-                    <option value="">Select type</option>
-                    {Object.keys(assetTypeColors).map(type => (<option key={type} value={type}>{type}</option>))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div data-testid="side-panel-contacts" style={{ marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                <span style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase' }}>
-                  Contacts ({dealContacts.length})
-                </span>
-                {!selectedDeal.isTeamDeal && (
-                  <button
-                    onClick={() => { setShowContactSearch(!showContactSearch); setShowNewContactForm(false); if (!showContactSearch) fetchAllContacts(); }}
-                    style={{
-                      background: 'rgba(0,184,212,0.1)', border: '1px solid rgba(0,184,212,0.25)',
-                      borderRadius: '5px', padding: '3px 8px', cursor: 'pointer',
-                      color: '#00d4ff', fontSize: '11px', fontWeight: 600,
-                      display: 'flex', alignItems: 'center', gap: '4px'
-                    }}
-                  >
-                    <Plus size={11} /> Add
-                  </button>
-                )}
-              </div>
-
-              {/* Contact Search / Link Panel */}
-              {showContactSearch && (
-                <div style={{
-                  background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px', padding: '10px', marginBottom: '10px'
-                }}>
-                  {!showNewContactForm ? (
-                    <>
-                      <input
-                        type="text"
-                        placeholder="Search contacts..."
-                        value={contactSearchQuery}
-                        onChange={(e) => setContactSearchQuery(e.target.value)}
-                        style={{
-                          width: '100%', padding: '8px 10px', background: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px',
-                          color: '#fff', fontSize: '12px', marginBottom: '8px'
-                        }}
-                      />
-                      <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
-                        {filteredContactResults.length === 0 ? (
-                          <div style={{ color: colors.textTertiary, fontSize: '12px', textAlign: 'center', padding: '12px 0' }}>
-                            No contacts found
-                          </div>
-                        ) : (
-                          filteredContactResults.slice(0, 8).map(contact => (
-                            <div key={contact.id} style={{
-                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                              padding: '6px 8px', borderRadius: '5px', cursor: 'pointer',
-                              opacity: linkedContactIds.has(contact.id) ? 0.5 : 1
-                            }}
-                              onMouseEnter={(e) => { if (!linkedContactIds.has(contact.id)) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-                            >
-                              <div style={{ minWidth: 0, flex: 1 }}>
-                                <div style={{ color: '#fff', fontSize: '12px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                  {contact.name}
-                                </div>
-                                {contact.email && <div style={{ color: colors.textTertiary, fontSize: '10px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.email}</div>}
-                              </div>
-                              {linkedContactIds.has(contact.id) ? (
-                                <span style={{ fontSize: '10px', color: colors.textTertiary, flexShrink: 0, marginLeft: '6px' }}>Linked</span>
-                              ) : (
-                                <button onClick={() => handleLinkContact(contact.id)} style={{
-                                  background: 'rgba(0,184,212,0.15)', border: 'none', borderRadius: '4px',
-                                  padding: '3px 8px', color: '#00d4ff', fontSize: '10px', fontWeight: 600,
-                                  cursor: 'pointer', flexShrink: 0, marginLeft: '6px'
-                                }}>Link</button>
-                              )}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                      <button
-                        onClick={() => setShowNewContactForm(true)}
-                        style={{
-                          width: '100%', marginTop: '8px', padding: '7px',
-                          background: 'rgba(0,184,212,0.08)', border: '1px dashed rgba(0,184,212,0.3)',
-                          borderRadius: '6px', color: '#00d4ff', fontSize: '11px', fontWeight: 600,
-                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px'
-                        }}
-                      >
-                        <Plus size={12} /> Create New Contact
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div style={{ fontSize: '12px', color: '#fff', fontWeight: 600, marginBottom: '8px' }}>New Contact</div>
-                      <input placeholder="Name *" value={newContact.name} onChange={(e) => setNewContact(p => ({ ...p, name: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '6px' }} />
-                      <input placeholder="Email" value={newContact.email} onChange={(e) => setNewContact(p => ({ ...p, email: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '6px' }} />
-                      <input placeholder="Phone" value={newContact.phone} onChange={(e) => setNewContact(p => ({ ...p, phone: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '6px' }} />
-                      <select value={newContact.contact_type} onChange={(e) => setNewContact(p => ({ ...p, contact_type: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '12px', marginBottom: '8px' }}>
-                        <option value="Buyer">Buyer</option>
-                        <option value="Seller">Seller</option>
-                        <option value="Broker">Broker</option>
-                        <option value="Landlord">Landlord</option>
-                        <option value="Tenant">Tenant</option>
-                        <option value="Other">Other</option>
-                      </select>
-                      <div style={{ display: 'flex', gap: '6px' }}>
-                        <button onClick={() => setShowNewContactForm(false)}
-                          style={{ flex: 1, padding: '7px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '11px', fontWeight: 600, cursor: 'pointer' }}>
-                          Back
-                        </button>
-                        <button onClick={handleCreateAndLinkContact} disabled={!newContact.name.trim() || savingContact}
-                          style={{ flex: 1, padding: '7px', background: newContact.name.trim() ? '#00b8d4' : 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '6px', color: newContact.name.trim() ? '#000' : 'rgba(255,255,255,0.3)', fontSize: '11px', fontWeight: 700, cursor: newContact.name.trim() ? 'pointer' : 'not-allowed' }}>
-                          {savingContact ? 'Saving...' : 'Create & Link'}
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {/* Linked Contacts List */}
-              {dealContacts.length > 0 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {dealContacts.map((contact, idx) => (
-                    <div key={contact.id || idx} style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '8px',
-                      padding: '10px 12px'
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        <User size={14} style={{ color: colors.primary }} />
-                        <span style={{ color: colors.textPrimary, fontSize: '14px', fontWeight: '500', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {contact.name || 'Unnamed'}
-                        </span>
-                        {contact.contact_type && (
-                          <span style={{
-                            fontSize: '10px', padding: '2px 6px', borderRadius: '4px',
-                            background: 'rgba(0,184,212,0.15)', color: '#00d4ff', flexShrink: 0
-                          }}>
-                            {contact.contact_type}
-                          </span>
-                        )}
-                        {!selectedDeal.isTeamDeal && (
-                          <button onClick={() => handleUnlinkContact(contact.id)}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', flexShrink: 0, opacity: 0.4 }}
-                            onMouseEnter={(e) => { e.currentTarget.style.opacity = 1; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.opacity = 0.4; }}
-                          >
-                            <X size={13} style={{ color: '#ff4444' }} />
-                          </button>
-                        )}
-                      </div>
-                      {contact.email && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                          <Mail size={12} style={{ color: colors.textTertiary }} />
-                          <a href={`mailto:${contact.email}`} style={{ color: colors.textSecondary, fontSize: '12px', textDecoration: 'none' }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#00d4ff'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = colors.textSecondary}
-                          >
-                            {contact.email}
-                          </a>
-                        </div>
-                      )}
-                      {contact.phone && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <Phone size={12} style={{ color: colors.textTertiary }} />
-                          <a href={`tel:${contact.phone}`} style={{ color: colors.textSecondary, fontSize: '12px', textDecoration: 'none' }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#00d4ff'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = colors.textSecondary}
-                          >
-                            {contact.phone}
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {dealContacts.length === 0 && !showContactSearch && (
-                <div style={{ color: colors.textTertiary, fontSize: '12px', textAlign: 'center', padding: '8px 0' }}>
-                  No contacts linked
-                </div>
-              )}
-            </div>
-
-            {/* Notes */}
-            <div data-testid="side-panel-notes-section" style={{ marginBottom: '16px' }}>
-              <div style={{ color: colors.textTertiary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '6px' }}>Notes</div>
-              <textarea
-                data-testid="side-panel-notes-textarea"
-                value={selectedDeal.notes || ''}
-                onChange={(e) => setSelectedDeal(prev => ({ ...prev, notes: e.target.value }))}
-                onBlur={() => handleSelectedDealTextBlur('notes')}
-                disabled={selectedDeal.isTeamDeal}
-                rows={3}
-                placeholder="Add notes..."
-                style={{ ...sidePanelFieldStyle, resize: 'vertical', minHeight: '60px', lineHeight: '1.5' }}
-              />
-            </div>
-
-            {selectedDeal.isTeamDeal && selectedDeal.user_profiles && (
-              <div style={{
-                background: colors.surfaceElevated, borderRadius: borderRadius.md,
-                padding: '12px', display: 'flex', alignItems: 'center', gap: '12px'
-              }}>
-                <Users size={20} style={{ color: colors.textTertiary }} />
-                <div>
-                  <div style={{ color: colors.textTertiary, fontSize: '11px' }}>Owner</div>
-                  <div style={{ color: colors.textPrimary, fontWeight: '500' }}>
-                    {selectedDeal.user_profiles.full_name || selectedDeal.user_profiles.email}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div style={{ padding: '16px', borderTop: `1px solid ${colors.border}` }}>
-            <Button
-              onClick={() => navigate(`/deals/${selectedDeal.id}`)}
-              style={{ width: '100%', background: gradients.primaryButton, border: 'none', height: '44px' }}
-            >
-              View Full Details
-              <ChevronRight size={18} style={{ marginLeft: '8px' }} />
-            </Button>
           </div>
         </div>
       )}
+
+      {/* Deal Side Panel — Unified PropertyIntelligencePanel */}
+      {selectedDeal && (
+        <PropertyIntelligencePanel
+          isOpen={true}
+          onClose={handlePanelClose}
+          data={selectedDeal}
+          type="deal"
+          onUpdate={handlePanelUpdate}
+          onDealDeleted={handlePanelDealDeleted}
+        />
+      )}
+
 
       {/* Loading */}
       {loading && (
@@ -2240,14 +1440,37 @@ const MapView = () => {
         </div>
       )}
 
+      {/* Contact Form Panel for Create Deal */}
+      <ContactFormPanel
+        isOpen={showCreateDealContactPanel}
+        onClose={() => setShowCreateDealContactPanel(false)}
+        onContactCreated={(newContact) => {
+          setCreateDealContact(newContact);
+          setShowCreateDealContactPanel(false);
+        }}
+        editingContact={null}
+        dealId={null}
+      />
+
       <style>{`
         @keyframes slideIn {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
         }
         @keyframes pulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(0, 184, 212, 0.6), 0 2px 8px rgba(0,0,0,0.4); }
-          50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(0, 184, 212, 0.8), 0 2px 12px rgba(0,0,0,0.5); }
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes marker-breathe {
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50% { opacity: 0.3; transform: scale(1.15); }
+        }
+        /* Prevent marker clipping at map edges */
+        .maplibregl-marker {
+          overflow: visible !important;
+        }
+        .maplibregl-canvas-container {
+          overflow: visible !important;
         }
       `}</style>
     </div>

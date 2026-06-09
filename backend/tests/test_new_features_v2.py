@@ -14,8 +14,8 @@ import time
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test user credentials
-SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0"
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
 
 
 class TestBackendFeatures:
@@ -26,7 +26,7 @@ class TestBackendFeatures:
         """Setup test user and get auth token"""
         # Generate unique test email
         self.test_email = f"api_test_{int(time.time())}_{uuid.uuid4().hex[:6]}@example.com"
-        self.test_password = "TestPass123!"
+        self.test_password = os.environ.get("TEST_DEFAULT_PASSWORD", "TestPass123!")
         self.test_name = "API Test User"
         
         # Create user via Supabase Auth

@@ -610,7 +610,7 @@ const CSVImportWizard = ({ isOpen, onClose, onImportComplete }) => {
             style={{
               background: gradients.primaryButton,
               border: 'none',
-              boxShadow: shadows.glowCyan,
+              boxShadow: shadows.glow,
               display: 'flex',
               alignItems: 'center',
               gap: spacing.sm
@@ -706,7 +706,7 @@ const CSVImportWizard = ({ isOpen, onClose, onImportComplete }) => {
               background: isMappingComplete ? gradients.primaryButton : colors.surfaceElevated,
               color: isMappingComplete ? colors.textPrimary : colors.textMuted,
               border: 'none',
-              boxShadow: isMappingComplete ? shadows.glowCyan : 'none'
+              boxShadow: isMappingComplete ? shadows.glow : 'none'
             }}
           >
             Next: Asset Type
@@ -796,7 +796,7 @@ const CSVImportWizard = ({ isOpen, onClose, onImportComplete }) => {
             background: gradients.primaryButton,
             color: colors.textPrimary,
             border: 'none',
-            boxShadow: shadows.glowCyan
+            boxShadow: shadows.glow
           }}
         >
           Preview Import
@@ -829,7 +829,7 @@ const CSVImportWizard = ({ isOpen, onClose, onImportComplete }) => {
           First 5 rows preview:
         </p>
         {csvPreview.map((row, idx) => (
-          <div key={idx} style={{
+          <div key={`preview-row-${idx}`} style={{
             padding: spacing.sm,
             background: colors.surfaceCard,
             borderRadius: borderRadius.sm,
@@ -898,7 +898,7 @@ const CSVImportWizard = ({ isOpen, onClose, onImportComplete }) => {
             background: gradients.primaryButton,
             color: colors.textPrimary,
             border: 'none',
-            boxShadow: shadows.glowCyan
+            boxShadow: shadows.glow
           }}
         >
           {uploading ? (

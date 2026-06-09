@@ -640,7 +640,7 @@ const DealsList = () => {
             <form onSubmit={handleCreateDeal} className="space-y-8">
               {/* CORE SECTION */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Core Information</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Core Information</h3>
                 
                 <div className="space-y-4">
                   <div>
@@ -740,7 +740,7 @@ const DealsList = () => {
 
               {/* LOCATION & MAP */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Location & Map</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Location & Map</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -786,7 +786,7 @@ const DealsList = () => {
 
               {/* PROPERTY FACTS */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Property Facts</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Property Facts</h3>
                 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
@@ -870,7 +870,7 @@ const DealsList = () => {
 
               {/* FINANCIALS */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Financials</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Financials</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -927,9 +927,9 @@ const DealsList = () => {
                 {/* Price per SQFT Display */}
                 {newDeal.asking_price && newDeal.building_size && (
                   <div className="mt-4">
-                    <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                    <div style={{ padding: '12px', background: 'rgba(212,18,18,0.1)', borderRadius: '8px', border: '1px solid rgba(212,18,18,0.3)' }}>
                       <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price per SQFT</span>
-                      <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>
+                      <span style={{ color: '#ff0000', fontSize: '18px', fontWeight: '600' }}>
                         {calculatePricePerSqft(newDeal.asking_price, newDeal.building_size)}
                       </span>
                     </div>
@@ -950,21 +950,21 @@ const DealsList = () => {
                 {(calculatePricePerSFBuilding() || calculatePricePerSFLand() || calculatePricePerAcre() || calculateCapRate()) && (
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     {calculatePricePerSFBuilding() && (
-                      <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                      <div style={{ padding: '12px', background: 'rgba(212,18,18,0.1)', borderRadius: '8px', border: '1px solid rgba(212,18,18,0.3)' }}>
                         <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price/SF (Building)</span>
-                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>${calculatePricePerSFBuilding()}</span>
+                        <span style={{ color: '#ff0000', fontSize: '18px', fontWeight: '600' }}>${calculatePricePerSFBuilding()}</span>
                       </div>
                     )}
                     {calculatePricePerAcre() && (
-                      <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                      <div style={{ padding: '12px', background: 'rgba(212,18,18,0.1)', borderRadius: '8px', border: '1px solid rgba(212,18,18,0.3)' }}>
                         <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price/Acre</span>
-                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>${calculatePricePerAcre()}</span>
+                        <span style={{ color: '#ff0000', fontSize: '18px', fontWeight: '600' }}>${calculatePricePerAcre()}</span>
                       </div>
                     )}
                     {calculateCapRate() && (
-                      <div style={{ padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: '8px', border: '1px solid rgba(0,184,212,0.3)' }}>
+                      <div style={{ padding: '12px', background: 'rgba(212,18,18,0.1)', borderRadius: '8px', border: '1px solid rgba(212,18,18,0.3)' }}>
                         <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Auto Cap Rate</span>
-                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>{calculateCapRate()}%</span>
+                        <span style={{ color: '#ff0000', fontSize: '18px', fontWeight: '600' }}>{calculateCapRate()}%</span>
                       </div>
                     )}
                   </div>
@@ -973,7 +973,7 @@ const DealsList = () => {
 
               {/* CONTACTS & ROLES */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Contacts & Roles</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Contacts & Roles</h3>
                 
                 <div className="space-y-4">
                   <div>
@@ -999,7 +999,7 @@ const DealsList = () => {
                           right: 0,
                           marginTop: '4px',
                           background: 'rgba(15, 23, 42, 0.95)',
-                          border: '1px solid rgba(0, 184, 212, 0.3)',
+                          border: '1px solid rgba(255, 0, 0, 0.3)',
                           borderRadius: '8px',
                           maxHeight: '200px',
                           overflowY: 'auto',
@@ -1026,7 +1026,7 @@ const DealsList = () => {
                                   borderBottom: '1px solid rgba(255,255,255,0.05)',
                                   transition: 'background 0.2s'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 0, 0, 0.1)'}
                                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                               >
                                 <div style={{ color: '#FFFFFF', fontWeight: '500' }}>{contact.name}</div>
@@ -1047,15 +1047,15 @@ const DealsList = () => {
                             style={{
                               padding: '12px',
                               cursor: 'pointer',
-                              background: 'rgba(0, 184, 212, 0.15)',
-                              color: '#00b8d4',
+                              background: 'rgba(255, 0, 0, 0.15)',
+                              color: '#ff0000',
                               fontWeight: '600',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '8px'
                             }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.25)'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)'}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 0, 0, 0.25)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 0, 0, 0.15)'}
                           >
                             <Plus size={16} />
                             Create new contact "{contactSearchTerm}"
@@ -1078,7 +1078,7 @@ const DealsList = () => {
 
               {/* ACTIVITIES & NOTES */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Activities & Notes</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Activities & Notes</h3>
                 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
@@ -1114,7 +1114,7 @@ const DealsList = () => {
 
               {/* MEDIA & DOCS */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Media & Documents</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Media & Documents</h3>
                 
                 <div>
                   <Label style={{ color: '#FFFFFF', fontWeight: '500', marginBottom: '12px', display: 'block' }}>Primary Image</Label>
@@ -1134,7 +1134,7 @@ const DealsList = () => {
 
               {/* DATES & IDS */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dates & IDs</h3>
+                <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dates & IDs</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -1163,7 +1163,7 @@ const DealsList = () => {
                 disabled={uploadingImage}
                 style={{
                   width: '100%',
-                  background: '#00b8d4',
+                  background: '#ff0000',
                   color: '#000000',
                   padding: '16px',
                   fontWeight: '600',
@@ -1243,7 +1243,7 @@ const DealsList = () => {
               <tr key={deal.id} data-testid={`deal-row-${deal.id}`}
                 style={{ cursor: 'pointer', transition: 'background 0.15s ease' }}
                 onClick={() => navigate(`/deals/${deal.id}`)}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)'}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 0, 0, 0.05)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = ''}
               >
                 <td>
@@ -1416,6 +1416,7 @@ const DealsList = () => {
                           <option value="Mixed Use">Mixed Use</option>
                           <option value="Hotels">Hotels</option>
                           <option value="Medical">Medical</option>
+                          <option value="Gas Stations">Gas Stations</option>
                         </select>
                       </div>
 
@@ -1511,9 +1512,9 @@ const DealsList = () => {
                     
                     {/* Price per SQFT Display in Edit Panel */}
                     {editingDeal.price && editingDeal.size && (
-                      <div style={{ padding: '12px', background: 'rgba(0, 184, 212, 0.1)', borderRadius: '8px', border: '1px solid rgba(0, 184, 212, 0.3)' }}>
+                      <div style={{ padding: '12px', background: 'rgba(255, 0, 0, 0.1)', borderRadius: '8px', border: '1px solid rgba(255, 0, 0, 0.3)' }}>
                         <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block' }}>Price per SQFT</span>
-                        <span style={{ color: '#00b8d4', fontSize: '18px', fontWeight: '600' }}>
+                        <span style={{ color: '#ff0000', fontSize: '18px', fontWeight: '600' }}>
                           {calculatePricePerSqft(editingDeal.price, editingDeal.size)}
                         </span>
                       </div>

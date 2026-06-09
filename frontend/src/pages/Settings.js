@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import { toast } from 'sonner';
 import PasswordStrengthBar from 'react-password-strength-bar';
@@ -39,16 +39,8 @@ const Settings = () => {
     emailNotifications: true
   });
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  useEffect(() => {
-    const hasChanges = JSON.stringify(profileData) !== JSON.stringify(originalData);
-    setIsDirty(hasChanges);
-  }, [profileData, originalData]);
-
-  const loadUserData = async () => {
+  // ---- loadUserData defined BEFORE useEffect that depends on it (TDZ fix) ----
+  const loadUserData = useCallback(async () => {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError) throw userError;
@@ -77,7 +69,16 @@ const Settings = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
+
+  useEffect(() => {
+    const hasChanges = JSON.stringify(profileData) !== JSON.stringify(originalData);
+    setIsDirty(hasChanges);
+  }, [profileData, originalData]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -122,15 +123,14 @@ const Settings = () => {
     { id: 'account', label: 'Account', icon: User },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'asset-types', label: 'Asset Types', icon: Building2 },
     { id: 'data-privacy', label: 'Data & Privacy', icon: Database },
-    { id: 'organization', label: 'Organization', icon: Building2, comingSoon: true },
-    { id: 'integrations', label: 'Integrations', icon: Plug, comingSoon: true },
   ];
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen" style={{ background: '#000' }}>
-        <Loader2 className="animate-spin" size={40} style={{ color: '#00b8d4' }} />
+        <Loader2 className="animate-spin" size={40} style={{ color: '#ff0000' }} />
       </div>
     );
   }
@@ -180,11 +180,11 @@ const Settings = () => {
                     alignItems: 'center',
                     gap: '12px',
                     padding: '11px 14px',
-                    background: isActive ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
+                    background: isActive ? 'rgba(255, 0, 0, 0.08)' : 'transparent',
                     border: 'none',
-                    borderLeft: `3px solid ${isActive ? '#00b8d4' : 'transparent'}`,
+                    borderLeft: `3px solid ${isActive ? '#ff0000' : 'transparent'}`,
                     borderRadius: '0',
-                    color: isActive ? '#00b8d4' : section.comingSoon ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.6)',
+                    color: isActive ? '#ff0000' : section.comingSoon ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.6)',
                     fontSize: '14px',
                     fontWeight: isActive ? 600 : 500,
                     cursor: section.comingSoon ? 'not-allowed' : 'pointer',
@@ -238,6 +238,7 @@ const Settings = () => {
           )}
           {activeSection === 'security' && <SecuritySection user={user} />}
           {activeSection === 'notifications' && <NotificationsSection notifications={notifications} setNotifications={setNotifications} />}
+          {activeSection === 'asset-types' && <AssetTypesSection />}
           {activeSection === 'data-privacy' && <DataPrivacySection />}
         </div>
       </div>
@@ -252,20 +253,20 @@ const Settings = () => {
           padding: '16px 56px',
           background: 'rgba(10, 10, 10, 0.98)',
           backdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(0, 184, 212, 0.2)',
+          borderTop: '1px solid rgba(255, 0, 0, 0.2)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           zIndex: 1000,
-          boxShadow: '0 -4px 20px rgba(0, 184, 212, 0.1)'
+          boxShadow: '0 -4px 20px rgba(255, 0, 0, 0.1)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: '#00b8d4',
-              boxShadow: '0 0 8px rgba(0, 184, 212, 0.6)'
+              background: '#ff0000',
+              boxShadow: '0 0 8px rgba(255, 0, 0, 0.6)'
             }} />
             <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px', fontWeight: 500 }}>
               Unsaved changes
@@ -300,7 +301,7 @@ const Settings = () => {
               disabled={saving}
               style={{
                 padding: '10px 24px',
-                background: '#00b8d4',
+                background: '#ff0000',
                 border: 'none',
                 borderRadius: '6px',
                 color: '#000',
@@ -310,7 +311,7 @@ const Settings = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: '0 2px 12px rgba(0, 184, 212, 0.3)',
+                boxShadow: '0 2px 12px rgba(255, 0, 0, 0.3)',
                 transition: 'all 0.15s ease'
               }}
               onMouseEnter={(e) => !saving && (e.currentTarget.style.transform = 'translateY(-1px)')}
@@ -427,17 +428,17 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
             borderRadius: '50%',
             background: profileData.avatar_url 
               ? `url(${profileData.avatar_url})` 
-              : 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(139, 92, 246, 0.15))',
+              : 'linear-gradient(135deg, rgba(255, 0, 0, 0.15), rgba(139, 92, 246, 0.15))',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            border: '2px solid rgba(0, 184, 212, 0.2)',
-            boxShadow: '0 4px 16px rgba(0, 184, 212, 0.15)',
+            border: '2px solid rgba(255, 0, 0, 0.2)',
+            boxShadow: '0 4px 16px rgba(255, 0, 0, 0.15)',
             flexShrink: 0
           }}>
-            {!profileData.avatar_url && <User size={42} style={{ color: '#00b8d4' }} />}
+            {!profileData.avatar_url && <User size={42} style={{ color: '#ff0000' }} />}
           </div>
 
           {/* Upload Actions */}
@@ -449,10 +450,10 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
             <div style={{ display: 'flex', gap: '10px' }}>
               <label htmlFor="avatar-upload" style={{
                 padding: '9px 18px',
-                background: 'rgba(0, 184, 212, 0.08)',
-                border: '1px solid rgba(0, 184, 212, 0.25)',
+                background: 'rgba(255, 0, 0, 0.08)',
+                border: '1px solid rgba(255, 0, 0, 0.25)',
                 borderRadius: '6px',
-                color: '#00b8d4',
+                color: '#ff0000',
                 fontSize: '13px',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -538,7 +539,7 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
                 fontSize: '14px',
                 transition: 'all 0.15s ease'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.4)'}
               onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
@@ -563,7 +564,7 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
                 fontSize: '14px',
                 transition: 'all 0.15s ease'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.4)'}
               onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
@@ -588,7 +589,7 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
                 fontSize: '14px',
                 transition: 'all 0.15s ease'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.4)'}
               onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
@@ -611,7 +612,7 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
         {/* Primary Email */}
         <div style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <Mail size={14} style={{ color: '#00b8d4' }} />
+            <Mail size={14} style={{ color: '#ff0000' }} />
             <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               Primary
             </span>
@@ -655,9 +656,9 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
             transition: 'all 0.15s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.25)';
-            e.currentTarget.style.color = '#00b8d4';
+            e.currentTarget.style.background = 'rgba(255, 0, 0, 0.08)';
+            e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.25)';
+            e.currentTarget.style.color = '#ff0000';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
@@ -688,10 +689,10 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
           onClick={() => setShowChangePassword(true)}
           style={{
             padding: '10px 20px',
-            background: 'rgba(0, 184, 212, 0.08)',
-            border: '1px solid rgba(0, 184, 212, 0.25)',
+            background: 'rgba(255, 0, 0, 0.08)',
+            border: '1px solid rgba(255, 0, 0, 0.25)',
             borderRadius: '6px',
-            color: '#00b8d4',
+            color: '#ff0000',
             fontSize: '13px',
             fontWeight: 600,
             cursor: 'pointer',
@@ -701,11 +702,11 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
             transition: 'all 0.15s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.12)';
+            e.currentTarget.style.background = 'rgba(255, 0, 0, 0.12)';
             e.currentTarget.style.transform = 'translateY(-1px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+            e.currentTarget.style.background = 'rgba(255, 0, 0, 0.08)';
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
@@ -755,7 +756,7 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
-                  <account.icon size={19} style={{ color: '#00b8d4' }} />
+                  <account.icon size={19} style={{ color: '#ff0000' }} />
                 </div>
                 <div>
                   <span style={{ color: '#fff', fontSize: '14px', fontWeight: 500, display: 'block' }}>
@@ -771,10 +772,10 @@ const AccountSection = ({ profileData, setProfileData, user, setShowChangePasswo
                 disabled={true}
                 style={{
                   padding: '7px 16px',
-                  background: account.connected ? 'transparent' : 'rgba(0, 184, 212, 0.08)',
-                  border: `1px solid ${account.connected ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 184, 212, 0.25)'}`,
+                  background: account.connected ? 'transparent' : 'rgba(255, 0, 0, 0.08)',
+                  border: `1px solid ${account.connected ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 0, 0, 0.25)'}`,
                   borderRadius: '6px',
-                  color: account.connected ? 'rgba(255, 255, 255, 0.6)' : '#00b8d4',
+                  color: account.connected ? 'rgba(255, 255, 255, 0.6)' : '#ff0000',
                   fontSize: '13px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -829,13 +830,13 @@ const SecuritySection = ({ user }) => {
             width: '48px',
             height: '48px',
             borderRadius: '10px',
-            background: 'rgba(0, 184, 212, 0.08)',
+            background: 'rgba(255, 0, 0, 0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0
           }}>
-            <Clock size={22} style={{ color: '#00b8d4' }} />
+            <Clock size={22} style={{ color: '#ff0000' }} />
           </div>
           <div>
             <h3 style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
@@ -895,8 +896,8 @@ const SecuritySection = ({ user }) => {
         {/* Current Session */}
         <div style={{
           padding: '18px',
-          background: 'rgba(0, 184, 212, 0.04)',
-          border: '1px solid rgba(0, 184, 212, 0.15)',
+          background: 'rgba(255, 0, 0, 0.04)',
+          border: '1px solid rgba(255, 0, 0, 0.15)',
           borderRadius: '8px'
         }}>
           <div style={{ display: 'flex', alignItems: 'start', gap: '14px' }}>
@@ -904,15 +905,15 @@ const SecuritySection = ({ user }) => {
               width: '42px',
               height: '42px',
               borderRadius: '8px',
-              background: 'rgba(0, 184, 212, 0.12)',
+              background: 'rgba(255, 0, 0, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0
             }}>
               {navigator.userAgent.includes('Mobile') ? 
-                <Smartphone size={20} style={{ color: '#00b8d4' }} /> : 
-                <Monitor size={20} style={{ color: '#00b8d4' }} />
+                <Smartphone size={20} style={{ color: '#ff0000' }} /> : 
+                <Monitor size={20} style={{ color: '#ff0000' }} />
               }
             </div>
             <div style={{ flex: 1 }}>
@@ -921,9 +922,9 @@ const SecuritySection = ({ user }) => {
                 <span style={{
                   fontSize: '10px',
                   padding: '3px 8px',
-                  background: 'rgba(0, 184, 212, 0.15)',
+                  background: 'rgba(255, 0, 0, 0.15)',
                   borderRadius: '10px',
-                  color: '#00b8d4',
+                  color: '#ff0000',
                   fontWeight: 700,
                   letterSpacing: '0.3px'
                 }}>
@@ -954,7 +955,7 @@ const SecuritySection = ({ user }) => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ flex: 1, maxWidth: '600px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <Shield size={18} style={{ color: '#00b8d4' }} />
+              <Shield size={18} style={{ color: '#ff0000' }} />
               <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px' }}>
                 Two-Factor Authentication
               </h3>
@@ -971,8 +972,8 @@ const SecuritySection = ({ user }) => {
               width: '52px',
               height: '28px',
               borderRadius: '14px',
-              background: twoFactorEnabled ? '#00b8d4' : 'rgba(255, 255, 255, 0.08)',
-              border: `1px solid ${twoFactorEnabled ? '#00b8d4' : 'rgba(255, 255, 255, 0.12)'}`,
+              background: twoFactorEnabled ? '#ff0000' : 'rgba(255, 255, 255, 0.08)',
+              border: `1px solid ${twoFactorEnabled ? '#ff0000' : 'rgba(255, 255, 255, 0.12)'}`,
               cursor: 'pointer',
               position: 'relative',
               transition: 'all 0.25s ease',
@@ -1070,14 +1071,14 @@ const NotificationsSection = ({ notifications, setNotifications }) => {
                   width: '40px',
                   height: '40px',
                   borderRadius: '8px',
-                  background: notifications[option.key] ? 'rgba(0, 184, 212, 0.08)' : 'rgba(255, 255, 255, 0.03)',
+                  background: notifications[option.key] ? 'rgba(255, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.03)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                   transition: 'all 0.2s ease'
                 }}>
-                  <Icon size={18} style={{ color: notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.35)' }} />
+                  <Icon size={18} style={{ color: notifications[option.key] ? '#ff0000' : 'rgba(255, 255, 255, 0.35)' }} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
@@ -1107,8 +1108,8 @@ const NotificationsSection = ({ notifications, setNotifications }) => {
                   width: '52px',
                   height: '28px',
                   borderRadius: '14px',
-                  background: notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.08)',
-                  border: `1px solid ${notifications[option.key] ? '#00b8d4' : 'rgba(255, 255, 255, 0.12)'}`,
+                  background: notifications[option.key] ? '#ff0000' : 'rgba(255, 255, 255, 0.08)',
+                  border: `1px solid ${notifications[option.key] ? '#ff0000' : 'rgba(255, 255, 255, 0.12)'}`,
                   cursor: 'pointer',
                   position: 'relative',
                   transition: 'all 0.25s ease',
@@ -1137,6 +1138,206 @@ const NotificationsSection = ({ notifications, setNotifications }) => {
 };
 
 // Data & Privacy Section
+
+// Asset Types Management Section
+const AssetTypesSection = () => {
+  const [assetTypes, setAssetTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [newName, setNewName] = useState('');
+  const [newColor, setNewColor] = useState('#6b7280');
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({ name: '', color: '' });
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  const colorPalette = [
+    '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899',
+    '#06b6d4', '#a855f7', '#14b8a6', '#e879f9', '#6b7280',
+    '#ef4444', '#ff0000', '#22c55e', '#f97316', '#84cc16',
+    '#fbbf24', '#f43f5e', '#3b82f6'
+  ];
+
+  const getToken = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.access_token;
+  };
+
+  const fetchTypes = useCallback(async () => {
+    try {
+      const token = await getToken();
+      const res = await fetch(`${BACKEND_URL}/api/asset-types`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAssetTypes(data.asset_types || []);
+      }
+    } catch (e) {
+      console.error('Failed to load asset types:', e);
+    } finally {
+      setLoading(false);
+    }
+  }, [BACKEND_URL]);
+
+  useEffect(() => { fetchTypes(); }, [fetchTypes]);
+
+  const addType = async () => {
+    if (!newName.trim()) return;
+    try {
+      const token = await getToken();
+      const res = await fetch(`${BACKEND_URL}/api/asset-types`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName.trim(), color: newColor })
+      });
+      if (res.ok) {
+        setNewName('');
+        setNewColor('#6b7280');
+        fetchTypes();
+        toast.success('Asset type added');
+      }
+    } catch (e) { toast.error('Failed to add'); }
+  };
+
+  const saveEdit = async (id) => {
+    try {
+      const token = await getToken();
+      await fetch(`${BACKEND_URL}/api/asset-types/${id}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(editForm)
+      });
+      setEditingId(null);
+      fetchTypes();
+    } catch (e) { toast.error('Failed to update'); }
+  };
+
+  const deleteType = async (id) => {
+    try {
+      const token = await getToken();
+      await fetch(`${BACKEND_URL}/api/asset-types/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchTypes();
+    } catch (e) { toast.error('Failed to delete'); }
+  };
+
+  const sectionStyle = { background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '12px', padding: '24px', marginBottom: '20px' };
+  const labelStyle = { color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '12px', display: 'block' };
+
+  return (
+    <div style={{ maxWidth: '700px' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <h2 style={{ color: '#fff', fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Asset Types</h2>
+        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>Manage your property asset type categories</p>
+      </div>
+
+      {/* Add new type */}
+      <div style={sectionStyle}>
+        <label style={labelStyle}>Add New Asset Type</label>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <input
+            data-testid="new-asset-type-name"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addType()}
+            placeholder="e.g., Self Storage"
+            style={{
+              flex: 1, padding: '10px 14px', background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px',
+              color: '#fff', fontSize: '14px', outline: 'none'
+            }}
+          />
+          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', maxWidth: '200px' }}>
+            {colorPalette.slice(0, 8).map(c => (
+              <button
+                key={c}
+                onClick={() => setNewColor(c)}
+                style={{
+                  width: '24px', height: '24px', borderRadius: '50%', border: newColor === c ? '2px solid #fff' : '2px solid transparent',
+                  background: c, cursor: 'pointer', transition: 'all 0.15s'
+                }}
+              />
+            ))}
+          </div>
+          <button
+            data-testid="add-asset-type-btn"
+            onClick={addType}
+            disabled={!newName.trim()}
+            style={{
+              padding: '10px 20px', background: newName.trim() ? '#ff0000' : 'rgba(255,0,0,0.3)',
+              border: 'none', borderRadius: '8px', color: '#fff', fontSize: '14px',
+              fontWeight: 600, cursor: newName.trim() ? 'pointer' : 'not-allowed'
+            }}
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
+      {/* Existing types */}
+      <div style={sectionStyle}>
+        <label style={labelStyle}>Current Asset Types</label>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '20px', color: 'rgba(255,255,255,0.5)' }}>Loading...</div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {assetTypes.map((t) => (
+              <div key={t.id} style={{
+                display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px',
+                background: 'rgba(255,255,255,0.03)', borderRadius: '8px',
+                border: editingId === t.id ? '1px solid rgba(255,0,0,0.3)' : '1px solid transparent'
+              }}>
+                {editingId === t.id ? (
+                  <>
+                    <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: editForm.color, flexShrink: 0 }} />
+                    <input
+                      value={editForm.name}
+                      onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))}
+                      style={{
+                        flex: 1, padding: '6px 10px', background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px',
+                        color: '#fff', fontSize: '14px', outline: 'none'
+                      }}
+                    />
+                    <div style={{ display: 'flex', gap: '3px' }}>
+                      {colorPalette.slice(0, 6).map(c => (
+                        <button key={c} onClick={() => setEditForm(f => ({ ...f, color: c }))}
+                          style={{ width: '20px', height: '20px', borderRadius: '50%', background: c, border: editForm.color === c ? '2px solid #fff' : '1px solid transparent', cursor: 'pointer' }} />
+                      ))}
+                    </div>
+                    <button onClick={() => saveEdit(t.id)} style={{ background: '#10b981', border: 'none', borderRadius: '6px', padding: '6px 12px', color: '#fff', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>Save</button>
+                    <button onClick={() => setEditingId(null)} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', padding: '4px' }}><X size={16} /></button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: t.color, flexShrink: 0 }} />
+                    <span style={{ flex: 1, color: '#fff', fontSize: '14px' }}>{t.name}</span>
+                    <button
+                      onClick={() => { setEditingId(t.id); setEditForm({ name: t.name, color: t.color }); }}
+                      style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', padding: '4px' }}
+                    >
+                      <FileText size={14} />
+                    </button>
+                    <button
+                      onClick={() => deleteType(t.id)}
+                      style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', padding: '4px' }}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 const DataPrivacySection = () => {
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -1180,13 +1381,13 @@ const DataPrivacySection = () => {
             width: '48px',
             height: '48px',
             borderRadius: '10px',
-            background: 'rgba(0, 184, 212, 0.08)',
+            background: 'rgba(255, 0, 0, 0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0
           }}>
-            <Download size={22} style={{ color: '#00b8d4' }} />
+            <Download size={22} style={{ color: '#ff0000' }} />
           </div>
           <div style={{ flex: 1 }}>
             <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: 600, marginBottom: '8px', letterSpacing: '-0.2px' }}>
@@ -1199,10 +1400,10 @@ const DataPrivacySection = () => {
               onClick={handleExportData}
               style={{
                 padding: '10px 20px',
-                background: 'rgba(0, 184, 212, 0.08)',
-                border: '1px solid rgba(0, 184, 212, 0.25)',
+                background: 'rgba(255, 0, 0, 0.08)',
+                border: '1px solid rgba(255, 0, 0, 0.25)',
                 borderRadius: '6px',
-                color: '#00b8d4',
+                color: '#ff0000',
                 cursor: 'pointer',
                 fontSize: '13px',
                 fontWeight: 600,
@@ -1212,11 +1413,11 @@ const DataPrivacySection = () => {
                 transition: 'all 0.15s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.12)';
+                e.currentTarget.style.background = 'rgba(255, 0, 0, 0.12)';
                 e.currentTarget.style.transform = 'translateY(-1px)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)';
+                e.currentTarget.style.background = 'rgba(255, 0, 0, 0.08)';
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
@@ -1448,12 +1649,12 @@ const ChangePasswordModal = ({ onClose }) => {
               width: '44px',
               height: '44px',
               borderRadius: '10px',
-              background: 'rgba(0, 184, 212, 0.08)',
+              background: 'rgba(255, 0, 0, 0.08)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <Lock size={20} style={{ color: '#00b8d4' }} />
+              <Lock size={20} style={{ color: '#ff0000' }} />
             </div>
             <h2 style={{ color: '#fff', fontSize: '22px', fontWeight: 700, letterSpacing: '-0.3px' }}>
               Change Password
@@ -1630,7 +1831,7 @@ const ChangePasswordModal = ({ onClose }) => {
               style={{
                 flex: 1,
                 padding: '12px',
-                background: loading ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4',
+                background: loading ? 'rgba(255, 0, 0, 0.5)' : '#ff0000',
                 border: 'none',
                 borderRadius: '7px',
                 color: '#000',
@@ -1641,7 +1842,7 @@ const ChangePasswordModal = ({ onClose }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                boxShadow: loading ? 'none' : '0 2px 12px rgba(0, 184, 212, 0.3)'
+                boxShadow: loading ? 'none' : '0 2px 12px rgba(255, 0, 0, 0.3)'
               }}
             >
               {loading && <Loader2 size={15} className="animate-spin" />}

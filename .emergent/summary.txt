@@ -1,147 +1,159 @@
-<analysis>**original_problem_statement:**
-The user initially requested to build a feature for managing asset types (names and colors) from a new settings page, with changes reflecting globally. This was simplified to just adding Hotels and Medical to the existing hardcoded asset type list.
+<analysis>**original_problem_statement**: 
+Implement code quality fixes from an audit, add dynamic page titles for shared links, unify the Create Deal/Contact side panels to match the , fix critical map rendering lag (crashing on zoom/pan), implement a new Portal Team Collaboration feature to manage client portals, route document upload/delete actions through the backend to bypass RLS blocks, and fix image upload failures caused by invalid filenames.
+PRODUCT REQUIREMENTS:
+- Dynamic page titles: DealLinked - {Property Name} for shares, DealLinked - Client Portal for portals.
+- Map Performance: Fix lag and crashing during zooming and panning on CRM and Portal maps.
+- Side Panel Unification: The Create New Deal and Edit Contact side panels must strictly match the  and trigger the .
+- Document Management: Allow document uploads directly from the detail side panel, and document deletion from both the side panel and the deal details page.
+- Image Uploads: Fix the Failed to load images bug when uploading images to property details/side panels.
+- Portal Team Collaboration: Allow team members to manage client portals (manage members, remove members, add deals).
 
-The user then made the following requests:
-1.  Add street names, city, and county overlays to the satellite map.
-2.  Optimize the map's performance as it was slow and wonky when scrolling and zooming. The user also requested the most up-to-date satellite imagery available for free.
-3.  Implement a feature to add/create contacts directly from the property details side panel on the map view to streamline the workflow.
-4.  For a private launch, disable the public user registration functionality.
-5.  Finally, the user requested to check the application's readiness for deployment.
+**User's preferred language**: English (INSTRUCT next agent to respond in English only)
 
-**PRODUCT REQUIREMENTS:**
--   Add Hotels and Medical to all asset type selectors and legends.
--   Overlay vector-based labels (cities, streets, etc.) on the satellite map.
--   Optimize map performance for smooth scrolling and zooming.
--   Implement inline contact management (add existing, create new, unlink) in the map's side panel.
--   Disable all user signup functionality.
+**what currently exists?** 
+A full-stack Commercial Real Estate (CRE) CRM (React, FastAPI, Supabase). The application features dynamic browser tab titles, unified glass-morphism side panels (), and highly performant map views using uncontrolled state ( + ). It includes a robust Portal Team Collaboration feature backed by a  table. All document and image uploads securely route through the FastAPI backend with strict filename sanitization, bypassing direct client-side Supabase RLS restrictions.
 
-**User's preferred language**: English
+**Last working item**: 
+    - Last item agent was working: Fixing the Failed to load images bug by sanitizing filenames in the backend (handling macOS screenshot special characters like narrow no-break space) and ensuring the Create Deal side panel uses  for contact creation.
+    - Status: USER VERIFICATION PENDING
+    - Agent Testing Done: Y
+    - Which testing method agent to use?: testing_agent_v3_fork
+    - User Testing Done: N
 
-**what currently exists?**
-A commercial real estate (CRE) CRM application built with React, Node.js, and Supabase. The application features a map-centric UI using MapLibre to display property deals. Key functionalities include user authentication, deal and contact management, and a map view with satellite imagery. User signup has been disabled, making the platform invite-only (admins must create users via Supabase).
+**All Pending/In progress Issue list**: 
+None currently in progress.
 
-**Last working item**:
--   Last item agent was working: The agent was preparing the application for deployment. It ran the  to perform a health check, which identified two deployment blockers ( misconfiguration,  files in git) and one warning (unused MongoDB process in supervisor config). The agent fixed the blockers by cleaning up the  file and ensuring  files are ignored. It correctly concluded that the supervisor config is a read-only platform file and the warning can be ignored.
--   Status: USER VERIFICATION PENDING
--   Agent Testing Done: Y
--   Which testing method agent to use? NA (The next step is to confirm with the user and proceed with deployment, which is a different agent's job).
--   User Testing Done: N
+**In progress Task List**: 
+None currently in progress.
 
-**All Pending/In progress Issue list**:
-There are no pending or in-progress issues. The agent successfully resolved all bugs identified during the session, including 500 errors on API endpoints and deployment blockers.
+**Upcoming and Future Tasks**:
+    Upcoming Tasks:
+    - P0: User visual verification of the image upload fix and Create Deal contact panel flow.
+    - P0: User visual verification of the document upload/delete functionality in the side panels.
+    - P0: User visual verification of map performance (zooming/panning without lag).
+    
+    Future Tasks:
+    - P1: Sanitize HTML content to fix XSS vulnerabilities via  in , , .
+    - P2: Component Refactoring: Break down massive components (, , ).
+    - P3: Python backend complexity refactoring and type hint additions.
+    - P3: Architectural security: Move sensitive  data to  cookies.
 
-**In progress Task List**:
-There are no in-progress tasks.
+**Completed work in this session**:
+- Implemented dynamic browser tab titles for Public Share and Portal Login pages (DONE)
+- Replaced backend hardcoded test secrets with  using environment variables (DONE)
+- Fixed frontend hook dependencies (, ) and array-index keys (, , ) (DONE)
+- Fixed Edit Full Details navigation routing to point to  instead of  (DONE)
+- Added responsive Map location view to the bottom of the  page (DONE)
+- Unified Create Deal side panel styling () and  slide-in positioning (DONE)
+- Switched deal deletion from direct Supabase query to  (DONE)
+- Implemented Portal Team Collaboration: Added  table, backend routes, and Team Access tab in  (DONE)
+- Fixed critical map lag/crashing: Refactored  and  from controlled () to uncontrolled state ( + ) (DONE)
+- Fixed  bug to ensure full deal data (not just contacts) loads into the side panel (DONE)
+- Replaced direct Supabase document upload/fetch/delete on side panels with backend endpoints, adding delete buttons to  (DONE)
+- Fixed Image Upload bug ( error) by sanitizing filenames using regex  in FastAPI (DONE)
 
-**Upcoming and Future Tasks**
+**Earlier issues found/mentioned but not fixed**:
+   - Issue 1: XSS Vulnerabilities via dangerouslySetInnerHTML
+     - Debug checklist: , , 
+     - Why to solve this issue and what will be achieved with this?: Prevents malicious script injection. Needs DOMPurify implementation. 
+     - Should Test frontend/backend/both after fix: Frontend
+     - Is recurring issue? N
+   - Issue 2: High Complexity Functions in Backend
+     - Debug checklist: Refactor , , , , , .
+     - Why to solve this issue and what will be achieved with this?: Improves testability and maintainability of the Python backend.
+     - Should Test frontend/backend/both after fix: Backend
+     - Is recurring issue? N
+   - Issue 3: localStorage Security
+     - Debug checklist: , , 
+     - Why to solve this issue and what will be achieved with this?: Sensitive data in localStorage persists unencrypted and is vulnerable to XSS attacks. Move to  cookies.
+     - Should Test frontend/backend/both after fix: Both
+     - Is recurring issue? N
 
-**Upcoming Tasks:**
--   **P0: Deploy Application:** The user's last request was to prepare for deployment. Now that the health check is clean, the next step is to trigger the deployment process.
+**Known issue recurrence from previous fork**:
+  - Issue recurrence in previous fork: None
+  - Recurrence count: 0
+  - Status: RESOLVED
 
-**Future Tasks:**
--   **P2: Admin Approval System for Signups:** The user opted to disable signups completely. However, an admin approval flow (where users can register but cannot access the app until an admin approves them) was discussed as a more flexible alternative for the future. This would involve re-enabling the signup endpoint and adding backend logic to check a user's  on every request.
--   **P2: Dynamic Asset Type Management UI:** The user's original request was to manage asset types from a settings page. This was deferred in favor of a simpler hardcoded change. This feature could be revisited if the user requires more flexibility in the future.
-
-**Completed work in this session**
--   **Feature: Disabled User Signup:**
-    -   Disabled the  endpoint to return a 403 error. (File: )
-    -   Removed the Sign Up tab and form fields from the login page. (File: )
-    -   Updated landing page buttons to direct users to login instead of signup. (File: )
--   **Feature: Inline Contact Management:**
-    -   Added UI to the map's side panel to search, link, unlink, and create new contacts without leaving the map view. (File: )
--   **Feature: Map Enhancements & Optimization:**
-    -   Added Hotels and Medical to all asset type lists and legends. (Files: , , , etc.)
-    -   Added vector tile overlays for crisp, fast-rendering street, city, and county labels.
-    -   Significantly improved map performance by removing a custom  function, using multiple ESRI server endpoints for parallel loading, and tuning MapLibre cache and fade settings. (File: )
--   **Bug Fixes & Readiness:**
-    -   Fixed backend endpoints (, ) to correctly return 404 errors for non-existent items instead of 500-level errors. (Files: , )
-    -   Fixed deployment blockers by cleaning up malformed entries in  and ensuring  files were properly ignored.
--   **Testing:**
-    -   Successfully ran frontend and backend testing agents to validate new features and bug fixes.
-
-**Earlier issues found/mentioned but not fixed**
-None.
-
-**Known issue recurrence from previous fork**
-No previous fork summary was provided in the initial message. The agent started with a fresh analysis of the user's problem statement.
-
-**Code Architecture**
+**Code Architecture**:
+Standard layout:
+ (FastAPI + Pytest)
+ (React, MapLibre, Shadcn)
 
 
-**Key Technical Concepts**
--   **Frontend:** React, MapLibre GL JS
--   **Backend:** Node.js, Express.js
--   **Database:** Supabase (PostgreSQL)
--   **Authentication:** Supabase Auth (JWT-based)
--   **Mapping:** Combination of ESRI World Imagery (for satellite raster tiles) and OpenFreeMap (for vector label tiles).
+**Key Technical Concepts**:
+- Frontend: React, maplibre-gl (Uncontrolled state strictly enforced for performance)
+- Backend: Python/FastAPI (Handles all DB mutations & Supabase Storage)
+- Database/Auth/Storage: Supabase (PostgreSQL, Row Level Security)
 
-**key DB schema**
--   : Stores property information.
--   : Stores contact details for individuals or companies.
--   : Many-to-many join table linking  and .
--   : Extends Supabase's  table with application-specific data.
+**key DB schema**:
+- , , , 
+- , , 
+- :  (New)
+- : 
 
-**changes in tech stack**
-No changes were made to the core technology stack.
+**changes in tech stack**:
+- None
 
-**All files of reference**
--   : The most heavily modified file. It contains logic for map rendering, vector overlays, performance optimizations, and the new inline contact management UI.
--   : Modified to disable the user signup endpoint.
--   : Modified to remove the signup UI.
--   : Links updated to point to login.
--   : Patched to handle errors for non-existent tags gracefully.
--   : Patched to handle errors for non-existent deal-contact links.
--   : Corrected to fix deployment blockers and ignore environment files.
+**All files of reference**:
+-  (Refactored map performance to uncontrolled state, integrated )
+-  (Document management, styling, unified creation)
+-  (File sanitization logic  for image/document endpoints)
+-  (New team collaboration backend logic)
+-  (Added Team Access tab)
+-  (Document delete buttons)
 
 **Areas that need refactoring**:
--   : The code block for the signup form () is now dead code since the toggle was removed. While harmless, it could be removed for better code hygiene.
+- 
+- 
+- 
 
-**key api endpoints**
--   : **DISABLED** (returns 403 Forbidden).
--   : User authentication.
--   : Fetches all contacts.
--   : Creates a new contact.
--   : Links a contact to a deal.
--   : Unlinks a contact from a deal.
+**key api endpoints**:
+-  (Image uploads, sanitized filenames)
+-  (Document uploads, sanitized filenames)
+-  (Deletes documents, validates owner/uploader)
+-  (Deletes deals, replaces frontend Supabase mutation)
+-  (Portal team access logic)
 
-**Critical Info for New Agent**
--   **Signup is Disabled:** Do not attempt to use or test the signup flow. The user explicitly requested it to be turned off for a private launch. Users must be created manually in the Supabase dashboard.
--   **Map Performance:** The map's performance was a major concern for the user. The current implementation uses vector labels and parallel tile loading, which resolved the issue. Avoid re-introducing naive prefetching or using raster labels.
--   **Deployment Readiness:** The application has passed the health check and is ready for deployment. Your next action should be to communicate this to the user and proceed with deployment if they confirm.
+**Critical Info for New Agent**:
+- **Map Performance Rule**:  instances MUST use **uncontrolled state** ( + ). Using controlled state ( + ) causes severe lag and crashes the app during large distance pans.
+- **Supabase Storage Rule**: Supabase Storage rejects filenames containing special characters (like narrow no-break space from macOS screenshots). Always sanitize filenames in the FastAPI backend using regex before uploading.
+- **Client-Side Mutation Rule**: Do not use direct Supabase client , , or  from the React frontend. Row Level Security (RLS) blocks them. Always route mutations to the  backend.
 
-**documents and test reports created in this job**
-No persistent documents or test reports were saved to the workspace. Test results were reviewed in the agent's stdout.
+**documents and test reports created in this job**:
+-  (Updated significantly)
+-  (Create Deal styling / Contact form UI)
+-  (Delete Deal / Team Collaboration)
+-  (Map performance uncontrolled state)
+-  (Document management)
+-  (Image filename sanitization)
 
-**Last 10 User Messages and any pending HUMAN messages**
-1.  ****: Completed. Agent ran the check and fixed blockers.
-2.  ****: Completed. Agent disabled signup.
-3.  ****: Answered. Agent explained options, user made a decision.
-4.  ****: Completed. This is the root request for disabling signup.
-5.  ****: Completed. Agent built the inline contact management feature.
-6.  ****: Completed. Agent performed significant map optimizations.
-7.  ****: Answered. Agent clarified that Google requires a card and that the current ESRI source is the best free option.
-8.  ****: Completed. This was the initial request for map optimization.
-9.  ****: Partially Completed. The map overlay was implemented, but the asset type management UI was cancelled by the user.
-10. ****: Completed. Agent implemented this simplified request.
+**Last 10 User Messages and any pending HUMAN messages**:
+1. **User:** Work on P0 for now... change the title of the shared link... DealLinked - {Property Name}... and DealLinked - Client Portal. (Completed)
+2. **User:** Here are the code review findings. Please apply the suggested fixes... (Completed - secrets, hook deps, array keys)
+3. **User:** Call Deployer Agent and Run Health Check to Check for Readiness for Deployment (Completed - passed)
+4. **User:** When i click on edit full details... takes me back to dashboard... shared property details page does not include a map at the bottom... (Completed - fixed routing and added Map)
+5. **User:** on the CRM map, create new deal side panel is not the same... fields to create the new contact do not come up. (Completed - unified styling and ContactFormPanel)
+6. **User:** Currently, when you tried to delete a deal from the side panels... it does not work. Want to have another feature where you can invite members from your team to handle your client portals... (Completed)
+7. **User:** create new contact on Deal Details panel... should come up when clicking edit on linked contact... critical error zooming in map crashes app... data input into create new deal panel does not save once clicked on map... (Completed - Uncontrolled map refactor, fixed )
+8. **User:** You cannot upload any documents to the Detail side panel... no way of deleting documents and managing them on the deal details page. (Completed - Backend document sync added)
+9. **User:** I am getting a failed to load images when trying to upload a image... also When creating a new contact on the create new deal side panel the same panel that comes up when editing a current contact should come up. (Completed - sanitized image filenames, integrated ContactFormPanel)
 
 **Project Health Check:**
--   **Broken:** None.
--   **Mocked:** None.
+- Broken: None
+- Mocked: None
 
-**3rd Party Integrations**
--   **Supabase** (Backend as a Service: PostgreSQL, Auth) — requires User API Key.
--   **MapLibre GL JS** (Map Rendering Library) — open source.
--   **ESRI World Imagery** (Satellite Imagery Provider) — no key required.
--   **OpenFreeMap** (Vector Tile Provider) — no key required.
+**3rd Party Integrations**:
+- Supabase (Backend Database/Auth/Storage) — requires User API Key
+- MapLibre GL JS (Map Rendering)
 
-**Testing status**
--   Testing agent used after significant changes: YES
--   Troubleshoot agent used after agent stuck in loop: NO
--   Test files created: []
--   Known regressions: []
+**Testing status**:
+- Testing agent used after significant changes: YES (iterations 30, 31, 32, 33, 34)
+- Troubleshoot agent used after agent stuck in loop: NO
+- Test files created: None
+- Known regressions: None
 
-**Credentials to test flow:**
-Credentials for the test user () are available in the environment variables and were used successfully by the agent.
+**Credentials to test flow**:
+- See 
 
-**What agent forgot to execute**
-The agent successfully executed all user requests and addressed all identified issues. A minor code cleanup in  (removing dead code) was not performed but is not a functional miss.</analysis>
+**What agent forgot to execute**:
+The agent skipped fixing the XSS vulnerabilities (), High Complexity Functions in the backend, Oversized Components, and localStorage Security explicitly requested by the user in Message 26's code review. These remain as technical debt.</analysis>

@@ -1,0 +1,83 @@
+{
+  "summary": "Phase 4 Investor Portal Frontend testing complete. All 16 features verified working: login page, error handling, valid credentials redirect, satellite map with city labels, minimal PortalLayout (no CRM sidebar), DL logo + portal name + logout in header, asset type filter pills auto-populated, saved toggle filter, welcome badge with investor name/count, deal detail page with property info, save/unsave functionality, back to map navigation, logout clears session, and zero editing capabilities.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "features_verified": {
+    "portal_login_page": {
+      "page_renders": "PASS - Login form at /portal/{portalId} with name + access code inputs",
+      "data_testids": "PASS - portal-login-name, portal-login-code, portal-login-submit all present",
+      "submit_disabled_when_empty": "PASS - Submit button correctly disabled when form empty",
+      "invalid_credentials_error": "PASS - Shows 'Invalid access code' error message with data-testid='portal-login-error'",
+      "valid_credentials_redirect": "PASS - Redirects to /portal/{portalId}/map after successful login"
+    },
+    "portal_map_page": {
+      "satellite_imagery": "PASS - Map shows satellite imagery from ESRI tiles",
+      "city_labels": "PASS - City labels visible (SAN ANTONIO, SCHERTZ, SEGUIN, NEW BRAUNFELS, etc.)",
+      "welcome_badge": "PASS - Shows 'Welcome, UI Test Investor · 1 deal'",
+      "header_elements": {
+        "dl_logo": "PASS - DealLinked logo visible in header",
+        "portal_name": "PASS - 'SA Investor Deals' displayed in header",
+        "logout_button": "PASS - Logout button with data-testid='portal-logout'"
+      },
+      "saved_toggle": "PASS - data-testid='saved-toggle' works, filters to '0 deals' when active",
+      "asset_type_filters": "PASS - 'Office' filter auto-populated from portal deals with data-testid='filter-Office'",
+      "map_pins": "INFO - No pins visible as test deal has no lat/lng coordinates (expected behavior)"
+    },
+    "deal_detail_page": {
+      "back_to_map_button": "PASS - data-testid='back-to-map' navigates correctly",
+      "save_button": "PASS - data-testid='detail-save-btn' toggles between 'Save to Watchlist' and 'Saved'",
+      "asset_type_badge": "PASS - 'Office' badge displayed",
+      "title_display": "PASS - 'Test Property' title shown",
+      "address_display": "PASS - '123 Main St, San Antonio, TX' address displayed",
+      "asking_price": "PASS - '$1,500,000' asking price shown",
+      "property_details_section": "PASS - Property Details section present",
+      "documents_section": "INFO - Not present (deal has no documents - expected)"
+    },
+    "minimal_portal_layout": {
+      "no_crm_sidebar": "PASS - No Dashboard, Contacts, Pipeline, Settings, or Team navigation visible",
+      "header_only": "PASS - Only minimal header bar with logo, portal name, and logout"
+    },
+    "logout_functionality": {
+      "logout_clears_session": "PASS - Clicking logout redirects to login page",
+      "session_protection": "PASS - Accessing /map after logout redirects back to login"
+    },
+    "no_editing_capabilities": {
+      "no_edit_buttons": "PASS - 0 edit buttons found on portal pages",
+      "no_delete_buttons": "PASS - 0 delete buttons found",
+      "no_create_buttons": "PASS - 0 create/add/new buttons found",
+      "no_settings_buttons": "PASS - 0 settings buttons found",
+      "backend_blocks_mutations": "PASS - PUT/DELETE/POST to modify deals returns 404/405 (correctly blocked)"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_portal_investor.py",
+    "/app/test_reports/pytest/portal_investor_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_portal_investor.py"
+  ],
+  "success_rate": {
+    "backend": "100% (15/15 passed)",
+    "frontend": "100% - All 16 features verified"
+  },
+  "test_credentials": {
+    "portal_url": "https://image-upload-fix-30.preview.emergentagent.com/portal/1d6a0baa-b7ad-4e52-9896-fe04c9341e45",
+    "investor_name": "UI Test Investor",
+    "access_code": "E7XXUWCH",
+    "portal_id": "1d6a0baa-b7ad-4e52-9896-fe04c9341e45",
+    "deal_id": "7a7e4043-28c7-48e0-81d5-a54b63c5b49a"
+  },
+  "seed_data_creation": "Used existing 'UI Test Investor' member in SA Investor Deals portal",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Phase 4 Investor Portal Frontend fully working. Portal 'SA Investor Deals' has 1 deal (Test Property - Office, $1.5M, no lat/lng so no map pin). Login flow: /portal/{id} -> fill name/code -> /portal/{id}/map. PortalLayout is minimal (no CRM sidebar). Session stored in localStorage as portal_session_{id}. All data-testids correctly implemented. Backend investor API endpoints all working: auth, deals list, deal detail, save/unsave, activity logging."
+}

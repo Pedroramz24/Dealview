@@ -64,7 +64,7 @@ const SavedDealsPage = () => {
         {/* Header */}
         <div style={{ marginBottom: '32px' }}>
           <h1 style={{ color: '#fff', fontSize: '32px', fontWeight: '700', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Heart size={32} fill="#00b8d4" color="#00b8d4" />
+            <Heart size={32} fill="#ff0000" color="#ff0000" />
             Saved Deals
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px' }}>
@@ -96,7 +96,7 @@ const SavedDealsPage = () => {
               onClick={() => navigate('/marketplace')}
               style={{
                 padding: '12px 24px',
-                background: '#00b8d4',
+                background: '#ff0000',
                 border: 'none',
                 borderRadius: '10px',
                 color: '#000',
@@ -132,7 +132,7 @@ const SavedDealsPage = () => {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.3)';
                     e.currentTarget.style.transform = 'translateY(-4px)';
                   }}
                   onMouseLeave={(e) => {
@@ -146,7 +146,7 @@ const SavedDealsPage = () => {
                     position: 'absolute',
                     top: '12px',
                     left: '12px',
-                    background: 'rgba(0, 184, 212, 0.9)',
+                    background: 'rgba(255, 0, 0, 0.9)',
                     backdropFilter: 'blur(8px)',
                     padding: '6px 12px',
                     borderRadius: '8px',
@@ -187,7 +187,7 @@ const SavedDealsPage = () => {
                     height: '200px',
                     background: deal.image_url 
                       ? `url(${deal.image_url})` 
-                      : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
+                      : 'linear-gradient(135deg, rgba(255, 0, 0, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                   }} />
@@ -204,12 +204,12 @@ const SavedDealsPage = () => {
                         </p>
                       </div>
                       <div style={{
-                        background: 'rgba(0, 184, 212, 0.15)',
-                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        background: 'rgba(255, 0, 0, 0.15)',
+                        border: '1px solid rgba(255, 0, 0, 0.3)',
                         borderRadius: '6px',
                         padding: '4px 8px',
                         fontSize: '11px',
-                        color: '#00b8d4',
+                        color: '#ff0000',
                         fontWeight: '600'
                       }}>
                         {deal.public_asset_type}
@@ -217,7 +217,7 @@ const SavedDealsPage = () => {
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <span style={{ color: '#00b8d4', fontSize: '20px', fontWeight: '700' }}>
+                      <span style={{ color: '#ff0000', fontSize: '20px', fontWeight: '700' }}>
                         ${deal.public_price?.toLocaleString()}
                       </span>
                       <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>

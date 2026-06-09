@@ -100,7 +100,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
 
     setIsSaving(true);
     try {
-      const eventColor = EVENT_TYPE_OPTIONS.find(opt => opt.value === eventForm.event_type)?.color || '#00b8d4';
+      const eventColor = EVENT_TYPE_OPTIONS.find(opt => opt.value === eventForm.event_type)?.color || '#ff0000';
       
       const response = await fetch(`${API_URL}/api/calendar/events`, {
         method: 'POST',
@@ -194,14 +194,14 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
           <div style={{
             width: '40px',
             height: '40px',
-            background: 'linear-gradient(135deg, rgba(0,184,212,0.15), rgba(0,184,212,0.08))',
+            background: 'linear-gradient(135deg, rgba(212,18,18,0.15), rgba(212,18,18,0.08))',
             borderRadius: '12px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            border: '1px solid rgba(0,184,212,0.25)'
+            border: '1px solid rgba(212,18,18,0.25)'
           }}>
-            <Calendar className="w-5 h-5" style={{ color: '#00d4ff' }} />
+            <Calendar className="w-5 h-5" style={{ color: '#ff0000' }} />
           </div>
           <h2 style={{ color: '#FFFFFF', fontSize: '24px', fontWeight: '800' }}>Create Event</h2>
         </div>
@@ -333,8 +333,8 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
               style={{
                 width: '52px',
                 height: '28px',
-                background: eventForm.all_day ? 'linear-gradient(135deg, rgba(0,184,212,0.3), rgba(0,184,212,0.2))' : 'rgba(255,255,255,0.05)',
-                border: eventForm.all_day ? '1px solid rgba(0,184,212,0.4)' : '1px solid rgba(255,255,255,0.1)',
+                background: eventForm.all_day ? 'linear-gradient(135deg, rgba(212,18,18,0.3), rgba(212,18,18,0.2))' : 'rgba(255,255,255,0.05)',
+                border: eventForm.all_day ? '1px solid rgba(212,18,18,0.4)' : '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '14px',
                 position: 'relative',
                 cursor: 'pointer',
@@ -347,7 +347,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                 left: eventForm.all_day ? '26px' : '2px',
                 width: '22px',
                 height: '22px',
-                background: eventForm.all_day ? '#00d4ff' : 'rgba(255,255,255,0.4)',
+                background: eventForm.all_day ? '#ff0000' : 'rgba(255,255,255,0.4)',
                 borderRadius: '11px',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }} />
@@ -443,7 +443,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                           borderBottom: '1px solid rgba(255,255,255,0.04)',
                           transition: 'background 0.15s ease'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.05)'}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212,18,18,0.05)'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                       >
                         <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{deal.address || deal.title}</p>
@@ -548,7 +548,7 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
                           borderBottom: '1px solid rgba(255,255,255,0.04)',
                           transition: 'background 0.15s ease'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.05)'}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212,18,18,0.05)'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                       >
                         <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600' }}>{contact.name}</p>
@@ -600,10 +600,10 @@ const CreateEventPanel = ({ isOpen, onClose, onEventCreated }) => {
           style={{
             width: '100%',
             padding: '16px',
-            background: isSaving ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
-            border: '1px solid rgba(0, 184, 212, 0.4)',
+            background: isSaving ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(59, 130, 246, 0.25))',
+            border: '1px solid rgba(255, 0, 0, 0.4)',
             borderRadius: '14px',
-            color: isSaving ? 'rgba(255,255,255,0.4)' : '#00d4ff',
+            color: isSaving ? 'rgba(255,255,255,0.4)' : '#ff0000',
             fontWeight: '800',
             fontSize: '15px',
             cursor: isSaving ? 'not-allowed' : 'pointer',

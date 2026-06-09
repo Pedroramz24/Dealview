@@ -71,7 +71,7 @@ const JoinTeam = () => {
         minHeight: '100vh', 
         background: '#000' 
       }}>
-        <Loader2 size={40} style={{ color: '#00b8d4' }} className="animate-spin" />
+        <Loader2 size={40} style={{ color: '#ff0000' }} className="animate-spin" />
       </div>
     );
   }
@@ -99,13 +99,13 @@ const JoinTeam = () => {
           height: '72px',
           margin: '0 auto 24px',
           borderRadius: '12px',
-          background: 'rgba(0, 184, 212, 0.1)',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
+          background: 'rgba(255, 0, 0, 0.1)',
+          border: '1px solid rgba(255, 0, 0, 0.2)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <Users size={36} style={{ color: '#00b8d4' }} />
+          <Users size={36} style={{ color: '#ff0000' }} />
         </div>
 
         <h1 style={{ 
@@ -149,7 +149,7 @@ const JoinTeam = () => {
           style={{
             width: '100%',
             padding: '14px',
-            background: joining ? 'rgba(0, 184, 212, 0.5)' : '#00b8d4',
+            background: joining ? 'rgba(255, 0, 0, 0.5)' : '#ff0000',
             border: 'none',
             borderRadius: '8px',
             color: '#000',

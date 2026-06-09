@@ -299,7 +299,7 @@ const MapView = () => {
           e.currentTarget.style.background = colors.hover;
           e.currentTarget.style.borderColor = colors.primary;
           e.currentTarget.style.color = colors.primary;
-          e.currentTarget.style.boxShadow = shadows.glowCyan;
+          e.currentTarget.style.boxShadow = shadows.glow;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = colors.surfaceCard;
@@ -695,7 +695,7 @@ const MapView = () => {
                     fontSize: '13px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    boxShadow: shadows.glowCyan,
+                    boxShadow: shadows.glow,
                     width: '100%'
                   }}
                 >

@@ -4,7 +4,7 @@ import { AuthContext, API } from '../App';
 import { supabase } from '../supabaseClient';
 import { 
   Building2, Users, Calendar, TrendingUp, DollarSign, 
-  MapPin, Clock, ArrowRight, Plus
+  MapPin, Clock, ArrowRight, Plus, AlertTriangle
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { colors, shadows, gradients, borderRadius, spacing } from '../styles/designSystem';
@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [recentDeals, setRecentDeals] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [upcomingDeadlines, setUpcomingDeadlines] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -48,6 +49,15 @@ const Dashboard = () => {
         const data = await activityRes.json();
         setRecentDeals(data.activity?.recent_deals || []);
         setUpcomingEvents(data.activity?.upcoming_events || []);
+      }
+
+      // Fetch upcoming deadlines
+      const deadlinesRes = await fetch(`${API}/dashboard/upcoming-deadlines`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (deadlinesRes.ok) {
+        const data = await deadlinesRes.json();
+        setUpcomingDeadlines(data.deadlines || []);
       }
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
@@ -238,6 +248,75 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Upcoming Deadlines Widget - Only renders when there are active deadlines */}
+      {upcomingDeadlines.length > 0 && (
+        <div data-testid="upcoming-deadlines-widget" style={{
+          background: colors.surfaceCard,
+          borderRadius: borderRadius.md,
+          padding: spacing.lg,
+          marginBottom: spacing.lg,
+          boxShadow: shadows.cardElevation
+        }}>
+          <div style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            marginBottom: spacing.lg
+          }}>
+            <h2 style={{ fontSize: '16px', fontWeight: '600', color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <AlertTriangle size={18} style={{ color: colors.warning }} />
+              Upcoming Deadlines
+            </h2>
+            <span style={{ color: colors.textTertiary, fontSize: '12px' }}>Next 30 days</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+            {upcomingDeadlines.slice(0, 8).map((d) => {
+              const isOverdue = d.days_remaining < 0;
+              const isUrgent = d.days_remaining >= 0 && d.days_remaining <= 3;
+              const isWarning = d.days_remaining > 3 && d.days_remaining <= 14;
+              const accentColor = isOverdue || isUrgent ? '#ef4444' : isWarning ? '#f59e0b' : '#3b82f6';
+              
+              return (
+                <div
+                  key={d.milestone_id}
+                  data-testid={`deadline-item-${d.milestone_id}`}
+                  onClick={() => navigate(`/deals/${d.deal_id}?tab=timeline`)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '14px',
+                    padding: '12px', background: colors.surfaceElevated,
+                    borderRadius: borderRadius.sm, cursor: 'pointer',
+                    borderLeft: `3px solid ${accentColor}`,
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = colors.hover; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = colors.surfaceElevated; }}
+                >
+                  <div style={{
+                    width: '38px', height: '38px', borderRadius: '8px',
+                    background: `${accentColor}15`, display: 'flex',
+                    alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                  }}>
+                    <Clock size={18} style={{ color: accentColor }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: colors.textPrimary, fontWeight: '500', fontSize: '14px', marginBottom: '2px' }}>
+                      {d.milestone_name}
+                    </div>
+                    <div style={{ color: colors.textTertiary, fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {d.deal_title}
+                    </div>
+                  </div>
+                  <div style={{
+                    padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: '600',
+                    background: `${accentColor}15`, color: accentColor, flexShrink: 0
+                  }}>
+                    {isOverdue ? `${Math.abs(d.days_remaining)}d overdue` : `${d.days_remaining}d`}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Recent Activity & Upcoming */}
       <div style={{
         display: 'grid',
@@ -325,7 +404,7 @@ const Dashboard = () => {
                     <div style={{ 
                       color: colors.textTertiary, 
                       fontSize: '12px',
-                      background: 'rgba(0, 184, 212, 0.1)',
+                      background: 'rgba(255, 0, 0, 0.1)',
                       padding: '2px 8px',
                       borderRadius: '4px',
                       marginTop: '4px'
@@ -399,7 +478,7 @@ const Dashboard = () => {
                     width: '40px',
                     height: '40px',
                     borderRadius: borderRadius.sm,
-                    background: 'rgba(0, 184, 212, 0.1)',
+                    background: 'rgba(255, 0, 0, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

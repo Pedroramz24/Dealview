@@ -129,7 +129,7 @@ const BrokerAnalytics = () => {
         {/* Diagonal purple gradient for comparison with Dashboard */}
         <div style={{ marginBottom: '32px' }}>
           <h1 style={{ color: '#fff', fontSize: '32px', fontWeight: '700', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <TrendingUp size={32} color="#00b8d4" />
+            <TrendingUp size={32} color="#ff0000" />
             Marketplace Analytics
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px' }}>
@@ -142,7 +142,7 @@ const BrokerAnalytics = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '48px' }}>
             <div style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <Eye size={24} color="#00b8d4" />
+                <Eye size={24} color="#ff0000" />
                 <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   Total Views
                 </div>
@@ -154,7 +154,7 @@ const BrokerAnalytics = () => {
 
             <div style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <MessageCircle size={24} color="#00b8d4" />
+                <MessageCircle size={24} color="#ff0000" />
                 <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   Total Messages
                 </div>
@@ -166,7 +166,7 @@ const BrokerAnalytics = () => {
 
             <div style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <Heart size={24} color="#00b8d4" />
+                <Heart size={24} color="#ff0000" />
                 <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   Total Saves
                 </div>
@@ -208,7 +208,7 @@ const BrokerAnalytics = () => {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.2)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
@@ -222,7 +222,7 @@ const BrokerAnalytics = () => {
                     flexShrink: 0,
                     background: deal.image_url 
                       ? `url(${deal.image_url})` 
-                      : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
+                      : 'linear-gradient(135deg, rgba(255, 0, 0, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                   }} />
@@ -253,7 +253,7 @@ const BrokerAnalytics = () => {
                         </div>
                       </div>
 
-                      <div style={{ color: '#00b8d4', fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
+                      <div style={{ color: '#ff0000', fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
                         ${deal.public_price?.toLocaleString()}
                       </div>
                     </div>
@@ -292,10 +292,10 @@ const BrokerAnalytics = () => {
                       onClick={() => navigate(`/workspace/deals/${deal.id}`)}
                       style={{
                         padding: '10px 16px',
-                        background: 'rgba(0, 184, 212, 0.15)',
-                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        background: 'rgba(255, 0, 0, 0.15)',
+                        border: '1px solid rgba(255, 0, 0, 0.3)',
                         borderRadius: '8px',
-                        color: '#00b8d4',
+                        color: '#ff0000',
                         cursor: 'pointer',
                         fontSize: '13px',
                         fontWeight: '600',
@@ -370,7 +370,7 @@ const BrokerAnalytics = () => {
                       borderRadius: '8px',
                       background: property.deal.image_url 
                         ? `url(${property.deal.image_url})` 
-                        : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
+                        : 'linear-gradient(135deg, rgba(255, 0, 0, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%)',
                       backgroundSize: 'cover',
                       backgroundPosition: 'center'
                     }} />
@@ -405,14 +405,14 @@ const BrokerAnalytics = () => {
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
                             <div style={{ flex: 1 }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                                <User size={16} color="#00b8d4" />
+                                <User size={16} color="#ff0000" />
                                 <span style={{ color: '#fff', fontWeight: '600', fontSize: '15px' }}>
                                   {conv.sender_name}
                                 </span>
                                 {conv.unread_count > 0 && (
                                   <span style={{
                                     padding: '3px 8px',
-                                    background: '#00b8d4',
+                                    background: '#ff0000',
                                     borderRadius: '10px',
                                     color: '#000',
                                     fontSize: '11px',
@@ -441,10 +441,10 @@ const BrokerAnalytics = () => {
                                 <button
                                   style={{
                                     padding: '4px 12px',
-                                    background: 'rgba(0, 184, 212, 0.15)',
-                                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                                    background: 'rgba(255, 0, 0, 0.15)',
+                                    border: '1px solid rgba(255, 0, 0, 0.3)',
                                     borderRadius: '6px',
-                                    color: '#00b8d4',
+                                    color: '#ff0000',
                                     fontSize: '12px',
                                     fontWeight: '600',
                                     cursor: 'pointer',

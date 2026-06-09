@@ -131,10 +131,10 @@ const AdminDashboard = () => {
                 onClick={() => setActiveTab(tab.id)}
                 style={{
                   padding: '10px 16px',
-                  background: isActive ? 'rgba(0,184,212,0.15)' : 'transparent',
-                  border: isActive ? '1px solid rgba(0,184,212,0.3)' : '1px solid transparent',
+                  background: isActive ? 'rgba(212,18,18,0.15)' : 'transparent',
+                  border: isActive ? '1px solid rgba(212,18,18,0.3)' : '1px solid transparent',
                   borderRadius: '8px',
-                  color: isActive ? '#00b8d4' : 'rgba(255,255,255,0.6)',
+                  color: isActive ? '#ff0000' : 'rgba(255,255,255,0.6)',
                   fontSize: '14px',
                   fontWeight: '500',
                   cursor: 'pointer',
@@ -272,10 +272,10 @@ const RoleVerificationsTab = ({ requests, onApprove, onReject, processingId }) =
                 {request.broker_w9_url && (
                   <a href={request.broker_w9_url} target="_blank" rel="noopener noreferrer" style={{
                     padding: '6px 12px',
-                    background: 'rgba(0,184,212,0.15)',
-                    border: '1px solid rgba(0,184,212,0.3)',
+                    background: 'rgba(212,18,18,0.15)',
+                    border: '1px solid rgba(212,18,18,0.3)',
                     borderRadius: '6px',
-                    color: '#00b8d4',
+                    color: '#ff0000',
                     fontSize: '12px',
                     textDecoration: 'none'
                   }}>
@@ -285,10 +285,10 @@ const RoleVerificationsTab = ({ requests, onApprove, onReject, processingId }) =
                 {request.broker_license_url && (
                   <a href={request.broker_license_url} target="_blank" rel="noopener noreferrer" style={{
                     padding: '6px 12px',
-                    background: 'rgba(0,184,212,0.15)',
-                    border: '1px solid rgba(0,184,212,0.3)',
+                    background: 'rgba(212,18,18,0.15)',
+                    border: '1px solid rgba(212,18,18,0.3)',
                     borderRadius: '6px',
-                    color: '#00b8d4',
+                    color: '#ff0000',
                     fontSize: '12px',
                     textDecoration: 'none'
                   }}>
@@ -398,10 +398,10 @@ const OwnershipVerificationsTab = ({ requests, onApprove, onReject, processingId
             <div style={{ marginBottom: '20px' }}>
               <a href={request.proof_document_url} target="_blank" rel="noopener noreferrer" style={{
                 padding: '8px 16px',
-                background: 'rgba(0,184,212,0.15)',
-                border: '1px solid rgba(0,184,212,0.3)',
+                background: 'rgba(212,18,18,0.15)',
+                border: '1px solid rgba(212,18,18,0.3)',
                 borderRadius: '6px',
-                color: '#00b8d4',
+                color: '#ff0000',
                 fontSize: '13px',
                 textDecoration: 'none',
                 display: 'inline-block'
@@ -467,7 +467,7 @@ const OwnershipVerificationsTab = ({ requests, onApprove, onReject, processingId
 const AnalyticsTab = () => {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
-      <StatCard title="Total Users" value="0" color="#00b8d4" />
+      <StatCard title="Total Users" value="0" color="#ff0000" />
       <StatCard title="Verified Brokers" value="0" color="#10b981" />
       <StatCard title="Active Listings" value="0" color="#a78bfa" />
       <StatCard title="Pending Approvals" value="0" color="#f59e0b" />

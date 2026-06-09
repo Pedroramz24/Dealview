@@ -182,15 +182,15 @@ const AIDashboard = () => {
           <div style={{
             width: '56px',
             height: '56px',
-            background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(59, 130, 246, 0.2))',
+            background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(59, 130, 246, 0.2))',
             borderRadius: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 2px 10px rgba(0, 184, 212, 0.15)',
-            border: '1px solid rgba(0, 184, 212, 0.25)'
+            boxShadow: '0 2px 10px rgba(255, 0, 0, 0.15)',
+            border: '1px solid rgba(255, 0, 0, 0.25)'
           }}>
-            <LayoutDashboard style={{ color: '#00d4ff', width: '28px', height: '28px' }} />
+            <LayoutDashboard style={{ color: '#ff0000', width: '28px', height: '28px' }} />
           </div>
           <div>
             <h1 style={{
@@ -381,14 +381,14 @@ const CalendarTimeline = ({ events, milestones, navigate }) => {
         <div style={{
           width: '36px',
           height: '36px',
-          background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+          background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.15), rgba(255, 0, 0, 0.08))',
           borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          border: '1px solid rgba(0, 184, 212, 0.2)'
+          border: '1px solid rgba(255, 0, 0, 0.2)'
         }}>
-          <Calendar style={{ color: '#00b8d4', width: '18px', height: '18px' }} />
+          <Calendar style={{ color: '#ff0000', width: '18px', height: '18px' }} />
         </div>
         <h2 style={{
           color: '#ffffff',
@@ -706,8 +706,8 @@ const PriorityCard = ({ priority, onAction, navigate }) => {
       {priority.related_deal && (
         <div style={{
           padding: '8px 12px',
-          background: 'rgba(0, 184, 212, 0.1)',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
+          background: 'rgba(255, 0, 0, 0.1)',
+          border: '1px solid rgba(255, 0, 0, 0.2)',
           borderRadius: '8px',
           display: 'flex',
           alignItems: 'center',
@@ -716,8 +716,8 @@ const PriorityCard = ({ priority, onAction, navigate }) => {
         }}
         onClick={handleClick}
         >
-          <MapPin style={{ color: '#00b8d4', width: '12px', height: '12px' }} />
-          <span style={{ color: '#00d4ff', fontSize: '11px', fontWeight: '600' }}>
+          <MapPin style={{ color: '#ff0000', width: '12px', height: '12px' }} />
+          <span style={{ color: '#ff0000', fontSize: '11px', fontWeight: '600' }}>
             {priority.related_deal.title}
           </span>
         </div>

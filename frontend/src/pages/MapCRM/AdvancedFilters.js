@@ -315,7 +315,7 @@ const AdvancedFilters = ({ filters, setFilters, onClose, onApply }) => {
             flex: 1,
             background: gradients.primaryButton,
             border: 'none',
-            boxShadow: shadows.glowCyan
+            boxShadow: shadows.glow
           }}
         >
           Apply Filters

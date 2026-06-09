@@ -39,16 +39,16 @@ export const REPORTALL_CONFIG = {
   // Layer styling
   style: {
     parcelLine: {
-      color: '#00b8d4', // Cyan to match theme
+      color: '#ff0000', // Cyan to match theme
       width: 1.5,
       opacity: 0.8,
     },
     parcelFill: {
-      color: '#00b8d4',
+      color: '#ff0000',
       opacity: 0.1,
     },
     parcelHover: {
-      color: '#00d4ff',
+      color: '#ff0000',
       opacity: 0.3,
     },
   },

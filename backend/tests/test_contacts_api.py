@@ -12,7 +12,7 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test user credentials - use existing test account pattern
 TEST_EMAIL = f"contacts_test_{uuid.uuid4().hex[:6]}@testdeallinked.com"
-TEST_PASSWORD = "TestPassword123!"
+TEST_PASSWORD = os.environ.get("TEST_DEFAULT_PASSWORD", "TestPassword123!")
 TEST_FULL_NAME = "Contacts Test User"
 
 

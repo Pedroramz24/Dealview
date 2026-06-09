@@ -254,8 +254,8 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
           {/* Deal Info Banner */}
           <div style={{
             padding: '12px 24px',
-            background: 'rgba(0, 184, 212, 0.1)',
-            borderBottom: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.1)',
+            borderBottom: '1px solid rgba(255, 0, 0, 0.2)',
             fontSize: '13px',
             color: 'rgba(255,255,255,0.8)'
           }}>
@@ -289,7 +289,7 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
                       maxWidth: '75%',
                       padding: '12px 16px',
                       borderRadius: '12px',
-                      background: isMine ? '#00b8d4' : 'rgba(255,255,255,0.05)',
+                      background: isMine ? '#ff0000' : 'rgba(255,255,255,0.05)',
                       color: isMine ? '#000' : '#fff',
                       fontSize: '14px',
                       lineHeight: '1.5'
@@ -338,7 +338,7 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
                 disabled={!newMessage.trim() || sending}
                 style={{
                   padding: '12px 16px',
-                  background: newMessage.trim() ? '#00b8d4' : 'rgba(255,255,255,0.05)',
+                  background: newMessage.trim() ? '#ff0000' : 'rgba(255,255,255,0.05)',
                   border: 'none',
                   borderRadius: '10px',
                   color: newMessage.trim() ? '#000' : 'rgba(255,255,255,0.3)',
@@ -400,7 +400,7 @@ const MessagingPanel = ({ dealId, dealTitle, brokerId, onClose }) => {
                   </div>
                   {conv.unread_count > 0 && (
                     <div style={{
-                      background: '#00b8d4',
+                      background: '#ff0000',
                       color: '#000',
                       borderRadius: '50%',
                       width: '24px',

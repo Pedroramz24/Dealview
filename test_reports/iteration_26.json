@@ -1,0 +1,82 @@
+{
+  "summary": "Code review completed for visibility toggle bug fixes. All 6 features verified via code inspection. MapView.js handleToggleTeamVisibility now uses optimistic setTeamDeals() instead of fetchTeamData(). DealDetails.js has new Visibility section with toggle button calling PUT /api/deals/:id/visibility. Backend endpoint returns deal with updated team_id. App requires Supabase auth - no test credentials available for E2E testing.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "features_verified": {
+    "mapview_no_fetchTeamData_on_toggle": {
+      "code_review": "PASSED",
+      "details": "Line 867-890: handleToggleTeamVisibility does NOT call fetchTeamData() or fetchDeals(). Uses optimistic setTeamDeals() to add/remove deal from teamDeals state."
+    },
+    "mapview_optimistic_teamDeals_update": {
+      "code_review": "PASSED",
+      "details": "Lines 883-886: When sharing, adds deal to teamDeals via setTeamDeals(prev => [...prev.filter(d => d.id !== selectedDeal.id), {...selectedDeal, team_id: newTeamId}]). When making private, removes deal via setTeamDeals(prev => prev.filter(d => d.id !== selectedDeal.id))."
+    },
+    "dealdetails_visibility_section_visible": {
+      "code_review": "PASSED",
+      "details": "Lines 687-729: Visibility section with data-testid='deal-visibility-section' renders for deal owners (isOwner check at line 688). Shows current state with Users/Eye icons and text 'Shared with Team'/'Private'."
+    },
+    "dealdetails_visibility_toggle_button": {
+      "code_review": "PASSED",
+      "details": "Lines 714-726: Toggle button with data-testid='deal-visibility-toggle' exists. Button text shows 'Make Private' when shared, 'Share with Team' when private. onClick calls handleToggleVisibility."
+    },
+    "dealdetails_toggle_calls_api": {
+      "code_review": "PASSED",
+      "details": "Lines 266-282: handleToggleVisibility calls PUT /api/deals/${dealId}/visibility with {shared_with_team: !isCurrentlyShared}. Updates deal state on success without page refresh."
+    },
+    "backend_visibility_endpoint_returns_team_id": {
+      "code_review": "PASSED",
+      "details": "Lines 347-383 in deals.py: PUT /{deal_id}/visibility endpoint returns {success: true, deal: {..., team_id: ...}, shared_with_team: bool}. Sets team_id to user's team when sharing, null when making private."
+    }
+  },
+  "code_review_summary": {
+    "mapview_visibility_toggle": {
+      "before": "Previous implementation called fetchTeamData() after visibility toggle, causing map position to reset",
+      "after": "Now uses optimistic setTeamDeals() to add/remove deal from local state without network refetch",
+      "key_lines": "867-890 in MapView.js"
+    },
+    "dealdetails_visibility_section": {
+      "new_feature": "Added Visibility card section showing current state (Private/Shared with Team) with toggle button",
+      "handler": "handleToggleVisibility (lines 266-282) calls PUT /api/deals/:id/visibility and updates local state",
+      "ui_elements": "data-testid='deal-visibility-section' and data-testid='deal-visibility-toggle' for testing",
+      "key_lines": "266-282, 686-729 in DealDetails.js"
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "MapView.js: handleToggleTeamVisibility correctly uses optimistic updates - no fetchTeamData() or fetchDeals() calls",
+    "DealDetails.js: Visibility section properly gated by isOwner check - only deal owners can toggle visibility",
+    "Both frontend handlers correctly call PUT /api/deals/:id/visibility endpoint",
+    "Backend endpoint properly returns deal object with updated team_id field",
+    "Error handling present with toast notifications for failed operations"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (auth-protected, no test credentials)",
+    "frontend": "100% code review passed (6/6 features verified)"
+  },
+  "test_credentials": {
+    "note": "App uses Supabase auth. No test credentials available. Code review performed instead of E2E testing."
+  },
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Two visibility toggle fixes verified: 1) MapView.js handleToggleTeamVisibility (line 867) now uses optimistic setTeamDeals() instead of fetchTeamData() - prevents map position jump when toggling share/private. 2) DealDetails.js has new Visibility section (lines 686-729) with handleToggleVisibility (line 266) that calls PUT /api/deals/:id/visibility. Both use optimistic local state updates. Backend endpoint at routes_v2/deals.py line 347 returns deal with updated team_id. App requires Supabase auth - no test credentials available.",
+  "rca_of_the_issue": {
+    "issue_1_map_position_jump": {
+      "root_cause": "handleToggleTeamVisibility was calling fetchTeamData() which refetched all team deals and potentially reset map state",
+      "fix": "Replaced fetchTeamData() call with optimistic setTeamDeals() that adds/removes single deal from local state without network refetch"
+    },
+    "issue_2_missing_visibility_toggle_on_dealdetails": {
+      "root_cause": "DealDetails page (/deals/:dealId) had no visibility toggle - users could only toggle visibility from MapView sidebar",
+      "fix": "Added Visibility section (lines 686-729) with handleToggleVisibility function (lines 266-282) that calls PUT /api/deals/:id/visibility endpoint"
+    }
+  }
+}

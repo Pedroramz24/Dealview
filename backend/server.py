@@ -3,6 +3,7 @@ DealLinked CRM V2 - Clean Server
 Minimal, focused CRM backend
 """
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -23,6 +24,15 @@ from routes_v2.pipelines import router as pipelines_router
 from routes_v2.teams import router as teams_router
 from routes_v2.calendar import router as calendar_router
 from routes_v2.dashboard import router as dashboard_router
+from routes_v2.portals import router as portals_router
+from routes_v2.portal_deals import router as portal_deals_router
+from routes_v2.portal_members import router as portal_members_router
+from routes_v2.portal_collaborators import router as portal_collaborators_router
+from routes_v2.portal_investor import router as portal_investor_router
+from routes_v2.portal_intelligence import router as portal_intelligence_router
+from routes_v2.timelines import router as timelines_router
+from routes_v2.activity import router as activity_router
+from routes_v2.asset_types import router as asset_types_router
 
 # Import utilities
 from utils.db import get_supabase
@@ -79,9 +89,18 @@ async def upload_document(
     try:
         user_id = await get_user_id(credentials)
         
-        # Verify deal ownership
-        deal = supabase.table('deals').select('owner_id').eq('id', deal_id).single().execute()
-        if not deal.data or deal.data['owner_id'] != user_id:
+        # Verify deal ownership or team membership
+        deal = supabase.table('deals').select('owner_id, team_id').eq('id', deal_id).single().execute()
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        is_owner = deal.data['owner_id'] == user_id
+        is_team = False
+        if not is_owner and deal.data.get('team_id'):
+            profile = supabase.table('user_profiles').select('team_id').eq('id', user_id).execute()
+            is_team = profile.data and profile.data[0].get('team_id') == deal.data['team_id']
+        
+        if not is_owner and not is_team:
             raise HTTPException(status_code=403, detail="Access denied")
         
         # Read file content
@@ -99,7 +118,9 @@ async def upload_document(
         file_type = file_type_map.get(file_ext, 'other')
         
         # Upload to Supabase Storage
-        storage_path = f"{deal_id}/{uuid.uuid4()}-{file.filename}"
+        import re
+        safe_doc_name = re.sub(r'[^\w.\-]', '_', file.filename or 'document')
+        storage_path = f"{deal_id}/{uuid.uuid4()}-{safe_doc_name}"
         
         storage_response = supabase.storage.from_('deal-documents').upload(
             storage_path,
@@ -182,10 +203,14 @@ async def delete_document(
         user_id = await get_user_id(credentials)
         
         # Get document
-        doc = supabase.table('deal_documents').select('*').eq('id', document_id).single().execute()
+        doc = supabase.table('deal_documents').select('*, deals!inner(owner_id)').eq('id', document_id).single().execute()
         if not doc.data:
             raise HTTPException(status_code=404, detail="Document not found")
-        if doc.data['owner_id'] != user_id:
+        
+        # Allow delete if user is the doc uploader OR the deal owner
+        is_doc_owner = doc.data.get('owner_id') == user_id
+        is_deal_owner = doc.data.get('deals', {}).get('owner_id') == user_id
+        if not is_doc_owner and not is_deal_owner:
             raise HTTPException(status_code=403, detail="Access denied")
         
         # Extract storage path from URL and delete from storage
@@ -225,16 +250,29 @@ async def upload_image(
     try:
         user_id = await get_user_id(credentials)
         
-        # Verify deal ownership
-        deal = supabase.table('deals').select('owner_id, image_urls').eq('id', deal_id).single().execute()
-        if not deal.data or deal.data['owner_id'] != user_id:
+        # Verify deal ownership or team membership
+        deal = supabase.table('deals').select('owner_id, image_urls, team_id').eq('id', deal_id).single().execute()
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        
+        is_owner = deal.data['owner_id'] == user_id
+        is_team = False
+        if not is_owner and deal.data.get('team_id'):
+            profile = supabase.table('user_profiles').select('team_id').eq('id', user_id).execute()
+            is_team = profile.data and profile.data[0].get('team_id') == deal.data['team_id']
+        
+        if not is_owner and not is_team:
             raise HTTPException(status_code=403, detail="Access denied")
         
         # Read file content
         content = await file.read()
         
+        # Sanitize filename — remove special characters that Supabase Storage rejects
+        import re
+        safe_name = re.sub(r'[^\w.\-]', '_', file.filename or 'image.png')
+        
         # Upload to Supabase Storage
-        storage_path = f"{deal_id}/{uuid.uuid4()}-{file.filename}"
+        storage_path = f"{deal_id}/{uuid.uuid4()}-{safe_name}"
         
         supabase.storage.from_('deal-images').upload(
             storage_path,
@@ -249,11 +287,12 @@ async def upload_image(
         current_images = deal.data.get('image_urls') or []
         current_images.append(file_url)
         
-        supabase.table('deals').update({'image_urls': current_images}).eq('id', deal_id).execute()
+        supabase.table('deals').update({'image_urls': current_images, 'image_url': current_images[0]}).eq('id', deal_id).execute()
         
         return {
             "success": True,
             "image_url": file_url,
+            "image_urls": current_images,
             "message": "Image uploaded successfully"
         }
     except HTTPException:
@@ -429,6 +468,15 @@ api_router.include_router(pipelines_router)
 api_router.include_router(teams_router)
 api_router.include_router(calendar_router)
 api_router.include_router(dashboard_router)
+api_router.include_router(portals_router)
+api_router.include_router(portal_deals_router)
+api_router.include_router(portal_members_router)
+api_router.include_router(portal_collaborators_router)
+api_router.include_router(portal_investor_router)
+api_router.include_router(portal_intelligence_router)
+api_router.include_router(timelines_router)
+api_router.include_router(activity_router)
+api_router.include_router(asset_types_router)
 
 
 # ============================================================================
@@ -452,16 +500,57 @@ async def get_shared_deal(deal_id: str):
         docs_response = supabase.table('deal_documents').select('*').eq('deal_id', deal_id).execute()
         deal['documents'] = docs_response.data or []
 
+        # Fetch the deal owner's profile as the listing agent
+        agent = None
+        owner_id = deal.get('owner_id')
+        if owner_id:
+            try:
+                profile_resp = supabase.table('user_profiles').select(
+                    'full_name, email, phone, company, avatar_url'
+                ).eq('id', owner_id).single().execute()
+                if profile_resp.data:
+                    agent = profile_resp.data
+            except Exception:
+                pass
+
         # Strip sensitive fields
         deal.pop('owner_id', None)
         deal.pop('team_id', None)
+        # Remove contact info from shared deals
+        deal.pop('contact_deal_links', None)
 
-        return {"success": True, "deal": deal}
+        return {"success": True, "deal": deal, "agent": agent}
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Public share error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch deal")
+
+
+@api_router.get("/share/{deal_id}/documents/{doc_id}")
+async def download_shared_document(deal_id: str, doc_id: str):
+    """Download a document from a shared deal - no auth required"""
+    supabase = get_supabase()
+    try:
+        # Verify the deal exists
+        deal = supabase.table('deals').select('id').eq('id', deal_id).single().execute()
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+
+        # Get the document and verify it belongs to this deal
+        doc = supabase.table('deal_documents').select('id, file_url, file_name').eq(
+            'id', doc_id
+        ).eq('deal_id', deal_id).execute()
+        if not doc.data:
+            raise HTTPException(status_code=404, detail="Document not found")
+
+        file_url = doc.data[0]['file_url']
+        return RedirectResponse(url=file_url, status_code=302)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Shared document download error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to download document")
 
 
 # ============================================================================

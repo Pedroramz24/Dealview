@@ -155,7 +155,7 @@ const DealTimeline = ({ deal }) => {
     >
       <h3
         style={{
-          color: '#00b8d4',
+          color: '#ff0000',
           fontSize: '14px',
           fontWeight: '600',
           marginBottom: '48px',
@@ -202,9 +202,9 @@ const DealTimeline = ({ deal }) => {
               left: '40px',
               height: '3px',
               width: `calc((100% - 80px) * ${timelineMetrics.currentProgress / 100})`,
-              background: 'linear-gradient(90deg, #00b8d4, #00d4ff)',
+              background: 'linear-gradient(90deg, #ff0000, #cc0000)',
               borderRadius: '2px',
-              boxShadow: '0 0 10px rgba(0, 184, 212, 0.5)',
+              boxShadow: '0 0 10px rgba(255, 0, 0, 0.5)',
               transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           />
@@ -218,9 +218,9 @@ const DealTimeline = ({ deal }) => {
                 left: `calc(40px + (100% - 80px) * ${timelineMetrics.currentProgress / 100})`,
                 width: '16px',
                 height: '16px',
-                background: '#00b8d4',
+                background: '#ff0000',
                 borderRadius: '50%',
-                boxShadow: '0 0 12px rgba(0, 184, 212, 0.8)',
+                boxShadow: '0 0 12px rgba(255, 0, 0, 0.8)',
                 border: '3px solid rgba(0, 0, 0, 0.9)',
                 zIndex: 10,
               }}
@@ -269,17 +269,17 @@ const DealTimeline = ({ deal }) => {
                     borderRadius: '50%',
                     background:
                       milestone.status === 'completed' || milestone.status === 'active'
-                        ? '#00b8d4'
+                        ? '#ff0000'
                         : 'rgba(255, 255, 255, 0.15)',
                     border:
                       milestone.status === 'completed' || milestone.status === 'active'
-                        ? '3px solid #00b8d4'
+                        ? '3px solid #ff0000'
                         : '3px solid rgba(255, 255, 255, 0.3)',
                     boxShadow:
                       milestone.status === 'completed'
-                        ? '0 0 10px rgba(0, 184, 212, 0.6)'
+                        ? '0 0 10px rgba(255, 0, 0, 0.6)'
                         : milestone.status === 'active'
-                        ? '0 0 14px rgba(0, 184, 212, 0.8)'
+                        ? '0 0 14px rgba(255, 0, 0, 0.8)'
                         : 'none',
                     transition: 'all 0.3s ease',
                     animation: milestone.status === 'active' ? 'pulseDot 2s ease-in-out infinite' : 'none',
@@ -294,7 +294,7 @@ const DealTimeline = ({ deal }) => {
                     height: '50px',
                     background:
                       milestone.status === 'completed' || milestone.status === 'active'
-                        ? 'rgba(0, 184, 212, 0.5)'
+                        ? 'rgba(255, 0, 0, 0.5)'
                         : 'rgba(255, 255, 255, 0.25)',
                     left: '50%',
                     transform: 'translateX(-50%)',
@@ -333,7 +333,7 @@ const DealTimeline = ({ deal }) => {
                       fontSize: '10px',
                       color:
                         milestone.status === 'completed' || milestone.status === 'active'
-                          ? '#00b8d4'
+                          ? '#ff0000'
                           : 'rgba(255, 255, 255, 0.4)',
                     }}
                   >
@@ -352,11 +352,11 @@ const DealTimeline = ({ deal }) => {
                       transform: isNearLeftEdge || isNearRightEdge ? 'none' : 'translateX(-50%)',
                       background: 'rgba(10, 10, 10, 0.98)',
                       backdropFilter: 'blur(12px)',
-                      border: '1px solid rgba(0, 184, 212, 0.4)',
+                      border: '1px solid rgba(255, 0, 0, 0.4)',
                       borderRadius: '8px',
                       padding: '12px 14px',
                       width: '220px',
-                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 184, 212, 0.3)',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 0, 0, 0.3)',
                       zIndex: 1000,
                       pointerEvents: 'none',
                     }}
@@ -372,7 +372,7 @@ const DealTimeline = ({ deal }) => {
                         height: '0',
                         borderLeft: '6px solid transparent',
                         borderRight: '6px solid transparent',
-                        borderTop: '6px solid rgba(0, 184, 212, 0.4)',
+                        borderTop: '6px solid rgba(255, 0, 0, 0.4)',
                       }}
                     />
 
@@ -380,7 +380,7 @@ const DealTimeline = ({ deal }) => {
                       <p style={{ fontSize: '12px', fontWeight: '600', color: '#FFFFFF', marginBottom: '4px', lineHeight: '1.3' }}>
                         {milestone.label}
                       </p>
-                      <p style={{ fontSize: '11px', color: '#00b8d4' }}>
+                      <p style={{ fontSize: '11px', color: '#ff0000' }}>
                         {formatDate(milestone.date)}
                       </p>
                     </div>
@@ -443,18 +443,18 @@ const DealTimeline = ({ deal }) => {
           }
           
           .timeline-scroll-container::-webkit-scrollbar-thumb {
-            background: rgba(0, 184, 212, 0.4);
+            background: rgba(255, 0, 0, 0.4);
             border-radius: 4px;
             transition: background 0.3s ease;
           }
           
           .timeline-scroll-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 184, 212, 0.6);
+            background: rgba(255, 0, 0, 0.6);
           }
           
           .timeline-scroll-container {
             scrollbar-width: thin;
-            scrollbar-color: rgba(0, 184, 212, 0.4) rgba(255, 255, 255, 0.05);
+            scrollbar-color: rgba(255, 0, 0, 0.4) rgba(255, 255, 255, 0.05);
           }
         `}
       </style>

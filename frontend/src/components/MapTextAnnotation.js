@@ -75,9 +75,9 @@ const MapTextAnnotation = ({
               letterSpacing: '0.5px',
               lineHeight: '1',
               background: 'transparent',
-              border: selectedAnnotation?.id === annotation.id ? '2px solid rgba(0, 184, 212, 0.6)' : 'none',
+              border: selectedAnnotation?.id === annotation.id ? '2px solid rgba(255, 0, 0, 0.6)' : 'none',
               borderRadius: selectedAnnotation?.id === annotation.id ? '4px' : '0',
-              outline: selectedAnnotation?.id === annotation.id ? '2px solid rgba(0, 184, 212, 0.3)' : 'none',
+              outline: selectedAnnotation?.id === annotation.id ? '2px solid rgba(255, 0, 0, 0.3)' : 'none',
               outlineOffset: '2px',
               pointerEvents: 'auto'
             }}

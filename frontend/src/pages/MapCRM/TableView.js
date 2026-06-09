@@ -271,7 +271,7 @@ const TableView = ({ filters: parentFilters }) => {
             }}
             onFocus={(e) => {
               e.target.style.borderColor = colors.primary;
-              e.target.style.boxShadow = shadows.glowCyan;
+              e.target.style.boxShadow = shadows.glow;
             }}
             onBlur={(e) => {
               e.target.style.borderColor = colors.border;

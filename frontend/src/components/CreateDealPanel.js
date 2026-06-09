@@ -227,15 +227,15 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
           <div
             style={{
               padding: '16px',
-              background: 'rgba(0, 184, 212, 0.1)',
-              border: '1px solid rgba(0, 184, 212, 0.3)',
+              background: 'rgba(255, 0, 0, 0.1)',
+              border: '1px solid rgba(255, 0, 0, 0.3)',
               borderRadius: '8px',
               marginBottom: '24px',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <MapPin size={16} style={{ color: '#00b8d4' }} />
-              <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600' }}>
+              <MapPin size={16} style={{ color: '#ff0000' }} />
+              <span style={{ color: '#ff0000', fontSize: '13px', fontWeight: '600' }}>
                 {parcelData ? 'Parcel Selected' : 'Location Marked'}
               </span>
             </div>
@@ -320,6 +320,9 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
               <option value="Multifamily">Multifamily</option>
               <option value="Land">Land</option>
               <option value="Mixed Use">Mixed Use</option>
+              <option value="Hotels">Hotels</option>
+              <option value="Medical">Medical</option>
+              <option value="Gas Stations">Gas Stations</option>
             </select>
           </div>
 
@@ -440,8 +443,8 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
             alignItems: 'center',
             gap: '8px'
           }}>
-            <Calculator size={16} style={{ color: '#00b8d4' }} />
-            <span style={{ color: '#00b8d4', fontSize: '13px', fontWeight: '600' }}>
+            <Calculator size={16} style={{ color: '#ff0000' }} />
+            <span style={{ color: '#ff0000', fontSize: '13px', fontWeight: '600' }}>
               Financial Metrics
             </span>
           </div>
@@ -502,8 +505,8 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
           <div style={{
             marginTop: '16px',
             padding: '16px',
-            background: 'rgba(0, 184, 212, 0.05)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.05)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '8px',
           }}>
             <div style={{ 
@@ -512,8 +515,8 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
               gap: '8px', 
               marginBottom: '12px' 
             }}>
-              <TrendingUp size={14} style={{ color: '#00b8d4' }} />
-              <span style={{ color: '#00b8d4', fontSize: '12px', fontWeight: '600' }}>
+              <TrendingUp size={14} style={{ color: '#ff0000' }} />
+              <span style={{ color: '#ff0000', fontSize: '12px', fontWeight: '600' }}>
                 Auto-Calculated
               </span>
             </div>
@@ -608,7 +611,7 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
           style={{
             flex: 2,
             padding: '12px',
-            background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+            background: 'linear-gradient(135deg, #ff0000 0%, #00d4aa 100%)',
             border: '1px solid rgba(0, 212, 170, 0.3)',
             borderRadius: '8px',
             color: '#FFFFFF',
@@ -619,7 +622,7 @@ const CreateDealPanel = ({ isOpen, onClose, location, parcelData, onDealCreated 
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
-            boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
+            boxShadow: '0 4px 12px rgba(255, 0, 0, 0.3)',
           }}
         >
           <Save size={16} />

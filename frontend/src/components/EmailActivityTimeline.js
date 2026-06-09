@@ -39,7 +39,7 @@ const EmailActivityTimeline = ({ contactId = null, dealId = null, token, BACKEND
   const getStatusIcon = (status) => {
     switch (status) {
       case 'sent':
-        return <Send size={14} style={{ color: '#00b8d4' }} />;
+        return <Send size={14} style={{ color: '#ff0000' }} />;
       case 'delivered':
         return <CheckCircle2 size={14} style={{ color: '#22c55e' }} />;
       case 'opened':
@@ -57,7 +57,7 @@ const EmailActivityTimeline = ({ contactId = null, dealId = null, token, BACKEND
   const getStatusColor = (status) => {
     switch (status) {
       case 'sent':
-        return '#00b8d4';
+        return '#ff0000';
       case 'delivered':
         return '#22c55e';
       case 'opened':

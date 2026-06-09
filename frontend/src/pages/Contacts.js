@@ -7,10 +7,12 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { 
   Plus, Mail, Phone, Building2, Search, X, Save, Edit, 
-  User, Grid, List, Trash2, Tag, Filter, Settings, Palette, Upload, FileText
+  User, Grid, List, Trash2, Tag, Filter, Settings, Palette, Upload, FileText,
+  ChevronUp, ChevronDown, ChevronsUpDown
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { colors, gradients, borderRadius } from '../styles/designSystem';
+import ContactFormPanel from '../components/ContactFormPanel';
 
 // Contact type options
 const contactTypeOptions = [
@@ -31,9 +33,9 @@ const statusOptions = [
 
 // Tag color options
 const tagColorOptions = [
-  '#00b8d4', '#10b981', '#f59e0b', '#ef4444', 
+  '#ff0000', '#10b981', '#f59e0b', '#ef4444', 
   '#8b5cf6', '#ec4899', '#3b82f6', '#6b7280',
-  '#06b6d4', '#84cc16', '#f97316', '#a78bfa'
+  '#f43f5e', '#84cc16', '#f97316', '#a78bfa'
 ];
 
 const Contacts = () => {
@@ -46,6 +48,8 @@ const Contacts = () => {
   const [filterStatus, setFilterStatus] = useState('');
   const [filterTag, setFilterTag] = useState('');
   const [viewMode, setViewMode] = useState('table');
+  const [sortField, setSortField] = useState('created_at');
+  const [sortDir, setSortDir] = useState('desc');
   
   // Panel states
   const [showAddPanel, setShowAddPanel] = useState(false);
@@ -56,7 +60,7 @@ const Contacts = () => {
   // Tag management modal
   const [showTagManager, setShowTagManager] = useState(false);
   const [editingTag, setEditingTag] = useState(null);
-  const [tagForm, setTagForm] = useState({ name: '', color: '#00b8d4' });
+  const [tagForm, setTagForm] = useState({ name: '', color: '#ff0000' });
   const [savingTag, setSavingTag] = useState(false);
   
   // CSV import state
@@ -68,7 +72,7 @@ const Contacts = () => {
   // Inline tag creation in edit panel
   const [showInlineTagCreate, setShowInlineTagCreate] = useState(false);
   const [inlineTagName, setInlineTagName] = useState('');
-  const [inlineTagColor, setInlineTagColor] = useState('#00b8d4');
+  const [inlineTagColor, setInlineTagColor] = useState('#ff0000');
   
   // Form state
   const [contactForm, setContactForm] = useState({
@@ -112,12 +116,9 @@ const Contacts = () => {
       if (response.ok) {
         const data = await response.json();
         setContacts(data.contacts || []);
-      } else {
-        toast.error('Failed to load contacts');
       }
     } catch (error) {
       console.error('Error fetching contacts:', error);
-      toast.error('Failed to load contacts');
     } finally {
       setLoading(false);
     }
@@ -142,33 +143,28 @@ const Contacts = () => {
   };
 
   const handleOpenAdd = () => {
-    setContactForm({
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      contact_type: 'Buyer',
-      status: 'Active',
-      tag_ids: [],
-      notes: ''
-    });
     setEditingContact(null);
     setShowAddPanel(true);
   };
 
   const handleOpenEdit = (contact) => {
-    setContactForm({
-      name: contact.name || '',
-      email: contact.email || '',
-      phone: contact.phone || '',
-      company: contact.company || '',
-      contact_type: contact.contact_type || 'Buyer',
-      status: contact.status || 'Active',
-      tag_ids: contact.tag_ids || [],
-      notes: contact.notes || ''
-    });
     setEditingContact(contact);
     setShowAddPanel(true);
+  };
+
+  const handleOpenDetails = async (contact) => {
+    // Fetch full contact with linked deals
+    try {
+      const token = await getToken();
+      const res = await fetch(`${API}/contacts/${contact.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSelectedContact(data.contact);
+        setShowDetailsPanel(true);
+      }
+    } catch { /* silent */ }
   };
 
   const handleSaveContact = async () => {
@@ -197,7 +193,7 @@ const Contacts = () => {
       });
 
       if (response.ok) {
-        toast.success(editingContact ? 'Contact updated' : 'Contact created');
+        
         setShowAddPanel(false);
         fetchContacts();
       } else {
@@ -263,13 +259,13 @@ const Contacts = () => {
   // Tag management functions
   const handleOpenTagCreate = () => {
     setEditingTag(null);
-    setTagForm({ name: '', color: '#00b8d4' });
+    setTagForm({ name: '', color: '#ff0000' });
     setShowTagManager(true);
   };
 
   const handleOpenTagEdit = (tag) => {
     setEditingTag(tag);
-    setTagForm({ name: tag.name, color: tag.color || '#00b8d4' });
+    setTagForm({ name: tag.name, color: tag.color || '#ff0000' });
     setShowTagManager(true);
   };
 
@@ -296,7 +292,7 @@ const Contacts = () => {
         });
 
         if (response.ok) {
-          toast.success('Tag updated');
+          
           fetchTags();
           setShowTagManager(false);
         } else {
@@ -314,7 +310,7 @@ const Contacts = () => {
         });
 
         if (response.ok) {
-          toast.success('Tag created');
+          
           fetchTags();
           setShowTagManager(false);
         } else {
@@ -344,7 +340,7 @@ const Contacts = () => {
       });
 
       if (response.ok) {
-        toast.success('Tag deleted');
+        
         fetchTags();
         setShowTagManager(false);
         if (filterTag === editingTag.id) setFilterTag('');
@@ -386,7 +382,7 @@ const Contacts = () => {
         }
         setInlineTagName('');
         setShowInlineTagCreate(false);
-        toast.success('Tag created and added');
+        
       } else {
         const err = await response.json().catch(() => ({}));
         toast.error(err.detail || 'Failed to create tag');
@@ -508,10 +504,42 @@ const Contacts = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full" data-testid="contacts-loading">
-        <div className="text-cyan-500">Loading contacts...</div>
+        <div className="text-red-500">Loading contacts...</div>
       </div>
     );
   }
+
+  // ---- Sorting logic ----
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('asc');
+    }
+  };
+
+  const sortedContacts = [...contacts].sort((a, b) => {
+    let va = a[sortField] ?? '';
+    let vb = b[sortField] ?? '';
+    if (sortField === 'created_at') {
+      va = va ? new Date(va).getTime() : 0;
+      vb = vb ? new Date(vb).getTime() : 0;
+    } else {
+      va = String(va).toLowerCase();
+      vb = String(vb).toLowerCase();
+    }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const SortIcon = ({ field }) => {
+    if (sortField !== field) return <ChevronsUpDown size={12} style={{ opacity: 0.3, marginLeft: '4px', display: 'inline' }} />;
+    return sortDir === 'asc'
+      ? <ChevronUp size={12} style={{ color: '#ff0000', marginLeft: '4px', display: 'inline' }} />
+      : <ChevronDown size={12} style={{ color: '#ff0000', marginLeft: '4px', display: 'inline' }} />;
+  };
 
   return (
     <div className="flex flex-col h-full p-6" data-testid="contacts-page">
@@ -529,7 +557,7 @@ const Contacts = () => {
               data-testid="view-mode-table"
               className={`p-2 rounded transition-all ${
                 viewMode === 'table' 
-                  ? 'bg-cyan-500/20 border border-cyan-500 text-cyan-500' 
+                  ? 'bg-red-500/20 border border-red-500 text-red-500' 
                   : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -540,7 +568,7 @@ const Contacts = () => {
               data-testid="view-mode-card"
               className={`p-2 rounded transition-all ${
                 viewMode === 'card' 
-                  ? 'bg-cyan-500/20 border border-cyan-500 text-cyan-500' 
+                  ? 'bg-red-500/20 border border-red-500 text-red-500' 
                   : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -580,7 +608,7 @@ const Contacts = () => {
 
           <Button
             onClick={handleOpenAdd}
-            className="bg-cyan-600 hover:bg-cyan-700"
+            className="bg-red-600 hover:bg-red-700"
             data-testid="create-contact-button"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -597,7 +625,7 @@ const Contacts = () => {
             onClick={() => setFilterTag('')}
             className={`px-3 py-1 rounded-full text-sm transition-all ${
               !filterTag 
-                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500' 
+                ? 'bg-red-500/20 text-red-400 border border-red-500' 
                 : 'bg-gray-800/50 text-gray-400 border border-gray-700 hover:border-gray-600'
             }`}
           >
@@ -623,7 +651,7 @@ const Contacts = () => {
           ))}
           <button
             onClick={handleOpenTagCreate}
-            className="px-3 py-1 rounded-full text-sm text-gray-500 border border-dashed border-gray-700 hover:border-cyan-500 hover:text-cyan-500 transition-all flex items-center gap-1"
+            className="px-3 py-1 rounded-full text-sm text-gray-500 border border-dashed border-gray-700 hover:border-red-500 hover:text-red-500 transition-all flex items-center gap-1"
           >
             <Plus className="w-3 h-3" />
             New Tag
@@ -655,19 +683,6 @@ const Contacts = () => {
           <option value="">All Types</option>
           {contactTypeOptions.map(type => (
             <option key={type.value} value={type.value}>{type.label}</option>
-          ))}
-        </select>
-
-        {/* Status Filter */}
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 text-gray-300 cursor-pointer"
-          data-testid="filter-status"
-        >
-          <option value="">All Statuses</option>
-          {statusOptions.map(status => (
-            <option key={status.value} value={status.value}>{status.label}</option>
           ))}
         </select>
 
@@ -710,7 +725,7 @@ const Contacts = () => {
             <p>No contacts found</p>
             <Button
               onClick={handleOpenAdd}
-              className="mt-4 bg-cyan-600 hover:bg-cyan-700"
+              className="mt-4 bg-red-600 hover:bg-red-700"
             >
               Add Your First Contact
             </Button>
@@ -721,40 +736,76 @@ const Contacts = () => {
             <table className="w-full" data-testid="contacts-table">
               <thead>
                 <tr className="border-b border-gray-700/50 bg-gray-900/30">
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Company</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Type</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Tags</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Linked Deals</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer hover:text-white select-none"
+                    onClick={() => handleSort('name')}
+                    data-testid="sort-name"
+                  >Name <SortIcon field="name" /></th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Phone</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer hover:text-white select-none"
+                    onClick={() => handleSort('company')}
+                    data-testid="sort-company"
+                  >Company <SortIcon field="company" /></th>
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer hover:text-white select-none"
+                    onClick={() => handleSort('contact_type')}
+                    data-testid="sort-type"
+                  >Type <SortIcon field="contact_type" /></th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Tags</th>
+                  <th
+                    className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer hover:text-white select-none"
+                    onClick={() => handleSort('created_at')}
+                    data-testid="sort-created"
+                  >Created <SortIcon field="created_at" /></th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {contacts.map((contact) => (
+                {sortedContacts.map((contact) => (
                   <tr 
                     key={contact.id}
                     className="border-b border-gray-700/30 hover:bg-gray-800/50 transition-all cursor-pointer"
                     onClick={() => handleOpenEdit(contact)}
                     data-testid={`contact-row-${contact.id}`}
                   >
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="font-medium text-white">{contact.name}</p>
-                        {contact.email && (
-                          <p className="text-xs text-gray-500">{contact.email}</p>
-                        )}
-                      </div>
+                    <td className="px-5 py-3">
+                      <p className="font-medium text-white text-sm">{contact.name}</p>
                     </td>
-                    <td className="px-6 py-4 text-gray-400">
-                      {contact.company || '-'}
+                    <td className="px-5 py-3">
+                      {contact.phone ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(contact.phone); }}
+                          className="text-sm text-gray-300 hover:text-white flex items-center gap-1.5 group"
+                          data-testid={`copy-phone-${contact.id}`}
+                        >
+                          <Phone className="w-3 h-3 text-gray-500 group-hover:text-red-400" />
+                          {contact.phone}
+                        </button>
+                      ) : <span className="text-gray-600 text-sm">—</span>}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 rounded text-xs bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                    <td className="px-5 py-3">
+                      {contact.email ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(contact.email); }}
+                          className="text-sm text-gray-300 hover:text-white flex items-center gap-1.5 group"
+                          data-testid={`copy-email-${contact.id}`}
+                        >
+                          <Mail className="w-3 h-3 text-gray-500 group-hover:text-red-400" />
+                          <span className="max-w-[180px] truncate">{contact.email}</span>
+                        </button>
+                      ) : <span className="text-gray-600 text-sm">—</span>}
+                    </td>
+                    <td className="px-5 py-3 text-gray-400 text-sm">
+                      {contact.company || '—'}
+                    </td>
+                    <td className="px-5 py-3">
+                      <span className="px-2 py-0.5 rounded text-xs bg-blue-500/15 text-blue-400 border border-blue-500/30">
                         {contact.contact_type}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3">
                       <div className="flex flex-wrap gap-1">
                         {contact.tag_ids?.slice(0, 2).map(tagId => {
                           const tag = tags.find(t => t.id === tagId);
@@ -778,38 +829,24 @@ const Contacts = () => {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-cyan-400 font-medium">
-                        {contact.linked_deals_count || 0}
-                      </span>
+                    <td className="px-5 py-3 text-gray-500 text-xs">
+                      {contact.created_at ? new Date(contact.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
                     </td>
-                    <td className="px-6 py-4">
-                      <span 
-                        className="px-3 py-1 rounded-full text-xs font-medium"
-                        style={{
-                          backgroundColor: `${getStatusColor(contact.status)}20`,
-                          color: getStatusColor(contact.status),
-                          border: `1px solid ${getStatusColor(contact.status)}40`
-                        }}
-                      >
-                        {contact.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3">
                       <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => handleOpenEdit(contact)}
-                          className="p-2 rounded-lg bg-gray-700/50 border border-gray-600 text-cyan-400 hover:bg-gray-700"
+                          className="p-1.5 rounded-lg bg-gray-700/50 border border-gray-600 text-gray-400 hover:text-white hover:bg-gray-700"
                           data-testid={`edit-contact-${contact.id}`}
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDeleteContact(contact)}
-                          className="p-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20"
+                          className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20"
                           data-testid={`delete-contact-${contact.id}`}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </td>
@@ -824,7 +861,7 @@ const Contacts = () => {
             {contacts.map((contact) => (
               <div
                 key={contact.id}
-                className="p-5 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-cyan-500/50 transition-all cursor-pointer group"
+                className="p-5 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-red-500/50 transition-all cursor-pointer group"
                 onClick={() => handleOpenEdit(contact)}
                 data-testid={`contact-card-${contact.id}`}
               >
@@ -844,7 +881,7 @@ const Contacts = () => {
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => handleOpenEdit(contact)}
-                      className="p-1.5 rounded bg-gray-700/50 text-cyan-400"
+                      className="p-1.5 rounded bg-gray-700/50 text-red-400"
                     >
                       <Edit className="w-3 h-3" />
                     </button>
@@ -917,7 +954,7 @@ const Contacts = () => {
                   </span>
                   
                   {contact.linked_deals_count > 0 && (
-                    <span className="text-xs text-cyan-400">
+                    <span className="text-xs text-red-400">
                       {contact.linked_deals_count} deal{contact.linked_deals_count !== 1 ? 's' : ''}
                     </span>
                   )}
@@ -942,8 +979,8 @@ const Contacts = () => {
             {/* Header */}
             <div className="px-6 py-5 flex items-center justify-between border-b border-gray-700">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center border border-cyan-500/30">
-                  <Settings className="w-5 h-5 text-cyan-400" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/20 flex items-center justify-center border border-red-500/30">
+                  <Settings className="w-5 h-5 text-red-400" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">Smart Tags</h2>
@@ -962,7 +999,7 @@ const Contacts = () => {
             <div className="flex-1 overflow-y-auto">
               {/* Create New Tag Section */}
               <div className="p-6 border-b border-gray-800">
-                <h3 className="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-4">
+                <h3 className="text-sm font-semibold text-red-400 uppercase tracking-wider mb-4">
                   {editingTag ? 'Edit Tag' : 'Create New Tag'}
                 </h3>
                 <div className="space-y-4">
@@ -1025,7 +1062,7 @@ const Contacts = () => {
                         <Button
                           onClick={() => {
                             setEditingTag(null);
-                            setTagForm({ name: '', color: '#00b8d4' });
+                            setTagForm({ name: '', color: '#ff0000' });
                           }}
                           variant="outline"
                           className="flex-1 border-gray-700 text-gray-400"
@@ -1037,7 +1074,7 @@ const Contacts = () => {
                     <Button
                       onClick={handleSaveTag}
                       disabled={savingTag || !tagForm.name}
-                      className="flex-1 bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50"
+                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50"
                     >
                       {savingTag ? 'Saving...' : editingTag ? 'Update Tag' : 'Create Tag'}
                     </Button>
@@ -1064,7 +1101,7 @@ const Contacts = () => {
                         key={tag.id}
                         className={`group flex items-center justify-between p-4 rounded-xl transition-all cursor-pointer ${
                           editingTag?.id === tag.id 
-                            ? 'bg-cyan-500/10 border border-cyan-500/30' 
+                            ? 'bg-red-500/10 border border-red-500/30' 
                             : 'bg-gray-800/50 border border-gray-700/50 hover:border-gray-600'
                         }`}
                         onClick={() => handleOpenTagEdit(tag)}
@@ -1080,7 +1117,7 @@ const Contacts = () => {
                           <span className="text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
                             Click to edit
                           </span>
-                          <Edit className="w-4 h-4 text-gray-500 group-hover:text-cyan-400 transition-colors" />
+                          <Edit className="w-4 h-4 text-gray-500 group-hover:text-red-400 transition-colors" />
                         </div>
                       </div>
                     ))}
@@ -1102,438 +1139,17 @@ const Contacts = () => {
         </div>
       )}
 
-      {/* Add/Edit Contact Side Panel */}
-      {showAddPanel && (
-        <div 
-          className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm"
-          onClick={() => setShowAddPanel(false)}
-          data-testid="contact-form-panel"
-        >
-          <div
-            className="w-full md:w-[500px] h-full bg-gray-900 border-l border-gray-700 overflow-hidden flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="px-6 py-4 flex items-center justify-between border-b border-gray-700">
-              <h2 className="text-xl font-bold text-white">
-                {editingContact ? 'Edit Contact' : 'Add Contact'}
-              </h2>
-              <button
-                onClick={() => setShowAddPanel(false)}
-                className="p-2 rounded-lg hover:bg-gray-800 text-gray-400"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* Unified Contact Form Panel — same as CRM Map & Pipeline */}
+      <ContactFormPanel
+        isOpen={showAddPanel}
+        onClose={() => { setShowAddPanel(false); setEditingContact(null); }}
+        onContactCreated={() => { fetchContacts(); setShowAddPanel(false); setEditingContact(null); }}
+        editingContact={editingContact}
+        dealId={null}
+        rightOffset={0}
+      />
 
-            {/* Form */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
-              {/* Name */}
-              <div>
-                <Label className="text-sm font-medium text-gray-300 mb-2 block">
-                  Name <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  value={contactForm.name}
-                  onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                  placeholder="John Doe"
-                  className="bg-gray-800 border-gray-700 text-white"
-                  data-testid="contact-name-input"
-                />
-              </div>
-
-              {/* Email & Phone */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-gray-300 mb-2 block">Email</Label>
-                  <Input
-                    type="email"
-                    value={contactForm.email}
-                    onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                    placeholder="john@example.com"
-                    className="bg-gray-800 border-gray-700 text-white"
-                    data-testid="contact-email-input"
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-gray-300 mb-2 block">Phone</Label>
-                  <Input
-                    type="tel"
-                    value={contactForm.phone}
-                    onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                    placeholder="(555) 123-4567"
-                    className="bg-gray-800 border-gray-700 text-white"
-                    data-testid="contact-phone-input"
-                  />
-                </div>
-              </div>
-
-              {/* Company */}
-              <div>
-                <Label className="text-sm font-medium text-gray-300 mb-2 block">Company</Label>
-                <Input
-                  value={contactForm.company}
-                  onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
-                  placeholder="ABC Realty"
-                  className="bg-gray-800 border-gray-700 text-white"
-                  data-testid="contact-company-input"
-                />
-              </div>
-
-              {/* Type & Status */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-gray-300 mb-2 block">Contact Type</Label>
-                  <select
-                    value={contactForm.contact_type}
-                    onChange={(e) => setContactForm({ ...contactForm, contact_type: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300"
-                    data-testid="contact-type-select"
-                  >
-                    {contactTypeOptions.map(type => (
-                      <option key={type.value} value={type.value}>{type.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-gray-300 mb-2 block">Status</Label>
-                  <select
-                    value={contactForm.status}
-                    onChange={(e) => setContactForm({ ...contactForm, status: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300"
-                    data-testid="contact-status-select"
-                  >
-                    {statusOptions.map(status => (
-                      <option key={status.value} value={status.value}>{status.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Tags */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <Label className="text-sm font-medium text-gray-300">Tags</Label>
-                </div>
-
-                {/* Applied tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {tags.filter(t => contactForm.tag_ids.includes(t.id)).map(tag => (
-                    <span
-                      key={tag.id}
-                      className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 rounded-full text-sm font-medium"
-                      style={{ backgroundColor: `${tag.color}20`, color: tag.color, border: `1px solid ${tag.color}40` }}
-                    >
-                      {tag.name}
-                      <button type="button" onClick={() => toggleTagInForm(tag.id)}
-                        className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                  {contactForm.tag_ids.length === 0 && (
-                    <span className="text-xs text-gray-500 italic">No tags applied</span>
-                  )}
-                </div>
-
-                {/* Available tags to add */}
-                <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700/50">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-500 uppercase tracking-wider">Available Tags</span>
-                    <button
-                      type="button"
-                      onClick={() => setShowInlineTagCreate(!showInlineTagCreate)}
-                      className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
-                    >
-                      <Plus className="w-3 h-3" />
-                      Create
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {tags.filter(t => !contactForm.tag_ids.includes(t.id)).map(tag => (
-                      <button
-                        key={tag.id}
-                        type="button"
-                        onClick={() => toggleTagInForm(tag.id)}
-                        className="group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs transition-all border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white"
-                      >
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} />
-                        {tag.name}
-                        <Plus className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </button>
-                    ))}
-                    {tags.filter(t => !contactForm.tag_ids.includes(t.id)).length === 0 && !showInlineTagCreate && (
-                      <span className="text-xs text-gray-600">All tags applied</span>
-                    )}
-                  </div>
-
-                  {/* Manage tags row */}
-                  {tags.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-gray-700/50">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-gray-500">Manage</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {tags.map(tag => (
-                          <div key={tag.id} className="group inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-gray-900/50 border border-gray-700/50">
-                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: tag.color }} />
-                            <span className="text-gray-400">{tag.name}</span>
-                            <button type="button"
-                              onClick={() => { handleOpenTagEdit(tag); }}
-                              className="w-4 h-4 flex items-center justify-center text-gray-600 hover:text-cyan-400 transition-colors"
-                            >
-                              <Edit className="w-2.5 h-2.5" />
-                            </button>
-                            <button type="button"
-                              onClick={async () => {
-                                if (!window.confirm(`Delete tag "${tag.name}"?`)) return;
-                                try {
-                                  const token = await getToken();
-                                  const r = await fetch(`${API}/contacts/tags/${tag.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
-                                  if (r.ok) { toast.success('Tag deleted'); fetchTags(); setContactForm(prev => ({ ...prev, tag_ids: prev.tag_ids.filter(id => id !== tag.id) })); }
-                                  else toast.error('Failed to delete tag');
-                                } catch { toast.error('Failed to delete tag'); }
-                              }}
-                              className="w-4 h-4 flex items-center justify-center text-gray-600 hover:text-red-400 transition-colors"
-                            >
-                              <Trash2 className="w-2.5 h-2.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Inline Tag Creation */}
-                  {showInlineTagCreate && (
-                    <div className="mt-3 pt-3 border-t border-gray-700/50 space-y-2.5">
-                      <div className="flex gap-2">
-                        <Input
-                          value={inlineTagName}
-                          onChange={(e) => setInlineTagName(e.target.value)}
-                          placeholder="Tag name..."
-                          className="bg-gray-900 border-gray-600 text-white text-sm flex-1"
-                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleInlineTagCreate(); } }}
-                          autoFocus
-                        />
-                        <Button type="button" onClick={handleInlineTagCreate} disabled={!inlineTagName.trim()} size="sm" className="bg-cyan-600 hover:bg-cyan-700 text-xs px-4">
-                          Add
-                        </Button>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        {tagColorOptions.map(c => (
-                          <button key={c} type="button" onClick={() => setInlineTagColor(c)}
-                            className="w-5 h-5 rounded-full transition-all"
-                            style={{ backgroundColor: c, border: inlineTagColor === c ? '2px solid white' : '2px solid transparent', transform: inlineTagColor === c ? 'scale(1.15)' : 'scale(1)' }}
-                          />
-                        ))}
-                        <button type="button" onClick={() => { setShowInlineTagCreate(false); setInlineTagName(''); }}
-                          className="ml-auto text-xs text-gray-500 hover:text-gray-300"
-                        >Cancel</button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Notes */}
-              <div>
-                <Label className="text-sm font-medium text-gray-300 mb-2 block">Notes</Label>
-                <Textarea
-                  value={contactForm.notes}
-                  onChange={(e) => setContactForm({ ...contactForm, notes: e.target.value })}
-                  placeholder="Any additional notes..."
-                  rows={4}
-                  className="bg-gray-800 border-gray-700 text-white"
-                  data-testid="contact-notes-input"
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="px-6 py-4 flex gap-3 border-t border-gray-700">
-              <Button
-                onClick={() => setShowAddPanel(false)}
-                variant="outline"
-                className="flex-1 border-gray-700 text-gray-300"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSaveContact}
-                className="flex-1 bg-cyan-600 hover:bg-cyan-700"
-                data-testid="save-contact-button"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                {editingContact ? 'Update' : 'Create'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Contact Details Side Panel */}
-      {showDetailsPanel && selectedContact && (
-        <div 
-          className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm"
-          onClick={() => setShowDetailsPanel(false)}
-          data-testid="contact-details-panel"
-        >
-          <div
-            className="w-full md:w-[500px] h-full bg-gray-900 border-l border-gray-700 overflow-hidden flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="px-6 py-4 flex items-center justify-between border-b border-gray-700">
-              <div>
-                <h2 className="text-xl font-bold text-white">{selectedContact.name}</h2>
-                {selectedContact.company && (
-                  <p className="text-sm text-gray-400">{selectedContact.company}</p>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setShowDetailsPanel(false);
-                    handleOpenEdit(selectedContact);
-                  }}
-                  className="p-2 rounded-lg bg-gray-800 text-cyan-400 hover:bg-gray-700"
-                >
-                  <Edit className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => setShowDetailsPanel(false)}
-                  className="p-2 rounded-lg hover:bg-gray-800 text-gray-400"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-              {/* Contact Info */}
-              <div className="space-y-3">
-                <h3 className="text-xs font-semibold text-cyan-500 uppercase tracking-wider">Contact Info</h3>
-                {selectedContact.email && (
-                  <a 
-                    href={`mailto:${selectedContact.email}`}
-                    className="flex items-center gap-3 text-gray-300 hover:text-white"
-                  >
-                    <Mail className="w-4 h-4 text-gray-500" />
-                    {selectedContact.email}
-                  </a>
-                )}
-                {selectedContact.phone && (
-                  <a 
-                    href={`tel:${selectedContact.phone}`}
-                    className="flex items-center gap-3 text-gray-300 hover:text-white"
-                  >
-                    <Phone className="w-4 h-4 text-gray-500" />
-                    {selectedContact.phone}
-                  </a>
-                )}
-              </div>
-
-              {/* Status & Type */}
-              <div className="flex gap-3">
-                <span 
-                  className="px-3 py-1 rounded-full text-sm font-medium"
-                  style={{
-                    backgroundColor: `${getStatusColor(selectedContact.status)}20`,
-                    color: getStatusColor(selectedContact.status),
-                    border: `1px solid ${getStatusColor(selectedContact.status)}40`
-                  }}
-                >
-                  {selectedContact.status}
-                </span>
-                <span className="px-3 py-1 rounded text-sm bg-blue-500/15 text-blue-400 border border-blue-500/30">
-                  {selectedContact.contact_type}
-                </span>
-              </div>
-
-              {/* Tags */}
-              {selectedContact.tags?.length > 0 && (
-                <div>
-                  <h3 className="text-xs font-semibold text-cyan-500 uppercase tracking-wider mb-2">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedContact.tags.map(tag => (
-                      <span
-                        key={tag.id}
-                        className="px-3 py-1 rounded-full text-sm"
-                        style={{
-                          backgroundColor: `${tag.color}20`,
-                          color: tag.color,
-                          border: `1px solid ${tag.color}40`
-                        }}
-                      >
-                        {tag.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Linked Deals */}
-              {selectedContact.linked_deals?.length > 0 && (
-                <div>
-                  <h3 className="text-xs font-semibold text-cyan-500 uppercase tracking-wider mb-2">
-                    Linked Deals ({selectedContact.linked_deals.length})
-                  </h3>
-                  <div className="space-y-2">
-                    {selectedContact.linked_deals.map(deal => (
-                      <div
-                        key={deal.id}
-                        className="p-3 rounded-lg bg-gray-800/50 border border-gray-700"
-                      >
-                        <p className="font-medium text-white">{deal.title || deal.address}</p>
-                        <div className="flex items-center gap-2 mt-1 text-sm">
-                          <span className="text-cyan-400">{formatCurrency(deal.asking_price)}</span>
-                          {deal.asset_type && (
-                            <span className="text-gray-500">• {deal.asset_type}</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Notes */}
-              {selectedContact.notes && (
-                <div>
-                  <h3 className="text-xs font-semibold text-cyan-500 uppercase tracking-wider mb-2">Notes</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{selectedContact.notes}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="px-6 py-4 flex gap-3 border-t border-gray-700">
-              <Button
-                onClick={() => {
-                  setShowDetailsPanel(false);
-                  handleOpenEdit(selectedContact);
-                }}
-                className="flex-1 bg-cyan-600 hover:bg-cyan-700"
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Contact
-              </Button>
-              <Button
-                onClick={() => handleDeleteContact(selectedContact)}
-                variant="outline"
-                className="border-red-500/30 text-red-400 hover:bg-red-500/10"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* CSV Import Modal */}
+            {/* CSV Import Modal */}
       {showCsvImport && csvData && (
         <div
           data-testid="csv-import-modal"
@@ -1561,7 +1177,7 @@ const Contacts = () => {
               alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <FileText size={20} style={{ color: '#00d4ff' }} />
+                <FileText size={20} style={{ color: '#ff0000' }} />
                 <span style={{ color: 'white', fontWeight: '600', fontSize: '16px' }}>
                   Import Contacts from CSV
                 </span>
@@ -1590,7 +1206,7 @@ const Contacts = () => {
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
                 {csvData.headers.map((header, idx) => (
-                  <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div key={header} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ color: '#e2e8f0', fontSize: '12px', fontWeight: '500' }}>{header}</span>
                     <select
                       data-testid={`csv-column-map-${idx}`}
@@ -1635,8 +1251,8 @@ const Contacts = () => {
                   <thead>
                     <tr>
                       {csvData.headers.map((h, i) => (
-                        <th key={i} style={{
-                          padding: '8px', textAlign: 'left', color: '#00d4ff',
+                        <th key={`th-${h}`} style={{
+                          padding: '8px', textAlign: 'left', color: '#ff0000',
                           fontWeight: '600', borderBottom: '1px solid rgba(255,255,255,0.1)',
                           whiteSpace: 'nowrap', fontSize: '11px', textTransform: 'uppercase'
                         }}>
@@ -1647,7 +1263,7 @@ const Contacts = () => {
                   </thead>
                   <tbody>
                     {csvData.rows.slice(0, 5).map((row, i) => (
-                      <tr key={i}>
+                      <tr key={`row-${i}`}>
                         {row.map((cell, j) => (
                           <td key={j} style={{
                             padding: '8px', color: csvColumnMap[j] ? '#e2e8f0' : '#6b7280',
@@ -1686,7 +1302,7 @@ const Contacts = () => {
                   data-testid="csv-import-confirm-button"
                   onClick={handleCsvImport}
                   disabled={importingCsv || !Object.values(csvColumnMap).includes('name')}
-                  className="bg-cyan-600 hover:bg-cyan-700"
+                  className="bg-red-600 hover:bg-red-700"
                 >
                   {importingCsv ? 'Importing...' : 'Import Contacts'}
                 </Button>

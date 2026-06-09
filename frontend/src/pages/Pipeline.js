@@ -4,27 +4,16 @@ import { AuthContext, API } from '../App';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { 
-  Search, Plus, X, GripVertical, Building2, MapPin, DollarSign,
-  ChevronDown, MoreVertical, Trash2, Eye, Edit, Settings, Palette
+  Search, Plus, X, Building2, MapPin, DollarSign,
+  ChevronDown, ChevronLeft, ChevronRight, Trash2, Eye, Edit, Settings, Palette,
+  Phone, User, Users
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { colors, gradients, borderRadius, shadows } from '../styles/designSystem';
+import PropertyIntelligencePanel from '../components/PropertyIntelligencePanel';
 
 // Asset type colors
 const assetTypeColors = {
@@ -34,35 +23,25 @@ const assetTypeColors = {
   'Multifamily': '#8b5cf6',
   'Land': '#ec4899',
   'Mixed Use': '#06b6d4',
+  'Hotels': '#a855f7',
+  'Medical': '#14b8a6',
+  'Gas Stations': '#e879f9',
   'Other': '#6b7280'
 };
 
-const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Other'];
+const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Hotels', 'Medical', 'Gas Stations', 'Other'];
 
 // Stage color options
 const stageColorOptions = [
-  '#94a3b8', '#60a5fa', '#a78bfa', '#ec4899', 
-  '#f59e0b', '#10b981', '#00d4aa', '#ef4444',
-  '#06b6d4', '#8b5cf6', '#f97316', '#84cc16'
+  '#94a3b8', '#60a5fa', '#3b82f6', '#a78bfa', 
+  '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b',
+  '#f97316', '#10b981', '#22c55e', '#84cc16',
+  '#00d4aa', '#14b8a6', '#ef4444', '#ff0000',
+  '#e879f9', '#fbbf24'
 ];
 
-// Sortable Deal Card Component
-const SortableDealCard = ({ deal, onView, onDelete }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: deal.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
+// Deal Card Component with stage move arrows
+const DealCard = ({ deal, onView, onOpenPanel, onDelete, onMoveLeft, onMoveRight, canMoveLeft, canMoveRight, onToggleVisibility }) => {
   const formatCurrency = (value) => {
     if (!value) return '';
     return new Intl.NumberFormat('en-US', {
@@ -74,28 +53,27 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} className="deal-card">
+    <div className="deal-card">
       <div style={{
         background: colors.surfaceCard,
         borderRadius: borderRadius.md,
         padding: '12px',
-        marginBottom: '8px',
-        border: `1px solid ${colors.border}`,
-        cursor: 'grab',
-        transition: 'all 0.2s'
+        border: '1px solid rgba(255,255,255,0.04)',
+        transition: 'all 0.2s',
+        cursor: 'pointer'
       }}
+      onClick={() => onOpenPanel(deal)}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = colors.primary;
+        e.currentTarget.style.borderColor = 'rgba(255,0,0,0.2)';
         e.currentTarget.style.boxShadow = shadows.glow;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = colors.border;
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.04)';
         e.currentTarget.style.boxShadow = 'none';
       }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} {...listeners}>
-            <GripVertical size={14} style={{ color: colors.textTertiary, cursor: 'grab' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -124,6 +102,7 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
           <div style={{ display: 'flex', gap: '4px' }}>
             <button
               onClick={(e) => { e.stopPropagation(); onView(deal); }}
+              title="Open full details"
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -163,7 +142,6 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
             marginBottom: '4px',
             cursor: 'pointer'
           }}
-          onClick={() => onView(deal)}
         >
           {deal.title}
         </div>
@@ -191,13 +169,105 @@ const SortableDealCard = ({ deal, onView, onDelete }) => {
             {formatCurrency(deal.asking_price)}
           </div>
         )}
+
+        {/* Visibility toggle */}
+        <div style={{
+          marginTop: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <button
+            data-testid={`visibility-toggle-${deal.id}`}
+            onClick={(e) => { e.stopPropagation(); onToggleVisibility(deal); }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '5px',
+              background: 'transparent', border: 'none', cursor: 'pointer',
+              padding: '3px 0', fontSize: '11px', fontWeight: 500,
+              color: deal.team_id ? '#10b981' : colors.textTertiary,
+              transition: 'color 0.15s',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+          >
+            <Users size={11} />
+            <span>{deal.team_id ? 'Shared' : 'Private'}</span>
+          </button>
+        </div>
+
+        {deal._contact && (
+          <div style={{ 
+            marginTop: '8px', 
+            paddingTop: '8px', 
+            borderTop: `1px solid ${colors.divider}`,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px'
+          }}>
+            <div style={{ color: colors.textSecondary, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <User size={10} style={{ flexShrink: 0 }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deal._contact.name}</span>
+            </div>
+            {deal._contact.phone && (
+              <div style={{ color: colors.textTertiary, fontSize: '11px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Phone size={10} style={{ flexShrink: 0 }} />
+                {deal._contact.phone}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Stage move arrows */}
+        <div style={{ 
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          marginTop: '10px', paddingTop: '8px', borderTop: `1px solid ${colors.divider}`
+        }}>
+          <button
+            data-testid={`move-left-${deal.id}`}
+            onClick={(e) => { e.stopPropagation(); onMoveLeft(deal); }}
+            disabled={!canMoveLeft}
+            style={{
+              background: canMoveLeft ? 'rgba(255,255,255,0.04)' : 'transparent',
+              border: `1px solid ${canMoveLeft ? colors.border : 'transparent'}`,
+              borderRadius: '4px',
+              padding: '3px 8px',
+              cursor: canMoveLeft ? 'pointer' : 'default',
+              color: canMoveLeft ? colors.textTertiary : 'rgba(255,255,255,0.1)',
+              display: 'flex', alignItems: 'center', gap: '3px',
+              fontSize: '10px', fontWeight: 600,
+              transition: 'all 0.15s'
+            }}
+            onMouseEnter={(e) => { if (canMoveLeft) { e.currentTarget.style.color = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}}
+            onMouseLeave={(e) => { if (canMoveLeft) { e.currentTarget.style.color = colors.textTertiary; e.currentTarget.style.borderColor = colors.border; }}}
+          >
+            <ChevronLeft size={12} />
+          </button>
+          <span style={{ fontSize: '10px', color: colors.textMuted }}>Move Stage</span>
+          <button
+            data-testid={`move-right-${deal.id}`}
+            onClick={(e) => { e.stopPropagation(); onMoveRight(deal); }}
+            disabled={!canMoveRight}
+            style={{
+              background: canMoveRight ? 'rgba(255,255,255,0.04)' : 'transparent',
+              border: `1px solid ${canMoveRight ? colors.border : 'transparent'}`,
+              borderRadius: '4px',
+              padding: '3px 8px',
+              cursor: canMoveRight ? 'pointer' : 'default',
+              color: canMoveRight ? colors.textTertiary : 'rgba(255,255,255,0.1)',
+              display: 'flex', alignItems: 'center', gap: '3px',
+              fontSize: '10px', fontWeight: 600,
+              transition: 'all 0.15s'
+            }}
+            onMouseEnter={(e) => { if (canMoveRight) { e.currentTarget.style.color = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}}
+            onMouseLeave={(e) => { if (canMoveRight) { e.currentTarget.style.color = colors.textTertiary; e.currentTarget.style.borderColor = colors.border; }}}
+          >
+            <ChevronRight size={12} />
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
 // Stage Column Component
-const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal, onEditStage }) => {
+const StageColumn = ({ stage, stageIndex, totalStages, deals, onDealView, onDealOpenPanel, onDealDelete, onAddDeal, onEditStage, onMoveDeal, onToggleVisibility }) => {
   const stageDeals = deals.filter(d => d.pipeline_stage_id === stage.id);
   const totalValue = stageDeals.reduce((sum, d) => sum + (d.asking_price || 0), 0);
 
@@ -269,22 +339,28 @@ const StageColumn = ({ stage, deals, onDealView, onDealDelete, onAddDeal, onEdit
 
       <div style={{
         flex: 1,
-        background: 'rgba(0,0,0,0.2)',
-        padding: '8px',
+        background: 'rgba(255,255,255,0.015)',
+        padding: '8px 6px',
         overflowY: 'auto',
         minHeight: 0,
-        borderRadius: `0 0 ${borderRadius.md} ${borderRadius.md}`
+        borderRadius: `0 0 ${borderRadius.md} ${borderRadius.md}`,
+        border: '1px solid rgba(255,255,255,0.03)',
+        borderTop: 'none'
       }}>
-        <SortableContext items={stageDeals.map(d => d.id)} strategy={verticalListSortingStrategy}>
-          {stageDeals.map(deal => (
-            <SortableDealCard 
-              key={deal.id} 
-              deal={deal} 
-              onView={onDealView}
-              onDelete={onDealDelete}
-            />
-          ))}
-        </SortableContext>
+        {stageDeals.map(deal => (
+          <DealCard
+            key={deal.id}
+            deal={deal}
+            onView={onDealView}
+            onOpenPanel={onDealOpenPanel}
+            onDelete={onDealDelete}
+            onMoveLeft={(d) => onMoveDeal(d, -1)}
+            onMoveRight={(d) => onMoveDeal(d, 1)}
+            canMoveLeft={stageIndex > 0}
+            canMoveRight={stageIndex < totalStages - 1}
+            onToggleVisibility={onToggleVisibility}
+          />
+        ))}
 
         <button
           onClick={() => onAddDeal(stage.id)}
@@ -358,27 +434,10 @@ const Pipeline = () => {
   const [savingPipeline, setSavingPipeline] = useState(false);
   const [newPipelineName, setNewPipelineName] = useState('');
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 }
-    })
-  );
-
-  useEffect(() => {
-    if (user) {
-      fetchPipelines();
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedPipeline) {
-      fetchDeals();
-    }
-  }, [selectedPipeline]);
-
-  const fetchPipelines = async () => {
+  // Side panel for deal details
+  const [panelDeal, setPanelDeal] = useState(null);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const fetchPipelines = useCallback(async () => {
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
       const response = await fetch(`${API}/pipelines`, {
@@ -398,13 +457,12 @@ const Pipeline = () => {
       }
     } catch (error) {
       console.error('Error fetching pipelines:', error);
-      toast.error('Failed to load pipelines');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchDeals = async () => {
+  const fetchDeals = useCallback(async () => {
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
       const response = await fetch(`${API}/deals?pipeline_id=${selectedPipeline.id}`, {
@@ -413,12 +471,38 @@ const Pipeline = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setDeals(data.deals || []);
+        const dealsWithContacts = (data.deals || []).map(deal => {
+          const links = deal.contact_deal_links || [];
+          const firstContact = links[0]?.contacts;
+          return {
+            ...deal,
+            contact_deal_links: undefined,
+            _contact: firstContact ? {
+              name: firstContact.name || firstContact.company || firstContact.email || 'Unknown',
+              phone: firstContact.phone
+            } : null
+          };
+        });
+        setDeals(dealsWithContacts);
       }
     } catch (error) {
       console.error('Error fetching deals:', error);
     }
-  };
+  }, [selectedPipeline]);
+
+  useEffect(() => {
+    if (user) {
+      fetchPipelines();
+    } else {
+      setLoading(false);
+    }
+  }, [user, fetchPipelines]);
+
+  useEffect(() => {
+    if (selectedPipeline) {
+      fetchDeals();
+    }
+  }, [selectedPipeline, fetchDeals]);
 
   const filteredDeals = useMemo(() => {
     if (!searchTerm) return deals;
@@ -430,42 +514,34 @@ const Pipeline = () => {
     );
   }, [deals, searchTerm]);
 
-  const handleDragEnd = async (event) => {
-    const { active, over } = event;
-    if (!over) return;
+  const handleMoveDeal = async (deal, direction) => {
+    const currentIdx = stages.findIndex(s => s.id === deal.pipeline_stage_id);
+    const targetIdx = currentIdx + direction;
+    if (targetIdx < 0 || targetIdx >= stages.length) return;
     
-    const dealId = active.id;
-    const deal = deals.find(d => d.id === dealId);
-    if (!deal) return;
+    const newStageId = stages[targetIdx].id;
+    const newStageName = stages[targetIdx].name;
+    
+    // Optimistic update
+    setDeals(prev => prev.map(d => 
+      d.id === deal.id ? { ...d, pipeline_stage_id: newStageId } : d
+    ));
 
-    let newStageId = null;
-    const overDeal = deals.find(d => d.id === over.id);
-    if (overDeal) {
-      newStageId = overDeal.pipeline_stage_id;
-    } else {
-      newStageId = over.id;
-    }
-
-    if (newStageId && newStageId !== deal.pipeline_stage_id) {
-      setDeals(prev => prev.map(d => 
-        d.id === dealId ? { ...d, pipeline_stage_id: newStageId } : d
-      ));
-
-      try {
-        const token = (await supabase.auth.getSession()).data.session?.access_token;
-        await fetch(`${API}/deals/${dealId}/stage`, {
-          method: 'PATCH',
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ pipeline_stage_id: newStageId })
-        });
-      } catch (error) {
-        console.error('Error updating stage:', error);
-        toast.error('Failed to update deal stage');
-        fetchDeals();
-      }
+    try {
+      const token = (await supabase.auth.getSession()).data.session?.access_token;
+      await fetch(`${API}/deals/${deal.id}/stage`, {
+        method: 'PATCH',
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ pipeline_stage_id: newStageId })
+      });
+      toast.success(`Moved to ${newStageName}`);
+    } catch (error) {
+      console.error('Error updating stage:', error);
+      toast.error('Failed to move deal');
+      fetchDeals();
     }
   };
 
@@ -543,6 +619,59 @@ const Pipeline = () => {
 
   const handleViewDeal = (deal) => {
     navigate(`/deals/${deal.id}`);
+  };
+
+  const handleOpenPanel = (deal) => {
+    setPanelDeal(deal);
+    setPanelOpen(true);
+  };
+
+  const handlePanelClose = () => {
+    setPanelOpen(false);
+    setPanelDeal(null);
+  };
+
+  const handlePanelUpdate = async () => {
+    // Refetch deals when panel updates (pipeline/stage changes)
+    fetchDeals();
+    // Also refresh panelDeal with latest data from API
+    if (panelDeal?.id) {
+      try {
+        const token = (await supabase.auth.getSession()).data.session?.access_token;
+        const response = await fetch(`${API}/deals/${panelDeal.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const result = await response.json();
+          setPanelDeal(prev => ({ ...prev, ...result.deal }));
+        }
+      } catch (err) {
+        console.error('Failed to refresh panelDeal after save:', err);
+        // fallback: fetchDeals already refreshed the list
+      }
+    }
+  };
+
+  const handlePanelDealDeleted = (deletedDealId) => {
+    setDeals(prev => prev.filter(d => d.id !== deletedDealId));
+    handlePanelClose();
+  };
+
+  const handleToggleDealVisibility = async (deal) => {
+    const isCurrentlyShared = !!deal.team_id;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${deal.id}/visibility`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shared_with_team: !isCurrentlyShared })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setDeals(prev => prev.map(d => d.id === deal.id ? { ...d, team_id: !isCurrentlyShared ? (data.deal?.team_id || 'shared') : null } : d));
+      } else { toast.error('Failed to update visibility'); }
+    } catch { toast.error('Failed to update visibility'); }
   };
 
   const handleAddDeal = (stageId) => {
@@ -730,7 +859,7 @@ const Pipeline = () => {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ stage_ids: newStages.map(s => s.id) })
       });
-    } catch { /* silent - UI already updated */ }
+    } catch (err) { console.error('Failed to reorder stages:', err); }
   };
 
   if (loading) {
@@ -893,11 +1022,6 @@ const Pipeline = () => {
         display: 'flex',
         flexDirection: 'column'
       }}>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
           <div style={{
             display: 'flex',
             gap: '16px',
@@ -905,15 +1029,20 @@ const Pipeline = () => {
             minHeight: 0,
             minWidth: 'min-content'
           }}>
-            {stages.map(stage => (
+            {stages.map((stage, idx) => (
               <StageColumn
                 key={stage.id}
                 stage={stage}
+                stageIndex={idx}
+                totalStages={stages.length}
                 deals={filteredDeals}
                 onDealView={handleViewDeal}
+                onDealOpenPanel={handleOpenPanel}
                 onDealDelete={(deal) => setDeleteConfirm({ open: true, deal })}
                 onAddDeal={handleAddDeal}
                 onEditStage={handleOpenStageEdit}
+                onMoveDeal={handleMoveDeal}
+                onToggleVisibility={handleToggleDealVisibility}
               />
             ))}
             
@@ -948,7 +1077,6 @@ const Pipeline = () => {
               <span style={{ marginTop: '8px', fontSize: '14px' }}>Add Stage</span>
             </div>
           </div>
-        </DndContext>
       </div>
 
       {/* Create Deal Dialog */}
@@ -1296,6 +1424,16 @@ const Pipeline = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Deal Details Side Panel */}
+      <PropertyIntelligencePanel
+        isOpen={panelOpen}
+        onClose={handlePanelClose}
+        data={panelDeal}
+        type="deal"
+        onUpdate={handlePanelUpdate}
+        onDealDeleted={handlePanelDealDeleted}
+      />
     </div>
   );
 };

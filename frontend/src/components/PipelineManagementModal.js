@@ -28,13 +28,22 @@ import { CSS } from '@dnd-kit/utilities';
 const colorOptions = [
   { value: '#94a3b8', label: 'Slate' },
   { value: '#60a5fa', label: 'Blue' },
+  { value: '#3b82f6', label: 'Royal Blue' },
   { value: '#a78bfa', label: 'Purple' },
+  { value: '#8b5cf6', label: 'Violet' },
   { value: '#ec4899', label: 'Pink' },
-  { value: '#f59e0b', label: 'Orange' },
-  { value: '#10b981', label: 'Green' },
+  { value: '#f43f5e', label: 'Rose' },
+  { value: '#f59e0b', label: 'Amber' },
+  { value: '#f97316', label: 'Orange' },
+  { value: '#10b981', label: 'Emerald' },
+  { value: '#22c55e', label: 'Green' },
+  { value: '#84cc16', label: 'Lime' },
   { value: '#00d4aa', label: 'Teal' },
+  { value: '#14b8a6', label: 'Seafoam' },
   { value: '#ef4444', label: 'Red' },
-  { value: '#00b8d4', label: 'Cyan' },
+  { value: '#ff0000', label: 'Crimson' },
+  { value: '#e879f9', label: 'Fuchsia' },
+  { value: '#fbbf24', label: 'Gold' },
 ];
 
 // Sortable Stage Item Component
@@ -52,14 +61,14 @@ function SortableStageItem({ stage, index, editingStage, onEdit, onSave, onCance
     transform: CSS.Transform.toString(transform),
     transition,
     background: editingStage?.id === stage.id 
-      ? 'rgba(0, 184, 212, 0.05)' 
+      ? 'rgba(255, 0, 0, 0.05)' 
       : isDragging 
-        ? 'rgba(0, 184, 212, 0.1)' 
+        ? 'rgba(255, 0, 0, 0.1)' 
         : 'rgba(255,255,255,0.03)',
     border: editingStage?.id === stage.id 
-      ? '1px solid rgba(0, 184, 212, 0.3)' 
+      ? '1px solid rgba(255, 0, 0, 0.3)' 
       : isDragging 
-        ? '1px solid rgba(0, 184, 212, 0.5)'
+        ? '1px solid rgba(255, 0, 0, 0.5)'
         : '1px solid rgba(255,255,255,0.05)',
     borderRadius: '8px',
     padding: '12px',
@@ -125,7 +134,7 @@ function SortableStageItem({ stage, index, editingStage, onEdit, onSave, onCance
               disabled={loading}
               size="sm"
               style={{
-                background: '#00b8d4',
+                background: '#ff0000',
                 color: '#FFFFFF'
               }}
             >
@@ -465,7 +474,7 @@ const PipelineManagementModal = ({
             padding: '20px' 
           }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600' }}>
+              <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600' }}>
                 Pipeline Settings
               </h3>
               {editMode !== 'pipeline' && (
@@ -474,9 +483,9 @@ const PipelineManagementModal = ({
                   variant="outline"
                   size="sm"
                   style={{
-                    background: 'rgba(0, 184, 212, 0.1)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
-                    color: '#00b8d4'
+                    background: 'rgba(255, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 0, 0, 0.3)',
+                    color: '#ff0000'
                   }}
                 >
                   <Edit2 size={14} className="mr-2" />
@@ -532,7 +541,7 @@ const PipelineManagementModal = ({
                     onClick={handleUpdatePipeline}
                     disabled={loading}
                     style={{
-                      background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                      background: 'linear-gradient(135deg, #ff0000 0%, #00d4aa 100%)',
                       color: '#FFFFFF'
                     }}
                   >
@@ -583,7 +592,7 @@ const PipelineManagementModal = ({
             padding: '20px' 
           }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 style={{ color: '#00b8d4', fontSize: '16px', fontWeight: '600' }}>
+              <h3 style={{ color: '#ff0000', fontSize: '16px', fontWeight: '600' }}>
                 Stages ({stages.length}/10)
               </h3>
               {!showAddStage && stages.length < 10 && (
@@ -591,9 +600,9 @@ const PipelineManagementModal = ({
                   onClick={() => setShowAddStage(true)}
                   size="sm"
                   style={{
-                    background: 'rgba(0, 184, 212, 0.1)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
-                    color: '#00b8d4'
+                    background: 'rgba(255, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 0, 0, 0.3)',
+                    color: '#ff0000'
                   }}
                 >
                   <Plus size={14} className="mr-2" />
@@ -605,8 +614,8 @@ const PipelineManagementModal = ({
             {/* Add New Stage Form */}
             {showAddStage && (
               <div style={{
-                background: 'rgba(0, 184, 212, 0.05)',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
+                background: 'rgba(255, 0, 0, 0.05)',
+                border: '1px solid rgba(255, 0, 0, 0.2)',
                 borderRadius: '8px',
                 padding: '16px',
                 marginBottom: '16px'
@@ -679,7 +688,7 @@ const PipelineManagementModal = ({
                       disabled={loading}
                       size="sm"
                       style={{
-                        background: '#00b8d4',
+                        background: '#ff0000',
                         color: '#FFFFFF'
                       }}
                     >

@@ -354,7 +354,7 @@ const MarketplacePage = () => {
                     <div style={{
                       fontSize: '22px',
                       fontWeight: '700',
-                      color: '#00b8d4',
+                      color: '#ff0000',
                       marginBottom: '16px'
                     }}>
                       {formatPrice(selectedDeal.public_price || selectedDeal.price || selectedDeal.asking_price)}
@@ -367,7 +367,7 @@ const MarketplacePage = () => {
                       style={{
                         width: '100%',
                         padding: '12px',
-                        background: '#00b8d4',
+                        background: '#ff0000',
                         border: 'none',
                         borderRadius: borderRadius.md,
                         color: '#000',
@@ -380,7 +380,7 @@ const MarketplacePage = () => {
                         e.currentTarget.style.background = '#00d4ed';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = '#00b8d4';
+                        e.currentTarget.style.background = '#ff0000';
                       }}
                     >
                       View Details
@@ -448,7 +448,7 @@ const MarketplacePage = () => {
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = colors.borderHover;
-                  e.currentTarget.style.boxShadow = `inset 0 2px 4px rgba(0,0,0,0.1), ${shadows.glowCyan}`;
+                  e.currentTarget.style.boxShadow = `inset 0 2px 4px rgba(0,0,0,0.1), ${shadows.glow}`;
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = colors.border;
@@ -471,7 +471,7 @@ const MarketplacePage = () => {
                 alignItems: 'center',
                 gap: '8px',
                 transition: transitions.fast,
-                boxShadow: showMap ? shadows.glowCyan : shadows.sm,
+                boxShadow: showMap ? shadows.glow : shadows.sm,
                 flexShrink: 0
               }}
             >
@@ -488,7 +488,7 @@ const MarketplacePage = () => {
                 color: showFilters ? '#000' : colors.textTertiary,
                 cursor: 'pointer',
                 transition: transitions.fast,
-                boxShadow: showFilters ? shadows.glowCyan : shadows.sm,
+                boxShadow: showFilters ? shadows.glow : shadows.sm,
                 flexShrink: 0
               }}
               onMouseEnter={(e) => {
@@ -661,7 +661,7 @@ const MarketplacePage = () => {
                     fontSize: '14px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    boxShadow: shadows.glowCyan
+                    boxShadow: shadows.glow
                   }}
                 >
                   Apply Filters
@@ -719,7 +719,7 @@ const MarketplacePage = () => {
                     e.currentTarget.style.background = colors.elevated;
                     e.currentTarget.style.borderColor = colors.borderHover;
                     e.currentTarget.style.transform = 'translateY(-6px)';
-                    e.currentTarget.style.boxShadow = `${shadows.lg}, ${shadows.glowCyan}`;
+                    e.currentTarget.style.boxShadow = `${shadows.lg}, ${shadows.glow}`;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = colors.surface;

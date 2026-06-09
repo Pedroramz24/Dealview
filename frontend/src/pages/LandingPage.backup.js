@@ -258,7 +258,7 @@ const LandingPage = () => {
               height: 'auto',
               display: 'block',
               borderRadius: '16px',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(0, 184, 212, 0.2)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(255, 0, 0, 0.2)',
               border: '1px solid rgba(255, 255, 255, 0.1)'
             }}
           />
@@ -302,34 +302,34 @@ const LandingPage = () => {
             backdropFilter: 'blur(16px)',
             padding: '40px',
             borderRadius: '20px',
-            border: '2px solid rgba(0, 184, 212, 0.3)',
-            boxShadow: '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)',
+            border: '2px solid rgba(255, 0, 0, 0.3)',
+            boxShadow: '0 0 40px rgba(255, 0, 0, 0.2), inset 0 0 60px rgba(255, 0, 0, 0.03)',
             transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.6)';
-            e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)';
+            e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.6)';
+            e.currentTarget.style.boxShadow = '0 0 60px rgba(255, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)';
             e.currentTarget.style.transform = 'translateY(-4px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
-            e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)';
+            e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.3)';
+            e.currentTarget.style.boxShadow = '0 0 40px rgba(255, 0, 0, 0.2), inset 0 0 60px rgba(255, 0, 0, 0.03)';
             e.currentTarget.style.transform = 'translateY(0)';
           }}
           >
             <div style={{
               width: '64px',
               height: '64px',
-              background: 'rgba(0, 184, 212, 0.15)',
+              background: 'rgba(255, 0, 0, 0.15)',
               borderRadius: '16px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: '24px',
-              boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)',
-              border: '1px solid rgba(0, 184, 212, 0.3)'
+              boxShadow: '0 0 30px rgba(255, 0, 0, 0.4)',
+              border: '1px solid rgba(255, 0, 0, 0.3)'
             }}>
-              <Building2 size={32} color="#00b8d4" />
+              <Building2 size={32} color="#ff0000" />
             </div>
             <h3 style={{
               fontSize: '28px',
@@ -364,7 +364,7 @@ const LandingPage = () => {
                   color: 'rgba(255,255,255,0.8)',
                   fontSize: '15px'
                 }}>
-                  <CheckCircle size={20} color="#00b8d4" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <CheckCircle size={20} color="#ff0000" style={{ flexShrink: 0, marginTop: '2px' }} />
                   <span>{item}</span>
                 </li>
               ))}
@@ -377,34 +377,34 @@ const LandingPage = () => {
             backdropFilter: 'blur(16px)',
             padding: '40px',
             borderRadius: '20px',
-            border: '2px solid rgba(0, 184, 212, 0.3)',
-            boxShadow: '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)',
+            border: '2px solid rgba(255, 0, 0, 0.3)',
+            boxShadow: '0 0 40px rgba(255, 0, 0, 0.2), inset 0 0 60px rgba(255, 0, 0, 0.03)',
             transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.6)';
-            e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)';
+            e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.6)';
+            e.currentTarget.style.boxShadow = '0 0 60px rgba(255, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)';
             e.currentTarget.style.transform = 'translateY(-4px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
-            e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.2), inset 0 0 60px rgba(0, 184, 212, 0.03)';
+            e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.3)';
+            e.currentTarget.style.boxShadow = '0 0 40px rgba(255, 0, 0, 0.2), inset 0 0 60px rgba(255, 0, 0, 0.03)';
             e.currentTarget.style.transform = 'translateY(0)';
           }}
           >
             <div style={{
               width: '64px',
               height: '64px',
-              background: 'rgba(0, 184, 212, 0.15)',
+              background: 'rgba(255, 0, 0, 0.15)',
               borderRadius: '16px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: '24px',
-              boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)',
-              border: '1px solid rgba(0, 184, 212, 0.3)'
+              boxShadow: '0 0 30px rgba(255, 0, 0, 0.4)',
+              border: '1px solid rgba(255, 0, 0, 0.3)'
             }}>
-              <Users size={32} color="#00b8d4" />
+              <Users size={32} color="#ff0000" />
             </div>
             <h3 style={{
               fontSize: '28px',
@@ -439,7 +439,7 @@ const LandingPage = () => {
                   color: 'rgba(255,255,255,0.8)',
                   fontSize: '15px'
                 }}>
-                  <CheckCircle size={20} color="#00b8d4" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <CheckCircle size={20} color="#ff0000" style={{ flexShrink: 0, marginTop: '2px' }} />
                   <span>{item}</span>
                 </li>
               ))}
@@ -527,34 +527,34 @@ const LandingPage = () => {
                 backdropFilter: 'blur(16px)',
                 padding: '32px',
                 borderRadius: '16px',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.1), inset 0 0 40px rgba(0, 184, 212, 0.02)',
+                border: '1px solid rgba(255, 0, 0, 0.2)',
+                boxShadow: '0 0 30px rgba(255, 0, 0, 0.1), inset 0 0 40px rgba(255, 0, 0, 0.02)',
                 transition: 'all 0.3s',
                 cursor: 'pointer'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.5)';
-                e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 184, 212, 0.3), inset 0 0 40px rgba(0, 184, 212, 0.05)';
+                e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.5)';
+                e.currentTarget.style.boxShadow = '0 0 50px rgba(255, 0, 0, 0.3), inset 0 0 40px rgba(255, 0, 0, 0.05)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.2)';
-                e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 184, 212, 0.1), inset 0 0 40px rgba(0, 184, 212, 0.02)';
+                e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.2)';
+                e.currentTarget.style.boxShadow = '0 0 30px rgba(255, 0, 0, 0.1), inset 0 0 40px rgba(255, 0, 0, 0.02)';
               }}
             >
               <div style={{
                 width: '56px',
                 height: '56px',
-                background: 'rgba(0, 184, 212, 0.15)',
+                background: 'rgba(255, 0, 0, 0.15)',
                 borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '20px',
-                color: '#00b8d4',
-                boxShadow: '0 0 20px rgba(0, 184, 212, 0.4)',
-                border: '1px solid rgba(0, 184, 212, 0.3)'
+                color: '#ff0000',
+                boxShadow: '0 0 20px rgba(255, 0, 0, 0.4)',
+                border: '1px solid rgba(255, 0, 0, 0.3)'
               }}>
                 {feature.icon}
               </div>
@@ -616,16 +616,16 @@ const LandingPage = () => {
           backdropFilter: 'blur(16px)',
           borderRadius: '24px',
           padding: '48px',
-          border: '3px solid #00b8d4',
-          boxShadow: '0 0 80px rgba(0, 184, 212, 0.6), inset 0 0 80px rgba(0, 184, 212, 0.05)',
+          border: '3px solid #ff0000',
+          boxShadow: '0 0 80px rgba(255, 0, 0, 0.6), inset 0 0 80px rgba(255, 0, 0, 0.05)',
           position: 'relative',
           transition: 'all 0.3s'
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = '0 0 100px rgba(0, 184, 212, 0.8), inset 0 0 80px rgba(0, 184, 212, 0.08)';
+          e.currentTarget.style.boxShadow = '0 0 100px rgba(255, 0, 0, 0.8), inset 0 0 80px rgba(255, 0, 0, 0.08)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = '0 0 80px rgba(0, 184, 212, 0.6), inset 0 0 80px rgba(0, 184, 212, 0.05)';
+          e.currentTarget.style.boxShadow = '0 0 80px rgba(255, 0, 0, 0.6), inset 0 0 80px rgba(255, 0, 0, 0.05)';
         }}
         >
           <div style={{
@@ -634,14 +634,14 @@ const LandingPage = () => {
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '8px 24px',
-            background: '#00b8d4',
+            background: '#ff0000',
             borderRadius: '20px',
             color: '#000',
             fontSize: '13px',
             fontWeight: '700',
             textTransform: 'uppercase',
             letterSpacing: '1px',
-            boxShadow: '0 0 30px rgba(0, 184, 212, 0.8)'
+            boxShadow: '0 0 30px rgba(255, 0, 0, 0.8)'
           }}>
             Professional
           </div>
@@ -652,7 +652,7 @@ const LandingPage = () => {
               fontWeight: '800', 
               color: '#fff', 
               marginBottom: '8px',
-              textShadow: '0 0 40px rgba(0, 184, 212, 0.4)'
+              textShadow: '0 0 40px rgba(255, 0, 0, 0.4)'
             }}>
               $39.99
               <span style={{ fontSize: '24px', fontWeight: '600', color: 'rgba(255,255,255,0.5)' }}>/month</span>
@@ -682,7 +682,7 @@ const LandingPage = () => {
                 fontSize: '15px',
                 fontWeight: '500'
               }}>
-                <CheckCircle size={20} color="#00b8d4" style={{ flexShrink: 0 }} />
+                <CheckCircle size={20} color="#ff0000" style={{ flexShrink: 0 }} />
                 <span>{feature}</span>
               </li>
             ))}
@@ -693,23 +693,23 @@ const LandingPage = () => {
             style={{
               width: '100%',
               padding: '18px',
-              background: '#00b8d4',
+              background: '#ff0000',
               border: 'none',
               borderRadius: '12px',
               color: '#000',
               fontSize: '18px',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 0 40px rgba(0, 184, 212, 0.6), 0 6px 20px rgba(0, 184, 212, 0.3)',
+              boxShadow: '0 0 40px rgba(255, 0, 0, 0.6), 0 6px 20px rgba(255, 0, 0, 0.3)',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 184, 212, 0.8), 0 10px 30px rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.boxShadow = '0 0 60px rgba(255, 0, 0, 0.8), 0 10px 30px rgba(255, 0, 0, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 184, 212, 0.6), 0 6px 20px rgba(0, 184, 212, 0.3)';
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(255, 0, 0, 0.6), 0 6px 20px rgba(255, 0, 0, 0.3)';
             }}
           >
             Get Started Now
@@ -772,7 +772,7 @@ const LandingPage = () => {
                 padding: '0',
                 background: 'transparent',
                 border: 'none',
-                color: '#00b8d4',
+                color: '#ff0000',
                 fontSize: '15px',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -852,8 +852,8 @@ const LandingPage = () => {
                   width: '48px',
                   height: '48px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 100%)',
-                  border: '2px solid rgba(0, 184, 212, 0.3)',
+                  background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.3) 0%, rgba(255, 0, 0, 0.1) 100%)',
+                  border: '2px solid rgba(255, 0, 0, 0.3)',
                   marginBottom: '20px'
                 }} />
 
@@ -896,12 +896,12 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section style={{
         padding: '100px 60px',
-        background: 'rgba(0, 184, 212, 0.05)',
+        background: 'rgba(255, 0, 0, 0.05)',
         textAlign: 'center',
         position: 'relative',
         zIndex: 1,
-        borderTop: '1px solid rgba(0, 184, 212, 0.2)',
-        borderBottom: '1px solid rgba(0, 184, 212, 0.2)'
+        borderTop: '1px solid rgba(255, 0, 0, 0.2)',
+        borderBottom: '1px solid rgba(255, 0, 0, 0.2)'
       }}>
         <h2 style={{
           fontSize: '52px',
@@ -932,14 +932,14 @@ const LandingPage = () => {
           onClick={() => navigate('/signup')}
           style={{
             padding: '20px 48px',
-            background: '#00b8d4',
+            background: '#ff0000',
             border: 'none',
             borderRadius: '12px',
             color: '#000',
             fontSize: '20px',
             fontWeight: '700',
             cursor: 'pointer',
-            boxShadow: '0 0 50px rgba(0, 184, 212, 0.6), 0 10px 40px rgba(0, 184, 212, 0.3)',
+            boxShadow: '0 0 50px rgba(255, 0, 0, 0.6), 0 10px 40px rgba(255, 0, 0, 0.3)',
             transition: 'all 0.3s',
             display: 'inline-flex',
             alignItems: 'center',
@@ -947,11 +947,11 @@ const LandingPage = () => {
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-4px)';
-            e.currentTarget.style.boxShadow = '0 0 70px rgba(0, 184, 212, 0.8), 0 15px 50px rgba(0, 184, 212, 0.4)';
+            e.currentTarget.style.boxShadow = '0 0 70px rgba(255, 0, 0, 0.8), 0 15px 50px rgba(255, 0, 0, 0.4)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 184, 212, 0.6), 0 10px 40px rgba(0, 184, 212, 0.3)';
+            e.currentTarget.style.boxShadow = '0 0 50px rgba(255, 0, 0, 0.6), 0 10px 40px rgba(255, 0, 0, 0.3)';
           }}
         >
           Start Free Trial
@@ -966,7 +966,7 @@ const LandingPage = () => {
         color: 'rgba(255,255,255,0.5)',
         position: 'relative',
         zIndex: 1,
-        borderTop: '1px solid rgba(0, 184, 212, 0.1)'
+        borderTop: '1px solid rgba(255, 0, 0, 0.1)'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -1017,8 +1017,8 @@ const LandingPage = () => {
                       transition: 'all 0.2s'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#00b8d4';
-                      e.currentTarget.style.textShadow = '0 0 10px rgba(0, 184, 212, 0.6)';
+                      e.currentTarget.style.color = '#ff0000';
+                      e.currentTarget.style.textShadow = '0 0 10px rgba(255, 0, 0, 0.6)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
@@ -1055,8 +1055,8 @@ const LandingPage = () => {
                       transition: 'all 0.2s'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#00b8d4';
-                      e.currentTarget.style.textShadow = '0 0 10px rgba(0, 184, 212, 0.6)';
+                      e.currentTarget.style.color = '#ff0000';
+                      e.currentTarget.style.textShadow = '0 0 10px rgba(255, 0, 0, 0.6)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
@@ -1093,8 +1093,8 @@ const LandingPage = () => {
                       transition: 'all 0.2s'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#00b8d4';
-                      e.currentTarget.style.textShadow = '0 0 10px rgba(0, 184, 212, 0.6)';
+                      e.currentTarget.style.color = '#ff0000';
+                      e.currentTarget.style.textShadow = '0 0 10px rgba(255, 0, 0, 0.6)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
@@ -1110,7 +1110,7 @@ const LandingPage = () => {
         </div>
 
         <div style={{
-          borderTop: '1px solid rgba(0, 184, 212, 0.1)',
+          borderTop: '1px solid rgba(255, 0, 0, 0.1)',
           paddingTop: '32px',
           textAlign: 'center',
           fontSize: '14px',

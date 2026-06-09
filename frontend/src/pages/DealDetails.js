@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthContext, API } from '../App';
 import { toast } from 'sonner';
@@ -8,13 +8,15 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { 
   ArrowLeft, MapPin, Building2, DollarSign, 
   Trash2, Users, FileText, Upload, Download, Eye,
-  Phone, Mail, Plus, ChevronLeft, ChevronRight, X, Share2, Copy, Check
+  Phone, Mail, Plus, ChevronLeft, ChevronRight, X, Share2, Copy, Check,
+  Calendar
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { colors, shadows, gradients, borderRadius, spacing } from '../styles/designSystem';
+import CriticalDatesTimeline from '../components/CriticalDatesTimeline';
 
-const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Other'];
+const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Hotels', 'Medical', 'Gas Stations', 'Other'];
 
 const fieldStyle = {
   background: 'rgba(255,255,255,0.04)',
@@ -38,6 +40,7 @@ const selectStyle = {
 const DealDetails = () => {
   const { dealId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useContext(AuthContext);
   
   const [deal, setDeal] = useState(null);
@@ -46,12 +49,16 @@ const DealDetails = () => {
   const [linkedContacts, setLinkedContacts] = useState([]);
   const [allContacts, setAllContacts] = useState([]);
   const [showLinkContact, setShowLinkContact] = useState(false);
+  const [showNewContactInline, setShowNewContactInline] = useState(false);
+  const [newInlineContact, setNewInlineContact] = useState({ name: '', email: '', phone: '', contact_type: 'Buyer' });
+  const [savingNewContact, setSavingNewContact] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [pipelines, setPipelines] = useState([]);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [previewDoc, setPreviewDoc] = useState(null);
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'details');
   
   const initialDealRef = useRef(null);
 
@@ -82,12 +89,10 @@ const DealDetails = () => {
         }));
         setLinkedContacts(contacts);
       } else {
-        toast.error('Failed to load deal');
         navigate('/pipeline');
       }
     } catch (error) {
       console.error('Error fetching deal:', error);
-      toast.error('Failed to load deal');
     } finally {
       setLoading(false);
     }
@@ -143,12 +148,9 @@ const DealDetails = () => {
 
       if (response.ok) {
         initialDealRef.current = { ...initialDealRef.current, [field]: value };
-      } else {
-        toast.error('Failed to save change');
       }
     } catch (error) {
       console.error('Error updating field:', error);
-      toast.error('Failed to save change');
     }
   };
 
@@ -192,10 +194,10 @@ const DealDetails = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        const newImageUrl = data.image_url;
-        const updatedImages = deal.image_urls ? [...deal.image_urls, newImageUrl] : [newImageUrl];
-        setDeal(prev => ({ ...prev, image_urls: updatedImages, image_url: prev.image_url || newImageUrl }));
+        const updatedImages = data.image_urls;
+        setDeal(prev => ({ ...prev, image_urls: updatedImages, image_url: updatedImages[0] || prev.image_url }));
         initialDealRef.current = { ...initialDealRef.current, image_urls: updatedImages };
+        setCurrentImageIndex(updatedImages.length - 1);
         toast.success('Image uploaded');
       } else {
         toast.error('Failed to upload image');
@@ -205,6 +207,64 @@ const DealDetails = () => {
     } finally {
       setUploadingImage(false);
       e.target.value = '';
+    }
+  };
+
+  const handleDeleteImage = async (index, e) => {
+    if (e) e.stopPropagation();
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${dealId}/images/${index}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const updatedImages = data.image_urls;
+        const newIndex = Math.max(0, Math.min(currentImageIndex, updatedImages.length - 1));
+        setCurrentImageIndex(newIndex);
+        setDeal(prev => ({ ...prev, image_urls: updatedImages, image_url: updatedImages[0] || null }));
+        initialDealRef.current = { ...initialDealRef.current, image_urls: updatedImages };
+        toast.success('Image removed');
+      } else {
+        toast.error('Failed to remove image');
+      }
+    } catch (error) {
+      toast.error('Failed to remove image');
+    }
+  };
+
+  const handleMoveImage = async (fromIdx, toIdx) => {
+    if (toIdx < 0 || toIdx >= (deal.image_urls || []).length) return;
+    const originalImages = [...(deal.image_urls || [])];
+    const newImages = [...originalImages];
+    const [moved] = newImages.splice(fromIdx, 1);
+    newImages.splice(toIdx, 0, moved);
+    // Optimistic update
+    setCurrentImageIndex(toIdx);
+    setDeal(prev => ({ ...prev, image_urls: newImages, image_url: newImages[0] || null }));
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${dealId}/images/reorder`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_urls: newImages })
+      });
+      if (response.ok) {
+        initialDealRef.current = { ...initialDealRef.current, image_urls: newImages };
+      } else {
+        // Revert on failure
+        setCurrentImageIndex(fromIdx);
+        setDeal(prev => ({ ...prev, image_urls: originalImages, image_url: originalImages[0] || null }));
+        toast.error('Failed to reorder images');
+      }
+    } catch (error) {
+      // Revert on failure
+      setCurrentImageIndex(fromIdx);
+      setDeal(prev => ({ ...prev, image_urls: originalImages, image_url: originalImages[0] || null }));
+      toast.error('Failed to reorder images');
     }
   };
 
@@ -223,7 +283,7 @@ const DealDetails = () => {
       if (response.ok) {
         setDeal(prev => ({ ...prev, pipeline_id: pipelineId, pipeline_stage_id: firstStage?.id }));
         initialDealRef.current = { ...initialDealRef.current, pipeline_id: pipelineId, pipeline_stage_id: firstStage?.id };
-        toast.success('Pipeline updated');
+        
       } else { toast.error('Failed to update pipeline'); }
     } catch (error) { toast.error('Failed to update pipeline'); }
   };
@@ -240,7 +300,7 @@ const DealDetails = () => {
       if (response.ok) {
         setDeal(prev => ({ ...prev, pipeline_stage_id: stageId }));
         initialDealRef.current = { ...initialDealRef.current, pipeline_stage_id: stageId };
-        toast.success('Stage updated');
+        
       } else { toast.error('Failed to update stage'); }
     } catch (error) { toast.error('Failed to update stage'); }
   };
@@ -260,6 +320,25 @@ const DealDetails = () => {
     } catch (error) { toast.error('Failed to delete deal'); }
   };
 
+  // ---- VISIBILITY TOGGLE ----
+  const handleToggleVisibility = async () => {
+    const isCurrentlyShared = !!deal.team_id;
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/deals/${dealId}/visibility`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shared_with_team: !isCurrentlyShared })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setDeal(prev => ({ ...prev, team_id: !isCurrentlyShared ? (data.deal?.team_id || 'shared') : null }));
+        toast.success(!isCurrentlyShared ? 'Deal shared with team' : 'Deal set to private');
+      } else { toast.error('Failed to update visibility'); }
+    } catch (error) { toast.error('Failed to update visibility'); }
+  };
+
   // ---- CONTACTS ----
   const handleLinkContact = async (contactId, role) => {
     try {
@@ -269,7 +348,7 @@ const DealDetails = () => {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (response.ok) { toast.success('Contact linked'); fetchDeal(); setShowLinkContact(false); }
+      if (response.ok) { fetchDeal(); setShowLinkContact(false); }
       else { toast.error('Failed to link contact'); }
     } catch (error) { toast.error('Failed to link contact'); }
   };
@@ -282,9 +361,37 @@ const DealDetails = () => {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (response.ok) { toast.success('Contact unlinked'); fetchDeal(); }
+      if (response.ok) { fetchDeal(); }
       else { toast.error('Failed to unlink contact'); }
     } catch (error) { toast.error('Failed to unlink contact'); }
+  };
+
+  const handleCreateAndLinkNewContact = async () => {
+    if (!newInlineContact.name.trim()) return;
+    setSavingNewContact(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const createRes = await fetch(`${API}/contacts`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(newInlineContact)
+      });
+      if (!createRes.ok) { toast.error('Failed to create contact'); return; }
+      const created = await createRes.json();
+      const contactId = created.contact?.id;
+      if (!contactId) { toast.error('Failed to create contact'); return; }
+      await fetch(`${API}/deals/${dealId}/contacts/${contactId}`, {
+        method: 'POST', headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchDeal();
+      fetchContacts();
+      setShowNewContactInline(false);
+      setShowLinkContact(false);
+      setNewInlineContact({ name: '', email: '', phone: '', contact_type: 'Buyer' });
+      toast.success('Contact created and linked');
+    } catch (error) { toast.error('Failed to create contact'); }
+    finally { setSavingNewContact(false); }
   };
 
   // ---- DOCUMENT UPLOAD ----
@@ -302,10 +409,31 @@ const DealDetails = () => {
         headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
-      if (response.ok) { toast.success('Document uploaded'); fetchDeal(); }
+      if (response.ok) { fetchDeal(); }
       else { toast.error('Failed to upload document'); }
     } catch (error) { toast.error('Failed to upload document'); }
     finally { setUploading(false); }
+  };
+
+  const handleDeleteDocument = async (docId, e) => {
+    e.stopPropagation();
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const response = await fetch(`${API}/documents/${docId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        toast.success('Document deleted');
+        setDocuments(prev => prev.filter(d => d.id !== docId));
+      } else {
+        const err = await response.json();
+        toast.error(err.detail || 'Failed to delete document');
+      }
+    } catch {
+      toast.error('Failed to delete document');
+    }
   };
 
   const formatCurrency = (value) => {
@@ -390,7 +518,7 @@ const DealDetails = () => {
                 width: '100%', outline: 'none', padding: '4px 0',
                 transition: 'border-color 0.2s', cursor: isOwner ? 'text' : 'default'
               }}
-              onFocus={(e) => { if (isOwner) e.target.style.borderBottomColor = '#00b8d4'; }}
+              onFocus={(e) => { if (isOwner) e.target.style.borderBottomColor = '#ff0000'; }}
               onBlurCapture={(e) => { e.target.style.borderBottomColor = 'rgba(255,255,255,0.08)'; }}
               placeholder="Deal Title"
             />
@@ -409,7 +537,6 @@ const DealDetails = () => {
               const shareUrl = `${window.location.origin}/share/${dealId}`;
               navigator.clipboard.writeText(shareUrl);
               setShareCopied(true);
-              toast.success('Share link copied to clipboard');
               setTimeout(() => setShareCopied(false), 2000);
             }}
             variant="outline"
@@ -432,6 +559,46 @@ const DealDetails = () => {
         </div>
       </div>
 
+      {/* Tab Bar */}
+      {(() => {
+        const stageName = (currentStage?.name || '').toLowerCase();
+        const showTimeline = stageName.includes('under contract') || stageName.includes('contract') || stageName.includes('closing') || activeTab === 'timeline';
+        const tabs = [
+          { id: 'details', label: 'Property Details' },
+          ...(showTimeline ? [{ id: 'timeline', label: 'Closing', icon: Calendar }] : []),
+        ];
+        return (
+          <div data-testid="deal-tabs" style={{
+            display: 'flex', gap: '24px', marginBottom: spacing.lg,
+            borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0',
+          }}>
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                data-testid={`tab-${tab.id}`}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  padding: '8px 0', border: 'none', background: 'transparent',
+                  color: activeTab === tab.id ? '#fff' : 'rgba(255,255,255,0.35)',
+                  fontWeight: activeTab === tab.id ? '600' : '400',
+                  fontSize: '14px', cursor: 'pointer', transition: 'color 0.15s',
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  borderBottom: activeTab === tab.id ? '2px solid #ff0000' : '2px solid transparent',
+                  marginBottom: '-1px',
+                }}
+              >
+                {tab.icon && <tab.icon size={14} />}
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        );
+      })()}
+
+      {/* Tab Content */}
+      {activeTab === 'timeline' ? (
+        <CriticalDatesTimeline dealId={dealId} isOwner={isOwner} />
+      ) : (
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: spacing.xl }}>
         {/* Left Column */}
         <div>
@@ -459,8 +626,8 @@ const DealDetails = () => {
                     size="sm"
                     disabled={uploadingImage}
                     style={{ 
-                      background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(59,130,246,0.2))',
-                      border: '1px solid rgba(0,184,212,0.3)', color: '#00d4ff', cursor: 'pointer'
+                      background: 'linear-gradient(135deg, rgba(212,18,18,0.2), rgba(59,130,246,0.2))',
+                      border: '1px solid rgba(212,18,18,0.3)', color: '#ff0000', cursor: 'pointer'
                     }}
                   >
                     <Upload size={14} style={{ marginRight: '6px' }} />
@@ -473,16 +640,39 @@ const DealDetails = () => {
             <div style={{ position: 'relative' }}>
               <div style={{
                 width: '100%', height: '300px', borderRadius: borderRadius.md, overflow: 'hidden',
-                background: colors.surfaceElevated, display: 'flex', alignItems: 'center', justifyContent: 'center'
+                background: colors.surfaceElevated, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative'
               }}>
                 {(deal.image_urls && deal.image_urls.length > 0) ? (
-                  <img 
-                    data-testid="deal-carousel-image"
-                    src={deal.image_urls[currentImageIndex]} 
-                    alt={deal.title}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={(e) => e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23333" width="100" height="100"/><text fill="%23666" font-size="12" x="50%" y="50%" text-anchor="middle" dy=".3em">No Image</text></svg>'}
-                  />
+                  <>
+                    <img 
+                      data-testid="deal-carousel-image"
+                      src={deal.image_urls[currentImageIndex]} 
+                      alt={deal.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23333" width="100" height="100"/><text fill="%23666" font-size="12" x="50%" y="50%" text-anchor="middle" dy=".3em">No Image</text></svg>'}
+                    />
+                    {/* Delete current image button */}
+                    {isOwner && (
+                      <button
+                        data-testid={`delete-image-${currentImageIndex}`}
+                        onClick={(e) => handleDeleteImage(currentImageIndex, e)}
+                        title="Remove this image"
+                        style={{
+                          position: 'absolute', top: '10px', right: '10px',
+                          width: '34px', height: '34px', borderRadius: '8px',
+                          background: 'rgba(239,68,68,0.85)', border: '1px solid rgba(239,68,68,0.5)',
+                          color: '#fff', cursor: 'pointer', display: 'flex',
+                          alignItems: 'center', justifyContent: 'center', zIndex: 10,
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,1)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.85)'}
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <div style={{ textAlign: 'center', color: colors.textTertiary }}>
                     <Building2 size={64} style={{ marginBottom: '12px', opacity: 0.5 }} />
@@ -503,7 +693,7 @@ const DealDetails = () => {
                       border: 'none', color: 'white', cursor: 'pointer', display: 'flex',
                       alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.8)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212,18,18,0.8)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.7)'}
                   >
                     <ChevronLeft size={24} />
@@ -517,7 +707,7 @@ const DealDetails = () => {
                       border: 'none', color: 'white', cursor: 'pointer', display: 'flex',
                       alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,184,212,0.8)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212,18,18,0.8)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.7)'}
                   >
                     <ChevronRight size={24} />
@@ -533,22 +723,73 @@ const DealDetails = () => {
               )}
             </div>
 
-            {deal.image_urls && deal.image_urls.length > 1 && (
-              <div style={{ display: 'flex', gap: '8px', marginTop: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
-                {deal.image_urls.map((url, idx) => (
-                  <div 
-                    key={idx} 
-                    data-testid={`carousel-thumbnail-${idx}`}
-                    onClick={() => setCurrentImageIndex(idx)}
-                    style={{
-                      width: '70px', height: '70px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0,
-                      border: idx === currentImageIndex ? '3px solid #00d4ff' : '3px solid transparent',
-                      cursor: 'pointer', opacity: idx === currentImageIndex ? 1 : 0.6, transition: 'all 0.2s'
-                    }}
-                  >
-                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                ))}
+            {deal.image_urls && deal.image_urls.length > 0 && (
+              <div style={{ marginTop: '12px' }}>
+                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+                  {deal.image_urls.map((url, idx) => (
+                    <div 
+                      key={url + idx}
+                      style={{ position: 'relative', flexShrink: 0 }}
+                    >
+                      <div
+                        data-testid={`carousel-thumbnail-${idx}`}
+                        onClick={() => setCurrentImageIndex(idx)}
+                        style={{
+                          width: '70px', height: '70px', borderRadius: '8px', overflow: 'hidden',
+                          border: idx === currentImageIndex ? '3px solid #ff0000' : '3px solid transparent',
+                          cursor: 'pointer', opacity: idx === currentImageIndex ? 1 : 0.6, transition: 'all 0.2s'
+                        }}
+                      >
+                        <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                      {isOwner && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', position: 'absolute', top: '2px', right: '2px' }}>
+                          <button
+                            data-testid={`thumb-delete-${idx}`}
+                            onClick={(e) => handleDeleteImage(idx, e)}
+                            title="Remove"
+                            style={{
+                              width: '18px', height: '18px', borderRadius: '4px',
+                              background: 'rgba(239,68,68,0.9)', border: 'none',
+                              color: '#fff', cursor: 'pointer', display: 'flex',
+                              alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '700',
+                            }}
+                          >×</button>
+                        </div>
+                      )}
+                      {isOwner && deal.image_urls.length > 1 && (
+                        <div style={{ display: 'flex', gap: '2px', justifyContent: 'center', marginTop: '3px' }}>
+                          <button
+                            data-testid={`thumb-move-left-${idx}`}
+                            onClick={() => handleMoveImage(idx, idx - 1)}
+                            disabled={idx === 0}
+                            title="Move left"
+                            style={{
+                              width: '28px', height: '16px', borderRadius: '3px',
+                              background: idx === 0 ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.15)',
+                              border: 'none', color: idx === 0 ? 'rgba(255,255,255,0.2)' : '#fff',
+                              cursor: idx === 0 ? 'default' : 'pointer', fontSize: '10px',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}
+                          >←</button>
+                          <button
+                            data-testid={`thumb-move-right-${idx}`}
+                            onClick={() => handleMoveImage(idx, idx + 1)}
+                            disabled={idx === deal.image_urls.length - 1}
+                            title="Move right"
+                            style={{
+                              width: '28px', height: '16px', borderRadius: '3px',
+                              background: idx === deal.image_urls.length - 1 ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.15)',
+                              border: 'none', color: idx === deal.image_urls.length - 1 ? 'rgba(255,255,255,0.2)' : '#fff',
+                              cursor: idx === deal.image_urls.length - 1 ? 'default' : 'pointer', fontSize: '10px',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}
+                          >→</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -588,12 +829,56 @@ const DealDetails = () => {
               </div>
             </div>
             {currentStage && (
-              <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(0,184,212,0.1)', borderRadius: borderRadius.sm, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: currentStage.color || '#00d4ff' }} />
+              <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(212,18,18,0.1)', borderRadius: borderRadius.sm, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: currentStage.color || '#ff0000' }} />
                 <span style={{ color: colors.textPrimary, fontWeight: '500' }}>Current: {currentStage.name}</span>
               </div>
             )}
           </div>
+
+          {/* Visibility Toggle */}
+          {isOwner && (
+            <div data-testid="deal-visibility-section" style={{
+              background: colors.surfaceCard, borderRadius: borderRadius.md,
+              padding: spacing.lg, marginBottom: spacing.lg, boxShadow: shadows.cardElevation
+            }}>
+              <h3 style={{ color: colors.textPrimary, fontSize: '16px', fontWeight: '600', marginBottom: '12px' }}>Visibility</h3>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {deal.team_id ? (
+                    <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Users size={18} style={{ color: '#10b981' }} />
+                    </div>
+                  ) : (
+                    <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Eye size={18} style={{ color: colors.textTertiary }} />
+                    </div>
+                  )}
+                  <div>
+                    <p style={{ color: colors.textPrimary, fontSize: '14px', fontWeight: 600 }}>
+                      {deal.team_id ? 'Shared with Team' : 'Private'}
+                    </p>
+                    <p style={{ color: colors.textTertiary, fontSize: '12px' }}>
+                      {deal.team_id ? 'Team members can see this deal' : 'Only visible to you'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  data-testid="deal-visibility-toggle"
+                  onClick={handleToggleVisibility}
+                  style={{
+                    padding: '8px 18px', borderRadius: '8px', cursor: 'pointer',
+                    fontSize: '13px', fontWeight: 600, transition: 'all 0.15s',
+                    background: deal.team_id ? 'rgba(255,255,255,0.05)' : 'rgba(16,185,129,0.1)',
+                    border: `1px solid ${deal.team_id ? 'rgba(255,255,255,0.1)' : 'rgba(16,185,129,0.3)'}`,
+                    color: deal.team_id ? colors.textSecondary : '#10b981',
+                  }}
+                >
+                  {deal.team_id ? 'Make Private' : 'Share with Team'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Asking Price */}
           <div data-testid="deal-asking-price-section" style={{
@@ -724,8 +1009,8 @@ const DealDetails = () => {
                 <Label style={{ color: colors.textTertiary, fontSize: '12px' }}>Land SQFT</Label>
                 <div style={{
                   ...fieldStyle, marginTop: '6px',
-                  background: 'rgba(0,184,212,0.05)', 
-                  color: deal.lot_size ? '#00b8d4' : colors.textTertiary,
+                  background: 'rgba(212,18,18,0.05)', 
+                  color: deal.lot_size ? '#ff0000' : colors.textTertiary,
                   fontWeight: deal.lot_size ? '600' : '400'
                 }}>
                   {deal.lot_size ? formatNumber(Math.round(parseFloat(deal.lot_size) * 43560)) + ' SF' : 'Auto-calculated from Acres'}
@@ -879,23 +1164,65 @@ const DealDetails = () => {
 
             {showLinkContact && (
               <div style={{ background: colors.surfaceElevated, borderRadius: borderRadius.sm, padding: '12px', marginBottom: '12px' }}>
-                <Label style={{ color: colors.textTertiary, fontSize: '12px', display: 'block', marginBottom: '6px' }}>Choose a contact to link</Label>
-                <select
-                  data-testid="link-contact-select"
-                  onChange={(e) => { if (e.target.value) handleLinkContact(e.target.value, ''); }}
-                  style={{ width: '100%', padding: '10px', borderRadius: '6px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, color: colors.textPrimary, fontSize: '14px', cursor: 'pointer' }}
-                >
-                  <option value="">Select a contact...</option>
-                  {allContacts
-                    .filter(c => !linkedContacts.find(lc => lc.id === c.id))
-                    .map(contact => (
-                      <option key={contact.id} value={contact.id}>{contact.name} {contact.company ? `- ${contact.company}` : ''} {contact.email ? `(${contact.email})` : ''}</option>
-                    ))}
-                </select>
-                {allContacts.filter(c => !linkedContacts.find(lc => lc.id === c.id)).length === 0 && (
-                  <p style={{ color: colors.textTertiary, fontSize: '12px', marginTop: '8px', textAlign: 'center' }}>
-                    No contacts available. Create contacts first in the Contacts tab.
-                  </p>
+                {!showNewContactInline ? (
+                  <>
+                    <Label style={{ color: colors.textTertiary, fontSize: '12px', display: 'block', marginBottom: '6px' }}>Choose a contact to link</Label>
+                    <select
+                      data-testid="link-contact-select"
+                      onChange={(e) => { if (e.target.value) handleLinkContact(e.target.value, ''); }}
+                      style={{ width: '100%', padding: '10px', borderRadius: '6px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, color: colors.textPrimary, fontSize: '14px', cursor: 'pointer' }}
+                    >
+                      <option value="">Select a contact...</option>
+                      {allContacts
+                        .filter(c => !linkedContacts.find(lc => lc.id === c.id))
+                        .map(contact => (
+                          <option key={contact.id} value={contact.id}>{contact.name} {contact.company ? `- ${contact.company}` : ''} {contact.email ? `(${contact.email})` : ''}</option>
+                        ))}
+                    </select>
+                    <button
+                      data-testid="create-new-contact-inline-btn"
+                      onClick={() => setShowNewContactInline(true)}
+                      style={{
+                        width: '100%', marginTop: '8px', padding: '10px',
+                        background: 'rgba(212,18,18,0.08)', border: '1px dashed rgba(212,18,18,0.3)',
+                        borderRadius: '6px', color: '#ff0000', fontSize: '13px', fontWeight: 600,
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                      }}
+                    >
+                      <Plus size={14} /> Create New Contact
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: '13px', color: colors.textPrimary, fontWeight: 600, marginBottom: '10px' }}>Create New Contact</div>
+                    <input data-testid="new-contact-name" placeholder="Name *" value={newInlineContact.name}
+                      onChange={(e) => setNewInlineContact(p => ({ ...p, name: e.target.value }))}
+                      style={{ width: '100%', padding: '8px 10px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, borderRadius: '6px', color: colors.textPrimary, fontSize: '13px', marginBottom: '6px' }} />
+                    <input data-testid="new-contact-email" placeholder="Email" value={newInlineContact.email}
+                      onChange={(e) => setNewInlineContact(p => ({ ...p, email: e.target.value }))}
+                      style={{ width: '100%', padding: '8px 10px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, borderRadius: '6px', color: colors.textPrimary, fontSize: '13px', marginBottom: '6px' }} />
+                    <input data-testid="new-contact-phone" placeholder="Phone" value={newInlineContact.phone}
+                      onChange={(e) => setNewInlineContact(p => ({ ...p, phone: e.target.value }))}
+                      style={{ width: '100%', padding: '8px 10px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, borderRadius: '6px', color: colors.textPrimary, fontSize: '13px', marginBottom: '6px' }} />
+                    <select data-testid="new-contact-type" value={newInlineContact.contact_type}
+                      onChange={(e) => setNewInlineContact(p => ({ ...p, contact_type: e.target.value }))}
+                      style={{ width: '100%', padding: '8px 10px', background: colors.surfaceCard, border: `1px solid ${colors.border}`, borderRadius: '6px', color: colors.textPrimary, fontSize: '13px', marginBottom: '8px', cursor: 'pointer' }}>
+                      <option value="Buyer">Buyer</option><option value="Seller">Seller</option>
+                      <option value="Broker">Broker</option><option value="Landlord">Landlord</option>
+                      <option value="Tenant">Tenant</option><option value="Other">Other</option>
+                    </select>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <Button data-testid="cancel-new-contact" onClick={() => { setShowNewContactInline(false); setNewInlineContact({ name: '', email: '', phone: '', contact_type: 'Buyer' }); }}
+                        variant="outline" size="sm" style={{ flex: 1, borderColor: colors.border, color: colors.textSecondary }}>
+                        Back
+                      </Button>
+                      <Button data-testid="save-new-contact" onClick={handleCreateAndLinkNewContact}
+                        disabled={!newInlineContact.name.trim() || savingNewContact}
+                        size="sm" style={{ flex: 1, background: colors.primary, border: 'none', opacity: (!newInlineContact.name.trim() || savingNewContact) ? 0.5 : 1 }}>
+                        {savingNewContact ? 'Saving...' : 'Create & Link'}
+                      </Button>
+                    </div>
+                  </>
                 )}
               </div>
             )}
@@ -945,7 +1272,7 @@ const DealDetails = () => {
             {isOwner && (
               <div
                 data-testid="document-drop-zone"
-                onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = colors.primary; e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)'; }}
+                onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = colors.primary; e.currentTarget.style.background = 'rgba(255, 0, 0, 0.05)'; }}
                 onDragLeave={(e) => { e.currentTarget.style.borderColor = colors.border; e.currentTarget.style.background = 'transparent'; }}
                 onDrop={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = colors.border; e.currentTarget.style.background = 'transparent'; if (e.dataTransfer.files.length > 0) handleFileUpload({ target: { files: [e.dataTransfer.files[0]] } }); }}
                 style={{
@@ -986,7 +1313,7 @@ const DealDetails = () => {
                       display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer',
                       color: colors.textPrimary, transition: 'all 0.2s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 0, 0, 0.1)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = colors.surfaceElevated}
                   >
                     <FileText size={20} style={{ color: colors.primary }} />
@@ -994,6 +1321,20 @@ const DealDetails = () => {
                       <div style={{ fontWeight: '500', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc.file_name}</div>
                       <div style={{ color: colors.textTertiary, fontSize: '12px' }}>{doc.file_type?.toUpperCase()}</div>
                     </div>
+                    {isOwner && (
+                      <button
+                        data-testid={`delete-doc-${doc.id}`}
+                        onClick={(e) => handleDeleteDocument(doc.id, e)}
+                        title="Delete document"
+                        style={{
+                          padding: '6px', borderRadius: '6px', background: 'rgba(239,68,68,0.1)',
+                          border: '1px solid rgba(239,68,68,0.2)', color: '#ef4444', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', flexShrink: 0
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                     <Eye size={16} style={{ color: colors.textTertiary, flexShrink: 0 }} />
                   </div>
                 ))}
@@ -1042,6 +1383,7 @@ const DealDetails = () => {
           )}
         </div>
       </div>
+      )}
 
       {/* Document Preview Modal */}
       {previewDoc && (
@@ -1083,8 +1425,8 @@ const DealDetails = () => {
                   rel="noopener noreferrer"
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px',
-                    background: 'rgba(0,184,212,0.15)', border: '1px solid rgba(0,184,212,0.3)',
-                    borderRadius: '8px', color: '#00d4ff', textDecoration: 'none',
+                    background: 'rgba(212,18,18,0.15)', border: '1px solid rgba(212,18,18,0.3)',
+                    borderRadius: '8px', color: '#ff0000', textDecoration: 'none',
                     fontSize: '13px', fontWeight: '500', cursor: 'pointer'
                   }}
                 >

@@ -16,7 +16,7 @@ const MapTopBar = ({
   const getModeConfig = () => {
     switch (mapMode) {
       case 'prospecting':
-        return { label: 'Prospecting', color: '#00b8d4', description: 'Full research tools' };
+        return { label: 'Prospecting', color: '#ff0000', description: 'Full research tools' };
       case 'portfolio':
         return { label: 'Portfolio', color: '#00d4aa', description: 'Your listings' };
       case 'discovery':
@@ -56,10 +56,10 @@ const MapTopBar = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: layersPanelOpen ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-            border: `1px solid ${layersPanelOpen ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`,
+            background: layersPanelOpen ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+            border: `1px solid ${layersPanelOpen ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`,
             borderRadius: '8px',
-            color: layersPanelOpen ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+            color: layersPanelOpen ? '#ff0000' : 'rgba(255, 255, 255, 0.7)',
             cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}

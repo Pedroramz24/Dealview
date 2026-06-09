@@ -48,7 +48,9 @@ const CalendarView = () => {
     end_time: '',
     all_day: false,
     event_type: 'task',
-    color: '#00b8d4'
+    color: '#ff0000',
+    recurrence_rule: 'none',
+    recurrence_end: ''
   });
 
   const getAuthHeaders = useCallback(async () => {
@@ -129,7 +131,9 @@ const CalendarView = () => {
           end_time: eventForm.end_time ? new Date(eventForm.end_time).toISOString() : null,
           all_day: eventForm.all_day,
           event_type: eventForm.event_type,
-          color: EVENT_COLORS[eventForm.event_type]?.primary || '#00b8d4'
+          color: EVENT_COLORS[eventForm.event_type]?.primary || '#ff0000',
+          recurrence_rule: eventForm.recurrence_rule !== 'none' ? eventForm.recurrence_rule : null,
+          recurrence_end: eventForm.recurrence_end || null
         })
       });
 
@@ -165,7 +169,9 @@ const CalendarView = () => {
           start_time: eventForm.start_time ? new Date(eventForm.start_time).toISOString() : undefined,
           end_time: eventForm.end_time ? new Date(eventForm.end_time).toISOString() : null,
           all_day: eventForm.all_day,
-          event_type: eventForm.event_type
+          event_type: eventForm.event_type,
+          recurrence_rule: eventForm.recurrence_rule !== 'none' ? eventForm.recurrence_rule : null,
+          recurrence_end: eventForm.recurrence_end || null
         })
       });
 
@@ -239,7 +245,9 @@ const CalendarView = () => {
       end_time: selectedEvent.end_time ? new Date(selectedEvent.end_time).toISOString().slice(0, 16) : '',
       all_day: selectedEvent.all_day || false,
       event_type: selectedEvent.event_type || 'task',
-      color: selectedEvent.color || '#00b8d4'
+      color: selectedEvent.color || '#ff0000',
+      recurrence_rule: selectedEvent.recurrence_rule || 'none',
+      recurrence_end: selectedEvent.recurrence_end || ''
     });
     setShowEditMode(true);
   };
@@ -253,7 +261,9 @@ const CalendarView = () => {
       end_time: '',
       all_day: false,
       event_type: 'task',
-      color: '#00b8d4'
+      color: '#ff0000',
+      recurrence_rule: 'none',
+      recurrence_end: ''
     });
   };
 
@@ -293,7 +303,7 @@ const CalendarView = () => {
             left: '0',
             right: '0',
             height: '1px',
-            background: 'linear-gradient(90deg, transparent 0%, rgba(0, 184, 212, 0.3) 50%, transparent 100%)',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(255, 0, 0, 0.3) 50%, transparent 100%)',
             pointerEvents: 'none'
           }} />
 
@@ -309,14 +319,14 @@ const CalendarView = () => {
               <div style={{
                 width: '48px',
                 height: '48px',
-                background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(0,184,212,0.1))',
+                background: 'linear-gradient(135deg, rgba(212,18,18,0.2), rgba(212,18,18,0.1))',
                 borderRadius: '14px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '1px solid rgba(0,184,212,0.3)'
+                border: '1px solid rgba(212,18,18,0.3)'
               }}>
-                <CalendarIcon className="w-6 h-6" style={{ color: '#00d4ff' }} />
+                <CalendarIcon className="w-6 h-6" style={{ color: '#ff0000' }} />
               </div>
               <div>
                 <h1 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', letterSpacing: '-0.03em', marginBottom: '2px' }}>Calendar</h1>
@@ -390,10 +400,10 @@ const CalendarView = () => {
                 onClick={() => calendarRef.current?.getApi().today()}
                 style={{
                   padding: '10px 20px',
-                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
-                  border: '1px solid rgba(0, 184, 212, 0.25)',
+                  background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.15), rgba(255, 0, 0, 0.08))',
+                  border: '1px solid rgba(255, 0, 0, 0.25)',
                   borderRadius: '10px',
-                  color: '#00b8d4',
+                  color: '#ff0000',
                   fontSize: '13px',
                   fontWeight: '700',
                   cursor: 'pointer',
@@ -445,10 +455,10 @@ const CalendarView = () => {
                 onClick={openCreateModal}
                 style={{
                   padding: '12px 24px',
-                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
-                  border: '1px solid rgba(0, 184, 212, 0.4)',
+                  background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(59, 130, 246, 0.25))',
+                  border: '1px solid rgba(255, 0, 0, 0.4)',
                   borderRadius: '12px',
-                  color: '#00d4ff',
+                  color: '#ff0000',
                   fontWeight: '800',
                   fontSize: '14px',
                   cursor: 'pointer',
@@ -664,8 +674,8 @@ const CalendarView = () => {
                     style={{
                       width: '48px',
                       height: '26px',
-                      background: eventForm.all_day ? 'rgba(0,184,212,0.3)' : 'rgba(255,255,255,0.05)',
-                      border: eventForm.all_day ? '1px solid rgba(0,184,212,0.4)' : '1px solid rgba(255,255,255,0.1)',
+                      background: eventForm.all_day ? 'rgba(212,18,18,0.3)' : 'rgba(255,255,255,0.05)',
+                      border: eventForm.all_day ? '1px solid rgba(212,18,18,0.4)' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '13px',
                       position: 'relative',
                       cursor: 'pointer',
@@ -678,13 +688,54 @@ const CalendarView = () => {
                       left: eventForm.all_day ? '24px' : '2px',
                       width: '20px',
                       height: '20px',
-                      background: eventForm.all_day ? '#00d4ff' : 'rgba(255,255,255,0.4)',
+                      background: eventForm.all_day ? '#ff0000' : 'rgba(255,255,255,0.4)',
                       borderRadius: '10px',
                       transition: 'all 0.3s ease'
                     }} />
                   </button>
                   <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', fontWeight: '600' }}>All Day Event</span>
                 </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Repeat
+                  </label>
+                  <select
+                    data-testid="edit-event-recurrence"
+                    value={eventForm.recurrence_rule}
+                    onChange={(e) => setEventForm({ ...eventForm, recurrence_rule: e.target.value })}
+                    style={{
+                      width: '100%', padding: '10px 14px', background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
+                      color: '#ffffff', fontSize: '14px', cursor: 'pointer'
+                    }}
+                  >
+                    <option value="none">Does not repeat</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Every 2 weeks</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
+
+                {eventForm.recurrence_rule !== 'none' && (
+                  <div>
+                    <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Repeat Until
+                    </label>
+                    <input
+                      data-testid="edit-event-recurrence-end"
+                      type="date"
+                      value={eventForm.recurrence_end}
+                      onChange={(e) => setEventForm({ ...eventForm, recurrence_end: e.target.value })}
+                      style={{
+                        width: '100%', padding: '10px 14px', background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
+                        color: '#ffffff', fontSize: '14px', colorScheme: 'dark'
+                      }}
+                    />
+                  </div>
+                )}
 
                 <div>
                   <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -720,14 +771,14 @@ const CalendarView = () => {
                     <div style={{
                       width: '40px',
                       height: '40px',
-                      background: 'linear-gradient(135deg, rgba(0,184,212,0.15), rgba(0,184,212,0.08))',
+                      background: 'linear-gradient(135deg, rgba(212,18,18,0.15), rgba(212,18,18,0.08))',
                       borderRadius: '10px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      border: '1px solid rgba(0,184,212,0.25)'
+                      border: '1px solid rgba(212,18,18,0.25)'
                     }}>
-                      <Clock className="w-5 h-5" style={{ color: '#00b8d4' }} />
+                      <Clock className="w-5 h-5" style={{ color: '#ff0000' }} />
                     </div>
                     <div>
                       <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Scheduled</p>
@@ -853,10 +904,10 @@ const CalendarView = () => {
                 style={{
                   flex: 1,
                   padding: '14px',
-                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
-                  border: '1px solid rgba(0, 184, 212, 0.4)',
+                  background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(59, 130, 246, 0.25))',
+                  border: '1px solid rgba(255, 0, 0, 0.4)',
                   borderRadius: '12px',
-                  color: '#00d4ff',
+                  color: '#ff0000',
                   fontWeight: '700',
                   fontSize: '14px',
                   cursor: 'pointer'
@@ -911,14 +962,14 @@ const CalendarView = () => {
                 <div style={{
                   width: '40px',
                   height: '40px',
-                  background: 'linear-gradient(135deg, rgba(0,184,212,0.2), rgba(0,184,212,0.1))',
+                  background: 'linear-gradient(135deg, rgba(212,18,18,0.2), rgba(212,18,18,0.1))',
                   borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: '1px solid rgba(0,184,212,0.3)'
+                  border: '1px solid rgba(212,18,18,0.3)'
                 }}>
-                  <Plus className="w-5 h-5" style={{ color: '#00d4ff' }} />
+                  <Plus className="w-5 h-5" style={{ color: '#ff0000' }} />
                 </div>
                 <h2 style={{ color: '#ffffff', fontSize: '22px', fontWeight: '800' }}>Create Event</h2>
               </div>
@@ -1050,8 +1101,8 @@ const CalendarView = () => {
                     style={{
                       width: '48px',
                       height: '26px',
-                      background: eventForm.all_day ? 'rgba(0,184,212,0.3)' : 'rgba(255,255,255,0.05)',
-                      border: eventForm.all_day ? '1px solid rgba(0,184,212,0.4)' : '1px solid rgba(255,255,255,0.1)',
+                      background: eventForm.all_day ? 'rgba(212,18,18,0.3)' : 'rgba(255,255,255,0.05)',
+                      border: eventForm.all_day ? '1px solid rgba(212,18,18,0.4)' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '13px',
                       position: 'relative',
                       cursor: 'pointer',
@@ -1064,13 +1115,54 @@ const CalendarView = () => {
                       left: eventForm.all_day ? '24px' : '2px',
                       width: '20px',
                       height: '20px',
-                      background: eventForm.all_day ? '#00d4ff' : 'rgba(255,255,255,0.4)',
+                      background: eventForm.all_day ? '#ff0000' : 'rgba(255,255,255,0.4)',
                       borderRadius: '10px',
                       transition: 'all 0.3s ease'
                     }} />
                   </button>
                   <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', fontWeight: '600' }}>All Day Event</span>
                 </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Repeat
+                  </label>
+                  <select
+                    data-testid="create-event-recurrence"
+                    value={eventForm.recurrence_rule}
+                    onChange={(e) => setEventForm({ ...eventForm, recurrence_rule: e.target.value })}
+                    style={{
+                      width: '100%', padding: '12px 14px', background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
+                      color: '#ffffff', fontSize: '14px', cursor: 'pointer'
+                    }}
+                  >
+                    <option value="none">Does not repeat</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Every 2 weeks</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
+
+                {eventForm.recurrence_rule !== 'none' && (
+                  <div>
+                    <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Repeat Until
+                    </label>
+                    <input
+                      data-testid="create-event-recurrence-end"
+                      type="date"
+                      value={eventForm.recurrence_end}
+                      onChange={(e) => setEventForm({ ...eventForm, recurrence_end: e.target.value })}
+                      style={{
+                        width: '100%', padding: '12px 14px', background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
+                        color: '#ffffff', fontSize: '14px', colorScheme: 'dark'
+                      }}
+                    />
+                  </div>
+                )}
 
                 <div>
                   <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '700', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -1127,10 +1219,10 @@ const CalendarView = () => {
                 style={{
                   flex: 1,
                   padding: '14px',
-                  background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
-                  border: '1px solid rgba(0, 184, 212, 0.4)',
+                  background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(59, 130, 246, 0.25))',
+                  border: '1px solid rgba(255, 0, 0, 0.4)',
                   borderRadius: '12px',
-                  color: '#00d4ff',
+                  color: '#ff0000',
                   fontWeight: '700',
                   fontSize: '14px',
                   cursor: 'pointer',

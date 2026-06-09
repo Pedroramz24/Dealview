@@ -88,10 +88,10 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
               onClick={() => setPreviewMode('desktop')}
               style={{
                 padding: '8px 12px',
-                background: previewMode === 'desktop' ? 'rgba(0, 184, 212, 0.2)' : 'transparent',
-                border: previewMode === 'desktop' ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+                background: previewMode === 'desktop' ? 'rgba(255, 0, 0, 0.2)' : 'transparent',
+                border: previewMode === 'desktop' ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid transparent',
                 borderRadius: '4px',
-                color: previewMode === 'desktop' ? '#00b8d4' : 'var(--text-secondary)',
+                color: previewMode === 'desktop' ? '#ff0000' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -106,10 +106,10 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
               onClick={() => setPreviewMode('mobile')}
               style={{
                 padding: '8px 12px',
-                background: previewMode === 'mobile' ? 'rgba(0, 184, 212, 0.2)' : 'transparent',
-                border: previewMode === 'mobile' ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+                background: previewMode === 'mobile' ? 'rgba(255, 0, 0, 0.2)' : 'transparent',
+                border: previewMode === 'mobile' ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid transparent',
                 borderRadius: '4px',
-                color: previewMode === 'mobile' ? '#00b8d4' : 'var(--text-secondary)',
+                color: previewMode === 'mobile' ? '#ff0000' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -128,7 +128,7 @@ const EmailBuilderModal = ({ isOpen, onClose, onSave, initialDesign = null, camp
             disabled={saving}
             style={{
               padding: '10px 20px',
-              background: saving ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+              background: saving ? 'rgba(255, 255, 255, 0.05)' : '#ff0000',
               color: saving ? 'rgba(255, 255, 255, 0.3)' : '#000',
               border: 'none',
               borderRadius: '6px',

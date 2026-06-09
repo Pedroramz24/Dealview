@@ -255,7 +255,7 @@ const PropertyDetails = () => {
                 style={{
                   background: gradients.primaryButton,
                   border: 'none',
-                  boxShadow: shadows.glowCyan
+                  boxShadow: shadows.glow
                 }}
               >
                 <Zap size={16} className="mr-2" />
@@ -326,7 +326,7 @@ const PropertyDetails = () => {
                   style={{
                     background: gradients.primaryButton,
                     border: 'none',
-                    boxShadow: shadows.glowCyan
+                    boxShadow: shadows.glow
                   }}
                 >
                   {isSaving ? (

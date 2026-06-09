@@ -82,13 +82,13 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
     }}>
       <div style={{
         background: 'linear-gradient(145deg, rgba(17, 17, 17, 0.98), rgba(0, 0, 0, 0.98))',
-        border: '1px solid rgba(0, 184, 212, 0.2)',
+        border: '1px solid rgba(255, 0, 0, 0.2)',
         borderRadius: '20px',
         width: '100%',
         maxWidth: '600px',
         maxHeight: '90vh',
         overflow: 'auto',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 100px rgba(0, 184, 212, 0.1)',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 100px rgba(255, 0, 0, 0.1)',
         position: 'relative'
       }}>
         {/* Header */}
@@ -98,20 +98,20 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.05), transparent)'
+          background: 'linear-gradient(145deg, rgba(255, 0, 0, 0.05), transparent)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
               width: '40px',
               height: '40px',
-              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(0, 184, 212, 0.1))',
+              background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.1))',
               borderRadius: '10px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid rgba(0, 184, 212, 0.3)'
+              border: '1px solid rgba(255, 0, 0, 0.3)'
             }}>
-              <Search style={{ color: '#00b8d4', width: '20px', height: '20px' }} />
+              <Search style={{ color: '#ff0000', width: '20px', height: '20px' }} />
             </div>
             <div>
               <h2 style={{ color: '#ffffff', fontSize: '20px', fontWeight: '700' }}>
@@ -169,8 +169,8 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                 transition: 'all 0.2s ease'
               }}
               onFocus={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)';
-                e.currentTarget.style.background = 'rgba(0, 184, 212, 0.05)';
+                e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.4)';
+                e.currentTarget.style.background = 'rgba(255, 0, 0, 0.05)';
               }}
               onBlur={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
@@ -205,7 +205,7 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
               onClick={handleLookup}
               disabled={loading}
               style={{
-                background: 'linear-gradient(135deg, #00b8d4, #0097a7)',
+                background: 'linear-gradient(135deg, #ff0000, #cc0000)',
                 border: 'none',
                 borderRadius: '10px',
                 padding: '12px 24px',
@@ -243,8 +243,8 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
           {/* Results */}
           {result && (
             <div style={{
-              background: 'linear-gradient(145deg, rgba(0, 184, 212, 0.08), rgba(0, 184, 212, 0.04))',
-              border: '1px solid rgba(0, 184, 212, 0.2)',
+              background: 'linear-gradient(145deg, rgba(255, 0, 0, 0.08), rgba(255, 0, 0, 0.04))',
+              border: '1px solid rgba(255, 0, 0, 0.2)',
               borderRadius: '16px',
               padding: '24px',
               animation: 'fadeSlideIn 0.4s ease-out'
@@ -329,7 +329,7 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                   {result.registered_agent.name && (
                     <div style={{ marginBottom: '12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <User style={{ color: '#00b8d4', width: '16px', height: '16px' }} />
+                        <User style={{ color: '#ff0000', width: '16px', height: '16px' }} />
                         <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', textTransform: 'uppercase' }}>
                           Name
                         </span>
@@ -342,10 +342,10 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                           onClick={() => copyToClipboard(result.registered_agent.name)}
                           style={{
                             padding: '4px 8px',
-                            background: 'rgba(0, 184, 212, 0.1)',
-                            border: '1px solid rgba(0, 184, 212, 0.2)',
+                            background: 'rgba(255, 0, 0, 0.1)',
+                            border: '1px solid rgba(255, 0, 0, 0.2)',
                             borderRadius: '6px',
-                            color: '#00b8d4',
+                            color: '#ff0000',
                             fontSize: '11px',
                             fontWeight: '600',
                             cursor: 'pointer',
@@ -363,7 +363,7 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                   {result.registered_agent.address && (
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <MapPin style={{ color: '#00b8d4', width: '16px', height: '16px' }} />
+                        <MapPin style={{ color: '#ff0000', width: '16px', height: '16px' }} />
                         <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', textTransform: 'uppercase' }}>
                           Address
                         </span>
@@ -376,10 +376,10 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                           onClick={() => copyToClipboard(result.registered_agent.address)}
                           style={{
                             padding: '4px 8px',
-                            background: 'rgba(0, 184, 212, 0.1)',
-                            border: '1px solid rgba(0, 184, 212, 0.2)',
+                            background: 'rgba(255, 0, 0, 0.1)',
+                            border: '1px solid rgba(255, 0, 0, 0.2)',
                             borderRadius: '6px',
-                            color: '#00b8d4',
+                            color: '#ff0000',
                             fontSize: '11px',
                             fontWeight: '600',
                             cursor: 'pointer',
@@ -413,7 +413,7 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {result.officers.map((officer, idx) => (
-                      <div key={idx} style={{
+                      <div key={officer.name || idx} style={{
                         padding: '10px 12px',
                         background: 'rgba(255, 255, 255, 0.03)',
                         border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -436,10 +436,10 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                           onClick={() => copyToClipboard(officer.name)}
                           style={{
                             padding: '4px 8px',
-                            background: 'rgba(0, 184, 212, 0.1)',
-                            border: '1px solid rgba(0, 184, 212, 0.2)',
+                            background: 'rgba(255, 0, 0, 0.1)',
+                            border: '1px solid rgba(255, 0, 0, 0.2)',
                             borderRadius: '6px',
-                            color: '#00b8d4',
+                            color: '#ff0000',
                             fontSize: '11px',
                             fontWeight: '600',
                             cursor: 'pointer'
@@ -468,7 +468,7 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {result.phone_numbers.map((phone, idx) => (
-                      <PhoneNumberItem key={idx} phone={phone} copyToClipboard={copyToClipboard} />
+                      <PhoneNumberItem key={phone.number || idx} phone={phone} copyToClipboard={copyToClipboard} />
                     ))}
                   </div>
                 </div>
@@ -483,10 +483,10 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
                     rel="noopener noreferrer"
                     style={{
                       padding: '8px 14px',
-                      background: 'rgba(0, 184, 212, 0.1)',
-                      border: '1px solid rgba(0, 184, 212, 0.2)',
+                      background: 'rgba(255, 0, 0, 0.1)',
+                      border: '1px solid rgba(255, 0, 0, 0.2)',
                       borderRadius: '8px',
-                      color: '#00b8d4',
+                      color: '#ff0000',
                       fontSize: '12px',
                       fontWeight: '600',
                       textDecoration: 'none',
@@ -568,7 +568,7 @@ const LLCLookupModal = ({ isOpen, onClose, llcName, state = 'TX' }) => {
 const InfoItem = ({ icon: Icon, label, value }) => (
   <div>
     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-      <Icon style={{ color: '#00b8d4', width: '14px', height: '14px' }} />
+      <Icon style={{ color: '#ff0000', width: '14px', height: '14px' }} />
       <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', textTransform: 'uppercase' }}>
         {label}
       </span>
@@ -625,10 +625,10 @@ const PhoneNumberItem = ({ phone, copyToClipboard }) => {
         onClick={() => copyToClipboard(phone.number)}
         style={{
           padding: '6px 12px',
-          background: 'rgba(0, 184, 212, 0.1)',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
+          background: 'rgba(255, 0, 0, 0.1)',
+          border: '1px solid rgba(255, 0, 0, 0.2)',
           borderRadius: '6px',
-          color: '#00b8d4',
+          color: '#ff0000',
           fontSize: '12px',
           fontWeight: '600',
           cursor: 'pointer',

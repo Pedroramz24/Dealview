@@ -1,0 +1,77 @@
+{
+  "summary": "Tested PortalDealDetail layout changes: Quick Summary removed, image height increased 30%, notes section added, layout matches PublicShare. All backend APIs return notes field correctly. All features verified working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "features_verified": {
+    "quick_summary_removed": {
+      "test_result": "PASSED",
+      "details": "Quick Summary section NOT found on PortalDealDetail page (correctly removed)"
+    },
+    "image_height_increased": {
+      "test_result": "PASSED",
+      "details": "Image carousel height changed from clamp(220px, 40vw, 380px) to clamp(280px, 50vw, 500px) - approximately 30% increase"
+    },
+    "notes_section_portal": {
+      "test_result": "PASSED",
+      "details": "Notes section displays on PortalDealDetail when deal has notes. Red uppercase header 'NOTES' with content below."
+    },
+    "layout_matches_publicshare": {
+      "test_result": "PASSED",
+      "details": "PortalDealDetail layout matches PublicShare: hero title at top, two-column grid, left column (images/facts/notes/docs/map), right column (financials/agent/CTA)"
+    },
+    "backend_portal_notes": {
+      "test_result": "PASSED",
+      "endpoint": "GET /api/portal/{portal_id}/deals/{deal_id}",
+      "details": "Returns notes field in SAFE_DEAL_FIELDS"
+    },
+    "backend_share_notes": {
+      "test_result": "PASSED",
+      "endpoint": "GET /api/share/{deal_id}",
+      "details": "Returns notes field correctly"
+    },
+    "portal_deal_detail_sections": {
+      "test_result": "PASSED",
+      "details": "All sections present: Property Facts, Notes (when applicable), Documents, Location map, Financial Details, Listing Agent, CTA, Footer"
+    },
+    "publicshare_still_works": {
+      "test_result": "PASSED",
+      "details": "PublicShare page at /share/{dealId} loads correctly with all sections including notes"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_portal_notes_layout.py",
+    "/app/test_reports/pytest/portal_notes_layout_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PortalDealDetail.js: Clean rewrite matching PublicShare layout with proper two-column grid",
+    "Image height correctly increased: clamp(280px, 50vw, 500px) vs PublicShare's clamp(220px, 40vw, 380px)",
+    "Notes section conditionally rendered only when deal.notes exists",
+    "portal_investor.py: SAFE_DEAL_FIELDS correctly includes 'notes' field",
+    "All data-testid attributes present for testing: back-to-map, detail-save-btn, contact-agent-btn, agent-phone, agent-email"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (5/5 tests passed)",
+    "frontend": "100% (all features verified via Playwright)"
+  },
+  "test_credentials": {
+    "email": "ricardo@uriahrealestate.com",
+    "password": "TestPassword123!",
+    "portal_access_code": "CT4MQ4DT",
+    "portal_member_name": "Test Investor",
+    "portal_id": "6f7293a2-154f-40f4-ac39-95feb97c14b8",
+    "deal_with_notes": "311c9958-64fd-4eae-a3f1-543b43c9c0af"
+  },
+  "seed_data_creation": "Updated deal 786febb3-0978-47f2-b69d-c49d92cde5c9 with test notes for verification",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "PortalDealDetail layout now matches PublicShare. Quick Summary removed, image height 30% taller (clamp 280-500px), notes section added. Portal URL format: /portal/{portal_id}/deal/{deal_id}. Test investor: 'Test Investor' with access code CT4MQ4DT."
+}

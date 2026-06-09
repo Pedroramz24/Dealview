@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import DOMPurify from 'dompurify';
 import { supabase } from '../supabaseClient';
 import EmailEditor from 'react-email-editor';
 import DatePicker from 'react-datepicker';
@@ -475,7 +476,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              background: currentStep >= 1 ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)',
+              background: currentStep >= 1 ? '#ff0000' : 'rgba(255, 255, 255, 0.1)',
               color: currentStep >= 1 ? '#000' : 'var(--text-secondary)',
               display: 'flex',
               alignItems: 'center',
@@ -486,7 +487,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               1
             </div>
             <span style={{ 
-              color: currentStep === 1 ? '#00b8d4' : 'var(--text-secondary)', 
+              color: currentStep === 1 ? '#ff0000' : 'var(--text-secondary)', 
               fontSize: '14px',
               fontWeight: currentStep === 1 ? 600 : 400
             }}>
@@ -502,7 +503,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              background: currentStep >= 2 ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)',
+              background: currentStep >= 2 ? '#ff0000' : 'rgba(255, 255, 255, 0.1)',
               color: currentStep >= 2 ? '#000' : 'var(--text-secondary)',
               display: 'flex',
               alignItems: 'center',
@@ -513,7 +514,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               2
             </div>
             <span style={{ 
-              color: currentStep === 2 ? '#00b8d4' : 'var(--text-secondary)', 
+              color: currentStep === 2 ? '#ff0000' : 'var(--text-secondary)', 
               fontSize: '14px',
               fontWeight: currentStep === 2 ? 600 : 400
             }}>
@@ -568,7 +569,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         flex: 1,
                         padding: '8px 12px',
                         background: 'rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(0, 184, 212, 0.3)',
+                        border: '1px solid rgba(255, 0, 0, 0.3)',
                         borderRadius: '6px',
                         color: '#FFFFFF',
                         fontSize: '14px'
@@ -584,7 +585,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       disabled={!templateName.trim()}
                       style={{
                         padding: '8px 16px',
-                        background: !templateName.trim() ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                        background: !templateName.trim() ? 'rgba(255, 255, 255, 0.05)' : '#ff0000',
                         color: !templateName.trim() ? 'rgba(255, 255, 255, 0.3)' : '#000',
                         border: 'none',
                         borderRadius: '6px',
@@ -641,10 +642,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   onClick={() => setPreviewMode('desktop')}
                   style={{
                     padding: '8px 14px',
-                    background: previewMode === 'desktop' ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                    border: `1px solid ${previewMode === 'desktop' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                    background: previewMode === 'desktop' ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: `1px solid ${previewMode === 'desktop' ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                     borderRadius: '6px',
-                    color: previewMode === 'desktop' ? '#00b8d4' : 'var(--text-secondary)',
+                    color: previewMode === 'desktop' ? '#ff0000' : 'var(--text-secondary)',
                     fontSize: '13px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -659,10 +660,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   onClick={() => setPreviewMode('mobile')}
                   style={{
                     padding: '8px 14px',
-                    background: previewMode === 'mobile' ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                    border: `1px solid ${previewMode === 'mobile' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                    background: previewMode === 'mobile' ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: `1px solid ${previewMode === 'mobile' ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                     borderRadius: '6px',
-                    color: previewMode === 'mobile' ? '#00b8d4' : 'var(--text-secondary)',
+                    color: previewMode === 'mobile' ? '#ff0000' : 'var(--text-secondary)',
                     fontSize: '13px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -681,7 +682,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   onClick={handleSaveDesign}
                   style={{
                     padding: '10px 20px',
-                    background: '#00b8d4',
+                    background: '#ff0000',
                     color: '#000',
                     border: 'none',
                     borderRadius: '6px',
@@ -756,7 +757,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               {/* Campaign Details Card */}
               <div className="glass-surface" style={{ padding: '20px', marginBottom: '20px', borderRadius: '10px' }}>
                 <h3 style={{ 
-                  color: '#00b8d4', 
+                  color: '#ff0000', 
                   fontSize: '12px', 
                   fontWeight: 600, 
                   textTransform: 'uppercase', 
@@ -833,7 +834,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               {/* Audience Card */}
               <div className="glass-surface" style={{ padding: '20px', marginBottom: '20px', borderRadius: '10px' }}>
                 <h3 style={{ 
-                  color: '#00b8d4', 
+                  color: '#ff0000', 
                   fontSize: '12px', 
                   fontWeight: 600, 
                   textTransform: 'uppercase', 
@@ -850,10 +851,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       flex: 1,
                       padding: '10px 14px',
-                      background: campaignConfig.recipientType === 'choose_contacts' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                      border: `1px solid ${campaignConfig.recipientType === 'choose_contacts' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      background: campaignConfig.recipientType === 'choose_contacts' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.recipientType === 'choose_contacts' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                       borderRadius: '6px',
-                      color: campaignConfig.recipientType === 'choose_contacts' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+                      color: campaignConfig.recipientType === 'choose_contacts' ? '#ff0000' : 'rgba(255, 255, 255, 0.6)',
                       fontSize: '13px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -872,10 +873,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       flex: 1,
                       padding: '10px 14px',
-                      background: campaignConfig.recipientType === 'tags' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                      border: `1px solid ${campaignConfig.recipientType === 'tags' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      background: campaignConfig.recipientType === 'tags' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.recipientType === 'tags' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                       borderRadius: '6px',
-                      color: campaignConfig.recipientType === 'tags' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+                      color: campaignConfig.recipientType === 'tags' ? '#ff0000' : 'rgba(255, 255, 255, 0.6)',
                       fontSize: '13px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -927,10 +928,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                           onClick={selectAll}
                           style={{
                             padding: '4px 10px',
-                            background: 'rgba(0, 184, 212, 0.1)',
-                            border: '1px solid rgba(0, 184, 212, 0.2)',
+                            background: 'rgba(255, 0, 0, 0.1)',
+                            border: '1px solid rgba(255, 0, 0, 0.2)',
                             borderRadius: '4px',
-                            color: '#00b8d4',
+                            color: '#ff0000',
                             fontSize: '11px',
                             cursor: 'pointer'
                           }}
@@ -963,8 +964,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         style={{
                           padding: '10px 12px',
                           marginBottom: '4px',
-                          background: campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.02)',
-                          border: `1px solid ${campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
+                          background: campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.02)',
+                          border: `1px solid ${campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
                           borderRadius: '6px',
                           cursor: 'pointer',
                           display: 'flex',
@@ -974,7 +975,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         }}
                       >
                         {campaignConfig.selectedContacts.includes(contact.id) ? (
-                          <CheckSquare size={16} style={{ color: '#00b8d4' }} />
+                          <CheckSquare size={16} style={{ color: '#ff0000' }} />
                         ) : (
                           <Square size={16} style={{ color: 'rgba(255, 255, 255, 0.4)' }} />
                         )}
@@ -1015,10 +1016,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                           }}
                           style={{
                             padding: '8px 14px',
-                            background: campaignConfig.selectedTags.includes(tag) ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                            border: `1px solid ${campaignConfig.selectedTags.includes(tag) ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                            background: campaignConfig.selectedTags.includes(tag) ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                            border: `1px solid ${campaignConfig.selectedTags.includes(tag) ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                             borderRadius: '6px',
-                            color: campaignConfig.selectedTags.includes(tag) ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+                            color: campaignConfig.selectedTags.includes(tag) ? '#ff0000' : 'rgba(255, 255, 255, 0.6)',
                             fontSize: '13px',
                             cursor: 'pointer',
                             display: 'flex',
@@ -1042,7 +1043,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
               {/* Schedule Card */}
               <div className="glass-surface" style={{ padding: '20px', marginBottom: '20px', borderRadius: '10px' }}>
                 <h3 style={{ 
-                  color: '#00b8d4', 
+                  color: '#ff0000', 
                   fontSize: '12px', 
                   fontWeight: 600, 
                   textTransform: 'uppercase', 
@@ -1059,10 +1060,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       width: '100%',
                       padding: '14px 16px',
-                      background: campaignConfig.sendOption === 'now' ? 'rgba(0, 184, 212, 0.12)' : 'rgba(255, 255, 255, 0.02)',
-                      border: `1px solid ${campaignConfig.sendOption === 'now' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      background: campaignConfig.sendOption === 'now' ? 'rgba(255, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      border: `1px solid ${campaignConfig.sendOption === 'now' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                       borderRadius: '8px',
-                      color: campaignConfig.sendOption === 'now' ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+                      color: campaignConfig.sendOption === 'now' ? '#ff0000' : 'rgba(255, 255, 255, 0.7)',
                       fontSize: '14px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1086,10 +1087,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       width: '100%',
                       padding: '14px 16px',
-                      background: campaignConfig.sendOption === 'schedule' ? 'rgba(0, 184, 212, 0.12)' : 'rgba(255, 255, 255, 0.02)',
-                      border: `1px solid ${campaignConfig.sendOption === 'schedule' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      background: campaignConfig.sendOption === 'schedule' ? 'rgba(255, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      border: `1px solid ${campaignConfig.sendOption === 'schedule' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                       borderRadius: '8px',
-                      color: campaignConfig.sendOption === 'schedule' ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+                      color: campaignConfig.sendOption === 'schedule' ? '#ff0000' : 'rgba(255, 255, 255, 0.7)',
                       fontSize: '14px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1110,7 +1111,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   {campaignConfig.sendOption === 'schedule' && (
                     <div className="mt-3 p-4" style={{
                       background: 'rgba(0, 0, 0, 0.3)',
-                      border: '1px solid rgba(0, 184, 212, 0.2)',
+                      border: '1px solid rgba(255, 0, 0, 0.2)',
                       borderRadius: '8px'
                     }}>
                       <label style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '10px', display: 'block' }}>
@@ -1136,10 +1137,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       width: '100%',
                       padding: '14px 16px',
-                      background: campaignConfig.sendOption === 'batch' ? 'rgba(0, 184, 212, 0.12)' : 'rgba(255, 255, 255, 0.02)',
-                      border: `1px solid ${campaignConfig.sendOption === 'batch' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                      background: campaignConfig.sendOption === 'batch' ? 'rgba(255, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      border: `1px solid ${campaignConfig.sendOption === 'batch' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                       borderRadius: '8px',
-                      color: campaignConfig.sendOption === 'batch' ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+                      color: campaignConfig.sendOption === 'batch' ? '#ff0000' : 'rgba(255, 255, 255, 0.7)',
                       fontSize: '14px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1323,7 +1324,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   style={{
                     flex: 2,
                     padding: '12px 20px',
-                    background: '#00b8d4',
+                    background: '#ff0000',
                     color: '#000',
                     border: 'none',
                     borderRadius: '8px',
@@ -1368,7 +1369,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 minHeight: '600px',
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
               }}>
-                <div dangerouslySetInnerHTML={{ __html: emailHTML || '<p style="color: #999; text-align: center; padding: 40px;">Design your email to see preview</p>' }} />
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(emailHTML || '<p style="color: #999; text-align: center; padding: 40px;">Design your email to see preview</p>') }} />
               </div>
             </div>
           </div>
@@ -1515,10 +1516,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       flex: 1,
                       padding: '10px 14px',
-                      background: campaignConfig.recipientType === 'choose_contacts' ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                      border: `1px solid ${campaignConfig.recipientType === 'choose_contacts' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                      background: campaignConfig.recipientType === 'choose_contacts' ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                      border: `1px solid ${campaignConfig.recipientType === 'choose_contacts' ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                       borderRadius: '6px',
-                      color: campaignConfig.recipientType === 'choose_contacts' ? '#00b8d4' : 'var(--text-secondary)',
+                      color: campaignConfig.recipientType === 'choose_contacts' ? '#ff0000' : 'var(--text-secondary)',
                       fontSize: '13px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1536,10 +1537,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       flex: 1,
                       padding: '10px 14px',
-                      background: campaignConfig.recipientType === 'tags' ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                      border: `1px solid ${campaignConfig.recipientType === 'tags' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                      background: campaignConfig.recipientType === 'tags' ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                      border: `1px solid ${campaignConfig.recipientType === 'tags' ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                       borderRadius: '6px',
-                      color: campaignConfig.recipientType === 'tags' ? '#00b8d4' : 'var(--text-secondary)',
+                      color: campaignConfig.recipientType === 'tags' ? '#ff0000' : 'var(--text-secondary)',
                       fontSize: '13px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1573,10 +1574,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                           onClick={selectAll}
                           style={{
                             padding: '4px 10px',
-                            background: 'rgba(0, 184, 212, 0.1)',
-                            border: '1px solid rgba(0, 184, 212, 0.3)',
+                            background: 'rgba(255, 0, 0, 0.1)',
+                            border: '1px solid rgba(255, 0, 0, 0.3)',
                             borderRadius: '4px',
-                            color: '#00b8d4',
+                            color: '#ff0000',
                             fontSize: '11px',
                             cursor: 'pointer'
                           }}
@@ -1606,8 +1607,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         style={{
                           padding: '10px 12px',
                           marginBottom: '6px',
-                          background: campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.02)',
-                          border: `1px solid ${campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
+                          background: campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.02)',
+                          border: `1px solid ${campaignConfig.selectedContacts.includes(contact.id) ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
                           borderRadius: '6px',
                           cursor: 'pointer',
                           display: 'flex',
@@ -1616,7 +1617,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         }}
                       >
                         {campaignConfig.selectedContacts.includes(contact.id) ? (
-                          <CheckSquare size={16} style={{ color: '#00b8d4' }} />
+                          <CheckSquare size={16} style={{ color: '#ff0000' }} />
                         ) : (
                           <Square size={16} style={{ color: 'var(--text-secondary)' }} />
                         )}
@@ -1653,10 +1654,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                           }}
                           style={{
                             padding: '8px 14px',
-                            background: campaignConfig.selectedTags.includes(tag) ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                            border: `1px solid ${campaignConfig.selectedTags.includes(tag) ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                            background: campaignConfig.selectedTags.includes(tag) ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                            border: `1px solid ${campaignConfig.selectedTags.includes(tag) ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                             borderRadius: '6px',
-                            color: campaignConfig.selectedTags.includes(tag) ? '#00b8d4' : 'var(--text-secondary)',
+                            color: campaignConfig.selectedTags.includes(tag) ? '#ff0000' : 'var(--text-secondary)',
                             fontSize: '13px',
                             cursor: 'pointer',
                             display: 'flex',
@@ -1691,10 +1692,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       width: '100%',
                       padding: '12px 16px',
-                      background: campaignConfig.sendOption === 'now' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                      border: `1px solid ${campaignConfig.sendOption === 'now' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                      background: campaignConfig.sendOption === 'now' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.sendOption === 'now' ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                       borderRadius: '6px',
-                      color: campaignConfig.sendOption === 'now' ? '#00b8d4' : 'var(--text-primary)',
+                      color: campaignConfig.sendOption === 'now' ? '#ff0000' : 'var(--text-primary)',
                       fontSize: '14px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1717,10 +1718,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       width: '100%',
                       padding: '12px 16px',
-                      background: campaignConfig.sendOption === 'schedule' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                      border: `1px solid ${campaignConfig.sendOption === 'schedule' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                      background: campaignConfig.sendOption === 'schedule' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.sendOption === 'schedule' ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                       borderRadius: '6px',
-                      color: campaignConfig.sendOption === 'schedule' ? '#00b8d4' : 'var(--text-primary)',
+                      color: campaignConfig.sendOption === 'schedule' ? '#ff0000' : 'var(--text-primary)',
                       fontSize: '14px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1739,8 +1740,8 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
 
                   {campaignConfig.sendOption === 'schedule' && (
                     <div className="mt-3 p-4" style={{
-                      background: 'rgba(0, 184, 212, 0.05)',
-                      border: '1px solid rgba(0, 184, 212, 0.2)',
+                      background: 'rgba(255, 0, 0, 0.05)',
+                      border: '1px solid rgba(255, 0, 0, 0.2)',
                       borderRadius: '6px'
                     }}>
                       <label style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '8px', display: 'block' }}>
@@ -1766,10 +1767,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                     style={{
                       width: '100%',
                       padding: '12px 16px',
-                      background: campaignConfig.sendOption === 'batch' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                      border: `1px solid ${campaignConfig.sendOption === 'batch' ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'}`,
+                      background: campaignConfig.sendOption === 'batch' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${campaignConfig.sendOption === 'batch' ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'}`,
                       borderRadius: '6px',
-                      color: campaignConfig.sendOption === 'batch' ? '#00b8d4' : 'var(--text-primary)',
+                      color: campaignConfig.sendOption === 'batch' ? '#ff0000' : 'var(--text-primary)',
                       fontSize: '14px',
                       fontWeight: 500,
                       cursor: 'pointer',
@@ -1952,7 +1953,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   style={{
                     flex: 2,
                     padding: '12px 20px',
-                    background: '#00b8d4',
+                    background: '#ff0000',
                     color: '#000',
                     border: 'none',
                     borderRadius: '6px',
@@ -1997,7 +1998,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 minHeight: '600px',
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
               }}>
-                <div dangerouslySetInnerHTML={{ __html: emailHTML || '<p style="color: #999; text-align: center; padding: 40px;">Design your email to see preview</p>' }} />
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(emailHTML || '<p style="color: #999; text-align: center; padding: 40px;">Design your email to see preview</p>') }} />
               </div>
             </div>
           </div>
@@ -2023,13 +2024,13 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                 minHeight: '700px',
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
               }}>
-                <div style={{ borderBottom: '2px solid #00b8d4', paddingBottom: '12px', marginBottom: '20px' }}>
+                <div style={{ borderBottom: '2px solid #ff0000', paddingBottom: '12px', marginBottom: '20px' }}>
                   <p style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>SUBJECT</p>
                   <p style={{ fontSize: '16px', fontWeight: 600, color: '#000' }}>
                     {campaignConfig.subject}
                   </p>
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: emailHTML }} />
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(emailHTML) }} />
               </div>
             </div>
 
@@ -2078,7 +2079,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   <p style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
                     Recipients
                   </p>
-                  <p style={{ color: '#00b8d4', fontSize: '24px', fontWeight: 700 }}>
+                  <p style={{ color: '#ff0000', fontSize: '24px', fontWeight: 700 }}>
                     {campaignConfig.selectedContacts.length}
                   </p>
                 </div>
@@ -2089,10 +2090,10 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                         key={tag}
                         style={{
                           padding: '4px 10px',
-                          background: 'rgba(0, 184, 212, 0.15)',
-                          border: '1px solid rgba(0, 184, 212, 0.3)',
+                          background: 'rgba(255, 0, 0, 0.15)',
+                          border: '1px solid rgba(255, 0, 0, 0.3)',
                           borderRadius: '4px',
-                          color: '#00b8d4',
+                          color: '#ff0000',
                           fontSize: '12px'
                         }}
                       >
@@ -2119,7 +2120,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                       📅 Scheduled Send
                     </p>
                     {campaignConfig.scheduleDate && (
-                      <p style={{ color: '#00b8d4', fontSize: '13px' }}>
+                      <p style={{ color: '#ff0000', fontSize: '13px' }}>
                         {campaignConfig.scheduleDate.toLocaleString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -2171,7 +2172,7 @@ const CampaignWizard = ({ isOpen, onClose, onComplete, token, BACKEND_URL, initi
                   style={{
                     width: '100%',
                     padding: '16px 24px',
-                    background: isSending ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                    background: isSending ? 'rgba(255, 255, 255, 0.05)' : '#ff0000',
                     color: isSending ? 'rgba(255, 255, 255, 0.3)' : '#000',
                     border: 'none',
                     borderRadius: '8px',

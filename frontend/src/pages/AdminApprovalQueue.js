@@ -122,7 +122,7 @@ const AdminApprovalQueue = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '20px' }}>
               <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '8px' }}>Pending Approval</div>
-              <div style={{ color: '#00b8d4', fontSize: '28px', fontWeight: '700' }}>{stats.pending_approvals}</div>
+              <div style={{ color: '#ff0000', fontSize: '28px', fontWeight: '700' }}>{stats.pending_approvals}</div>
             </div>
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '20px' }}>
               <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', marginBottom: '8px' }}>Approved Deals</div>
@@ -172,10 +172,10 @@ const AdminApprovalQueue = () => {
                       <div style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
                         <span style={{
                           padding: '4px 12px',
-                          background: 'rgba(0, 184, 212, 0.15)',
-                          border: '1px solid rgba(0, 184, 212, 0.3)',
+                          background: 'rgba(255, 0, 0, 0.15)',
+                          border: '1px solid rgba(255, 0, 0, 0.3)',
                           borderRadius: '6px',
-                          color: '#00b8d4',
+                          color: '#ff0000',
                           fontSize: '12px',
                           fontWeight: '600'
                         }}>
@@ -184,7 +184,7 @@ const AdminApprovalQueue = () => {
                         <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>
                           {deal.public_market}
                         </span>
-                        <span style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600' }}>
+                        <span style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600' }}>
                           ${deal.public_price?.toLocaleString()}
                         </span>
                       </div>

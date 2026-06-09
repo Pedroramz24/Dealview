@@ -12,9 +12,9 @@ export const colors = {
   hover: '#1a1a1a',          // General hover states
   
   // Brand Colors
-  primary: '#00b8d4',       // Cyan - main brand
-  primaryDark: '#0088a3',   // Darker cyan
-  primaryLight: '#00d4f0',  // Lighter cyan
+  primary: '#ff0000',       // Red - main brand
+  primaryDark: '#cc0000',   // Darker red
+  primaryLight: '#ff3333',  // Lighter red
   
   // Accent Colors (selective use)
   success: '#10b981',       // Emerald - approved, positive
@@ -29,7 +29,7 @@ export const colors = {
   
   // Borders & Dividers
   border: 'rgba(255,255,255,0.08)',
-  borderHover: 'rgba(0, 184, 212, 0.3)',
+  borderHover: 'rgba(255, 0, 0, 0.3)',
   divider: 'rgba(255,255,255,0.05)',
 };
 
@@ -45,28 +45,27 @@ export const shadows = {
   xl: '0 12px 48px rgba(0, 0, 0, 0.6)',
   
   // Glow effects
-  glowCyan: '0 0 20px rgba(0, 184, 212, 0.2)',
-  glowCyanHover: '0 0 32px rgba(0, 184, 212, 0.3)',
-  glowCyanStrong: '0 0 40px rgba(0, 184, 212, 0.4)',
+  glow: '0 0 20px rgba(255, 0, 0, 0.2)',
+  glowHover: '0 0 32px rgba(255, 0, 0, 0.3)',
+  glowStrong: '0 0 40px rgba(255, 0, 0, 0.4)',
   glowSuccess: '0 0 20px rgba(16, 185, 129, 0.2)',
 };
 
 export const gradients = {
-  // Atmospheric Background (Buy Box Cartel inspired - with cyan instead of purple)
-  // Strong radial glows for depth - more visible than before
+  // Atmospheric Background - Red brand glow
   atmosphericGlow: `
-    radial-gradient(ellipse 1400px 900px at 50% 0%, rgba(0, 184, 212, 0.15) 0%, rgba(0, 100, 120, 0.08) 40%, transparent 70%),
-    radial-gradient(ellipse 1000px 800px at 0% 30%, rgba(0, 140, 160, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 1000px 800px at 100% 70%, rgba(0, 200, 220, 0.10) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(0, 50, 60, 0.1) 0%, rgba(0, 0, 0, 1) 100%)
+    radial-gradient(ellipse 1400px 900px at 50% 0%, rgba(255, 0, 0, 0.12) 0%, rgba(150, 0, 0, 0.06) 40%, transparent 70%),
+    radial-gradient(ellipse 1000px 800px at 0% 30%, rgba(200, 0, 0, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 1000px 800px at 100% 70%, rgba(255, 30, 30, 0.06) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(80, 0, 0, 0.08) 0%, rgba(0, 0, 0, 1) 100%)
   `,
   
   // Subtle surface gradients
-  surfaceSubtle: 'linear-gradient(135deg, rgba(0, 184, 212, 0.03) 0%, rgba(0, 0, 0, 0) 100%)',
+  surfaceSubtle: 'linear-gradient(135deg, rgba(255, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 100%)',
   
   // Interactive elements
-  primaryButton: 'linear-gradient(135deg, #00b8d4 0%, #0088a3 100%)',
-  primaryButtonHover: 'linear-gradient(135deg, #00d4f0 0%, #00b8d4 100%)',
+  primaryButton: 'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)',
+  primaryButtonHover: 'linear-gradient(135deg, #ff3333 0%, #ff0000 100%)',
   
   // Overlays
   imageOverlay: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)',
@@ -74,13 +73,8 @@ export const gradients = {
 };
 
 export const animations = {
-  // Keyframes for shimmer loading
   shimmer: '@keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }',
-  
-  // Keyframes for fade in
   fadeIn: '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }',
-  
-  // Keyframes for scale in
   scaleIn: '@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }',
 };
 
@@ -102,34 +96,24 @@ export const borderRadius = {
 };
 
 export const typography = {
-  // Headings
   h1: { fontSize: '36px', fontWeight: '700', letterSpacing: '-0.03em' },
   h2: { fontSize: '28px', fontWeight: '700', letterSpacing: '-0.02em' },
   h3: { fontSize: '20px', fontWeight: '600', letterSpacing: '-0.01em' },
   h4: { fontSize: '16px', fontWeight: '600' },
-  
-  // Body
   body: { fontSize: '15px', lineHeight: '1.6' },
   bodySm: { fontSize: '14px', lineHeight: '1.5' },
-  
-  // Labels
   label: { fontSize: '12px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.5px' },
   labelSm: { fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.8px' },
 };
 
 export const transitions = {
-  default: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',  // Smooth ease-in-out
+  default: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   fast: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
   slow: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-  spring: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',  // Bouncy spring effect
+  spring: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
 };
 
-/**
- * Modular Card/Panel Style System
- * Creates layered, elevated surfaces on the black void background
- */
 export const cardStyles = {
-  // Base card style - for main content sections
   base: {
     background: colors.surfaceCard,
     borderRadius: borderRadius.md,
@@ -137,8 +121,6 @@ export const cardStyles = {
     padding: spacing.lg,
     transition: transitions.default,
   },
-  
-  // Compact card - for smaller modules
   compact: {
     background: colors.surfaceCard,
     borderRadius: borderRadius.md,
@@ -146,8 +128,6 @@ export const cardStyles = {
     padding: spacing.md,
     transition: transitions.default,
   },
-  
-  // Large card - for major sections
   large: {
     background: colors.surfaceCard,
     borderRadius: borderRadius.lg,
@@ -155,8 +135,6 @@ export const cardStyles = {
     padding: spacing.xl,
     transition: transitions.default,
   },
-  
-  // Interactive card - with hover state
   interactive: {
     background: colors.surfaceCard,
     borderRadius: borderRadius.md,

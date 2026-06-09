@@ -254,8 +254,8 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
           onClick={() => updateFormData({ is_land_listing: false })}
           style={{
             padding: '24px',
-            background: !formData.is_land_listing ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255,255,255,0.05)',
-            border: !formData.is_land_listing ? '2px solid #00b8d4' : '1px solid rgba(255,255,255,0.1)',
+            background: !formData.is_land_listing ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255,255,255,0.05)',
+            border: !formData.is_land_listing ? '2px solid #ff0000' : '1px solid rgba(255,255,255,0.1)',
             borderRadius: '12px',
             color: '#fff',
             cursor: 'pointer',
@@ -266,7 +266,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
             justifyContent: 'center'
           }}
         >
-          <Building2 size={40} style={{ marginBottom: '12px', color: !formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
+          <Building2 size={40} style={{ marginBottom: '12px', color: !formData.is_land_listing ? '#ff0000' : 'rgba(255,255,255,0.5)' }} />
           <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px' }}>Property</div>
           <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
             Building, Retail, Office, etc.
@@ -278,8 +278,8 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
           onClick={() => updateFormData({ is_land_listing: true })}
           style={{
             padding: '24px',
-            background: formData.is_land_listing ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255,255,255,0.05)',
-            border: formData.is_land_listing ? '2px solid #00b8d4' : '1px solid rgba(255,255,255,0.1)',
+            background: formData.is_land_listing ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255,255,255,0.05)',
+            border: formData.is_land_listing ? '2px solid #ff0000' : '1px solid rgba(255,255,255,0.1)',
             borderRadius: '12px',
             color: '#fff',
             cursor: 'pointer',
@@ -290,7 +290,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
             justifyContent: 'center'
           }}
         >
-          <MapPin size={40} style={{ marginBottom: '12px', color: formData.is_land_listing ? '#00b8d4' : 'rgba(255,255,255,0.5)' }} />
+          <MapPin size={40} style={{ marginBottom: '12px', color: formData.is_land_listing ? '#ff0000' : 'rgba(255,255,255,0.5)' }} />
           <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px' }}>Land</div>
           <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
             Lot, Parcel, Raw Land
@@ -409,8 +409,8 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
                 display: 'flex',
                 alignItems: 'center',
                 padding: '8px 12px',
-                background: formData.sale_conditions.includes(condition) ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255,255,255,0.03)',
-                border: formData.sale_conditions.includes(condition) ? '1px solid #00b8d4' : '1px solid rgba(255,255,255,0.08)',
+                background: formData.sale_conditions.includes(condition) ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255,255,255,0.03)',
+                border: formData.sale_conditions.includes(condition) ? '1px solid #ff0000' : '1px solid rgba(255,255,255,0.08)',
                 borderRadius: '8px',
                 cursor: 'pointer',
                 fontSize: '13px',
@@ -732,7 +732,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
       <div>
         <label style={labelStyle}>Key Highlights</label>
         {formData.highlights.map((highlight, index) => (
-          <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+          <div key={`highlight-${index}-${highlight.slice(0, 8)}`} style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
             <input
               type="text"
               value={highlight}
@@ -763,10 +763,10 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
           onClick={addHighlight}
           style={{
             padding: '10px 16px',
-            background: 'rgba(0, 184, 212, 0.1)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '8px',
-            color: '#00b8d4',
+            color: '#ff0000',
             cursor: 'pointer',
             fontSize: '14px',
             fontWeight: '500'
@@ -779,12 +779,12 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
       <div style={{ 
         marginTop: '24px', 
         padding: '16px', 
-        background: 'rgba(0, 184, 212, 0.1)', 
-        border: '1px solid rgba(0, 184, 212, 0.2)', 
+        background: 'rgba(255, 0, 0, 0.1)', 
+        border: '1px solid rgba(255, 0, 0, 0.2)', 
         borderRadius: '10px' 
       }}>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', lineHeight: '1.5' }}>
-          <strong style={{ color: '#00b8d4' }}>Note:</strong> Photos and documents will be automatically pulled from your deal's property details page.
+          <strong style={{ color: '#ff0000' }}>Note:</strong> Photos and documents will be automatically pulled from your deal's property details page.
         </p>
       </div>
     </div>
@@ -873,14 +873,14 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
 
         <div style={{
           padding: '16px',
-          background: 'rgba(0, 184, 212, 0.1)',
-          border: '1px solid rgba(0, 184, 212, 0.2)',
+          background: 'rgba(255, 0, 0, 0.1)',
+          border: '1px solid rgba(255, 0, 0, 0.2)',
           borderRadius: '10px',
           color: 'rgba(255,255,255,0.7)',
           fontSize: '13px',
           lineHeight: '1.5'
         }}>
-          <strong style={{ color: '#00b8d4' }}>Review Process:</strong><br />
+          <strong style={{ color: '#ff0000' }}>Review Process:</strong><br />
           Your deal will be reviewed by our team before appearing in the Marketplace. You&apos;ll be notified once it&apos;s approved.
         </div>
       </div>
@@ -1013,7 +1013,7 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
                 onClick={() => setStep(s => s + 1)}
                 style={{
                   padding: '12px 24px',
-                  background: 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
+                  background: 'linear-gradient(135deg, #ff0000 0%, #ff0000 100%)',
                   border: 'none',
                   borderRadius: '10px',
                   color: '#000',
@@ -1037,8 +1037,8 @@ const EnhancedPublishWizard = ({ dealId, deal, onClose, onPublished }) => {
                 style={{
                   padding: '12px 24px',
                   background: submitting || (completeness && !completeness.can_publish)
-                    ? 'rgba(0, 184, 212, 0.3)' 
-                    : 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
+                    ? 'rgba(255, 0, 0, 0.3)' 
+                    : 'linear-gradient(135deg, #ff0000 0%, #ff0000 100%)',
                   border: 'none',
                   borderRadius: '10px',
                   color: '#000',

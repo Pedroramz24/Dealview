@@ -188,8 +188,8 @@ const MarketplaceDealDetail = () => {
           </button>
 
           <div style={{ display: 'flex', gap: '12px' }}>
-            <button onClick={handleSaveDeal} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: saved ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)', border: saved ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: saved ? '#00b8d4' : '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
-              <Heart size={18} fill={saved ? '#00b8d4' : 'none'} />
+            <button onClick={handleSaveDeal} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: saved ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)', border: saved ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: saved ? '#ff0000' : '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
+              <Heart size={18} fill={saved ? '#ff0000' : 'none'} />
               {saved ? 'Saved' : 'Save Deal'}
             </button>
             <button onClick={handleShare} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
@@ -239,7 +239,7 @@ const MarketplaceDealDetail = () => {
 
             {/* Description */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Property Description
               </h3>
               {deal.description ? (
@@ -255,7 +255,7 @@ const MarketplaceDealDetail = () => {
 
             {/* Property Facts - ALWAYS SHOW */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Property Facts
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -322,18 +322,18 @@ const MarketplaceDealDetail = () => {
 
             {/* Financials - ALWAYS SHOW */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Financials
               </h3>
               
               <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <DollarSign size={16} style={{ color: '#00b8d4' }} />
+                  <DollarSign size={16} style={{ color: '#ff0000' }} />
                   <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     Asking Price
                   </span>
                 </div>
-                <div style={{ color: '#00b8d4', fontSize: '36px', fontWeight: '700' }}>
+                <div style={{ color: '#ff0000', fontSize: '36px', fontWeight: '700' }}>
                   ${(deal.public_price || deal.price)?.toLocaleString()}
                 </div>
               </div>
@@ -376,7 +376,7 @@ const MarketplaceDealDetail = () => {
 
             {/* Important Dates - ALWAYS SHOW */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Important Dates & Details
               </h3>
               <div className="grid grid-cols-2 gap-6">
@@ -413,7 +413,7 @@ const MarketplaceDealDetail = () => {
             {/* Location Map - ALWAYS SHOW */}
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
               <div style={{ padding: '24px', paddingBottom: '16px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                   Location & Market
                 </h3>
               </div>
@@ -425,7 +425,7 @@ const MarketplaceDealDetail = () => {
                   </MapContainer>
                   <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)' }}>
                     <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
-                      <MapPin size={18} style={{ color: '#00b8d4', marginTop: '2px' }} />
+                      <MapPin size={18} style={{ color: '#ff0000', marginTop: '2px' }} />
                       <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
                         {deal.address}
                       </p>
@@ -443,7 +443,7 @@ const MarketplaceDealDetail = () => {
             {/* Broker Reputation */}
             {brokerReputation && deal.owner_id && (
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '24px' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                   Broker Reputation
                 </h3>
                 <BrokerBadges 
@@ -470,7 +470,7 @@ const MarketplaceDealDetail = () => {
                 style={{
                   width: '100%',
                   padding: '14px',
-                  background: '#00b8d4',
+                  background: '#ff0000',
                   border: 'none',
                   borderRadius: '8px',
                   color: '#000',
@@ -481,18 +481,18 @@ const MarketplaceDealDetail = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  boxShadow: '0 4px 12px rgba(0, 184, 212, 0.3)',
+                  boxShadow: '0 4px 12px rgba(255, 0, 0, 0.3)',
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = '#009fb8';
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 184, 212, 0.4)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(255, 0, 0, 0.4)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#00b8d4';
+                  e.currentTarget.style.background = '#ff0000';
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)';
                 }}
               >
                 <MessageCircle size={20} />
@@ -507,14 +507,14 @@ const MarketplaceDealDetail = () => {
                     width: '80px',
                     height: '80px',
                     borderRadius: '50%',
-                    background: 'rgba(0, 184, 212, 0.2)',
-                    border: '2px solid rgba(0, 184, 212, 0.4)',
+                    background: 'rgba(255, 0, 0, 0.2)',
+                    border: '2px solid rgba(255, 0, 0, 0.4)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '32px',
                     fontWeight: '600',
-                    color: '#00b8d4'
+                    color: '#ff0000'
                   }}>
                     BR
                   </div>
@@ -533,13 +533,13 @@ const MarketplaceDealDetail = () => {
                 {/* Contact Details */}
                 <div style={{ marginBottom: '12px' }}>
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Email</div>
-                  <div style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '500' }}>
+                  <div style={{ color: '#ff0000', fontSize: '14px', fontWeight: '500' }}>
                     broker@company.com
                   </div>
                 </div>
                 <div>
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}>Phone</div>
-                  <div style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '500' }}>
+                  <div style={{ color: '#ff0000', fontSize: '14px', fontWeight: '500' }}>
                     (210) 555-0123
                   </div>
                 </div>

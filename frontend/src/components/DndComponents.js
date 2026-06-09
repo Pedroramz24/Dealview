@@ -18,7 +18,7 @@ export function DroppableStageColumn({ stageId, children, isOver }) {
       ref={setNodeRef}
       className="flex flex-col p-2 rounded-xl transition-all duration-200 h-full"
       style={{
-        background: isOver ? 'rgba(0, 184, 212, 0.08)' : 'transparent',
+        background: isOver ? 'rgba(255, 0, 0, 0.08)' : 'transparent',
         border: isOver ? '2px dashed var(--accent)' : '2px dashed transparent',
         overflowY: 'auto',
         overflowX: 'hidden',

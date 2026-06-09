@@ -54,6 +54,11 @@ export const assetTypeColors = {
     color: '#F97316',
     bg: 'rgba(249, 115, 22, 0.15)',
     border: 'rgba(249, 115, 22, 0.3)'
+  },
+  'Gas Stations': {
+    color: '#E879F9',
+    bg: 'rgba(232, 121, 249, 0.15)',
+    border: 'rgba(232, 121, 249, 0.3)'
   }
 };
 

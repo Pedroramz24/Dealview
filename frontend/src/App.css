@@ -11,8 +11,8 @@
   
   /* Borders with Depth */
   --border-glass: rgba(255, 255, 255, 0.15);
-  --border-glass-hover: rgba(0, 184, 212, 0.5);
-  --border-glass-focus: rgba(0, 184, 212, 0.6);
+  --border-glass-hover: rgba(255, 0, 0, 0.5);
+  --border-glass-focus: rgba(255, 0, 0, 0.6);
   
   /* Text - High Contrast */
   --text-primary: #FFFFFF;
@@ -20,10 +20,10 @@
   --text-muted: rgba(255, 255, 255, 0.4);
   
   /* Accent - Cyan */
-  --accent: #00b8d4;
+  --accent: #ff0000;
   --accent-hover: #00d4ed;
-  --accent-light: rgba(0, 184, 212, 0.1);
-  --accent-glow: rgba(0, 184, 212, 0.3);
+  --accent-light: rgba(255, 0, 0, 0.1);
+  --accent-glow: rgba(255, 0, 0, 0.3);
   
   /* Status */
   --success: #10B981;
@@ -144,7 +144,7 @@ code, kbd, pre, .mono {
 }
 
 /* Cards with Premium Glass Depth */
-.deal-card, .contact-card, .team-card {
+.contact-card, .team-card {
   background: var(--bg-glass);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
@@ -156,11 +156,25 @@ code, kbd, pre, .mono {
   cursor: pointer;
 }
 
-.deal-card:hover, .contact-card:hover, .team-card:hover {
+.contact-card:hover, .team-card:hover {
   background: var(--bg-glass-hover);
   border-color: var(--border-glass-hover);
   box-shadow: var(--shadow-glass-hover);
   transform: translateY(-2px);
+}
+
+/* Deal cards — minimal border, no glassmorphic glow */
+.deal-card {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.deal-card:hover {
+  transform: none;
 }
 
 /* Pipeline - Vercel Style */
@@ -477,17 +491,17 @@ td {
 
 .fc .fc-button:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(0, 184, 212, 0.3);
-  color: #00b8d4;
+  border-color: rgba(255, 0, 0, 0.3);
+  color: #ff0000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transform: translateY(-1px);
 }
 
 .fc .fc-button-active {
-  background: rgba(0, 184, 212, 0.15) !important;
-  border-color: rgba(0, 184, 212, 0.35) !important;
-  color: #00d4ff !important;
-  box-shadow: 0 4px 12px rgba(0, 184, 212, 0.25) !important;
+  background: rgba(255, 0, 0, 0.15) !important;
+  border-color: rgba(255, 0, 0, 0.35) !important;
+  color: #ff0000 !important;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.25) !important;
 }
 
 .fc-theme-standard td,
@@ -518,11 +532,11 @@ td {
 }
 
 .fc .fc-daygrid-day:hover {
-  background: rgba(0, 184, 212, 0.02);
+  background: rgba(255, 0, 0, 0.02);
 }
 
 .fc .fc-day-today {
-  background: rgba(0, 184, 212, 0.04) !important;
+  background: rgba(255, 0, 0, 0.04) !important;
 }
 
 .fc .fc-daygrid-day-number {
@@ -533,12 +547,12 @@ td {
 }
 
 .fc .fc-day-today .fc-daygrid-day-number {
-  background: linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(0, 184, 212, 0.1));
-  color: #00d4ff;
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.1));
+  color: #ff0000;
   font-weight: 700;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 184, 212, 0.2);
-  border: 1px solid rgba(0, 184, 212, 0.3);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.3);
 }
 
 .fc .fc-day-other .fc-daygrid-day-number {
@@ -606,18 +620,18 @@ td {
 }
 
 .fc .fc-more-link {
-  background: rgba(0, 184, 212, 0.1);
-  color: #00b8d4;
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff0000;
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 11px;
   font-weight: 600;
-  border: 1px solid rgba(0, 184, 212, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.2);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .fc .fc-more-link:hover {
-  background: rgba(0, 184, 212, 0.15);
+  background: rgba(255, 0, 0, 0.15);
   transform: translateY(-1px);
 }
 
@@ -630,14 +644,14 @@ td {
 }
 
 .fc .fc-popover-header {
-  background: rgba(0, 184, 212, 0.1);
-  border-bottom: 1px solid rgba(0, 184, 212, 0.2);
-  color: #00d4ff;
+  background: rgba(255, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+  color: #ff0000;
   font-weight: 700;
 }
 
 .fc .fc-list-event:hover td {
-  background: rgba(0, 184, 212, 0.04);
+  background: rgba(255, 0, 0, 0.04);
 }
 
 /* Premium Input Styles for Calendar Forms */
@@ -656,8 +670,8 @@ td {
 
 .premium-input:focus {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(0, 184, 212, 0.4);
-  box-shadow: 0 0 24px rgba(0, 184, 212, 0.15);
+  border-color: rgba(255, 0, 0, 0.4);
+  box-shadow: 0 0 24px rgba(255, 0, 0, 0.15);
 }
 
 .premium-input::placeholder {
@@ -679,8 +693,8 @@ td {
 
 .premium-date-input input:focus {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(0, 184, 212, 0.4);
-  box-shadow: 0 0 24px rgba(0, 184, 212, 0.15);
+  border-color: rgba(255, 0, 0, 0.4);
+  box-shadow: 0 0 24px rgba(255, 0, 0, 0.15);
 }
 
 /* Pulse glow animation */
@@ -806,7 +820,7 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 .fc {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --fc-border-color: rgba(255, 255, 255, 0.02);
-  --fc-today-bg-color: rgba(0, 184, 212, 0.04);
+  --fc-today-bg-color: rgba(255, 0, 0, 0.04);
 }
 
 /* Hide default toolbar since we have custom */
@@ -827,7 +841,7 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 
 /* Day headers - elevated */
 .fc .fc-col-header {
-  background: linear-gradient(180deg, rgba(0, 184, 212, 0.03) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.03) 0%, transparent 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
@@ -853,13 +867,13 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 }
 
 .fc .fc-daygrid-day:hover {
-  background: radial-gradient(circle at center, rgba(0, 184, 212, 0.03) 0%, transparent 70%);
-  box-shadow: inset 0 0 30px rgba(0, 184, 212, 0.04);
+  background: radial-gradient(circle at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%);
+  box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.04);
 }
 
 .fc .fc-day-today {
-  background: radial-gradient(circle at center, rgba(0, 184, 212, 0.06) 0%, rgba(0, 184, 212, 0.01) 70%) !important;
-  box-shadow: inset 0 0 40px rgba(0, 184, 212, 0.08), 0 0 0 1px rgba(0, 184, 212, 0.15);
+  background: radial-gradient(circle at center, rgba(255, 0, 0, 0.06) 0%, rgba(255, 0, 0, 0.01) 70%) !important;
+  box-shadow: inset 0 0 40px rgba(255, 0, 0, 0.08), 0 0 0 1px rgba(255, 0, 0, 0.15);
 }
 
 /* Date numbers - glowing today */
@@ -885,11 +899,11 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 }
 
 .fc .fc-day-today .fc-daygrid-day-number {
-  background: linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(0, 184, 212, 0.15));
-  color: #00d4ff;
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(255, 0, 0, 0.15));
+  color: #ff0000;
   font-weight: 900;
-  box-shadow: 0 0 30px rgba(0, 184, 212, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(0, 184, 212, 0.4);
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 0, 0, 0.4);
   animation: glow-pulse 3s ease-in-out infinite;
 }
 
@@ -953,21 +967,21 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 
 /* Refined Glow Effects - Unified & Subtle */
 .fc .fc-day-today .fc-daygrid-day-number {
-  background: linear-gradient(135deg, rgba(0, 184, 212, 0.12), rgba(0, 184, 212, 0.06));
-  color: #00d4ff;
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.12), rgba(255, 0, 0, 0.06));
+  color: #ff0000;
   font-weight: 900;
-  box-shadow: 0 0 4px rgba(0, 184, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(0, 184, 212, 0.25);
+  box-shadow: 0 0 4px rgba(255, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.25);
   animation: none;
 }
 
 /* Subtle unified glow on Create Event button */
 .create-event-btn-glow {
-  box-shadow: 0 3px 12px rgba(0, 184, 212, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 3px 12px rgba(255, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .create-event-btn-glow:hover {
-  box-shadow: 0 5px 18px rgba(0, 184, 212, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 5px 18px rgba(255, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* Icon badges - subtle unified glow */
@@ -1019,11 +1033,11 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 }
 
 .fc .fc-more-link {
-  box-shadow: 0 1px 4px rgba(0, 184, 212, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 1px 4px rgba(255, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
 }
 
 .fc .fc-more-link:hover {
-  box-shadow: 0 2px 8px rgba(0, 184, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Event title and content - perfectly centered */
@@ -1135,17 +1149,17 @@ div[role="listbox"] {
 }
 
 .datetime-picker-dark .react-datetime-picker__button {
-  color: #00b8d4 !important;
+  color: #ff0000 !important;
   padding: 4px !important;
 }
 
 .datetime-picker-dark .react-datetime-picker__button:hover {
-  background: rgba(0, 184, 212, 0.1) !important;
+  background: rgba(255, 0, 0, 0.1) !important;
   border-radius: 4px !important;
 }
 
 .datetime-picker-dark .react-datetime-picker__button:enabled:focus {
-  background: rgba(0, 184, 212, 0.15) !important;
+  background: rgba(255, 0, 0, 0.15) !important;
 }
 
 .datetime-picker-dark .react-datetime-picker__clock,
@@ -1178,8 +1192,8 @@ div[role="listbox"] {
 }
 
 .react-calendar__navigation button:hover {
-  background: rgba(0, 184, 212, 0.15) !important;
-  color: #00b8d4 !important;
+  background: rgba(255, 0, 0, 0.15) !important;
+  color: #ff0000 !important;
 }
 
 .react-calendar__navigation button:disabled {
@@ -1211,12 +1225,12 @@ div[role="listbox"] {
 }
 
 .react-calendar__tile:hover {
-  background: rgba(0, 184, 212, 0.15) !important;
-  color: #00b8d4 !important;
+  background: rgba(255, 0, 0, 0.15) !important;
+  color: #ff0000 !important;
 }
 
 .react-calendar__tile--active {
-  background: #00b8d4 !important;
+  background: #ff0000 !important;
   color: #000 !important;
   font-weight: 600 !important;
 }
@@ -1226,13 +1240,13 @@ div[role="listbox"] {
 }
 
 .react-calendar__tile--now {
-  background: rgba(0, 184, 212, 0.2) !important;
-  color: #00b8d4 !important;
+  background: rgba(255, 0, 0, 0.2) !important;
+  color: #ff0000 !important;
   font-weight: 600 !important;
 }
 
 .react-calendar__tile--now:hover {
-  background: rgba(0, 184, 212, 0.25) !important;
+  background: rgba(255, 0, 0, 0.25) !important;
 }
 
 .react-calendar__month-view__days__day--neighboringMonth {
@@ -1259,12 +1273,12 @@ div[role="listbox"] {
 }
 
 .react-clock__hand {
-  stroke: #00b8d4 !important;
+  stroke: #ff0000 !important;
   stroke-width: 2 !important;
 }
 
 .react-clock__hand__body {
-  stroke: #00b8d4 !important;
+  stroke: #ff0000 !important;
 }
 
 .react-clock__mark {
@@ -1276,7 +1290,7 @@ div[role="listbox"] {
 }
 
 .react-clock__second-hand__body {
-  stroke: #00b8d4 !important;
+  stroke: #ff0000 !important;
 }
 
 /* React DatePicker - Dark Theme for Campaign Wizard */
@@ -1300,7 +1314,7 @@ div[role="listbox"] {
 
 .datetime-picker-dark .react-datepicker__input-container input:focus {
   outline: none;
-  border-color: rgba(0, 184, 212, 0.4);
+  border-color: rgba(255, 0, 0, 0.4);
   background: rgba(0, 0, 0, 0.4);
 }
 
@@ -1344,24 +1358,24 @@ div[role="listbox"] {
 }
 
 .react-datepicker__day:hover {
-  background: rgba(0, 184, 212, 0.15) !important;
-  color: #00b8d4 !important;
+  background: rgba(255, 0, 0, 0.15) !important;
+  color: #ff0000 !important;
 }
 
 .react-datepicker__day--selected {
-  background: #00b8d4 !important;
+  background: #ff0000 !important;
   color: #000 !important;
   font-weight: 600 !important;
 }
 
 .react-datepicker__day--keyboard-selected {
-  background: rgba(0, 184, 212, 0.2) !important;
-  color: #00b8d4 !important;
+  background: rgba(255, 0, 0, 0.2) !important;
+  color: #ff0000 !important;
 }
 
 .react-datepicker__day--today {
-  background: rgba(0, 184, 212, 0.2) !important;
-  color: #00b8d4 !important;
+  background: rgba(255, 0, 0, 0.2) !important;
+  color: #ff0000 !important;
   font-weight: 600 !important;
 }
 
@@ -1387,12 +1401,12 @@ div[role="listbox"] {
 }
 
 .react-datepicker__time-list-item:hover {
-  background: rgba(0, 184, 212, 0.15) !important;
-  color: #00b8d4 !important;
+  background: rgba(255, 0, 0, 0.15) !important;
+  color: #ff0000 !important;
 }
 
 .react-datepicker__time-list-item--selected {
-  background: #00b8d4 !important;
+  background: #ff0000 !important;
   color: #000 !important;
   font-weight: 600 !important;
 }
@@ -1406,7 +1420,7 @@ div[role="listbox"] {
 }
 
 .react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
-  border-color: #00b8d4 !important;
+  border-color: #ff0000 !important;
 }
 
 .react-datepicker__month {
@@ -1462,7 +1476,7 @@ div[role="listbox"] {
 }
 
 .campaign-row:hover {
-  border-left-color: #00b8d4 !important;
+  border-left-color: #ff0000 !important;
 }
 
 .campaign-create-btn {
@@ -1475,7 +1489,7 @@ div[role="listbox"] {
   inset: 0;
   border-radius: 10px;
   padding: 1px;
-  background: linear-gradient(135deg, #00b8d4, #00d4ed);
+  background: linear-gradient(135deg, #ff0000, #00d4ed);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -1494,56 +1508,62 @@ div[role="listbox"] {
 /* ================================================== */
 
 /* Sonner toast container */
+/* ── Sonner Toast Overrides ── */
 [data-sonner-toaster] {
-  --normal-bg: rgba(10, 10, 10, 0.95) !important;
-  --normal-border: rgba(255, 255, 255, 0.1) !important;
-  --normal-text: #ffffff !important;
-  
-  --success-bg: rgba(16, 185, 129, 0.12) !important;
-  --success-border: rgba(16, 185, 129, 0.35) !important;
-  --success-text: #10b981 !important;
-  
-  --error-bg: rgba(239, 68, 68, 0.12) !important;
-  --error-border: rgba(239, 68, 68, 0.35) !important;
-  --error-text: #ef4444 !important;
-  
-  --info-bg: rgba(0, 184, 212, 0.12) !important;
-  --info-border: rgba(0, 184, 212, 0.35) !important;
-  --info-text: #00b8d4 !important;
-  
-  --warning-bg: rgba(251, 191, 36, 0.12) !important;
-  --warning-border: rgba(251, 191, 36, 0.35) !important;
-  --warning-text: #fbbf24 !important;
+  --normal-bg: rgba(12, 12, 14, 0.95) !important;
+  --normal-border: rgba(255, 255, 255, 0.06) !important;
+  --normal-text: rgba(255, 255, 255, 0.85) !important;
+  --success-bg: rgba(12, 12, 14, 0.95) !important;
+  --success-border: rgba(255, 255, 255, 0.06) !important;
+  --success-text: rgba(255, 255, 255, 0.85) !important;
+  --error-bg: rgba(12, 12, 14, 0.95) !important;
+  --error-border: rgba(255, 255, 255, 0.06) !important;
+  --error-text: rgba(255, 255, 255, 0.85) !important;
+  --info-bg: rgba(12, 12, 14, 0.95) !important;
+  --info-border: rgba(255, 255, 255, 0.06) !important;
+  --info-text: rgba(255, 255, 255, 0.85) !important;
+  --warning-bg: rgba(12, 12, 14, 0.95) !important;
+  --warning-border: rgba(255, 255, 255, 0.06) !important;
+  --warning-text: rgba(255, 255, 255, 0.85) !important;
 }
 
-/* Individual toast styling */
 [data-sonner-toast] {
-  background: var(--normal-bg) !important;
-  border: 1px solid var(--normal-border) !important;
-  color: var(--normal-text) !important;
-  backdrop-filter: blur(20px) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-  padding: 14px 18px !important;
+  background: rgba(12, 12, 14, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  padding: 10px 14px !important;
   border-radius: 8px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  min-height: unset !important;
 }
 
-/* Success toast */
-[data-sonner-toast][data-type="success"] {
-  background: var(--success-bg) !important;
-  border-color: var(--success-border) !important;
+[data-sonner-toast][data-type="success"],
+[data-sonner-toast][data-type="error"],
+[data-sonner-toast][data-type="warning"],
+[data-sonner-toast][data-type="info"] {
+  background: rgba(12, 12, 14, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
 }
 
-[data-sonner-toast][data-type="success"] [data-title] {
-  color: var(--success-text) !important;
-  font-weight: 600 !important;
+[data-sonner-toast] [data-title] {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 400 !important;
+  font-size: 13px !important;
 }
 
-/* Error toast */
-[data-sonner-toast][data-type="error"] {
-  background: var(--error-bg) !important;
-  border-color: var(--error-border) !important;
+[data-sonner-toast] [data-icon] {
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
+}
+
+[data-sonner-toast] [data-close-button] {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Unified Primary Button Styles */
@@ -1551,8 +1571,8 @@ div[role="listbox"] {
   padding: 10px 20px;
   font-size: 14px;
   height: 42px;
-  background: linear-gradient(135deg, #00b8d4 0%, #0095b3 100%);
-  border: 1px solid rgba(0, 184, 212, 0.3);
+  background: linear-gradient(135deg, #ff0000 0%, #0095b3 100%);
+  border: 1px solid rgba(255, 0, 0, 0.3);
   color: #ffffff !important;
   border-radius: 8px;
   font-weight: 600;
@@ -1569,9 +1589,9 @@ div[role="listbox"] {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #00d4ed 0%, #00b8d4 100%);
+  background: linear-gradient(135deg, #00d4ed 0%, #ff0000 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 184, 212, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -1594,7 +1614,7 @@ div[role="listbox"] {
 .ai-response-content h1,
 .ai-response-content h2,
 .ai-response-content h3 {
-  color: #00b8d4;
+  color: #ff0000;
   font-weight: 600;
   margin-top: 20px;
   margin-bottom: 12px;
@@ -1603,7 +1623,7 @@ div[role="listbox"] {
 
 .ai-response-content h1 {
   font-size: 20px;
-  border-bottom: 1px solid rgba(0, 184, 212, 0.2);
+  border-bottom: 1px solid rgba(255, 0, 0, 0.2);
   padding-bottom: 8px;
 }
 
@@ -1634,7 +1654,7 @@ div[role="listbox"] {
 }
 
 .ai-response-content li::marker {
-  color: #00b8d4;
+  color: #ff0000;
 }
 
 .ai-response-content strong {
@@ -1643,8 +1663,8 @@ div[role="listbox"] {
 }
 
 .ai-response-content code {
-  background: rgba(0, 184, 212, 0.1);
-  border: 1px solid rgba(0, 184, 212, 0.2);
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.2);
   borderRadius: 4px;
   padding: 2px 6px;
   fontFamily: var(--font-mono);
@@ -1669,7 +1689,7 @@ div[role="listbox"] {
 }
 
 .ai-response-content blockquote {
-  border-left: 3px solid #00b8d4;
+  border-left: 3px solid #ff0000;
   padding-left: 16px;
   margin: 12px 0;
   color: rgba(255, 255, 255, 0.7);
@@ -1699,8 +1719,8 @@ div[role="listbox"] {
   padding: 10px 20px;
   font-size: 14px;
   height: 42px;
-  background: linear-gradient(135deg, #00b8d4 0%, #0095b3 100%);
-  border: 1px solid rgba(0, 184, 212, 0.3);
+  background: linear-gradient(135deg, #ff0000 0%, #0095b3 100%);
+  border: 1px solid rgba(255, 0, 0, 0.3);
   color: #ffffff !important;
   border-radius: 8px;
   font-weight: 600;
@@ -1717,9 +1737,9 @@ div[role="listbox"] {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #00d4ed 0%, #00b8d4 100%);
+  background: linear-gradient(135deg, #00d4ed 0%, #ff0000 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 184, 212, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -1737,7 +1757,7 @@ div[role="listbox"] {
 .ai-response-content h1,
 .ai-response-content h2,
 .ai-response-content h3 {
-  color: #00b8d4;
+  color: #ff0000;
   font-weight: 600;
   margin-top: 16px;
   margin-bottom: 10px;
@@ -1768,7 +1788,7 @@ div[role="listbox"] {
 }
 
 .ai-response-content li::marker {
-  color: #00b8d4;
+  color: #ff0000;
 }
 
 .ai-response-content strong {
@@ -1777,8 +1797,8 @@ div[role="listbox"] {
 }
 
 .ai-response-content code {
-  background: rgba(0, 184, 212, 0.1);
-  border: 1px solid rgba(0, 184, 212, 0.2);
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.2);
   border-radius: 4px;
   padding: 2px 6px;
   font-family: var(--font-mono);

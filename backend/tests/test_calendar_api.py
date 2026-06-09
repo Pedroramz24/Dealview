@@ -12,7 +12,7 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test user credentials - will be created during test
 TEST_EMAIL = f"calendar_test_{uuid.uuid4().hex[:8]}@testdeallinked.com"
-TEST_PASSWORD = "TestPassword123!"
+TEST_PASSWORD = os.environ.get("TEST_DEFAULT_PASSWORD", "TestPassword123!")
 
 
 class TestCalendarAPI:

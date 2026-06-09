@@ -42,7 +42,7 @@ const ParcelPopup = ({ parcel, onClose, onCreateDeal }) => {
         overflowY: 'auto',
         background: 'rgba(17, 24, 39, 0.95)',
         backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(0, 184, 212, 0.3)',
+        border: '1px solid rgba(255, 0, 0, 0.3)',
         borderRadius: '12px',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
         zIndex: 1000,
@@ -64,7 +64,7 @@ const ParcelPopup = ({ parcel, onClose, onCreateDeal }) => {
               margin: 0,
               fontSize: '18px',
               fontWeight: 600,
-              color: '#00d4ff',
+              color: '#ff0000',
             }}
           >
             {address || 'Parcel Details'}
@@ -103,7 +103,7 @@ const ParcelPopup = ({ parcel, onClose, onCreateDeal }) => {
               margin: '0 0 12px 0',
               fontSize: '14px',
               fontWeight: 600,
-              color: '#00b8d4',
+              color: '#ff0000',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
             }}
@@ -130,7 +130,7 @@ const ParcelPopup = ({ parcel, onClose, onCreateDeal }) => {
               margin: '0 0 12px 0',
               fontSize: '14px',
               fontWeight: 600,
-              color: '#00b8d4',
+              color: '#ff0000',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
             }}
@@ -169,7 +169,7 @@ const ParcelPopup = ({ parcel, onClose, onCreateDeal }) => {
               margin: '0 0 12px 0',
               fontSize: '14px',
               fontWeight: 600,
-              color: '#00b8d4',
+              color: '#ff0000',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
             }}
@@ -200,7 +200,7 @@ const ParcelPopup = ({ parcel, onClose, onCreateDeal }) => {
             style={{
               width: '100%',
               padding: '12px',
-              background: 'linear-gradient(135deg, #00b8d4 0%, #0097a7 100%)',
+              background: 'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)',
               border: 'none',
               borderRadius: '8px',
               color: '#ffffff',
@@ -211,7 +211,7 @@ const ParcelPopup = ({ parcel, onClose, onCreateDeal }) => {
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 184, 212, 0.4)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.4)';
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
@@ -239,7 +239,7 @@ const InfoRow = ({ label, value, highlight = false }) => (
     <span style={{ color: 'rgba(255, 255, 255, 0.5)' }}>{label}:</span>
     <span
       style={{
-        color: highlight ? '#00d4ff' : 'rgba(255, 255, 255, 0.9)',
+        color: highlight ? '#ff0000' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: highlight ? 600 : 400,
       }}
     >

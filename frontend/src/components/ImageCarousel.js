@@ -107,13 +107,13 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
   return (
     <div style={{ 
       background: 'rgba(255,255,255,0.03)', 
-      border: '1px solid rgba(0, 184, 212, 0.3)', 
+      border: '1px solid rgba(255, 0, 0, 0.3)', 
       borderRadius: '12px', 
       padding: '24px',
       marginBottom: '24px'
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
+        <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
           Property Images ({images.length})
         </h3>
         <label htmlFor="multiple-image-upload" style={{ cursor: 'pointer' }}>
@@ -122,10 +122,10 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
             alignItems: 'center',
             gap: '8px',
             padding: '8px 16px',
-            background: uploading ? 'rgba(255,255,255,0.05)' : 'rgba(0, 184, 212, 0.1)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
+            background: uploading ? 'rgba(255,255,255,0.05)' : 'rgba(255, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 0, 0, 0.3)',
             borderRadius: '8px',
-            color: uploading ? 'rgba(255,255,255,0.4)' : '#00b8d4',
+            color: uploading ? 'rgba(255,255,255,0.4)' : '#ff0000',
             fontSize: '13px',
             fontWeight: '500',
             transition: 'all 0.2s',
@@ -133,13 +133,13 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
           }}
           onMouseEnter={(e) => {
             if (!uploading) {
-              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.2)';
+              e.currentTarget.style.background = 'rgba(255, 0, 0, 0.2)';
               e.currentTarget.style.transform = 'translateY(-2px)';
             }
           }}
           onMouseLeave={(e) => {
             if (!uploading) {
-              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+              e.currentTarget.style.background = 'rgba(255, 0, 0, 0.1)';
               e.currentTarget.style.transform = 'translateY(0)';
             }
           }}>
@@ -181,7 +181,7 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
             className="property-main-carousel"
           >
             {images.map((image, index) => (
-              <SwiperSlide key={index}>
+              <SwiperSlide key={image}>
                 <div style={{ position: 'relative', width: '100%', height: '400px' }}>
                   <img
                     src={image}
@@ -255,9 +255,9 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.opacity = '1';
-                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.9)';
+                  e.currentTarget.style.background = 'rgba(255, 0, 0, 0.9)';
                   e.currentTarget.style.transform = 'translateY(-50%) scale(1.15)';
-                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 184, 212, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(255, 0, 0, 0.5)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.opacity = '0.6';
@@ -293,9 +293,9 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.opacity = '1';
-                  e.currentTarget.style.background = 'rgba(0, 184, 212, 0.9)';
+                  e.currentTarget.style.background = 'rgba(255, 0, 0, 0.9)';
                   e.currentTarget.style.transform = 'translateY(-50%) scale(1.15)';
-                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 184, 212, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(255, 0, 0, 0.5)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.opacity = '0.6';
@@ -338,7 +338,7 @@ const ImageCarousel = ({ images = [], dealId, userId, onImagesUpdate, uploading,
                   }}
                   className="thumb-slide"
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.border = '2px solid #00b8d4';
+                    e.currentTarget.style.border = '2px solid #ff0000';
                     e.currentTarget.style.transform = 'scale(1.05)';
                   }}
                   onMouseLeave={(e) => {

@@ -180,7 +180,7 @@ const BulkActionsBar = ({ selectedCount, selectedIds, selectedPropertiesData = [
           style={{
             background: gradients.primaryButton,
             border: 'none',
-            boxShadow: shadows.glowCyan
+            boxShadow: shadows.glow
           }}
         >
           <UserPlus size={14} className="mr-2" />

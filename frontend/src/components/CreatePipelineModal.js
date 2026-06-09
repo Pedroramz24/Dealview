@@ -12,7 +12,7 @@ import { Save, X } from 'lucide-react';
 const CreatePipelineModal = ({ open, onClose, onPipelineCreated }) => {
   const [pipelineName, setPipelineName] = useState('');
   const [pipelineDescription, setPipelineDescription] = useState('');
-  const [pipelineColor, setPipelineColor] = useState('#00b8d4');
+  const [pipelineColor, setPipelineColor] = useState('#ff0000');
   const [pipelineIcon, setPipelineIcon] = useState('briefcase');
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +25,7 @@ const CreatePipelineModal = ({ open, onClose, onPipelineCreated }) => {
     { value: '#10b981', label: 'Green' },
     { value: '#00d4aa', label: 'Teal' },
     { value: '#ef4444', label: 'Red' },
-    { value: '#00b8d4', label: 'Cyan' },
+    { value: '#ff0000', label: 'Cyan' },
   ];
 
   const handleCreate = async () => {
@@ -54,7 +54,7 @@ const CreatePipelineModal = ({ open, onClose, onPipelineCreated }) => {
         toast.success('Pipeline created successfully');
         setPipelineName('');
         setPipelineDescription('');
-        setPipelineColor('#00b8d4');
+        setPipelineColor('#ff0000');
         onPipelineCreated();
         onClose();
       }
@@ -149,8 +149,8 @@ const CreatePipelineModal = ({ open, onClose, onPipelineCreated }) => {
           </div>
 
           <div style={{
-            background: 'rgba(0, 184, 212, 0.05)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.05)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '8px',
             padding: '12px'
           }}>
@@ -165,7 +165,7 @@ const CreatePipelineModal = ({ open, onClose, onPipelineCreated }) => {
               onClick={handleCreate}
               disabled={loading || !pipelineName.trim()}
               style={{
-                background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                background: 'linear-gradient(135deg, #ff0000 0%, #00d4aa 100%)',
                 color: '#FFFFFF',
                 flex: 1
               }}

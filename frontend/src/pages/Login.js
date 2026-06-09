@@ -10,15 +10,19 @@ import { colors, gradients } from '../styles/designSystem';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showRequestAccess, setShowRequestAccess] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
-  const { login, signup } = useContext(AuthContext);
+  const [requestName, setRequestName] = useState('');
+  const [requestEmail, setRequestEmail] = useState('');
+  const [requestLoading, setRequestLoading] = useState(false);
+  const { login } = useContext(AuthContext);
+
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +35,34 @@ const Login = () => {
       toast.error(error.message || 'Authentication failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRequestAccess = async () => {
+    if (!requestName.trim() || !requestEmail.trim()) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    setRequestLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: requestEmail, password: crypto.randomUUID(), full_name: requestName })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success('Access request submitted! You will be notified once approved.');
+        setShowRequestAccess(false);
+        setRequestName('');
+        setRequestEmail('');
+      } else {
+        toast.error(data.detail || 'Failed to submit request');
+      }
+    } catch (e) {
+      toast.error('Failed to submit request');
+    } finally {
+      setRequestLoading(false);
     }
   };
 
@@ -74,7 +106,7 @@ const Login = () => {
         transform: 'translateX(-50%)',
         width: '800px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(0, 184, 212, 0.15) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 0, 0, 0.15) 0%, transparent 70%)',
         pointerEvents: 'none'
       }} />
 
@@ -170,54 +202,46 @@ const Login = () => {
                 Back to Login
               </button>
             </div>
+          ) : showRequestAccess ? (
+            <div>
+              <h2 style={{ color: colors.textPrimary, fontSize: '20px', fontWeight: '600', marginBottom: '8px', textAlign: 'center' }}>
+                Request Access
+              </h2>
+              <p style={{ color: colors.textTertiary, fontSize: '13px', textAlign: 'center', marginBottom: '20px' }}>
+                Submit your details and we'll review your request.
+              </p>
+              <div style={{ marginBottom: '16px' }}>
+                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Full Name</Label>
+                <Input
+                  value={requestName}
+                  onChange={(e) => setRequestName(e.target.value)}
+                  placeholder="John Doe"
+                  style={{ marginTop: '8px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${colors.border}`, color: colors.textPrimary }}
+                />
+              </div>
+              <div style={{ marginBottom: '24px' }}>
+                <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Email</Label>
+                <Input
+                  type="email"
+                  value={requestEmail}
+                  onChange={(e) => setRequestEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  style={{ marginTop: '8px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${colors.border}`, color: colors.textPrimary }}
+                />
+              </div>
+              <Button
+                onClick={handleRequestAccess}
+                disabled={requestLoading}
+                style={{ width: '100%', background: gradients.primaryButton, border: 'none', height: '44px', fontSize: '15px', fontWeight: '600', marginBottom: '12px' }}
+              >
+                {requestLoading ? 'Submitting...' : 'Submit Request'}
+              </Button>
+              <button onClick={() => setShowRequestAccess(false)} style={{ width: '100%', background: 'transparent', border: 'none', color: colors.textTertiary, cursor: 'pointer', fontSize: '14px' }}>
+                Back to Login
+              </button>
+            </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              {/* Toggle */}
-              <div style={{
-                display: 'flex',
-                marginBottom: '24px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: '8px',
-                padding: '4px'
-              }}>
-                <button
-                  type="button"
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    background: colors.primary,
-                    color: '#fff',
-                    fontWeight: '500',
-                    cursor: 'default',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  Login
-                </button>
-              </div>
-
-              {/* Signup disabled for private launch */}
-              {!isLogin && (
-                <div style={{ marginBottom: '16px' }}>
-                  <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Full Name</Label>
-                  <Input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required={!isLogin}
-                    placeholder="John Doe"
-                    style={{
-                      marginTop: '8px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: `1px solid ${colors.border}`,
-                      color: colors.textPrimary
-                    }}
-                  />
-                </div>
-              )}
-
               {/* Email */}
               <div style={{ marginBottom: '16px' }}>
                 <Label style={{ color: colors.textSecondary, fontSize: '13px' }}>Email</Label>
@@ -255,23 +279,21 @@ const Login = () => {
               </div>
 
               {/* Forgot Password Link */}
-              {isLogin && (
-                <div style={{ textAlign: 'right', marginBottom: '16px' }}>
-                  <button
-                    type="button"
-                    onClick={() => setShowForgotPassword(true)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: colors.primary,
-                      cursor: 'pointer',
-                      fontSize: '13px'
-                    }}
-                  >
-                    Forgot password?
-                  </button>
-                </div>
-              )}
+              <div style={{ textAlign: 'right', marginBottom: '16px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: colors.primary,
+                    cursor: 'pointer',
+                    fontSize: '13px'
+                  }}
+                >
+                  Forgot password?
+                </button>
+              </div>
 
               {/* Submit Button */}
               <Button
@@ -286,8 +308,21 @@ const Login = () => {
                   fontWeight: '600'
                 }}
               >
-                {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Create Account')}
+                {loading ? 'Please wait...' : 'Login'}
               </Button>
+
+              <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowRequestAccess(true)}
+                  style={{
+                    background: 'none', border: 'none',
+                    color: colors.textTertiary, cursor: 'pointer', fontSize: '13px'
+                  }}
+                >
+                  Don't have an account? <span style={{ color: colors.primary }}>Request Access</span>
+                </button>
+              </div>
             </form>
           )}
         </div>

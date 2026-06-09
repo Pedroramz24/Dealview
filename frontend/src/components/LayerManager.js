@@ -346,7 +346,7 @@ const LayerManager = ({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Layers className="w-5 h-5" style={{ color: '#00b8d4', marginRight: '10px' }} />
+            <Layers className="w-5 h-5" style={{ color: '#ff0000', marginRight: '10px' }} />
             <h2
               style={{
                 color: '#FFFFFF',
@@ -428,7 +428,7 @@ const LayerManager = ({
                 transition: 'all 150ms ease',
               }}
               onFocus={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.5)';
+                e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.5)';
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
               }}
               onBlur={(e) => {
@@ -518,7 +518,7 @@ const LayerManager = ({
           style={{
             padding: '12px 24px 16px',
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'rgba(0, 184, 212, 0.03)'
+            background: 'rgba(255, 0, 0, 0.03)'
           }}
         >
           <div style={{ marginBottom: '8px' }}>
@@ -579,7 +579,7 @@ const LayerManager = ({
                 border: 'none',
                 background: props.mapStyle === 'satellite' ? 
                   'linear-gradient(135deg, #a855f7 0%, #d946ef 100%)' : 
-                  'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                  'linear-gradient(135deg, #ff0000 0%, #00d4aa 100%)',
                 color: '#FFFFFF',
                 fontSize: '12px',
                 fontWeight: '600',
@@ -637,7 +637,7 @@ const LayerManager = ({
                 borderRadius: '6px',
                 border: 'none',
                 background: props.showParcels ? 
-                  'linear-gradient(135deg, #00d4aa 0%, #00b8d4 100%)' : 
+                  'linear-gradient(135deg, #00d4aa 0%, #ff0000 100%)' : 
                   'rgba(255, 255, 255, 0.08)',
                 color: props.showParcels ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
                 fontSize: '12px',
@@ -733,7 +733,7 @@ const LayerManager = ({
                 flexWrap: 'wrap',
                 gap: '6px'
               }}>
-                {['Retail Centers', 'Land', 'Industrial', 'Restaurants', 'Hotels', 'Medical', 'Office', 'Multifamily', 'Mixed Use'].map(assetType => {
+                {['Retail Centers', 'Land', 'Industrial', 'Restaurants', 'Hotels', 'Medical', 'Gas Stations', 'Office', 'Multifamily', 'Mixed Use'].map(assetType => {
                   const isSelected = props.teamDealsAssetTypeFilter?.includes(assetType);
                   return (
                     <button
@@ -998,12 +998,12 @@ const LayerManager = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '6px',
-                background: 'rgba(6, 182, 212, 0.1)',
+                background: 'rgba(255, 0, 0, 0.1)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff0000" strokeWidth="2">
                   <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12" y2="8"></line>
@@ -1026,7 +1026,7 @@ const LayerManager = ({
                 borderRadius: '6px',
                 border: 'none',
                 background: props.showWaterSewer ? 
-                  'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' : 
+                  'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)' : 
                   'rgba(255, 255, 255, 0.08)',
                 color: props.showWaterSewer ? '#FFFFFF' : 'rgba(255,255,255,0.6)',
                 fontSize: '12px',
@@ -1393,8 +1393,8 @@ const LayerRow = ({ layer, state, onToggle, onOpacityChange }) => {
             width: '40px',
             height: '22px',
             borderRadius: '11px',
-            background: state.visible ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)',
-            border: `1px solid ${state.visible ? '#00b8d4' : 'rgba(255, 255, 255, 0.2)'}`,
+            background: state.visible ? '#ff0000' : 'rgba(255, 255, 255, 0.1)',
+            border: `1px solid ${state.visible ? '#ff0000' : 'rgba(255, 255, 255, 0.2)'}`,
             position: 'relative',
             cursor: 'pointer',
             transition: 'all 200ms ease',
@@ -1447,7 +1447,7 @@ const LayerRow = ({ layer, state, onToggle, onOpacityChange }) => {
             </span>
             <span
               style={{
-                color: '#00b8d4',
+                color: '#ff0000',
                 fontSize: '11px',
                 fontWeight: '600',
               }}
@@ -1465,7 +1465,7 @@ const LayerRow = ({ layer, state, onToggle, onOpacityChange }) => {
               width: '100%',
               height: '4px',
               borderRadius: '2px',
-              background: `linear-gradient(to right, #00b8d4 0%, #00b8d4 ${state.opacity}%, rgba(255, 255, 255, 0.1) ${state.opacity}%, rgba(255, 255, 255, 0.1) 100%)`,
+              background: `linear-gradient(to right, #ff0000 0%, #ff0000 ${state.opacity}%, rgba(255, 255, 255, 0.1) ${state.opacity}%, rgba(255, 255, 255, 0.1) 100%)`,
               outline: 'none',
               appearance: 'none',
               cursor: 'pointer',
@@ -1490,31 +1490,31 @@ const LayerRow = ({ layer, state, onToggle, onOpacityChange }) => {
                 width: 14px;
                 height: 14px;
                 border-radius: 50%;
-                background: #00b8d4;
+                background: #ff0000;
                 cursor: pointer;
-                box-shadow: 0 2px 4px rgba(0, 184, 212, 0.4);
+                box-shadow: 0 2px 4px rgba(255, 0, 0, 0.4);
                 transition: all 150ms ease;
               }
 
               .opacity-slider::-webkit-slider-thumb:hover {
                 transform: scale(1.15);
-                box-shadow: 0 2px 8px rgba(0, 184, 212, 0.6);
+                box-shadow: 0 2px 8px rgba(255, 0, 0, 0.6);
               }
 
               .opacity-slider::-moz-range-thumb {
                 width: 14px;
                 height: 14px;
                 border-radius: 50%;
-                background: #00b8d4;
+                background: #ff0000;
                 cursor: pointer;
                 border: none;
-                box-shadow: 0 2px 4px rgba(0, 184, 212, 0.4);
+                box-shadow: 0 2px 4px rgba(255, 0, 0, 0.4);
                 transition: all 150ms ease;
               }
 
               .opacity-slider::-moz-range-thumb:hover {
                 transform: scale(1.15);
-                box-shadow: 0 2px 8px rgba(0, 184, 212, 0.6);
+                box-shadow: 0 2px 8px rgba(255, 0, 0, 0.6);
               }
             `}
           </style>

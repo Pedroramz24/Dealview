@@ -118,8 +118,10 @@ async def list_deals(
     try:
         user_id = await get_user_id(credentials)
         
-        # Build query
-        query = supabase.table('deals').select('*').eq('owner_id', user_id)
+        # Build query - include linked contacts
+        query = supabase.table('deals').select(
+            '*, contact_deal_links(contact_id, contacts(id, name, company, phone, email))'
+        ).eq('owner_id', user_id)
         
         # Apply filters
         if status:
@@ -257,11 +259,10 @@ async def create_deal(
                 if stage_response.data:
                     stage_id = stage_response.data[0]['id']
         
-        # Build deal data
+        # Build deal data — deals default to private (no team_id)
         deal_data = {
             "id": str(uuid.uuid4()),
             "owner_id": user_id,
-            "team_id": team_id,
             "title": deal.title,
             "address": deal.address,
             "city": deal.city,
@@ -626,6 +627,84 @@ async def delete_document(
     except Exception as e:
         logger.error(f"Delete document error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to delete document")
+
+
+class ImageReorderPayload(BaseModel):
+    image_urls: List[str]
+
+
+@router.delete("/{deal_id}/images/{image_index}")
+async def delete_deal_image_at_index(
+    deal_id: str,
+    image_index: int,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete a specific image from a deal by its index"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+
+        deal = supabase.table('deals').select('owner_id, image_urls').eq('id', deal_id).single().execute()
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        if deal.data['owner_id'] != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+
+        existing_images = deal.data.get('image_urls') or []
+        if image_index < 0 or image_index >= len(existing_images):
+            raise HTTPException(status_code=400, detail="Invalid image index")
+
+        # Attempt to remove from Supabase storage (best-effort)
+        try:
+            image_url = existing_images[image_index]
+            if f'{deal_id}/' in image_url:
+                path_part = image_url.split(f'{deal_id}/')[-1].split('?')[0]
+                supabase.storage.from_('deal-images').remove([f'{deal_id}/{path_part}'])
+        except Exception:
+            pass
+
+        updated_images = [img for i, img in enumerate(existing_images) if i != image_index]
+        supabase.table('deals').update({
+            'image_urls': updated_images,
+            'image_url': updated_images[0] if updated_images else None
+        }).eq('id', deal_id).execute()
+
+        return {"success": True, "image_urls": updated_images}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete image error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete image: {str(e)}")
+
+
+@router.put("/{deal_id}/images/reorder")
+async def reorder_deal_images(
+    deal_id: str,
+    payload: ImageReorderPayload,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Save a new order for a deal's images"""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+
+        deal = supabase.table('deals').select('owner_id').eq('id', deal_id).single().execute()
+        if not deal.data:
+            raise HTTPException(status_code=404, detail="Deal not found")
+        if deal.data['owner_id'] != user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+
+        supabase.table('deals').update({
+            'image_urls': payload.image_urls,
+            'image_url': payload.image_urls[0] if payload.image_urls else None
+        }).eq('id', deal_id).execute()
+
+        return {"success": True, "image_urls": payload.image_urls}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Reorder images error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to reorder images: {str(e)}")
 
 
 @router.post("/{deal_id}/images")

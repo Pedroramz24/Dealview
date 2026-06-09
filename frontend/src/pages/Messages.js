@@ -266,7 +266,7 @@ const Messages = () => {
             }}>
               {messages.map((msg, idx) => (
                 <MessageBubble
-                  key={idx}
+                  key={msg.id || idx}
                   message={msg}
                   isOwn={msg.sender_id === currentUserId}
                   onDelete={(msgId) => {
@@ -307,7 +307,7 @@ const Messages = () => {
                   style={{
                     padding: '14px 24px',
                     background: newMessage.trim() && !sending 
-                      ? 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)' 
+                      ? 'linear-gradient(135deg, #ff0000 0%, #00d4aa 100%)' 
                       : 'rgba(255, 255, 255, 0.1)',
                     border: 'none',
                     borderRadius: '10px',
@@ -318,7 +318,7 @@ const Messages = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    boxShadow: newMessage.trim() && !sending ? '0 4px 12px rgba(0, 184, 212, 0.3)' : 'none'
+                    boxShadow: newMessage.trim() && !sending ? '0 4px 12px rgba(255, 0, 0, 0.3)' : 'none'
                   }}
                 >
                   <Send size={18} />
@@ -356,8 +356,8 @@ const ConversationItem = ({ conversation, selected, onClick }) => {
         padding: '16px 20px',
         borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
         cursor: 'pointer',
-        background: selected ? 'rgba(0, 184, 212, 0.1)' : 'transparent',
-        borderLeft: selected ? '3px solid #00b8d4' : '3px solid transparent',
+        background: selected ? 'rgba(255, 0, 0, 0.1)' : 'transparent',
+        borderLeft: selected ? '3px solid #ff0000' : '3px solid transparent',
         transition: 'all 0.2s ease'
       }}
       onMouseEnter={(e) => {
@@ -375,7 +375,7 @@ const ConversationItem = ({ conversation, selected, onClick }) => {
           borderRadius: '8px',
           background: conversation.deal_image 
             ? `url(${conversation.deal_image})` 
-            : 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(0, 184, 212, 0.1))',
+            : 'linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.1))',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -384,7 +384,7 @@ const ConversationItem = ({ conversation, selected, onClick }) => {
           justifyContent: 'center',
           flexShrink: 0
         }}>
-          {!conversation.deal_image && <Home size={20} style={{ color: '#00b8d4' }} />}
+          {!conversation.deal_image && <Home size={20} style={{ color: '#ff0000' }} />}
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -439,7 +439,7 @@ const ConversationItem = ({ conversation, selected, onClick }) => {
           {conversation.unread_count > 0 && (
             <div style={{
               padding: '2px 8px',
-              background: '#00b8d4',
+              background: '#ff0000',
               borderRadius: '12px',
               fontSize: '11px',
               fontWeight: '700',
@@ -504,10 +504,10 @@ const DealContextHeader = ({ conversation, navigate }) => {
           onClick={() => navigate(`/marketplace/deals/${conversation.deal_id}`)}
           style={{
             padding: '10px 16px',
-            background: 'rgba(0, 184, 212, 0.15)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
+            background: 'rgba(255, 0, 0, 0.15)',
+            border: '1px solid rgba(255, 0, 0, 0.3)',
             borderRadius: '8px',
-            color: '#00b8d4',
+            color: '#ff0000',
             fontSize: '13px',
             fontWeight: '600',
             cursor: 'pointer',
@@ -581,10 +581,10 @@ const MessageBubble = ({ message, isOwn, onDelete }) => {
           padding: '12px 16px',
           borderRadius: '12px',
           background: isOwn 
-            ? 'linear-gradient(135deg, #00b8d4 0%, #00a8c0 100%)'
+            ? 'linear-gradient(135deg, #ff0000 0%, #00a8c0 100%)'
             : 'rgba(255, 255, 255, 0.05)',
           border: isOwn ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: isOwn ? '0 2px 8px rgba(0, 184, 212, 0.2)' : 'none',
+          boxShadow: isOwn ? '0 2px 8px rgba(255, 0, 0, 0.2)' : 'none',
           position: 'relative'
         }}>
           <p style={{

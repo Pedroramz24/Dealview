@@ -65,7 +65,7 @@ const NCNDSignatureModal = ({ dealId, onClose, onSigned }) => {
     const y = e.clientY - rect.top;
     
     ctx.lineTo(x, y);
-    ctx.strokeStyle = '#00b8d4';
+    ctx.strokeStyle = '#ff0000';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -188,7 +188,7 @@ const NCNDSignatureModal = ({ dealId, onClose, onSigned }) => {
           alignItems: 'center'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <FileText size={24} color="#00b8d4" />
+            <FileText size={24} color="#ff0000" />
             <div>
               <h2 style={{ color: '#fff', fontSize: '22px', fontWeight: '700', marginBottom: '4px' }}>
                 Non-Circumvention & Non-Disclosure Agreement
@@ -295,8 +295,8 @@ const NCNDSignatureModal = ({ dealId, onClose, onSigned }) => {
             alignItems: 'flex-start',
             gap: '12px',
             padding: '16px',
-            background: 'rgba(0, 184, 212, 0.05)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.05)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '12px',
             cursor: 'pointer',
             marginBottom: '24px'
@@ -374,8 +374,8 @@ const NCNDSignatureModal = ({ dealId, onClose, onSigned }) => {
             style={{
               padding: '12px 24px',
               background: (signing || !agreed || !signatureData)
-                ? 'rgba(0, 184, 212, 0.3)'
-                : 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
+                ? 'rgba(255, 0, 0, 0.3)'
+                : 'linear-gradient(135deg, #ff0000 0%, #ff0000 100%)',
               border: 'none',
               borderRadius: '10px',
               color: (signing || !agreed || !signatureData) ? 'rgba(0,0,0,0.4)' : '#000',

@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+const API = process.env.REACT_APP_BACKEND_URL + '/api';
+
 // Contact types options
 const contactTypeOptions = [
   { value: 'buyer', label: 'Buyer' },
@@ -19,17 +21,20 @@ const contactTypeOptions = [
   { value: 'owner', label: 'Owner' }
 ];
 
-// Asset type focus options
+// Asset type focus options — synced with assetTypeColors.js
 const assetTypeOptions = [
+  'Office',
+  'Retail',
   'Retail Centers',
-  'Land',
   'Industrial',
-  'Restaurants',
+  'Multifamily',
+  'Land',
+  'Mixed Use',
   'Hotels',
   'Medical',
-  'Office',
-  'Multifamily',
-  'Mixed Use'
+  'Restaurants',
+  'Gas Stations',
+  'Special Purpose',
 ];
 
 // Markets options
@@ -50,11 +55,12 @@ const statusOptions = [
   { value: 'need_to_find_contact_number', label: 'Need to Find Contact Number' }
 ];
 
-const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = null, dealId = null }) => {
+const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = null, dealId = null, rightOffset = 500 }) => {
   const { user } = useContext(AuthContext);
   const [isSaving, setIsSaving] = useState(false);
   const [lastFollowupDate, setLastFollowupDate] = useState(null);
   const [nextActionDate, setNextActionDate] = useState(null);
+  const [availableTags, setAvailableTags] = useState([]);
 
   const [contactForm, setContactForm] = useState({
     name: '',
@@ -70,8 +76,27 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
     last_followup_date: '',
     next_action_date: '',
     lead_source: '',
+    tag_ids: [],
     notes: ''
   });
+
+  // Fetch available tags once when panel opens
+  useEffect(() => {
+    if (!isOpen) return;
+    const fetchTags = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (!token) return;
+        const res = await fetch(`${API}/contacts/tags`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.ok) {
+          const data = await res.json();
+          setAvailableTags(data.tags || []);
+        }
+      } catch (err) { console.error('Failed to fetch tags:', err); }
+    };
+    fetchTags();
+  }, [isOpen]);
 
   useEffect(() => {
     if (editingContact) {
@@ -89,6 +114,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         last_followup_date: editingContact.last_followup_date || '',
         next_action_date: editingContact.next_action_date || '',
         lead_source: editingContact.lead_source || '',
+        tag_ids: editingContact.tag_ids || [],
         notes: editingContact.notes || ''
       });
       
@@ -114,6 +140,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         last_followup_date: '',
         next_action_date: '',
         lead_source: '',
+        tag_ids: [],
         notes: ''
       });
       setLastFollowupDate(null);
@@ -168,7 +195,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
 
   const handleSaveContact = async () => {
     if (!contactForm.name) {
-      toast.dismiss(); // Dismiss any existing toasts
+      toast.dismiss();
       toast.error('Contact name is required');
       return;
     }
@@ -181,6 +208,14 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
 
     setIsSaving(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) {
+        toast.error('Session expired, please log in again');
+        return;
+      }
+
+      // Map to backend API fields — DB now has native columns for all fields
       const contactData = {
         name: contactForm.name,
         email: contactForm.email || null,
@@ -191,71 +226,66 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         contact_types: contactForm.contact_types || [],
         asset_type_focus: contactForm.asset_type_focus || [],
         markets: contactForm.markets || [],
+        contact_type: (contactForm.contact_types || [])[0] || 'Buyer',
         status: contactForm.status || 'active_contact',
-        last_followup_date: lastFollowupDate ? lastFollowupDate.toISOString() : null,
-        next_action_date: nextActionDate ? nextActionDate.toISOString() : null,
+        tag_ids: contactForm.tag_ids || [],
         lead_source: contactForm.lead_source || null,
+        last_follow_up: lastFollowupDate ? lastFollowupDate.toISOString() : null,
+        next_follow_up: nextActionDate ? nextActionDate.toISOString() : null,
         notes: contactForm.notes || null,
-        updated_at: new Date().toISOString()
       };
 
+      const url = editingContact
+        ? `${API}/contacts/${editingContact.id}`
+        : `${API}/contacts`;
+      const method = editingContact ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to save contact');
+      }
+
+      const result = await response.json();
+      const savedContact = result.contact;
+
       if (editingContact) {
-        // Update existing contact
-        const { error } = await supabase
-          .from('contacts')
-          .update(contactData)
-          .eq('id', editingContact.id);
-
-        if (error) throw error;
-        
-        toast.dismiss(); // Dismiss any existing toasts
+        toast.dismiss();
         toast.success('Contact updated successfully');
-        
-        if (onContactCreated) {
-          onContactCreated({ ...editingContact, ...contactData });
-        }
+        if (onContactCreated) onContactCreated({ ...editingContact, ...contactData });
       } else {
-        // Create new contact
-        const { data: newContact, error } = await supabase
-          .from('contacts')
-          .insert([{
-            owner_id: user.id,
-            ...contactData,
-            created_at: new Date().toISOString()
-          }])
-          .select()
-          .single();
-
-        if (error) throw error;
-
-        // If dealId is provided, automatically link the contact to the deal
-        if (dealId && newContact) {
-          const { error: linkError } = await supabase
-            .from('contact_deal_links')
-            .insert([{
-              contact_id: newContact.id,
-              deal_id: dealId,
-              created_at: new Date().toISOString()
-            }]);
-
-          if (linkError) {
-            console.error('Error linking contact to deal:', linkError);
+        // Link to deal if dealId provided
+        if (dealId && savedContact) {
+          try {
+            const linkRes = await fetch(`${API}/deals/${dealId}/contacts/${savedContact.id}`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (linkRes.ok) {
+              toast.dismiss();
+              toast.success('Contact created and linked to deal');
+            } else {
+              toast.dismiss();
+              toast.warning('Contact created but failed to link to deal');
+            }
+          } catch (linkErr) {
+            console.error('Error linking contact:', linkErr);
             toast.dismiss();
             toast.warning('Contact created but failed to link to deal');
-          } else {
-            // Show single success message for both create and link
-            toast.dismiss();
-            toast.success('Contact created and linked to deal');
           }
         } else {
-          // Show success for create only
           toast.dismiss();
           toast.success('Contact created successfully');
         }
-
-        if (onContactCreated) {
-          onContactCreated(newContact);
-        }
+        if (onContactCreated) onContactCreated(savedContact);
       }
 
       onClose();
@@ -275,18 +305,17 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
       style={{
         position: 'fixed',
         top: 0,
-        left: isOpen ? '500px' : '-600px',
+        right: isOpen ? `${rightOffset}px` : '-500px',
         width: '500px',
         height: '100vh',
-        background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%)',
+        background: 'rgba(11, 12, 14, 0.95)',
         backdropFilter: 'blur(20px)',
         borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
-        zIndex: 1000,
-        transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 1040,
+        transition: 'right 300ms cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 0 50px rgba(0, 0, 0, 0.5)',
+        boxShadow: '-4px 0 24px rgba(0, 0, 0, 0.5)',
       }}
     >
       {/* Header */}
@@ -300,7 +329,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <User size={24} style={{ color: '#00b8d4' }} />
+          <User size={24} style={{ color: '#ff0000' }} />
           <h2
             style={{
               color: '#FFFFFF',
@@ -346,14 +375,14 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           <div
             style={{
               padding: '16px',
-              background: 'rgba(0, 184, 212, 0.05)',
-              border: '1px solid rgba(0, 184, 212, 0.15)',
+              background: 'rgba(255, 0, 0, 0.05)',
+              border: '1px solid rgba(255, 0, 0, 0.15)',
               borderRadius: '12px',
             }}
           >
             <h3
               style={{
-                color: '#00b8d4',
+                color: '#ff0000',
                 fontSize: '11px',
                 fontWeight: '600',
                 textTransform: 'uppercase',
@@ -469,9 +498,9 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 150ms ease',
-                    background: (contactForm.contact_types || []).includes(option.value) ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                    border: (contactForm.contact_types || []).includes(option.value) ? '1px solid rgba(0, 184, 212, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
-                    color: (contactForm.contact_types || []).includes(option.value) ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)'
+                    background: (contactForm.contact_types || []).includes(option.value) ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (contactForm.contact_types || []).includes(option.value) ? '1px solid rgba(255, 0, 0, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (contactForm.contact_types || []).includes(option.value) ? '#ff0000' : 'rgba(255, 255, 255, 0.7)'
                   }}
                 >
                   {option.label}
@@ -637,6 +666,48 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
                 />
               </div>
 
+              {/* Tags */}
+              {availableTags.length > 0 && (
+                <div>
+                  <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '8px' }}>
+                    Tags
+                  </Label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {availableTags.map(tag => {
+                      const isSelected = (contactForm.tag_ids || []).includes(tag.id);
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          data-testid={`tag-toggle-${tag.id}`}
+                          onClick={() => {
+                            const current = contactForm.tag_ids || [];
+                            const updated = isSelected
+                              ? current.filter(id => id !== tag.id)
+                              : [...current, tag.id];
+                            setContactForm({ ...contactForm, tag_ids: updated });
+                          }}
+                          style={{
+                            padding: '5px 12px',
+                            borderRadius: '20px',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            border: isSelected ? `1px solid ${tag.color}` : '1px solid rgba(255,255,255,0.15)',
+                            background: isSelected ? `${tag.color}25` : 'rgba(255,255,255,0.04)',
+                            color: isSelected ? tag.color : 'rgba(255,255,255,0.55)',
+                            transition: 'all 0.15s',
+                          }}
+                        >
+                          {isSelected && <span style={{ marginRight: '4px' }}>✓</span>}
+                          {tag.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Notes */}
               <div>
                 <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '12px', fontWeight: '500', display: 'block', marginBottom: '6px' }}>
@@ -701,7 +772,7 @@ const ContactFormPanel = ({ isOpen, onClose, onContactCreated, editingContact = 
           style={{
             padding: '10px 20px',
             borderRadius: '6px',
-            background: 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+            background: 'linear-gradient(135deg, #ff0000 0%, #00d4aa 100%)',
             border: 'none',
             color: '#FFFFFF',
             fontSize: '13px',

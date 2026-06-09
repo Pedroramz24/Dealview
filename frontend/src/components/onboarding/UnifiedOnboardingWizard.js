@@ -45,7 +45,7 @@ const UnifiedOnboardingWizard = ({ selectedRole, onComplete, onBack }) => {
         return {
           totalSteps: 4,
           icon: Building2,
-          color: '#00b8d4',
+          color: '#ff0000',
           title: 'Broker Onboarding'
         };
       case 'seller':
@@ -63,7 +63,7 @@ const UnifiedOnboardingWizard = ({ selectedRole, onComplete, onBack }) => {
           title: 'Buyer Onboarding'
         };
       default:
-        return { totalSteps: 3, icon: Briefcase, color: '#00b8d4', title: 'Onboarding' };
+        return { totalSteps: 3, icon: Briefcase, color: '#ff0000', title: 'Onboarding' };
     }
   };
 

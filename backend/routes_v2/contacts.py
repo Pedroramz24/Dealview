@@ -26,9 +26,15 @@ class ContactCreate(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     company: Optional[str] = None
-    contact_type: Optional[str] = "Buyer"  # Broker, Buyer, Seller
-    status: Optional[str] = "Active"  # Active, Inactive, Lead
+    title: Optional[str] = None
+    owner_address: Optional[str] = None
+    contact_type: Optional[str] = "Buyer"
+    contact_types: Optional[List[str]] = None
+    asset_type_focus: Optional[List[str]] = None
+    markets: Optional[List[str]] = None
+    status: Optional[str] = "Active"
     tag_ids: Optional[List[str]] = None
+    lead_source: Optional[str] = None
     last_follow_up: Optional[datetime] = None
     next_follow_up: Optional[datetime] = None
     notes: Optional[str] = None
@@ -39,9 +45,15 @@ class ContactUpdate(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     company: Optional[str] = None
+    title: Optional[str] = None
+    owner_address: Optional[str] = None
     contact_type: Optional[str] = None
+    contact_types: Optional[List[str]] = None
+    asset_type_focus: Optional[List[str]] = None
+    markets: Optional[List[str]] = None
     status: Optional[str] = None
     tag_ids: Optional[List[str]] = None
+    lead_source: Optional[str] = None
     last_follow_up: Optional[datetime] = None
     next_follow_up: Optional[datetime] = None
     notes: Optional[str] = None
@@ -312,9 +324,15 @@ async def create_contact(
             "email": contact.email,
             "phone": contact.phone,
             "company": contact.company,
+            "title": contact.title,
+            "owner_address": contact.owner_address,
             "contact_type": contact.contact_type or "Buyer",
+            "contact_types": contact.contact_types or [],
+            "asset_type_focus": contact.asset_type_focus or [],
+            "markets": contact.markets or [],
             "status": contact.status or "Active",
             "tag_ids": contact.tag_ids or [],
+            "lead_source": contact.lead_source,
             "last_follow_up": contact.last_follow_up.isoformat() if contact.last_follow_up else None,
             "next_follow_up": contact.next_follow_up.isoformat() if contact.next_follow_up else None,
             "notes": contact.notes

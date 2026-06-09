@@ -154,13 +154,13 @@ const DocumentsSection = ({ dealId, userId }) => {
   return (
     <div style={{ 
       background: 'rgba(255,255,255,0.03)', 
-      border: '1px solid rgba(0, 184, 212, 0.3)', 
+      border: '1px solid rgba(255, 0, 0, 0.3)', 
       borderRadius: '12px', 
       padding: '24px',
       marginBottom: '24px'
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ color: '#00b8d4', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
+        <h3 style={{ color: '#ff0000', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
           Documents ({documents.length})
         </h3>
         <label htmlFor="document-upload" style={{ cursor: 'pointer' }}>
@@ -169,10 +169,10 @@ const DocumentsSection = ({ dealId, userId }) => {
             alignItems: 'center',
             gap: '8px',
             padding: '8px 16px',
-            background: uploading ? 'rgba(255,255,255,0.05)' : 'rgba(0, 184, 212, 0.1)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
+            background: uploading ? 'rgba(255,255,255,0.05)' : 'rgba(255, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 0, 0, 0.3)',
             borderRadius: '8px',
-            color: uploading ? 'rgba(255,255,255,0.4)' : '#00b8d4',
+            color: uploading ? 'rgba(255,255,255,0.4)' : '#ff0000',
             fontSize: '13px',
             fontWeight: '500',
             transition: 'all 0.2s',
@@ -180,13 +180,13 @@ const DocumentsSection = ({ dealId, userId }) => {
           }}
           onMouseEnter={(e) => {
             if (!uploading) {
-              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.2)';
+              e.currentTarget.style.background = 'rgba(255, 0, 0, 0.2)';
               e.currentTarget.style.transform = 'translateY(-2px)';
             }
           }}
           onMouseLeave={(e) => {
             if (!uploading) {
-              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+              e.currentTarget.style.background = 'rgba(255, 0, 0, 0.1)';
               e.currentTarget.style.transform = 'translateY(0)';
             }
           }}>
@@ -279,10 +279,10 @@ const DocumentsSection = ({ dealId, userId }) => {
                   rel="noopener noreferrer"
                   style={{
                     padding: '6px',
-                    background: 'rgba(0, 184, 212, 0.1)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    background: 'rgba(255, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 0, 0, 0.3)',
                     borderRadius: '6px',
-                    color: '#00b8d4',
+                    color: '#ff0000',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -290,11 +290,11 @@ const DocumentsSection = ({ dealId, userId }) => {
                     textDecoration: 'none'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.2)';
+                    e.currentTarget.style.background = 'rgba(255, 0, 0, 0.2)';
                     e.currentTarget.style.transform = 'scale(1.1)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(0, 184, 212, 0.1)';
+                    e.currentTarget.style.background = 'rgba(255, 0, 0, 0.1)';
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
                   onClick={(e) => e.stopPropagation()}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import DOMPurify from 'dompurify';
 import { AuthContext } from '../App';
 import { supabase } from '../supabaseClient';
 import CampaignWizard from '../components/CampaignWizard';
@@ -345,7 +346,7 @@ const Campaigns = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'sent': return { bg: 'rgba(34, 197, 94, 0.12)', border: 'rgba(34, 197, 94, 0.25)', text: '#22c55e' };
-      case 'scheduled': return { bg: 'rgba(0, 184, 212, 0.12)', border: 'rgba(0, 184, 212, 0.25)', text: '#00b8d4' };
+      case 'scheduled': return { bg: 'rgba(255, 0, 0, 0.12)', border: 'rgba(255, 0, 0, 0.25)', text: '#ff0000' };
       case 'sending': return { bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.25)', text: '#f59e0b' };
       case 'draft': return { bg: 'rgba(100, 116, 139, 0.12)', border: 'rgba(100, 116, 139, 0.25)', text: '#94a3b8' };
       case 'paused': return { bg: 'rgba(239, 68, 68, 0.12)', border: 'rgba(239, 68, 68, 0.25)', text: '#ef4444' };
@@ -389,13 +390,13 @@ const Campaigns = () => {
                 width: '80px',
                 height: '80px',
                 borderRadius: '50%',
-                background: 'rgba(0, 184, 212, 0.1)',
-                border: '2px solid rgba(0, 184, 212, 0.3)',
+                background: 'rgba(255, 0, 0, 0.1)',
+                border: '2px solid rgba(255, 0, 0, 0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <Mail size={40} style={{ color: '#00b8d4' }} />
+                <Mail size={40} style={{ color: '#ff0000' }} />
               </div>
             </div>
             <h2 style={{ color: 'var(--text-primary)', fontSize: '28px', fontWeight: 600, marginBottom: '12px' }}>
@@ -412,12 +413,12 @@ const Campaigns = () => {
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: setupStep >= 1 ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                border: setupStep >= 1 ? '2px solid #00b8d4' : '2px solid rgba(255, 255, 255, 0.1)',
+                background: setupStep >= 1 ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                border: setupStep >= 1 ? '2px solid #ff0000' : '2px solid rgba(255, 255, 255, 0.1)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: setupStep >= 1 ? '#00b8d4' : 'var(--text-secondary)',
+                color: setupStep >= 1 ? '#ff0000' : 'var(--text-secondary)',
                 fontWeight: 600
               }}>
                 1
@@ -425,18 +426,18 @@ const Campaigns = () => {
               <div style={{
                 width: '60px',
                 height: '2px',
-                background: setupStep >= 2 ? '#00b8d4' : 'rgba(255, 255, 255, 0.1)'
+                background: setupStep >= 2 ? '#ff0000' : 'rgba(255, 255, 255, 0.1)'
               }} />
               <div style={{
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: setupStep >= 2 ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                border: setupStep >= 2 ? '2px solid #00b8d4' : '2px solid rgba(255, 255, 255, 0.1)',
+                background: setupStep >= 2 ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                border: setupStep >= 2 ? '2px solid #ff0000' : '2px solid rgba(255, 255, 255, 0.1)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: setupStep >= 2 ? '#00b8d4' : 'var(--text-secondary)',
+                color: setupStep >= 2 ? '#ff0000' : 'var(--text-secondary)',
                 fontWeight: 600
               }}>
                 2
@@ -447,11 +448,11 @@ const Campaigns = () => {
           {setupStep === 1 && (
             <div>
               <div className="mb-6 p-4" style={{
-                background: 'rgba(0, 184, 212, 0.05)',
-                border: '1px solid rgba(0, 184, 212, 0.2)',
+                background: 'rgba(255, 0, 0, 0.05)',
+                border: '1px solid rgba(255, 0, 0, 0.2)',
                 borderRadius: '8px'
               }}>
-                <p style={{ color: '#00b8d4', fontSize: '14px', fontWeight: 600, marginBottom: '12px' }}>
+                <p style={{ color: '#ff0000', fontSize: '14px', fontWeight: 600, marginBottom: '12px' }}>
                   📝 Quick Setup (2 minutes)
                 </p>
                 <ol style={{ color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8', paddingLeft: '20px', margin: 0 }}>
@@ -475,10 +476,10 @@ const Campaigns = () => {
                   width: '100%',
                   padding: '12px 24px',
                   marginBottom: '20px',
-                  background: 'rgba(0, 184, 212, 0.1)',
-                  border: '1px solid rgba(0, 184, 212, 0.3)',
+                  background: 'rgba(255, 0, 0, 0.1)',
+                  border: '1px solid rgba(255, 0, 0, 0.3)',
                   borderRadius: '8px',
-                  color: '#00b8d4',
+                  color: '#ff0000',
                   fontSize: '15px',
                   fontWeight: 600,
                   textDecoration: 'none'
@@ -515,7 +516,7 @@ const Campaigns = () => {
                 style={{
                   width: '100%',
                   padding: '14px 24px',
-                  background: setupData.testing || !setupData.apiKey ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                  background: setupData.testing || !setupData.apiKey ? 'rgba(255, 255, 255, 0.05)' : '#ff0000',
                   color: setupData.testing || !setupData.apiKey ? 'rgba(255, 255, 255, 0.3)' : '#000',
                   border: 'none',
                   borderRadius: '8px',
@@ -596,7 +597,7 @@ const Campaigns = () => {
                   style={{
                     flex: 2,
                     padding: '14px 24px',
-                    background: !setupData.senderEmail || !setupData.senderName ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                    background: !setupData.senderEmail || !setupData.senderName ? 'rgba(255, 255, 255, 0.05)' : '#ff0000',
                     color: !setupData.senderEmail || !setupData.senderName ? 'rgba(255, 255, 255, 0.3)' : '#000',
                     border: 'none',
                     borderRadius: '8px',
@@ -626,7 +627,7 @@ const Campaigns = () => {
         transform: 'translateX(-50%)',
         width: '1200px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(0, 184, 212, 0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 0, 0, 0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
         zIndex: 0
       }} />
@@ -640,14 +641,14 @@ const Campaigns = () => {
                 width: '48px',
                 height: '48px',
                 borderRadius: '12px',
-                background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
-                border: '1px solid rgba(0, 184, 212, 0.3)',
+                background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                border: '1px solid rgba(255, 0, 0, 0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 16px rgba(0, 184, 212, 0.15)'
+                boxShadow: '0 4px 16px rgba(255, 0, 0, 0.15)'
               }}>
-                <Mail size={24} style={{ color: '#00b8d4' }} />
+                <Mail size={24} style={{ color: '#ff0000' }} />
               </div>
               <h1 style={{ 
                 color: 'var(--text-primary)', 
@@ -670,10 +671,10 @@ const Campaigns = () => {
             onClick={() => setShowCampaignWizard(true)}
             style={{
               padding: '12px 24px',
-              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))',
-              border: '1px solid rgba(0, 184, 212, 0.4)',
+              background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(59, 130, 246, 0.25))',
+              border: '1px solid rgba(255, 0, 0, 0.4)',
               borderRadius: '12px',
-              color: '#00d4ff',
+              color: '#ff0000',
               fontWeight: '800',
               fontSize: '14px',
               cursor: 'pointer',
@@ -681,17 +682,17 @@ const Campaigns = () => {
               alignItems: 'center',
               gap: '10px',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow: '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+              boxShadow: '0 8px 32px rgba(255, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.35), rgba(59, 130, 246, 0.35))';
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 0, 0, 0.35), rgba(59, 130, 246, 0.35))';
               e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 16px 48px rgba(0, 184, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.boxShadow = '0 16px 48px rgba(255, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 184, 212, 0.25), rgba(59, 130, 246, 0.25))';
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(59, 130, 246, 0.25))';
               e.currentTarget.style.transform = 'translateY(0) scale(1)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 184, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(255, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
             }}
           >
             <Plus size={20} />
@@ -705,10 +706,10 @@ const Campaigns = () => {
             onClick={() => setActiveTab('campaigns')}
             style={{
               padding: '10px 24px',
-              background: activeTab === 'campaigns' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-              border: `1px solid ${activeTab === 'campaigns' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              background: activeTab === 'campaigns' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'campaigns' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
               borderRadius: '10px',
-              color: activeTab === 'campaigns' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              color: activeTab === 'campaigns' ? '#ff0000' : 'rgba(255, 255, 255, 0.6)',
               fontSize: '14px',
               fontWeight: 600,
               cursor: 'pointer',
@@ -721,10 +722,10 @@ const Campaigns = () => {
             onClick={() => setActiveTab('templates')}
             style={{
               padding: '10px 24px',
-              background: activeTab === 'templates' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-              border: `1px solid ${activeTab === 'templates' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              background: activeTab === 'templates' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'templates' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
               borderRadius: '10px',
-              color: activeTab === 'templates' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              color: activeTab === 'templates' ? '#ff0000' : 'rgba(255, 255, 255, 0.6)',
               fontSize: '14px',
               fontWeight: 600,
               cursor: 'pointer',
@@ -737,10 +738,10 @@ const Campaigns = () => {
             onClick={() => setActiveTab('settings')}
             style={{
               padding: '10px 24px',
-              background: activeTab === 'settings' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-              border: `1px solid ${activeTab === 'settings' ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+              background: activeTab === 'settings' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              border: `1px solid ${activeTab === 'settings' ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
               borderRadius: '10px',
-              color: activeTab === 'settings' ? '#00b8d4' : 'rgba(255, 255, 255, 0.6)',
+              color: activeTab === 'settings' ? '#ff0000' : 'rgba(255, 255, 255, 0.6)',
               fontSize: '14px',
               fontWeight: 600,
               cursor: 'pointer',
@@ -756,8 +757,8 @@ const Campaigns = () => {
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Analytics Ribbon */}
             <div style={{
-              background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
-              border: '1px solid rgba(0, 184, 212, 0.15)',
+              background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
+              border: '1px solid rgba(255, 0, 0, 0.15)',
               borderRadius: '14px',
               padding: '24px',
               marginBottom: '24px',
@@ -770,13 +771,13 @@ const Campaigns = () => {
                     width: '36px',
                     height: '36px',
                     borderRadius: '8px',
-                    background: 'rgba(0, 184, 212, 0.15)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    background: 'rgba(255, 0, 0, 0.15)',
+                    border: '1px solid rgba(255, 0, 0, 0.3)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <BarChart3 size={20} style={{ color: '#00b8d4' }} />
+                    <BarChart3 size={20} style={{ color: '#ff0000' }} />
                   </div>
                   <div>
                     <h3 style={{ 
@@ -798,15 +799,15 @@ const Campaigns = () => {
               <div className="grid grid-cols-5 gap-4">
                 {/* Total Sent */}
                 <div style={{
-                  background: 'rgba(0, 184, 212, 0.08)',
-                  border: '1px solid rgba(0, 184, 212, 0.2)',
+                  background: 'rgba(255, 0, 0, 0.08)',
+                  border: '1px solid rgba(255, 0, 0, 0.2)',
                   borderRadius: '10px',
                   padding: '18px 16px'
                 }}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Send size={14} style={{ color: '#00b8d4' }} />
+                    <Send size={14} style={{ color: '#ff0000' }} />
                     <p style={{ 
-                      color: 'rgba(0, 184, 212, 0.8)', 
+                      color: 'rgba(255, 0, 0, 0.8)', 
                       fontSize: '11px',
                       fontWeight: 600,
                       textTransform: 'uppercase',
@@ -816,7 +817,7 @@ const Campaigns = () => {
                     </p>
                   </div>
                   <p style={{ 
-                    color: '#00b8d4', 
+                    color: '#ff0000', 
                     fontSize: '32px', 
                     fontWeight: 800,
                     lineHeight: '1',
@@ -959,7 +960,7 @@ const Campaigns = () => {
                   left: '16px', 
                   top: '50%', 
                   transform: 'translateY(-50%)', 
-                  color: 'rgba(0, 184, 212, 0.6)',
+                  color: 'rgba(255, 0, 0, 0.6)',
                   zIndex: 1
                 }} />
                 <input
@@ -979,7 +980,7 @@ const Campaigns = () => {
                   }}
                   onFocus={(e) => {
                     e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.4)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.4)';
                   }}
                   onBlur={(e) => {
                     e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
@@ -1136,8 +1137,8 @@ const Campaigns = () => {
                               position: 'relative'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'rgba(0, 184, 212, 0.04)';
-                              e.currentTarget.style.borderLeftColor = '#00b8d4';
+                              e.currentTarget.style.background = 'rgba(255, 0, 0, 0.04)';
+                              e.currentTarget.style.borderLeftColor = '#ff0000';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.background = 'transparent';
@@ -1157,7 +1158,7 @@ const Campaigns = () => {
                             {/* Audience */}
                             <div>
                               <div className="flex items-center gap-2 mb-2">
-                                <Users size={14} style={{ color: '#00b8d4' }} />
+                                <Users size={14} style={{ color: '#ff0000' }} />
                                 <p style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 600 }}>
                                   {campaign.total_recipients || 0}
                                 </p>
@@ -1169,10 +1170,10 @@ const Campaigns = () => {
                                       key={tag}
                                       style={{
                                         padding: '3px 8px',
-                                        background: 'rgba(0, 184, 212, 0.12)',
-                                        border: '1px solid rgba(0, 184, 212, 0.25)',
+                                        background: 'rgba(255, 0, 0, 0.12)',
+                                        border: '1px solid rgba(255, 0, 0, 0.25)',
                                         borderRadius: '5px',
-                                        color: '#00b8d4',
+                                        color: '#ff0000',
                                         fontSize: '11px',
                                         fontWeight: 600
                                       }}
@@ -1260,10 +1261,10 @@ const Campaigns = () => {
                                 }}
                                 style={{
                                   padding: '6px',
-                                  background: campaignMenuOpen === campaign.id ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.04)',
-                                  border: `1px solid ${campaignMenuOpen === campaign.id ? 'rgba(0, 184, 212, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                                  background: campaignMenuOpen === campaign.id ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.04)',
+                                  border: `1px solid ${campaignMenuOpen === campaign.id ? 'rgba(255, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                                   borderRadius: '6px',
-                                  color: campaignMenuOpen === campaign.id ? '#00b8d4' : 'rgba(255, 255, 255, 0.5)',
+                                  color: campaignMenuOpen === campaign.id ? '#ff0000' : 'rgba(255, 255, 255, 0.5)',
                                   cursor: 'pointer',
                                   transition: 'all 0.2s ease'
                                 }}
@@ -1403,7 +1404,7 @@ const Campaigns = () => {
                         {/* Preview */}
                         <div style={{ height: '180px', background: '#fff', padding: '12px', overflow: 'hidden', position: 'relative', borderRadius: '12px 12px 0 0' }}>
                           <div 
-                            dangerouslySetInnerHTML={{ __html: template.html_content }} 
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(template.html_content) }} 
                             style={{ transform: 'scale(0.25)', transformOrigin: 'top left', width: '400%', height: '400%', pointerEvents: 'none' }}
                           />
                         </div>
@@ -1500,7 +1501,7 @@ const Campaigns = () => {
                                       gap: '10px',
                                       textAlign: 'left'
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)'}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 0, 0, 0.15)'}
                                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                   >
                                     <Send size={14} />
@@ -1595,12 +1596,12 @@ const Campaigns = () => {
                     width: '48px',
                     height: '48px',
                     borderRadius: '12px',
-                    background: 'rgba(0, 184, 212, 0.1)',
+                    background: 'rgba(255, 0, 0, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <Mail size={24} style={{ color: '#00b8d4' }} />
+                    <Mail size={24} style={{ color: '#ff0000' }} />
                   </div>
                   <div>
                     <h2 style={{ color: '#FFFFFF', fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>SendGrid Configuration</h2>
@@ -1709,7 +1710,7 @@ const Campaigns = () => {
                       padding: '14px 24px',
                       background: (!setupData.senderEmail || !setupData.senderName || !setupData.apiKey) 
                         ? 'rgba(255, 255, 255, 0.05)' 
-                        : 'linear-gradient(135deg, #00b8d4 0%, #00d4aa 100%)',
+                        : 'linear-gradient(135deg, #ff0000 0%, #00d4aa 100%)',
                       border: 'none',
                       borderRadius: '8px',
                       color: '#FFFFFF',
@@ -1750,16 +1751,16 @@ const Campaigns = () => {
                 <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px', lineHeight: '1.6' }}>
                   <ol style={{ paddingLeft: '20px' }}>
                     <li style={{ marginBottom: '8px' }}>
-                      <strong style={{ color: '#00b8d4' }}>Get API Key:</strong> Login to SendGrid → Settings → API Keys → Create API Key (Full Access)
+                      <strong style={{ color: '#ff0000' }}>Get API Key:</strong> Login to SendGrid → Settings → API Keys → Create API Key (Full Access)
                     </li>
                     <li style={{ marginBottom: '8px' }}>
-                      <strong style={{ color: '#00b8d4' }}>Verify Sender:</strong> SendGrid → Settings → Sender Authentication → Verify your sender email
+                      <strong style={{ color: '#ff0000' }}>Verify Sender:</strong> SendGrid → Settings → Sender Authentication → Verify your sender email
                     </li>
                     <li style={{ marginBottom: '8px' }}>
-                      <strong style={{ color: '#00b8d4' }}>Test Connection:</strong> Click "Test Connection" to verify your API key works
+                      <strong style={{ color: '#ff0000' }}>Test Connection:</strong> Click "Test Connection" to verify your API key works
                     </li>
                     <li>
-                      <strong style={{ color: '#00b8d4' }}>Save Settings:</strong> Save your configuration to start sending campaigns
+                      <strong style={{ color: '#ff0000' }}>Save Settings:</strong> Save your configuration to start sending campaigns
                     </li>
                   </ol>
                 </div>
@@ -1780,8 +1781,8 @@ const Campaigns = () => {
             className="w-full md:w-[800px] h-full animate-slide-in"
             style={{
               background: 'linear-gradient(135deg, rgba(11, 12, 14, 0.98) 0%, rgba(20, 20, 25, 0.98) 100%)',
-              borderLeft: '1px solid rgba(0, 184, 212, 0.15)',
-              boxShadow: '-20px 0 60px rgba(0, 0, 0, 0.5), inset 1px 0 0 rgba(0, 184, 212, 0.1)',
+              borderLeft: '1px solid rgba(255, 0, 0, 0.15)',
+              boxShadow: '-20px 0 60px rgba(0, 0, 0, 0.5), inset 1px 0 0 rgba(255, 0, 0, 0.1)',
               backdropFilter: 'blur(20px)',
               display: 'flex',
               flexDirection: 'column',
@@ -1791,7 +1792,7 @@ const Campaigns = () => {
           >
             {/* Header */}
             <div style={{ padding: '28px 32px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', background: 'rgba(0, 0, 0, 0.3)', position: 'relative' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #00b8d4 0%, #8b5cf6 50%, #00b8d4 100%)', opacity: 0.6 }} />
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #ff0000 0%, #8b5cf6 50%, #ff0000 100%)', opacity: 0.6 }} />
 
               <div className="flex justify-between items-start">
                 <div style={{ flex: 1 }}>
@@ -1846,14 +1847,14 @@ const Campaigns = () => {
             {/* Content */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '32px' }}>
               <div className="grid grid-cols-3 gap-5 mb-8">
-                <div className="glass-surface" style={{ padding: '20px', borderRadius: '12px', border: '1px solid rgba(0, 184, 212, 0.15)', background: 'rgba(0, 184, 212, 0.03)' }}>
+                <div className="glass-surface" style={{ padding: '20px', borderRadius: '12px', border: '1px solid rgba(255, 0, 0, 0.15)', background: 'rgba(255, 0, 0, 0.03)' }}>
                   <div className="flex items-center justify-between mb-3">
-                    <Send size={16} style={{ color: '#00b8d4' }} />
-                    <p style={{ color: 'rgba(0, 184, 212, 0.7)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                    <Send size={16} style={{ color: '#ff0000' }} />
+                    <p style={{ color: 'rgba(255, 0, 0, 0.7)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
                       Total Sent
                     </p>
                   </div>
-                  <p style={{ color: '#00b8d4', fontSize: '36px', fontWeight: 800, lineHeight: '1', fontVariantNumeric: 'tabular-nums' }}>
+                  <p style={{ color: '#ff0000', fontSize: '36px', fontWeight: 800, lineHeight: '1', fontVariantNumeric: 'tabular-nums' }}>
                     {(selectedCampaign.total_sent || 0).toLocaleString()}
                   </p>
                 </div>
@@ -1890,7 +1891,7 @@ const Campaigns = () => {
               </div>
 
               <div className="glass-surface" style={{ padding: '24px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <h3 style={{ color: '#00b8d4', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: '20px' }}>
+                <h3 style={{ color: '#ff0000', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: '20px' }}>
                   Campaign Details
                 </h3>
                 <div className="grid grid-cols-2 gap-6">
@@ -1956,7 +1957,7 @@ const Campaigns = () => {
               </button>
             </div>
             <div style={{ padding: '32px', background: '#fff', overflowY: 'auto', maxHeight: 'calc(90vh - 80px)' }}>
-              <div dangerouslySetInnerHTML={{ __html: previewTemplate.html_content }} />
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewTemplate.html_content) }} />
             </div>
           </div>
         </div>

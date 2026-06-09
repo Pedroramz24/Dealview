@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import DOMPurify from 'dompurify';
 import { supabase } from '../supabaseClient';
 import { 
   Mail, ArrowLeft, Send, Users, Filter, CheckSquare, Square, Loader2, 
@@ -21,7 +22,7 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
     statuses: []
   });
 
-  const assetTypes = ['Retail Centers', 'Land', 'Industrial', 'Restaurants', 'Hotels', 'Medical', 'Office', 'Multifamily', 'Mixed Use'];
+  const assetTypes = ['Retail Centers', 'Land', 'Industrial', 'Restaurants', 'Hotels', 'Medical', 'Gas Stations', 'Office', 'Multifamily', 'Mixed Use'];
   const markets = ['San Antonio', 'Austin', 'Houston', 'DFW', 'RGV'];
   const statuses = ['Hot', 'Warm', 'Cold', 'Qualified', 'Unqualified'];
 
@@ -210,7 +211,7 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
           disabled={campaign.status === 'sending'}
           style={{
             padding: '12px 24px',
-            background: campaign.status === 'sending' ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+            background: campaign.status === 'sending' ? 'rgba(255, 255, 255, 0.05)' : '#ff0000',
             color: campaign.status === 'sending' ? 'rgba(255, 255, 255, 0.3)' : '#000',
             border: 'none',
             borderRadius: '8px',
@@ -237,7 +238,7 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
         </div>
         <div className="glass-surface p-6">
           <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>Delivered</p>
-          <p style={{ color: '#00b8d4', fontSize: '32px', fontWeight: 600 }}>
+          <p style={{ color: '#ff0000', fontSize: '32px', fontWeight: 600 }}>
             {campaign.total_delivered || 0}
           </p>
         </div>
@@ -284,10 +285,10 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
           maxHeight: '400px',
           overflow: 'auto'
         }}>
-          <div style={{ borderBottom: '2px solid #00b8d4', paddingBottom: '12px', marginBottom: '20px' }}>
+          <div style={{ borderBottom: '2px solid #ff0000', paddingBottom: '12px', marginBottom: '20px' }}>
             <strong>Subject: {campaign.subject}</strong>
           </div>
-          <div dangerouslySetInnerHTML={{ __html: campaign.html_content }} />
+          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(campaign.html_content) }} />
         </div>
       </div>
 
@@ -346,10 +347,10 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
                       onClick={() => toggleFilter('assetTypes', type)}
                       style={{
                         padding: '6px 12px',
-                        background: filters.assetTypes.includes(type) ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                        border: filters.assetTypes.includes(type) ? '1px solid #00b8d4' : '1px solid rgba(255, 255, 255, 0.1)',
+                        background: filters.assetTypes.includes(type) ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                        border: filters.assetTypes.includes(type) ? '1px solid #ff0000' : '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '6px',
-                        color: filters.assetTypes.includes(type) ? '#00b8d4' : 'var(--text-secondary)',
+                        color: filters.assetTypes.includes(type) ? '#ff0000' : 'var(--text-secondary)',
                         fontSize: '13px',
                         cursor: 'pointer'
                       }}
@@ -370,10 +371,10 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
                       onClick={() => toggleFilter('markets', market)}
                       style={{
                         padding: '6px 12px',
-                        background: filters.markets.includes(market) ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                        border: filters.markets.includes(market) ? '1px solid #00b8d4' : '1px solid rgba(255, 255, 255, 0.1)',
+                        background: filters.markets.includes(market) ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                        border: filters.markets.includes(market) ? '1px solid #ff0000' : '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '6px',
-                        color: filters.markets.includes(market) ? '#00b8d4' : 'var(--text-secondary)',
+                        color: filters.markets.includes(market) ? '#ff0000' : 'var(--text-secondary)',
                         fontSize: '13px',
                         cursor: 'pointer'
                       }}
@@ -394,10 +395,10 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
                       onClick={() => toggleFilter('statuses', status)}
                       style={{
                         padding: '6px 12px',
-                        background: filters.statuses.includes(status) ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                        border: filters.statuses.includes(status) ? '1px solid #00b8d4' : '1px solid rgba(255, 255, 255, 0.1)',
+                        background: filters.statuses.includes(status) ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                        border: filters.statuses.includes(status) ? '1px solid #ff0000' : '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '6px',
-                        color: filters.statuses.includes(status) ? '#00b8d4' : 'var(--text-secondary)',
+                        color: filters.statuses.includes(status) ? '#ff0000' : 'var(--text-secondary)',
                         fontSize: '13px',
                         cursor: 'pointer'
                       }}
@@ -424,10 +425,10 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
                   onClick={selectAll}
                   style={{
                     padding: '8px 16px',
-                    background: 'rgba(0, 184, 212, 0.1)',
-                    border: '1px solid rgba(0, 184, 212, 0.3)',
+                    background: 'rgba(255, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 0, 0, 0.3)',
                     borderRadius: '6px',
-                    color: '#00b8d4',
+                    color: '#ff0000',
                     fontSize: '13px',
                     fontWeight: 500,
                     cursor: 'pointer'
@@ -468,8 +469,8 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
                       onClick={() => toggleContact(contact.id)}
                       style={{
                         padding: '12px 16px',
-                        background: selectedContacts.includes(contact.id) ? 'rgba(0, 184, 212, 0.1)' : 'rgba(255, 255, 255, 0.03)',
-                        border: selectedContacts.includes(contact.id) ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid rgba(255, 255, 255, 0.05)',
+                        background: selectedContacts.includes(contact.id) ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                        border: selectedContacts.includes(contact.id) ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid rgba(255, 255, 255, 0.05)',
                         borderRadius: '6px',
                         cursor: 'pointer',
                         display: 'flex',
@@ -479,7 +480,7 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
                       }}
                     >
                       {selectedContacts.includes(contact.id) ? (
-                        <CheckSquare size={20} style={{ color: '#00b8d4' }} />
+                        <CheckSquare size={20} style={{ color: '#ff0000' }} />
                       ) : (
                         <Square size={20} style={{ color: 'var(--text-secondary)' }} />
                       )}
@@ -526,7 +527,7 @@ const CampaignDetails = ({ campaignId, onBack, token, BACKEND_URL }) => {
                 style={{
                   flex: 2,
                   padding: '14px 24px',
-                  background: sending || selectedContacts.length === 0 ? 'rgba(255, 255, 255, 0.05)' : '#00b8d4',
+                  background: sending || selectedContacts.length === 0 ? 'rgba(255, 255, 255, 0.05)' : '#ff0000',
                   color: sending || selectedContacts.length === 0 ? 'rgba(255, 255, 255, 0.3)' : '#000',
                   border: 'none',
                   borderRadius: '8px',

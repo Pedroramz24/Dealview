@@ -234,7 +234,7 @@ const ColumnSelector = ({ visibleColumns, setVisibleColumns, onClose }) => {
             flex: 1,
             background: gradients.primaryButton,
             border: 'none',
-            boxShadow: shadows.glowCyan
+            boxShadow: shadows.glow
           }}
         >
           Apply ({localColumns.length} columns)

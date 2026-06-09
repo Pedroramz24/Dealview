@@ -87,7 +87,7 @@ const DealVisorContent = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: shadows.glowCyan
+            boxShadow: shadows.glow
           }}>
             <MapIcon size={20} style={{ color: colors.primary }} />
           </div>
@@ -137,7 +137,7 @@ const DealVisorContent = () => {
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: transitions.fast,
-                boxShadow: showMap ? shadows.glowCyan : 'none'
+                boxShadow: showMap ? shadows.glow : 'none'
               }}
             >
               <MapIcon size={16} />
@@ -158,7 +158,7 @@ const DealVisorContent = () => {
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: transitions.fast,
-                boxShadow: !showMap ? shadows.glowCyan : 'none'
+                boxShadow: !showMap ? shadows.glow : 'none'
               }}
             >
               <Grid3x3 size={16} />
@@ -172,7 +172,7 @@ const DealVisorContent = () => {
               background: gradients.primaryButton,
               color: colors.textPrimary,
               border: 'none',
-              boxShadow: shadows.glowCyan,
+              boxShadow: shadows.glow,
               transition: transitions.default
             }}
             className="flex items-center gap-2"

@@ -14,7 +14,7 @@ const RoleSelectionStep = ({ onSelect }) => {
         'Build broker reputation',
         'Earn commissions'
       ],
-      color: '#00b8d4'
+      color: '#ff0000'
     },
     {
       id: 'seller',

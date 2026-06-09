@@ -126,7 +126,7 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
         />
         
         {loading && (
-          <Loader2 size={16} style={{ color: '#00b8d4' }} className="animate-spin" />
+          <Loader2 size={16} style={{ color: '#ff0000' }} className="animate-spin" />
         )}
         
         {query && !loading && (
@@ -180,11 +180,11 @@ const AddressSearchBar = ({ onSelectAddress, mapRef }) => {
                 cursor: 'pointer',
                 transition: 'background 0.15s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 184, 212, 0.08)'}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 0, 0, 0.08)'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
             >
               <div style={{ display: 'flex', alignItems: 'start', gap: '14px' }}>
-                <MapPin size={18} style={{ color: '#00b8d4', marginTop: '3px', flexShrink: 0 }} />
+                <MapPin size={18} style={{ color: '#ff0000', marginTop: '3px', flexShrink: 0 }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
                     color: '#FFFFFF',

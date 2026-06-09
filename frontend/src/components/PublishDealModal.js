@@ -228,7 +228,7 @@ const PublishDealModal = ({ dealId, deal, onClose, onPublished }) => {
               disabled={submitting}
               style={{
                 padding: '12px 24px',
-                background: submitting ? 'rgba(0, 184, 212, 0.3)' : 'linear-gradient(135deg, #00b8d4 0%, #00b8d4 100%)',
+                background: submitting ? 'rgba(255, 0, 0, 0.3)' : 'linear-gradient(135deg, #ff0000 0%, #ff0000 100%)',
                 border: 'none',
                 borderRadius: '10px',
                 color: '#000',
@@ -249,14 +249,14 @@ const PublishDealModal = ({ dealId, deal, onClose, onPublished }) => {
           <div style={{
             marginTop: '24px',
             padding: '16px',
-            background: 'rgba(0, 184, 212, 0.1)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '10px',
             color: 'rgba(255,255,255,0.7)',
             fontSize: '13px',
             lineHeight: '1.5'
           }}>
-            <strong style={{ color: '#00b8d4' }}>📋 Review Process:</strong><br />
+            <strong style={{ color: '#ff0000' }}>📋 Review Process:</strong><br />
             Your deal will be reviewed by our team before appearing in the Marketplace. You&apos;ll be notified once it&apos;s approved.
           </div>
         </form>

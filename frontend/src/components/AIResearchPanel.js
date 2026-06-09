@@ -229,10 +229,10 @@ const AIResearchPanel = ({ isOpen, onClose }) => {
                 padding: '12px 16px',
                 borderRadius: '12px',
                 background: message.role === 'user'
-                  ? 'rgba(0, 184, 212, 0.15)'
+                  ? 'rgba(255, 0, 0, 0.15)'
                   : 'rgba(168, 85, 247, 0.1)',
                 border: message.role === 'user'
-                  ? '1px solid rgba(0, 184, 212, 0.3)'
+                  ? '1px solid rgba(255, 0, 0, 0.3)'
                   : '1px solid rgba(168, 85, 247, 0.3)',
               }}
             >

@@ -120,3 +120,75 @@ async def get_recent_activity(
     except Exception as e:
         logger.error(f"Get recent activity error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch recent activity")
+
+
+
+@router.get("/upcoming-deadlines")
+async def get_upcoming_deadlines(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get upcoming critical dates across all user's deals within the next 30 days."""
+    supabase = get_supabase()
+    try:
+        user_id = await get_user_id(credentials)
+        
+        today = datetime.utcnow().date()
+        thirty_days = (today + timedelta(days=30)).isoformat()
+        today_str = today.isoformat()
+        
+        # Get all user's deal IDs
+        deals_response = supabase.table('deals') \
+            .select('id, title, address') \
+            .eq('owner_id', user_id) \
+            .execute()
+        deals = deals_response.data or []
+        
+        if not deals:
+            return {"success": True, "deadlines": []}
+        
+        deal_map = {d['id']: d for d in deals}
+        deal_ids = list(deal_map.keys())
+        
+        # Get all timeline milestones with dates in the next 30 days (or overdue)
+        milestones_response = supabase.table('deal_timelines') \
+            .select('*') \
+            .in_('deal_id', deal_ids) \
+            .neq('status', 'completed') \
+            .not_.is_('target_date', 'null') \
+            .lte('target_date', thirty_days) \
+            .order('target_date') \
+            .execute()
+        
+        deadlines = []
+        for m in (milestones_response.data or []):
+            deal = deal_map.get(m['deal_id'], {})
+            target = m.get('target_date', '')
+            if target:
+                try:
+                    target_date = datetime.strptime(target, '%Y-%m-%d').date()
+                    days_remaining = (target_date - today).days
+                except (ValueError, TypeError):
+                    days_remaining = 999
+            else:
+                days_remaining = 999
+            
+            deadlines.append({
+                "milestone_id": m['id'],
+                "milestone_name": m['name'],
+                "target_date": m.get('target_date'),
+                "status": m.get('status'),
+                "deal_id": m['deal_id'],
+                "deal_title": deal.get('title', 'Unknown'),
+                "deal_address": deal.get('address', ''),
+                "days_remaining": days_remaining,
+            })
+        
+        # Sort by days remaining (most urgent first)
+        deadlines.sort(key=lambda x: x['days_remaining'])
+        
+        return {"success": True, "deadlines": deadlines}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get upcoming deadlines error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch upcoming deadlines")

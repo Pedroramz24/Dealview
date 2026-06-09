@@ -13,7 +13,7 @@ const TextFormattingToolbar = ({
   const fontSizes = [12, 14, 16, 18, 20, 24, 28, 32];
   const colors = [
     { name: 'White', value: '#ffffff' },
-    { name: 'Cyan', value: '#00b8d4' },
+    { name: 'Cyan', value: '#ff0000' },
     { name: 'Yellow', value: '#fbbf24' },
     { name: 'Red', value: '#ef4444' },
     { name: 'Green', value: '#10b981' },
@@ -33,10 +33,10 @@ const TextFormattingToolbar = ({
       gap: '8px',
       background: 'rgba(11, 12, 14, 0.98)',
       backdropFilter: 'blur(20px)',
-      border: '1px solid rgba(0, 184, 212, 0.3)',
+      border: '1px solid rgba(255, 0, 0, 0.3)',
       borderRadius: '10px',
       padding: '10px 16px',
-      boxShadow: '0 4px 24px rgba(0, 184, 212, 0.3)',
+      boxShadow: '0 4px 24px rgba(255, 0, 0, 0.3)',
     }}>
       {/* Font Size Dropdown */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -76,10 +76,10 @@ const TextFormattingToolbar = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: currentFormat.bold ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-          border: `1px solid ${currentFormat.bold ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+          background: currentFormat.bold ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+          border: `1px solid ${currentFormat.bold ? 'rgba(255, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
           borderRadius: '6px',
-          color: currentFormat.bold ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+          color: currentFormat.bold ? '#ff0000' : 'rgba(255, 255, 255, 0.7)',
           cursor: 'pointer',
           transition: 'all 0.2s'
         }}
@@ -97,10 +97,10 @@ const TextFormattingToolbar = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: currentFormat.italic ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-          border: `1px solid ${currentFormat.italic ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+          background: currentFormat.italic ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+          border: `1px solid ${currentFormat.italic ? 'rgba(255, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
           borderRadius: '6px',
-          color: currentFormat.italic ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+          color: currentFormat.italic ? '#ff0000' : 'rgba(255, 255, 255, 0.7)',
           cursor: 'pointer',
           transition: 'all 0.2s'
         }}
@@ -145,10 +145,10 @@ const TextFormattingToolbar = ({
         onClick={() => onFormatChange({ uppercase: !currentFormat.uppercase })}
         style={{
           padding: '8px 12px',
-          background: currentFormat.uppercase ? 'rgba(0, 184, 212, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-          border: `1px solid ${currentFormat.uppercase ? 'rgba(0, 184, 212, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+          background: currentFormat.uppercase ? 'rgba(255, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+          border: `1px solid ${currentFormat.uppercase ? 'rgba(255, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
           borderRadius: '6px',
-          color: currentFormat.uppercase ? '#00b8d4' : 'rgba(255, 255, 255, 0.7)',
+          color: currentFormat.uppercase ? '#ff0000' : 'rgba(255, 255, 255, 0.7)',
           fontSize: '12px',
           fontWeight: '700',
           cursor: 'pointer',

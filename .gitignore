@@ -99,3 +99,9 @@ tiles/bexar_parcels.pmtiles
 tiles/sa_zoning_complete.pmtiles
 frontend/public/tiles/sa_zoning.pmtiles
 frontend/public/tiles/bexar_parcels.pmtiles
+.env
+.env.*
+*.env
+credentials.json
+*.key
+.credentials

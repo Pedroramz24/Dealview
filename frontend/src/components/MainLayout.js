@@ -9,7 +9,8 @@ import {
   Calendar, 
   UsersRound,
   LogOut,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  KeyRound
 } from 'lucide-react';
 import { colors, shadows, gradients } from '../styles/designSystem';
 import {
@@ -36,6 +37,7 @@ const MainLayout = () => {
     { path: '/pipeline', icon: Trello, label: 'Pipeline' },
     { path: '/contacts', icon: Users, label: 'Contacts' },
     { path: '/team', icon: UsersRound, label: 'Team' },
+    { path: '/portals', icon: KeyRound, label: 'Portals' },
     { path: '/calendar', icon: Calendar, label: 'Calendar' },
   ];
 
@@ -114,7 +116,7 @@ const MainLayout = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: isActive(path) ? colors.primary : colors.textTertiary,
-                      background: isActive(path) ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
+                      background: isActive(path) ? 'rgba(255, 0, 0, 0.15)' : 'transparent',
                       border: isActive(path) ? `1px solid ${colors.primary}40` : '1px solid transparent',
                       transition: 'all 0.2s ease'
                     }}
@@ -165,7 +167,7 @@ const MainLayout = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: isActive('/settings') ? colors.primary : colors.textTertiary,
-                    background: isActive('/settings') ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
+                    background: isActive('/settings') ? 'rgba(255, 0, 0, 0.15)' : 'transparent',
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {

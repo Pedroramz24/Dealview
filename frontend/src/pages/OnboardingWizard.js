@@ -24,7 +24,7 @@ const OnboardingWizard = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const markets = ['San Antonio', 'Austin', 'Houston', 'DFW', 'RGV', 'El Paso', 'Corpus Christi'];
-  const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Hotels', 'Medical', 'Special Purpose'];
+  const assetTypes = ['Office', 'Retail', 'Industrial', 'Multifamily', 'Land', 'Mixed Use', 'Hotels', 'Medical', 'Gas Stations', 'Special Purpose'];
   const strategies = ['Core', 'Core+', 'Value-Add', 'Development', 'Reposition'];
 
   const toggleArrayItem = (array, item) => {
@@ -84,7 +84,7 @@ const OnboardingWizard = () => {
       }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h1 style={{ color: '#00b8d4', fontSize: '36px', fontWeight: '700', marginBottom: '12px' }}>
+          <h1 style={{ color: '#ff0000', fontSize: '36px', fontWeight: '700', marginBottom: '12px' }}>
             Welcome to DealLinked
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '16px' }}>
@@ -101,7 +101,7 @@ const OnboardingWizard = () => {
                 width: '12px',
                 height: '12px',
                 borderRadius: '50%',
-                background: step >= s ? '#00b8d4' : 'rgba(255,255,255,0.2)',
+                background: step >= s ? '#ff0000' : 'rgba(255,255,255,0.2)',
                 transition: 'all 0.3s ease'
               }}
             />
@@ -121,15 +121,15 @@ const OnboardingWizard = () => {
                 onClick={() => { setRole('investor'); setStep(2); }}
                 style={{
                   padding: '32px',
-                  background: role === 'investor' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                  border: role === 'investor' ? '2px solid rgba(0, 184, 212, 0.5)' : '2px solid rgba(255,255,255,0.1)',
+                  background: role === 'investor' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)',
+                  border: role === 'investor' ? '2px solid rgba(255, 0, 0, 0.5)' : '2px solid rgba(255,255,255,0.1)',
                   borderRadius: '16px',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   textAlign: 'center'
                 }}
               >
-                <Store size={48} style={{ color: '#00b8d4', margin: '0 auto 16px' }} />
+                <Store size={48} style={{ color: '#ff0000', margin: '0 auto 16px' }} />
                 <div style={{ color: '#fff', fontSize: '20px', fontWeight: '600', marginBottom: '8px' }}>
                   I'm an Investor
                 </div>
@@ -143,15 +143,15 @@ const OnboardingWizard = () => {
                 onClick={() => { setRole('broker'); setStep(2); }}
                 style={{
                   padding: '32px',
-                  background: role === 'broker' ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                  border: role === 'broker' ? '2px solid rgba(0, 184, 212, 0.5)' : '2px solid rgba(255,255,255,0.1)',
+                  background: role === 'broker' ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)',
+                  border: role === 'broker' ? '2px solid rgba(255, 0, 0, 0.5)' : '2px solid rgba(255,255,255,0.1)',
                   borderRadius: '16px',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   textAlign: 'center'
                 }}
               >
-                <Briefcase size={48} style={{ color: '#00b8d4', margin: '0 auto 16px' }} />
+                <Briefcase size={48} style={{ color: '#ff0000', margin: '0 auto 16px' }} />
                 <div style={{ color: '#fff', fontSize: '20px', fontWeight: '600', marginBottom: '8px' }}>
                   I'm a Broker
                 </div>
@@ -204,10 +204,10 @@ const OnboardingWizard = () => {
                     onClick={() => setBuyBox({...buyBox, markets: toggleArrayItem(buyBox.markets, market)})}
                     style={{
                       padding: '10px 20px',
-                      background: buyBox.markets.includes(market) ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                      border: buyBox.markets.includes(market) ? '1px solid rgba(0, 184, 212, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+                      background: buyBox.markets.includes(market) ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)',
+                      border: buyBox.markets.includes(market) ? '1px solid rgba(255, 0, 0, 0.5)' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '10px',
-                      color: buyBox.markets.includes(market) ? '#00b8d4' : 'rgba(255,255,255,0.7)',
+                      color: buyBox.markets.includes(market) ? '#ff0000' : 'rgba(255,255,255,0.7)',
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '500'
@@ -232,10 +232,10 @@ const OnboardingWizard = () => {
                     onClick={() => setBuyBox({...buyBox, asset_types: toggleArrayItem(buyBox.asset_types, type)})}
                     style={{
                       padding: '10px 20px',
-                      background: buyBox.asset_types.includes(type) ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                      border: buyBox.asset_types.includes(type) ? '1px solid rgba(0, 184, 212, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+                      background: buyBox.asset_types.includes(type) ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)',
+                      border: buyBox.asset_types.includes(type) ? '1px solid rgba(255, 0, 0, 0.5)' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '10px',
-                      color: buyBox.asset_types.includes(type) ? '#00b8d4' : 'rgba(255,255,255,0.7)',
+                      color: buyBox.asset_types.includes(type) ? '#ff0000' : 'rgba(255,255,255,0.7)',
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '500'
@@ -309,10 +309,10 @@ const OnboardingWizard = () => {
                     onClick={() => setBuyBox({...buyBox, strategies: toggleArrayItem(buyBox.strategies, strategy)})}
                     style={{
                       padding: '10px 20px',
-                      background: buyBox.strategies.includes(strategy) ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                      border: buyBox.strategies.includes(strategy) ? '1px solid rgba(0, 184, 212, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+                      background: buyBox.strategies.includes(strategy) ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)',
+                      border: buyBox.strategies.includes(strategy) ? '1px solid rgba(255, 0, 0, 0.5)' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '10px',
-                      color: buyBox.strategies.includes(strategy) ? '#00b8d4' : 'rgba(255,255,255,0.7)',
+                      color: buyBox.strategies.includes(strategy) ? '#ff0000' : 'rgba(255,255,255,0.7)',
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '500'
@@ -330,7 +330,7 @@ const OnboardingWizard = () => {
               style={{
                 width: '100%',
                 padding: '16px',
-                background: buyBox.markets.length > 0 ? '#00b8d4' : 'rgba(255,255,255,0.1)',
+                background: buyBox.markets.length > 0 ? '#ff0000' : 'rgba(255,255,255,0.1)',
                 border: 'none',
                 borderRadius: '12px',
                 color: buyBox.markets.length > 0 ? '#000' : 'rgba(255,255,255,0.3)',
@@ -434,10 +434,10 @@ const OnboardingWizard = () => {
                     onClick={() => setBrokerInfo({...brokerInfo, specialization_markets: toggleArrayItem(brokerInfo.specialization_markets, market)})}
                     style={{
                       padding: '10px 20px',
-                      background: brokerInfo.specialization_markets.includes(market) ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                      border: brokerInfo.specialization_markets.includes(market) ? '1px solid rgba(0, 184, 212, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+                      background: brokerInfo.specialization_markets.includes(market) ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)',
+                      border: brokerInfo.specialization_markets.includes(market) ? '1px solid rgba(255, 0, 0, 0.5)' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '10px',
-                      color: brokerInfo.specialization_markets.includes(market) ? '#00b8d4' : 'rgba(255,255,255,0.7)',
+                      color: brokerInfo.specialization_markets.includes(market) ? '#ff0000' : 'rgba(255,255,255,0.7)',
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '500'
@@ -462,10 +462,10 @@ const OnboardingWizard = () => {
                     onClick={() => setBrokerInfo({...brokerInfo, specialization_asset_types: toggleArrayItem(brokerInfo.specialization_asset_types, type)})}
                     style={{
                       padding: '10px 20px',
-                      background: brokerInfo.specialization_asset_types.includes(type) ? 'rgba(0, 184, 212, 0.15)' : 'rgba(255,255,255,0.05)',
-                      border: brokerInfo.specialization_asset_types.includes(type) ? '1px solid rgba(0, 184, 212, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+                      background: brokerInfo.specialization_asset_types.includes(type) ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255,255,255,0.05)',
+                      border: brokerInfo.specialization_asset_types.includes(type) ? '1px solid rgba(255, 0, 0, 0.5)' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '10px',
-                      color: brokerInfo.specialization_asset_types.includes(type) ? '#00b8d4' : 'rgba(255,255,255,0.7)',
+                      color: brokerInfo.specialization_asset_types.includes(type) ? '#ff0000' : 'rgba(255,255,255,0.7)',
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '500'
@@ -483,7 +483,7 @@ const OnboardingWizard = () => {
               style={{
                 width: '100%',
                 padding: '16px',
-                background: (brokerInfo.license_number && brokerInfo.brokerage_name) ? '#00b8d4' : 'rgba(255,255,255,0.1)',
+                background: (brokerInfo.license_number && brokerInfo.brokerage_name) ? '#ff0000' : 'rgba(255,255,255,0.1)',
                 border: 'none',
                 borderRadius: '12px',
                 color: (brokerInfo.license_number && brokerInfo.brokerage_name) ? '#000' : 'rgba(255,255,255,0.3)',

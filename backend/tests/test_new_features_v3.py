@@ -13,17 +13,17 @@ import time
 import uuid
 
 # Get backend URL from environment variable
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://contact-mgmt-v1.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://image-upload-fix-30.preview.emergentagent.com')
 
 # Supabase credentials from environment
-SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://ygezobmpewthqvsfqrbk.supabase.co')
-SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0')
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
 
 
 class TestConfig:
     """Configuration for tests"""
     test_email = f"visibility_test_{int(time.time())}@example.com"
-    test_password = "TestPass123!"
+    test_password = os.environ.get("TEST_DEFAULT_PASSWORD", "TestPass123!")
     auth_token = None
     created_deal_id = None
     created_tag_ids = []

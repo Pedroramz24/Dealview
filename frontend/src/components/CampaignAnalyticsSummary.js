@@ -45,9 +45,9 @@ const CampaignAnalyticsSummary = ({ campaigns }) => {
       label: 'Total Sent',
       value: stats.totalSent.toLocaleString(),
       icon: Send,
-      color: '#00b8d4',
-      bgColor: 'rgba(0, 184, 212, 0.1)',
-      borderColor: 'rgba(0, 184, 212, 0.2)'
+      color: '#ff0000',
+      bgColor: 'rgba(255, 0, 0, 0.1)',
+      borderColor: 'rgba(255, 0, 0, 0.2)'
     },
     {
       label: 'Delivery Rate',

@@ -1,0 +1,96 @@
+{
+  "summary": "Code review and bug fix completed for 3 new features: 1) MapView trash button in side panel, 2) Pipeline visibility toggle on deal cards, 3) Map marker anchor fix. Found and fixed critical bug: StageColumn was not passing onToggleVisibility prop to DealCard. Also fixed duplicate export at end of Pipeline.js.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "features_verified": {
+    "mapview_trash_button_visible": {
+      "code_review": "PASSED",
+      "details": "Lines 1800-1816: Trash button with data-testid='side-panel-delete-deal' visible in side panel header next to close (X) button"
+    },
+    "mapview_trash_button_hidden_for_team_deals": {
+      "code_review": "PASSED",
+      "details": "Line 1801: Conditional {!selectedDeal.isTeamDeal && (...)} ensures trash button NOT visible for team deals"
+    },
+    "mapview_trash_confirmation_and_delete": {
+      "code_review": "PASSED",
+      "details": "Lines 893-910: handleDeleteSelectedDeal uses window.confirm() for confirmation, then DELETE /api/deals/:id, then removes from local state via setDeals filter"
+    },
+    "pipeline_visibility_toggle_ui": {
+      "code_review": "PASSED",
+      "details": "Lines 170-190: DealCard has visibility toggle with data-testid='visibility-toggle-${deal.id}', Users icon, shows 'Shared' (green) when team_id set, 'Private' (grey) when null"
+    },
+    "pipeline_visibility_toggle_api": {
+      "code_review": "PASSED",
+      "details": "Lines 617-631: handleToggleDealVisibility calls PUT /api/deals/:id/visibility with {shared_with_team: bool}, updates deal.team_id in local state"
+    },
+    "pipeline_visibility_prop_passing": {
+      "code_review": "FIXED",
+      "details": "Line 358: StageColumn now passes onToggleVisibility={onToggleVisibility} to DealCard - was missing before fix"
+    },
+    "mapview_marker_anchor_bottom": {
+      "code_review": "PASSED",
+      "details": "Lines 1017, 1035: Both user markers and team markers use anchor='bottom' for proper teardrop pin positioning"
+    },
+    "mapview_overflow_css": {
+      "code_review": "PASSED",
+      "details": "Lines 2428-2434: CSS includes .maplibregl-marker and .maplibregl-canvas-container with overflow: visible !important to prevent edge clipping"
+    }
+  },
+  "bugs_fixed": {
+    "missing_onToggleVisibility_prop": {
+      "file": "/app/frontend/src/pages/Pipeline.js",
+      "line": "358",
+      "issue": "StageColumn component received onToggleVisibility prop but did not pass it to DealCard, causing visibility toggle button to fail",
+      "fix": "Added onToggleVisibility={onToggleVisibility} to DealCard props in StageColumn"
+    },
+    "duplicate_export": {
+      "file": "/app/frontend/src/pages/Pipeline.js",
+      "line": "1388-1392",
+      "issue": "Duplicate 'export default Pipeline;' and extra closing braces at end of file",
+      "fix": "Removed duplicate code, kept single export statement"
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "MapView.js: Trash button correctly gated by !selectedDeal.isTeamDeal - only deal owners can delete",
+    "MapView.js: handleDeleteSelectedDeal properly uses window.confirm() and optimistic local state update",
+    "Pipeline.js: Visibility toggle UI correctly shows green 'Shared' vs grey 'Private' based on team_id",
+    "Pipeline.js: handleToggleDealVisibility correctly calls PUT /api/deals/:id/visibility endpoint",
+    "MapView.js: Marker anchor='bottom' ensures teardrop pins point to exact location",
+    "MapView.js: CSS overflow:visible prevents marker clipping at map edges"
+  ],
+  "updated_files": [
+    "/app/frontend/src/pages/Pipeline.js"
+  ],
+  "success_rate": {
+    "backend": "N/A (auth-protected, no test credentials)",
+    "frontend": "100% code review passed (8/8 features verified, 2 bugs fixed)"
+  },
+  "test_credentials": {
+    "note": "App uses Supabase auth. No test credentials available. Code review performed instead of E2E testing."
+  },
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Three features verified: 1) MapView.js trash button (lines 1800-1816) with handleDeleteSelectedDeal (lines 893-910) - only shows for own deals, uses window.confirm. 2) Pipeline.js visibility toggle on DealCard (lines 170-190) with handleToggleDealVisibility (lines 617-631) - calls PUT /api/deals/:id/visibility. Fixed missing onToggleVisibility prop passing in StageColumn. 3) MapView.js marker anchor='bottom' (lines 1017, 1035) and CSS overflow:visible (lines 2428-2434) for edge clipping fix. App requires Supabase auth.",
+  "rca_of_the_issue": {
+    "bug_1_missing_prop": {
+      "root_cause": "StageColumn component destructured onToggleVisibility from props but never passed it to DealCard children",
+      "fix": "Added onToggleVisibility={onToggleVisibility} to DealCard props in StageColumn render",
+      "impact": "Without fix, clicking visibility toggle on Pipeline cards would throw 'onToggleVisibility is not a function' error"
+    },
+    "bug_2_duplicate_export": {
+      "root_cause": "Copy-paste error left duplicate closing braces and export statement at end of file",
+      "fix": "Removed duplicate code",
+      "impact": "Would cause syntax error on build"
+    }
+  }
+}

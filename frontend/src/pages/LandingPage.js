@@ -572,7 +572,7 @@ const LandingPage = () => {
                   justifyContent: 'center'
                 }}>
                   {['Discovery', 'NCND', 'DD', 'Close'].map((stage, idx) => (
-                    <div key={idx} style={{
+                    <div key={stage} style={{
                       flex: 1,
                       padding: '8px 4px',
                       background: idx < 2 ? 'rgba(255, 255, 255, 0.1)' : 'rgba(100, 100, 100, 0.1)',
@@ -705,8 +705,8 @@ const LandingPage = () => {
                 {[
                   { count: '200+', label: 'Investors' },
                   { count: '150+', label: 'Brokers' }
-                ].map((stat, idx) => (
-                  <div key={idx} style={{
+                ].map((stat) => (
+                  <div key={stat.label} style={{
                     flex: 1,
                     padding: '10px 8px',
                     background: 'rgba(255, 255, 255, 0.1)',
@@ -903,23 +903,23 @@ const LandingPage = () => {
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               padding: '40px 32px',
               borderRadius: '20px',
-              border: '1px solid rgba(0, 184, 212, 0.2)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 184, 212, 0.05)',
+              border: '1px solid rgba(255, 0, 0, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(255, 0, 0, 0.05)',
               textAlign: 'center'
             }}>
               <div style={{
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0, 184, 212, 0.3) 0%, rgba(0, 184, 212, 0.1) 70%)',
-                border: '2px solid rgba(0, 184, 212, 0.4)',
+                background: 'radial-gradient(circle, rgba(255, 0, 0, 0.3) 0%, rgba(255, 0, 0, 0.1) 70%)',
+                border: '2px solid rgba(255, 0, 0, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 0 30px rgba(0, 184, 212, 0.4)'
+                boxShadow: '0 0 30px rgba(255, 0, 0, 0.4)'
               }}>
-                <Building2 size={32} color="#00b8d4" />
+                <Building2 size={32} color="#ff0000" />
               </div>
               <h3 style={{
                 fontSize: '24px',
@@ -1237,9 +1237,9 @@ const LandingPage = () => {
                 text: "Best platform for sourcing off-market commercial deals. The map view and filters save me hours every week.",
                 role: "Investor"
               }
-            ]).map((testimonial, idx) => (
+            ]).map((testimonial) => (
               <div
-                key={idx}
+                key={testimonial.role}
                 style={{
                   minWidth: '400px',
                   maxWidth: '400px',
@@ -1264,7 +1264,7 @@ const LandingPage = () => {
                   marginBottom: '16px'
                 }}>
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} style={{
+                    <div key={`star-${i}`} style={{
                       width: '16px',
                       height: '16px',
                       color: '#3063ff',

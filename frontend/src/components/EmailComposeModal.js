@@ -520,11 +520,11 @@ const EmailComposeModal = ({
         {/* Deal Context Preview */}
         {dealContext && (
           <div className="mb-6 p-4" style={{
-            background: 'rgba(0, 184, 212, 0.05)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.05)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '8px'
           }}>
-            <p style={{ color: '#00b8d4', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+            <p style={{ color: '#ff0000', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
               📌 Email linked to deal:
             </p>
             <p style={{ color: 'var(--text-primary)', fontSize: '14px', fontWeight: 500 }}>
@@ -565,7 +565,7 @@ const EmailComposeModal = ({
               padding: '12px 24px',
               background: (sending || !emailData.to || !emailData.subject || !emailData.message) 
                 ? 'rgba(255, 255, 255, 0.05)' 
-                : '#00b8d4',
+                : '#ff0000',
               color: (sending || !emailData.to || !emailData.subject || !emailData.message) 
                 ? 'rgba(255, 255, 255, 0.3)' 
                 : '#000',

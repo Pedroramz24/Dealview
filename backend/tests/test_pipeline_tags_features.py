@@ -15,13 +15,13 @@ import time
 import uuid
 
 # Get base URL from environment
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://contact-mgmt-v1.preview.emergentagent.com').rstrip('/')
-SUPABASE_URL = "https://ygezobmpewthqvsfqrbk.supabase.co"
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZXpvYm1wZXd0aHF2c2ZxcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDYzOTEsImV4cCI6MjA3NTQ4MjM5MX0.iEPttGHUCNl-_eyoEP291EruFBmD50MsXhW6Z2udFX0"
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://image-upload-fix-30.preview.emergentagent.com').rstrip('/')
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
 
 # Test user credentials for authentication
 TEST_EMAIL = f"pipeline_test_{int(time.time())}@example.com"
-TEST_PASSWORD = "TestPass123!"
+TEST_PASSWORD = os.environ.get("TEST_DEFAULT_PASSWORD", "TestPass123!")
 
 class TestSetup:
     """Setup test user and get token"""

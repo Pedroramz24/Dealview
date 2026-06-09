@@ -80,24 +80,24 @@ const DualModeLayout = () => {
             zIndex: 200,
             background: 'rgba(12, 12, 12, 0.95)',
             backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(0, 184, 212, 0.3)',
+            border: '1px solid rgba(255, 0, 0, 0.3)',
             borderRadius: '12px',
             padding: '12px',
-            color: '#00b8d4',
+            color: '#ff0000',
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.4), 0 0 20px rgba(0, 184, 212, 0.2)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4), 0 0 20px rgba(255, 0, 0, 0.2)',
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 184, 212, 0.15)';
-            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.5), 0 0 32px rgba(0, 184, 212, 0.3)';
+            e.currentTarget.style.background = 'rgba(255, 0, 0, 0.15)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.5), 0 0 32px rgba(255, 0, 0, 0.3)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'rgba(12, 12, 12, 0.95)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4), 0 0 20px rgba(0, 184, 212, 0.2)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4), 0 0 20px rgba(255, 0, 0, 0.2)';
           }}
         >
           <ChevronRight 
@@ -170,9 +170,9 @@ const DualModeLayout = () => {
               gap: '12px',
               padding: workspaceExpanded ? '12px 16px' : '12px',
               borderRadius: '12px',
-              color: isMarketplaceMode ? '#00b8d4' : 'rgba(255,255,255,0.6)',
-              background: isMarketplaceMode ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
-              border: isMarketplaceMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+              color: isMarketplaceMode ? '#ff0000' : 'rgba(255,255,255,0.6)',
+              background: isMarketplaceMode ? 'rgba(255, 0, 0, 0.15)' : 'transparent',
+              border: isMarketplaceMode ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid transparent',
               textDecoration: 'none',
               transition: 'all 0.3s ease',
               justifyContent: workspaceExpanded ? 'flex-start' : 'center'
@@ -206,9 +206,9 @@ const DualModeLayout = () => {
                 gap: '12px',
                 padding: workspaceExpanded ? '12px 16px' : '12px',
                 borderRadius: '12px',
-                color: isWorkspaceMode ? '#00b8d4' : 'rgba(255,255,255,0.6)',
-                background: isWorkspaceMode ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
-                border: isWorkspaceMode ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+                color: isWorkspaceMode ? '#ff0000' : 'rgba(255,255,255,0.6)',
+                background: isWorkspaceMode ? 'rgba(255, 0, 0, 0.15)' : 'transparent',
+                border: isWorkspaceMode ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid transparent',
                 textDecoration: 'none',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
@@ -252,8 +252,8 @@ const DualModeLayout = () => {
                         gap: '12px',
                         padding: '10px 12px',
                         borderRadius: '8px',
-                        color: active ? '#00b8d4' : 'rgba(255,255,255,0.5)',
-                        background: active ? 'rgba(0, 184, 212, 0.1)' : 'transparent',
+                        color: active ? '#ff0000' : 'rgba(255,255,255,0.5)',
+                        background: active ? 'rgba(255, 0, 0, 0.1)' : 'transparent',
                         textDecoration: 'none',
                         fontSize: '14px',
                         fontWeight: active ? '500' : '400',
@@ -279,9 +279,9 @@ const DualModeLayout = () => {
               gap: '12px',
               padding: workspaceExpanded ? '12px 16px' : '12px',
               borderRadius: '12px',
-              color: isActive('/settings') ? '#00b8d4' : 'rgba(255,255,255,0.6)',
-              background: isActive('/settings') ? 'rgba(0, 184, 212, 0.15)' : 'transparent',
-              border: isActive('/settings') ? '1px solid rgba(0, 184, 212, 0.3)' : '1px solid transparent',
+              color: isActive('/settings') ? '#ff0000' : 'rgba(255,255,255,0.6)',
+              background: isActive('/settings') ? 'rgba(255, 0, 0, 0.15)' : 'transparent',
+              border: isActive('/settings') ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid transparent',
               textDecoration: 'none',
               transition: 'all 0.3s ease',
               justifyContent: workspaceExpanded ? 'flex-start' : 'center'

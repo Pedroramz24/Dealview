@@ -172,15 +172,15 @@ const CommandCenter = () => {
           <div style={{
             width: '56px',
             height: '56px',
-            background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.2), rgba(59, 130, 246, 0.2))',
+            background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(59, 130, 246, 0.2))',
             borderRadius: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 2px 10px rgba(0, 184, 212, 0.15)',
-            border: '1px solid rgba(0, 184, 212, 0.25)'
+            boxShadow: '0 2px 10px rgba(255, 0, 0, 0.15)',
+            border: '1px solid rgba(255, 0, 0, 0.25)'
           }}>
-            <LayoutDashboard style={{ color: '#00d4ff', width: '28px', height: '28px' }} />
+            <LayoutDashboard style={{ color: '#ff0000', width: '28px', height: '28px' }} />
           </div>
           <div>
             <h1 style={{
@@ -288,8 +288,8 @@ const BrokerSnapshotCards = ({ snapshot, navigate }) => {
       gap: '20px',
       marginBottom: '32px'
     }}>
-      {metrics.map((metric, idx) => (
-        <MetricCard key={idx} {...metric} />
+      {metrics.map((metric) => (
+        <MetricCard key={metric.label} {...metric} />
       ))}
     </div>
   );
@@ -338,8 +338,8 @@ const SellerSnapshotCards = ({ snapshot, navigate }) => {
       gap: '20px',
       marginBottom: '32px'
     }}>
-      {metrics.map((metric, idx) => (
-        <MetricCard key={idx} {...metric} />
+      {metrics.map((metric) => (
+        <MetricCard key={metric.label} {...metric} />
       ))}
     </div>
   );
@@ -362,7 +362,7 @@ const BuyerSnapshotCards = ({ snapshot, navigate }) => {
       icon: MessageCircle, 
       label: 'Active Conversations', 
       value: snapshot?.active_conversations || 0,
-      color: '#00b8d4',
+      color: '#ff0000',
       onClick: () => {}
     },
     { 
@@ -388,8 +388,8 @@ const BuyerSnapshotCards = ({ snapshot, navigate }) => {
       gap: '20px',
       marginBottom: '32px'
     }}>
-      {metrics.map((metric, idx) => (
-        <MetricCard key={idx} {...metric} />
+      {metrics.map((metric) => (
+        <MetricCard key={metric.label} {...metric} />
       ))}
     </div>
   );
@@ -494,14 +494,14 @@ const CalendarTimeline = ({ events, milestones, navigate, role }) => {
         <div style={{
           width: '36px',
           height: '36px',
-          background: 'linear-gradient(135deg, rgba(0, 184, 212, 0.15), rgba(0, 184, 212, 0.08))',
+          background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.15), rgba(255, 0, 0, 0.08))',
           borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          border: '1px solid rgba(0, 184, 212, 0.2)'
+          border: '1px solid rgba(255, 0, 0, 0.2)'
         }}>
-          <Calendar style={{ color: '#00b8d4', width: '18px', height: '18px' }} />
+          <Calendar style={{ color: '#ff0000', width: '18px', height: '18px' }} />
         </div>
         <h2 style={{
           color: '#ffffff',
@@ -523,8 +523,8 @@ const CalendarTimeline = ({ events, milestones, navigate, role }) => {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {allItems.map((item, idx) => (
-            <TimelineItem key={idx} item={item} navigate={navigate} />
+          {allItems.map((item) => (
+            <TimelineItem key={item.id || `${item.type}-${item.start_time || item.due_date}`} item={item} navigate={navigate} />
           ))}
         </div>
       )}
@@ -551,7 +551,7 @@ const TimelineItem = ({ item, navigate }) => {
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-        e.currentTarget.style.borderColor = 'rgba(0, 184, 212, 0.3)';
+        e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.3)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
@@ -563,8 +563,8 @@ const TimelineItem = ({ item, navigate }) => {
           width: '8px',
           height: '8px',
           borderRadius: '50%',
-          background: isToday ? '#00b8d4' : 'rgba(255, 255, 255, 0.3)',
-          boxShadow: isToday ? '0 0 10px #00b8d4' : 'none'
+          background: isToday ? '#ff0000' : 'rgba(255, 255, 255, 0.3)',
+          boxShadow: isToday ? '0 0 10px #ff0000' : 'none'
         }} />
         <div style={{ flex: 1 }}>
           <p style={{ color: '#ffffff', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
@@ -621,11 +621,11 @@ const PrioritiesPanel = ({ priorities, onRefresh, onAction, refreshing, navigate
           onClick={onRefresh}
           disabled={refreshing}
           style={{
-            background: 'rgba(0, 184, 212, 0.1)',
-            border: '1px solid rgba(0, 184, 212, 0.2)',
+            background: 'rgba(255, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 0, 0, 0.2)',
             borderRadius: '8px',
             padding: '8px 12px',
-            color: '#00b8d4',
+            color: '#ff0000',
             fontSize: '13px',
             fontWeight: '600',
             cursor: refreshing ? 'not-allowed' : 'pointer',
@@ -775,8 +775,8 @@ const SellerPrioritiesPanel = ({ navigate }) => {
         </h2>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {priorities.map((priority, idx) => (
-          <div key={idx} style={{
+        {priorities.map((priority) => (
+          <div key={priority.title} style={{
             background: 'rgba(255, 255, 255, 0.02)',
             border: '1px solid rgba(255, 255, 255, 0.06)',
             borderRadius: '10px',
@@ -831,9 +831,9 @@ const BuyerPrioritiesPanel = ({ navigate }) => {
         </h2>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {priorities.map((priority, idx) => (
+        {priorities.map((priority) => (
           <div 
-            key={idx} 
+            key={priority.title} 
             onClick={priority.action}
             style={{
               background: 'rgba(255, 255, 255, 0.02)',
